@@ -12,9 +12,14 @@ def read_settings(config_path:str, key:str) -> dict:
         Returns:
             Dictionary containing the settings all values are strings
     """
+    #Set up the config parser
     config = configparser.ConfigParser()
+
+    #Read the configs
     config.read(config_path)
-    return dict(map(lambda x: (x[0],int(x[1])),config[key].items()))
+
+    #Return the dictionary after converting numbers to int
+    return dict(map(lambda x: (x[0],int(x[1])) if x[1].isdigit() else x ,config[key].items()))
     
 #Run the following if the file is run as main
 if __name__ =="__main__":
@@ -22,6 +27,14 @@ if __name__ =="__main__":
     #Read the configuration file for space invaders
     config = read_settings("settings.cfg","Space Invaders")
     print(config)
+
+    #Create the new game window with the configurations
+    game = GameWindow(**config,debug = True)
+    
+    #Run the mainloop for the GameWindow
+    game.mainloop()
+
+
 
 
     
