@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 import pygame
+import pygame.freetype
 import enum
 import sys
-from pygame.locals import *
-from random import choice
+from pygame.locals import * 
 
 #Define the COLORS
 WHITE = (255,255,255)
@@ -18,11 +18,11 @@ class State(enum.Enum):
     MENU = 1
     PLAY = 2
     GAMEOVER = 3
-    QUIT = 9
+    QUIT = -1
 
 class GameWindow(object):
     """The main game window for Space invaders"""
-    def __init__(self, sensitivity:int, maxfps:int, game_width:int, game_height:int, icon_img_path:str, player_img_path:str, enemy_img_path:str, bullet_img_path:str, debug:bool = False):
+    def __init__(self, sensitivity:int, maxfps:int, game_width:int, game_height:int, icon_img_path:str, player_img_path:str, enemy_img_path:str, bullet_img_path:str, wave:int = 1, debug:bool = False):
         """The constructor for the main window"""
 
         #Storing the variables
@@ -31,6 +31,9 @@ class GameWindow(object):
         self.score = 0
         self.game_width = game_width
         self.game_height = game_height
+        self.wave = wave
+
+        #Store the different states the menu has
         self.states = {
             State.MENU:self.handle_menu,
             State.PLAY:self.handle_play,
@@ -66,6 +69,7 @@ class GameWindow(object):
         #Other sprites
         self.font = pygame.font.Font(pygame.font.get_default_font(),game_width//40)
         self.end_font = pygame.font.Font(pygame.font.get_default_font(),game_width//20)
+        self.title_font = pygame.font.Font(pygame.font.get_default_font(), game_width // 10)
 
     def update_keypresses(self) -> None:
         """Update the map based on what the player has pressed"""
@@ -133,23 +137,69 @@ class GameWindow(object):
 
     def spawn_bullets(self):
         """Spawn the bullets for each of the entities"""
-
         #TODO
         pass
 
+    def check_mouse_pos(self, rect_play, rect_end):
+        """Check the position of the mouse on the menu to see what the player clicked"""
+        #Get the position of the mouse
+        mouse_pos = pygame.mouse.get_pos()
+
+        #Set click to false
+        click = False
+
+        #Print out what buttons are pressed
+        if self.debug:
+            print(pygame.mouse.get_pressed())
+
+        #If player pressed the button
+        if pygame.mouse.get_pressed()[0]:
+            if self.debug:
+                print("Mouse clicked")
+            click = True
+
+        #If mousedown and position colide with play
+        if rect_play.collidepoint(mouse_pos) and click:
+            return State.PLAY
+
+        #If mousedown and position colide with quit
+        elif rect_end.collidepoint(mouse_pos) and click:
+            return State.QUIT
+
+        #Otherwise the player has not decided
+        else:
+            #Return menu state
+            return State.MENU
 
     def handle_menu(self) -> State:
         """Handles the drawing of the menu"""
 
-        #TODO
-        return State.PLAY
+        #Draw the title
+        title = self.title_font.render("Space Invaders", True, WHITE)
+        rect_title = title.get_rect(center=(self.game_width/2, self.game_height//5))
+        self.screen.blit(title, rect_title)
+
+        #Draw the Play button
+        play = self.end_font.render("Play",True, WHITE)
+        rect_play = play.get_rect(center=(self.game_width/2, self.game_height//2))
+        self.screen.blit(play, rect_play)
+
+        #Draw the quit button
+        end = self.end_font.render("Quit",True, WHITE)
+        rect_end = play.get_rect(center=(self.game_width/2, self.game_height//15+self.game_height//2))
+        self.screen.blit(end, rect_end)
+
+        #Check the position of the mouse to return the state
+        return self.check_mouse_pos(rect_play, rect_end)
 
     def handle_play(self) -> State:
         """Handles the drawing of the play string"""
 
+        #If player is destroyed, go to gameover state
         if self.player.get_destroyed():
             return State.GAMEOVER
-        #Update the score
+
+        #Draw the score
         score = self.font.render("Score : " + str(self.score), True, WHITE)
         self.screen.blit(score, (10, 10))
 
@@ -163,6 +213,7 @@ class GameWindow(object):
         #Update the objs
         self.update()
 
+        #Return play state
         return State.PLAY
 
     def handle_gameover(self) -> State:
@@ -194,7 +245,7 @@ class GameWindow(object):
             self.screen.blit(score, (self.game_width // 2 - self.game_width // 7, self.game_height // 2))
 
             #Prompt player to update
-            score = self.end_font.render("Press Y to continue and N to quit", True, WHITE)
+            score = self.end_font.render("Press Y to go back and N to quit", True, WHITE)
             self.screen.blit(score, (self.game_height//12, self.game_height // 2 + self.game_height//12))
             
             #Return the gameover state
@@ -238,7 +289,6 @@ class GameWindow(object):
         #Close the window
         self.__del__()
 
-
     def __del__(self) -> None:
         """Destructor for the game window"""
         pygame.display.quit()
@@ -249,8 +299,8 @@ class MovingObject(pygame.sprite.Sprite):
     """Main class for all objects that move"""
     def __init__(self, obj_path:str, sensitivity:int, initial_x:int, initial_y:int, debug:bool):
         """Constructor class for the moving object"""
-        #Initialise the sprite
-        pygame.sprite.Sprite.__init__(self)
+        #Call the superclass init method
+        super().__init__()
 
         #Storing the variables
         self.init_x = initial_x
@@ -262,6 +312,8 @@ class MovingObject(pygame.sprite.Sprite):
 
         #Load the image model
         self.img = pygame.image.load(obj_path)
+
+
 
     def move(self,x,y) -> None:
         """Main Move Method"""
@@ -289,43 +341,70 @@ class MovingObject(pygame.sprite.Sprite):
 
     def update(self) -> None:
         """Update the object rect position"""
+
+        #Set the position of the rect
         self.rect = self.img.convert().get_rect(center=(self.x,self.y))
 
     def scale(self, width, height) -> None:
         """Scale the image"""
+        
+        #Scale the image to the new width and height defined
         self.img = pygame.transform.scale(self.img,(width,height))
 
     def get_height(self) -> None:
+        """Get the height of the image"""
         return self.img.get_height()
 
     def get_width(self) -> None:
+        """Get the width of the image"""
         return self.img.get_width()
+
+class Direction(enum.Enum):
+    """Direction enum to store where objects are moving"""
+    UP = 1
+    DOWN = 2
+    LEFT = 3
+    RIGHT = 4
 
 class Bullet(MovingObject):
     """Bullet class for the space invaders game"""
     
-    def __init__(self, obj_path:str, sensitivity:int, initial_x:int, initial_y:int, debug:bool):
+    def __init__(self, obj_path:str, sensitivity:int, initial_x:int, initial_y:int, direction:Direction, debug:bool):
         """The constructor for the bullet class"""
-        
+
         #Call the superclass
         super().__init__(obj_path,sensitivity,initial_x, initial_y,debug)
 
+        #Store the direction
+        self.direction = direction
+
     def move(self) -> None:
         """Move the bullet"""
-        pass
+
+        #If the bullet is moving up
+        if self.direction == Direction.UP:
+            self.y -= self.sensitivity
+
+        #If the bullet is moving down
+        elif self.direction == Direction.DOWN:
+            self.y += self.sensitivity
+
+        #Otherwise there is an error
+        else:
+            assert False, "Direction is invalid"
 
 class Bullets(pygame.sprite.Group):
     def __init__(self, debug:bool):
         """Constructor for the bullet group"""
         #Initialise the group
-        pygame.sprite.Group.__init__(self)
+        super().__init__(self)
 
         #Store variables
         self.debug = debug
 
 class EnemyShip(MovingObject):
     """Enemyship obj"""
-    def __init__(self, obj_path:str, sensitivity:int, initial_x:int, initial_y:int, debug:bool):
+    def __init__(self, obj_path:str, sensitivity:int, initial_x:int, initial_y:int, lives:int, points:int, debug:bool):
         """Constructor for the enemy object"""
 
         #Call the superclass
@@ -333,7 +412,21 @@ class EnemyShip(MovingObject):
 
         #Store variables
         self.debug = debug
+        self.lives = lives
+        self.points = points
 
+
+    def get_points(self) -> int:
+        """Get the number of points the mob is worth"""
+        return self.points
+
+    def is_destroyed(self) -> bool:
+        """Returns whether the ship is destroyed"""
+        return self.get_lives() == 0
+
+    def get_lives(self) -> int: 
+        """Gets the number of lives the ship has left"""
+        return self.lives
         
 
 class EnemyShips(pygame.sprite.Group):
@@ -341,7 +434,7 @@ class EnemyShips(pygame.sprite.Group):
     def __init__(self, debug:bool):
         """The constructor for the EnemyShip class"""
         #Initialize the group
-        pygame.sprite.Group.__init__(self)
+        super().__init__(self)
 
         #Store variables
         self.debug = debug
@@ -398,7 +491,7 @@ class Player(MovingObject):
 
     def get_destroyed(self) -> bool:
         """Returns whether the ship is destroyed"""
-        return self.life == 0
+        return self.get_lives() == 0
 
     def destroy(self) -> None:
         """Destroys the ship"""
