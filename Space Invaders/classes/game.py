@@ -144,6 +144,7 @@ class GameWindow(object):
         """Check the position of the mouse on the menu to see what the player clicked"""
         #Get the position of the mouse
         mouse_pos = pygame.mouse.get_pos()
+        print(mouse_pos)
 
         #Set click to false
         click = False
@@ -160,15 +161,21 @@ class GameWindow(object):
 
         #If mousedown and position colide with play
         if rect_play.collidepoint(mouse_pos) and click:
+            if self.debug:
+                print("Mouse clicked play")
             return State.PLAY
 
         #If mousedown and position colide with quit
         elif rect_end.collidepoint(mouse_pos) and click:
+            if self.debug:
+                print("Mouse clicked quit")
             return State.QUIT
 
         #Otherwise the player has not decided
         else:
             #Return menu state
+            if self.debug:
+                print("Mouse moving")
             return State.MENU
 
     def handle_menu(self) -> State:

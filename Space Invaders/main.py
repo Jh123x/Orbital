@@ -50,6 +50,7 @@ if __name__ =="__main__":
     if config['debug']:
         for k,v in config.items():
             print(f"{k} : {v}")
+    print(config)
 
     #Create the new game window with the configurations
     game = GameWindow(**config)
