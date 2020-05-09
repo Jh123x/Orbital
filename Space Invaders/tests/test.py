@@ -22,7 +22,6 @@ class MainFileTester(unittest.TestCase):
     def testConfig(self):
         pass
 
-
 #Test Classes
 class GameClassTest(unittest.TestCase):
     """Unit Test for the Game Class"""
@@ -39,7 +38,7 @@ class GameClassTest(unittest.TestCase):
             assert a test within the function
             EG: assert foo+foo = 64
         """
-        assert 1 == 1
+        assert 1 == 0, "Test 1 has failed"
 
 class BulletClassTest(unittest.TestCase):
     """Unit test for the bullets"""
@@ -57,11 +56,7 @@ class BulletClassTest(unittest.TestCase):
             assert a test within the function
             EG: assert foo+foo = 64
         """
-        assert 1 == 1
-
-
-
-
+        assert 1 == 1, "This test has passed"
 
 #Main function
 if __name__ == "__main__":
