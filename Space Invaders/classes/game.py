@@ -494,7 +494,7 @@ class Player(MovingObject):
         return self.get_lives() == 0
 
     def destroy(self) -> None:
-        """Destroys the ship"""
+        """Destroys the ship 1 time"""
         self.life -= 1 
 
     def get_lives(self) -> int:
