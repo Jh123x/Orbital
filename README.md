@@ -20,12 +20,13 @@ Level of achievement: Apollo 11
 - [ ] Create a database to keep track of the high scores
 - [ ] Make the player shoot bullets
 - [ ] Make the enemy sprites
-- [ ] Track collision between bullets and entities
+- [ ] Track collision between bullets and different entities
 - [ ] Find a way to scale difficulties
 - [ ] Added AI to play the game
 
 ### Optional Features
 - [x] Player able to play the game with his keyboard
+- [ ] Create a settings menu
 - [ ] View mode for the player to see the AI play the game
 - [ ] Endless mode where the player can shoot endless enemies
 - [ ] Compete mode where the player can compete with the AI in the game
@@ -33,3 +34,13 @@ Level of achievement: Apollo 11
 ### Useful Links
 * Orbital main webpage: (here)[https://orbital.comp.nus.edu.sg/]
 * Orbital projects page: (here)[https://nusskylab-dev.comp.nus.edu.sg/public_views/public_projects]
+
+### Contributors
+* Stephen: (LinkedIn)[https://www.linkedin.com/in/stephen-tan-hin-khai/]
+* Junhua: (LinkedIn)[https://www.linkedin.com/in/junhua-wen-718880137/]
+
+
+### Project Log
+| Date      | Event       |Details    |
+|-----------|-------------|-----------|
+|8/5/2020   | Created Repo| This Repo is started|
