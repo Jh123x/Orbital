@@ -32,15 +32,20 @@ Level of achievement: Apollo 11
 - [ ] Compete mode where the player can compete with the AI in the game
 
 ### Useful Links
-* Orbital main webpage: (here)[https://orbital.comp.nus.edu.sg/]
-* Orbital projects page: (here)[https://nusskylab-dev.comp.nus.edu.sg/public_views/public_projects]
+* Orbital main webpage: [here](https://orbital.comp.nus.edu.sg/)
+* Orbital projects page: [here](https://nusskylab-dev.comp.nus.edu.sg/public_views/public_projects)
 
 ### Contributors
-* Stephen: (LinkedIn)[https://www.linkedin.com/in/stephen-tan-hin-khai/]
-* Junhua: (LinkedIn)[https://www.linkedin.com/in/junhua-wen-718880137/]
+* Stephen: [LinkedIn](https://www.linkedin.com/in/stephen-tan-hin-khai/)
+* Junhua: [LinkedIn](https://www.linkedin.com/in/junhua-wen-718880137/)
 
 
 ### Project Log
-| Date      | Event       |Details    |
-|-----------|-------------|-----------|
-|8/5/2020   | Created Repo| This Repo is started|
+| Date      | Event                 |Details    |
+|-----------|-----------------------|-----------|
+|8/5/2020   | Created Repo          | This Repo is started|
+|8/5/2020   | UI created            | Created the basic UI for Space invaders|
+|8/5/2020   | Skeleton code created | Skeleton code for some of the classes and tests are made|
+|8/5/2020   | Drew the sprites      | Sprites of the characters are drawn|
+|8/5/2020   | Configured keystrokes | Configured the keystrokes for the player to move is character
+|9/5/2020   | Briefing about orbital| Briefing about orbital|
