@@ -32,6 +32,7 @@ class GameWindow(object):
         self.game_width = game_width
         self.game_height = game_height
         self.wave = wave
+        self.state = State.MENU
 
         #Store the different states the menu has
         self.states = {
@@ -70,6 +71,10 @@ class GameWindow(object):
         self.font = pygame.font.Font(pygame.font.get_default_font(),game_width//40)
         self.end_font = pygame.font.Font(pygame.font.get_default_font(),game_width//20)
         self.title_font = pygame.font.Font(pygame.font.get_default_font(), game_width // 10)
+
+    def get_state(self) -> State:
+        """Return the state the game is in"""
+        return self.state
 
     def update_keypresses(self) -> None:
         """Update the map based on what the player has pressed"""
@@ -261,7 +266,6 @@ class GameWindow(object):
 
         #Loop variables
         running = True
-        state = State.MENU
         
         #Mainloop for pygame GUI
         while running:
@@ -277,13 +281,13 @@ class GameWindow(object):
                 break
                 
             #Load the screen based on the state
-            state = self.states[state]()
+            self.state = self.states[self.state]()
 
             #Update the display with the screen
             pygame.display.update()
 
             #If the state is quit break the loop
-            if state == State.QUIT:
+            if self.state == State.QUIT:
                 running = False
 
         #Close the window
