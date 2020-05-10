@@ -33,6 +33,12 @@ class GameWindow(object):
         self.game_height = game_height
         self.wave = wave
         self.state = State.MENU
+        self.sensitivity = sensitivity
+        self.bullet_cooldown = 0
+
+        #Store path to image files to be used when spawning enemies
+        self.enemy_img_path = enemy_img_path
+        self.bullet_img_path = bullet_img_path
 
         #Store the different states the menu has
         self.states = {
@@ -61,8 +67,8 @@ class GameWindow(object):
         self.screen = pygame.display.set_mode((game_width,game_height))
 
         #Create the main groups
-        self.bullets = Bullets(debug)
-        self.enemies = EnemyShips(debug)
+        self.bullets = pygame.sprite.Group()
+        self.enemies = pygame.sprite.Group()
 
         #Create the main sprites
         self.player = Player(player_img_path, sensitivity, game_width, game_height, 3, debug)
@@ -81,6 +87,10 @@ class GameWindow(object):
         #Check the keys the player has pressed
         keys = pygame.key.get_pressed()
 
+        #Continue cooldown if bullet is not on cooldown
+        if self.bullet_cooldown:
+            self.bullet_cooldown -= 1
+
         #If the player has click 'Left' or 'a' move the player to the left
         if keys[K_a] or keys[K_LEFT]: 
             self.player.move_left()
@@ -96,6 +106,15 @@ class GameWindow(object):
         #Move the player up
         if keys[K_w] or keys[K_UP]:
             self.player.move_up()
+
+        #Check if the player pressed spacebar to spawn a bullet
+        if keys[K_SPACE] and self.bullet_cooldown == 0:
+
+            #Spawn a bullet
+            self.spawn_bullets()
+
+            #Set the bullet on cooldown
+            self.bullet_cooldown = self.fps//2
 
         #Check for debug keypresses
         if self.debug:
@@ -130,6 +149,10 @@ class GameWindow(object):
         #Update the enemy group TODO
 
         #Update the bullets position TODO
+        self.bullets.update()
+        self.bullets.draw(self.screen)
+        if self.debug:
+            print(f"Number of bullets: {len(self.bullets)}")
 
         #Remove all bullets which are out of screen TODO
 
@@ -138,12 +161,20 @@ class GameWindow(object):
         #Draw the enemy TODO
 
         #Draw player object
-        self.screen.blit(self.player.img, self.player.rect)
+        self.screen.blit(self.player.image, self.player.rect)
 
     def spawn_bullets(self):
         """Spawn the bullets for each of the entities"""
-        #TODO
-        pass
+
+        #Spawn bullet for the player
+        #Create the bullet object
+        bullet = Bullet(self.bullet_img_path, self.sensitivity * 1.5, self.player.x, self.player.y - 10, Direction.UP, self.game_width, self.game_height, self.debug)
+
+        #Add the bullet to the bullet group
+        self.bullets.add(bullet)
+
+        #Spawn bullets for the rest of the entities TODO
+        
 
     def check_mouse_pos(self, rect_play, rect_end):
         """Check the position of the mouse on the menu to see what the player clicked"""
@@ -307,61 +338,55 @@ class MovingObject(pygame.sprite.Sprite):
         super().__init__()
 
         #Storing the variables
-        self.init_x = initial_x
-        self.init_y = initial_y
         self.x = initial_x
         self.y = initial_y
         self.debug = debug
         self.sensitivity = sensitivity
 
         #Load the image model
-        self.img = pygame.image.load(obj_path)
-
-
+        self.image = pygame.image.load(obj_path)
 
     def move(self,x,y) -> None:
         """Main Move Method"""
         #Add the values to x and y to change position
         self.x += x
         self.y += y
-        if self.debug:
-            print(f"Coord: {self.x},{self.y}")
 
     def move_up(self) -> None:
-        """Move the player up"""
+        """Move the object up"""
         self.move(0,-self.sensitivity)
 
     def move_down(self) -> None:
-        """Move the player down"""
+        """Move the object down"""
         self.move(0,self.sensitivity)
 
     def move_left(self) -> None:
-        """Move the player right"""
+        """Move the object right"""
         self.move(-self.sensitivity,0)
 
     def move_right(self) -> None:
-        """Move the player right"""
+        """Move the object right"""
         self.move(self.sensitivity,0)
 
     def update(self) -> None:
         """Update the object rect position"""
 
         #Set the position of the rect
-        self.rect = self.img.convert().get_rect(center=(self.x,self.y))
+        self.rect = self.image.convert().get_rect(center=(self.x,self.y))
 
     def scale(self, width, height) -> None:
         """Scale the image"""
         
         #Scale the image to the new width and height defined
-        self.img = pygame.transform.scale(self.img,(width,height))
+        self.image = pygame.transform.scale(self.image,(width,height))
 
     def get_height(self) -> None:
         """Get the height of the image"""
-        return self.img.get_height()
+        return self.image.get_height()
 
     def get_width(self) -> None:
         """Get the width of the image"""
-        return self.img.get_width()
+        return self.image.get_width()
 
 class Direction(enum.Enum):
     """Direction enum to store where objects are moving"""
@@ -373,38 +398,31 @@ class Direction(enum.Enum):
 class Bullet(MovingObject):
     """Bullet class for the space invaders game"""
     
-    def __init__(self, obj_path:str, sensitivity:int, initial_x:int, initial_y:int, direction:Direction, debug:bool):
+    def __init__(self, obj_path:str, sensitivity:int, initial_x:int, initial_y:int, direction:Direction, game_width:int, game_height:int, debug:bool):
         """The constructor for the bullet class"""
 
         #Call the superclass
-        super().__init__(obj_path,sensitivity,initial_x, initial_y,debug)
+        super().__init__(obj_path, sensitivity, initial_x, initial_y, debug)
 
-        #Store the direction
-        self.direction = direction
+        #Store the direction, move up it the enum is move up, else move it down
+        self.direction = self.move_up if direction == Direction.UP else self.move_down
+        self.game_width = game_width
+        self.game_height = game_height
 
-    def move(self) -> None:
-        """Move the bullet"""
+    def update(self) -> None:
+        """Update the path of the bullet"""
+        #Move the bullet
+        self.direction()
 
-        #If the bullet is moving up
-        if self.direction == Direction.UP:
-            self.y -= self.sensitivity
+        #Kill itself if the bullet is out of screen
+        if self.x < 0 or self.x > self.game_width or self.y > self.game_height or self.y < 0:
+            self.kill()
 
-        #If the bullet is moving down
-        elif self.direction == Direction.DOWN:
-            self.y += self.sensitivity
+            #Do not proceed to update position
+            return
 
-        #Otherwise there is an error
-        else:
-            assert False, "Direction is invalid"
-
-class Bullets(pygame.sprite.Group):
-    def __init__(self, debug:bool):
-        """Constructor for the bullet group"""
-        #Initialise the group
-        super().__init__(self)
-
-        #Store variables
-        self.debug = debug
+        #Update its coordinates
+        super().update()
 
 class EnemyShip(MovingObject):
     """Enemyship obj"""
@@ -431,17 +449,6 @@ class EnemyShip(MovingObject):
     def get_lives(self) -> int: 
         """Gets the number of lives the ship has left"""
         return self.lives
-        
-
-class EnemyShips(pygame.sprite.Group):
-    """The main class for the enemy ship"""
-    def __init__(self, debug:bool):
-        """The constructor for the EnemyShip class"""
-        #Initialize the group
-        super().__init__(self)
-
-        #Store variables
-        self.debug = debug
 
 class Player(MovingObject):
     """Player class"""
@@ -458,6 +465,8 @@ class Player(MovingObject):
             init_life = 3
 
         #Creating the variables
+        self.init_x = game_width//2
+        self.init_y = game_height
         self.init_life = init_life
         self.life = init_life
         self.game_width = game_width
@@ -467,7 +476,7 @@ class Player(MovingObject):
     def move_up(self) -> None:
         """Move the player up"""
         #If the position is not at the max position allow the player to move up
-        if self.y > self.img.get_height()//8:
+        if self.y > self.image.get_height()//8:
             super().move_up()
         elif self.debug:
             print("Hit Top most")
@@ -481,7 +490,7 @@ class Player(MovingObject):
 
     def move_left(self) -> None:
         """Move the player right"""
-        if self.x > self.img.get_width()//8:
+        if self.x > self.image.get_width()//8:
             super().move_left()
         elif self.debug:
             print("Hit left most")
