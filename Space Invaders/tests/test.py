@@ -23,24 +23,24 @@ class MainFileTester(unittest.TestCase):
         """
         Test if config file is converted to a dictionary
         """
-        assert type(self.config) == dict, "read setting not returning a dictionary"
+        assert type(self.config) == dict, "Read setting not returning a dictionary"
 
     def testConfigB(self):
         """
         Test For integer parsing and converting to correct type
         """
-        assert type(self.config['sensitivity']) == int, "not parsing and converting digit correctly"
+        assert type(self.config['sensitivity']) == int, "Not parsing and converting digit correctly"
     
     def testConfigC(self):
         """
         Test for boolean parsing and converting to correct type
         """
-        assert type(self.config['debug']) == bool, "not parsing string to boolean correctly"
+        assert type(self.config['debug']) == bool, "Not parsing string to boolean correctly"
     def testConfigD(self):
         """
         Test for string parsing properly
         """
-        assert type(self.config['icon_img_path']) == str, "not parsing string to correct type"
+        assert type(self.config['icon_img_path']) == str, "Not parsing string to correct type"
 
 
 #game window, 

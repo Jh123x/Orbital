@@ -7,7 +7,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from main import read_settings
 from classes.game import GameWindow
 #Keyboard pip module
-import keyboard
+# import keyboard
 from pynput.mouse import Button, Controller, Listener
 #Relavant functions to be tested
 
@@ -21,15 +21,15 @@ class MenuTest(unittest.TestCase):
         """To be called before the testing for all the testcases"""
         super().setUp()
         config = {'sensitivity' : 5,'maxfps' : 60,'game_width' : 600,'game_height' : 800,
-                        'debug' : True, 'player_img_path' : 'images/player/player.png',
-                        'enemy_img_path' : 'images/enemies/enemy.png','bullet_img_path' : 
-                        'images/bullets/bullet.png','icon_img_path' : "images/icon/icon.png"}
+                        'debug' : True, 'player_img_path' : '../images/player/player.png',
+                        'enemy_img_path' : '../images/enemies/enemy.png','bullet_img_path' : 
+                        '../images/bullets/bullet.png','icon_img_path' : "../images/icon/icon.png"}
         self.game = GameWindow(**config) 
         
 
     def tearDown(self) -> None:
         """To be called after testing all the testcases"""
-        self.game.__del__
+        self.game.__del__()
 
     def testMouseA(self) -> None:
         """
@@ -56,6 +56,7 @@ class MenuTest(unittest.TestCase):
         """
         Test keyboard activation on main menu
         """
+        pass
 
 
 class BulletClassTest(unittest.TestCase):
@@ -78,14 +79,17 @@ class BulletClassTest(unittest.TestCase):
         """
         Player Bullet hits end of Screen
         """
+        pass
     def testC(self) -> None:
         """
         Player Hits Enemy Alien
         """
+        pass
     def testD(self) -> None:
         """
         Player Hit by enemy bullet
         """
+        pass
 #Main function
 if __name__ == "__main__":
     #Runs all of the tests defined above
