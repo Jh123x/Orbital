@@ -49,3 +49,4 @@ Level of achievement: Apollo 11
 |8/5/2020   | Drew the sprites      | Sprites of the characters are drawn|
 |8/5/2020   | Configured keystrokes | Configured the keystrokes for the player to move is character
 |9/5/2020   | Briefing about orbital| Briefing about orbital|
+|9/5/2020   | Create PyUnit tests   | Created the first wave of PyUnit tests|
