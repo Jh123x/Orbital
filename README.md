@@ -12,6 +12,7 @@ Level of achievement: Apollo 11
 2. PyTorch (To make the AI for the game)
 3. PyUnit (To handle most of the testing of the game)
 4. PixelArt (For drawing of the sprites)
+5. Pynput (To simulate the keypresses when testing for bugs)
 
 ### Task:
 - [x] Create a basic UI in pygame
