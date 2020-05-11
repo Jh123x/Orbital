@@ -50,3 +50,4 @@ Level of achievement: Apollo 11
 |8/5/2020   | Configured keystrokes | Configured the keystrokes for the player to move is character
 |9/5/2020   | Briefing about orbital| Briefing about orbital|
 |9/5/2020   | Create PyUnit tests   | Created the first wave of PyUnit tests|
+|10/5/2020  | Added Instructions    | Added instructions to menu and fixed some bugs|
