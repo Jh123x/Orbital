@@ -184,14 +184,10 @@ class GameWindow(object):
         #Set click to false
         click = False
 
-        #Print out what buttons are pressed
-        if self.debug:
-            print(pygame.mouse.get_pressed())
-
         #If player pressed the button
         if pygame.mouse.get_pressed()[0]:
             if self.debug:
-                print("Mouse clicked")
+                print(f"Mouse clicked {pygame.mouse.get_pressed()}")
             click = True
 
         #If mousedown and position colide with play
@@ -212,18 +208,27 @@ class GameWindow(object):
 
         #Draw the title
         title = self.title_font.render("Space Invaders", True, WHITE)
-        rect_title = title.get_rect(center=(self.game_width/2, self.game_height//5))
+        rect_title = title.get_rect(center=(self.game_width//2, self.game_height//5))
         self.screen.blit(title, rect_title)
 
         #Draw the Play button
-        play = self.end_font.render("Play",True, WHITE)
-        rect_play = play.get_rect(center=(self.game_width/2, self.game_height//2))
+        play = self.end_font.render("Play", True, WHITE)
+        rect_play = play.get_rect(center=(self.game_width//2, self.game_height//2))
         self.screen.blit(play, rect_play)
 
         #Draw the quit button
-        end = self.end_font.render("Quit",True, WHITE)
-        rect_end = play.get_rect(center=(self.game_width/2, self.game_height//15+self.game_height//2))
+        end = self.end_font.render("Quit", True, WHITE)
+        rect_end = end.get_rect(center=(self.game_width//2, self.game_height//15 + self.game_height//2))
         self.screen.blit(end, rect_end)
+
+        #Draw the instructions
+        inst1 = self.end_font.render("Use WASD or arrow keys to move", True, WHITE)
+        rect_inst1 = inst1.get_rect(center=(self.game_width//2, self.game_height//1.5))
+        self.screen.blit(inst1, rect_inst1)
+
+        inst2 = self.end_font.render("Press Spacebar to shoot", True, WHITE)
+        rect_inst2 = inst2.get_rect(center=(self.game_width//2, self.game_height//1.5 + self.game_height//15))
+        self.screen.blit(inst2, rect_inst2)
 
         #Check the position of the mouse to return the state
         return self.check_mouse_pos(rect_play, rect_end)
@@ -246,7 +251,7 @@ class GameWindow(object):
         #Update the keypress of the player
         self.update_keypresses()
 
-        #Update the objs
+        #Update the moving objs
         self.update()
 
         #Return play state
@@ -260,9 +265,22 @@ class GameWindow(object):
 
         #If the player wants to stay
         if stay:
+
+            #Keep the loop running
             running = True
+
+            #Reset player score
             self.score = 0
+
+            #Reset player state
             self.player.reset()
+
+            #Remove all bullets
+            self.bullets.empty()
+
+            #Remove all enemies
+            self.enemies.empty()
+
             return State.MENU
         
         #If the player does not want to stay
@@ -281,8 +299,8 @@ class GameWindow(object):
             self.screen.blit(score, (self.game_width // 2 - self.game_width // 7, self.game_height // 2))
 
             #Prompt player to update
-            score = self.end_font.render("Press Y to go back and N to quit", True, WHITE)
-            self.screen.blit(score, (self.game_height//12, self.game_height // 2 + self.game_height//12))
+            inst = self.end_font.render("Press Y to go back and N to quit", True, WHITE)
+            self.screen.blit(inst, (self.game_height//12, self.game_height // 2 + self.game_height//12))
             
             #Return the gameover state
             return State.GAMEOVER
@@ -306,10 +324,6 @@ class GameWindow(object):
 
             #Fill the background to black before updating the screen
             self.screen.fill(BLACK)
-
-            #If the player wants to quit exit the window
-            if pygame.QUIT in map(lambda x: x.type, pygame.event.get()):
-                break
                 
             #Load the screen based on the state
             self.state = self.states[self.state]()
@@ -317,8 +331,8 @@ class GameWindow(object):
             #Update the display with the screen
             pygame.display.update()
 
-            #If the state is quit break the loop
-            if self.state == State.QUIT:
+            #If the state is quit or player wats
+            if self.state == State.QUIT or pygame.QUIT in map(lambda x: x.type, pygame.event.get()):
                 running = False
 
         #Close the window
@@ -418,7 +432,7 @@ class Bullet(MovingObject):
         if self.x < 0 or self.x > self.game_width or self.y > self.game_height or self.y < 0:
             self.kill()
 
-            #Do not proceed to update position
+            #Do not continue to update position
             return
 
         #Update its coordinates
@@ -437,7 +451,6 @@ class EnemyShip(MovingObject):
         self.lives = lives
         self.points = points
 
-
     def get_points(self) -> int:
         """Get the number of points the mob is worth"""
         return self.points
@@ -445,6 +458,10 @@ class EnemyShip(MovingObject):
     def is_destroyed(self) -> bool:
         """Returns whether the ship is destroyed"""
         return self.get_lives() == 0
+
+    def destroy(self) -> None:
+        """Destroy 1 life of the ship"""
+        self.lives -= 1
 
     def get_lives(self) -> int: 
         """Gets the number of lives the ship has left"""
@@ -457,20 +474,28 @@ class Player(MovingObject):
         #Call the superclass
         super().__init__(obj_path, sensitivity, game_width//2, game_height,debug)
 
-        #Scale the player
+        #Scale the player character
         self.scale(self.get_width()*2, self.get_height()*2)
 
-        #If the life is not value set it to 3
+        #If the life is not valid set it to 3 by default
         if init_life > 0:
             init_life = 3
 
-        #Creating the variables
+        #Initial position
         self.init_x = game_width//2
         self.init_y = game_height
+
+        #Initial amount of life
         self.init_life = init_life
+
+        #Current life
         self.life = init_life
+
+        #Store game variables
         self.game_width = game_width
         self.game_height = game_height
+
+        #Debug variable
         self.debug = debug
 
     def move_up(self) -> None:
@@ -483,13 +508,15 @@ class Player(MovingObject):
 
     def move_down(self) -> None:
         """Move the player down"""
+        #If the player is not at the bottom of the screen allow the player to move down
         if self.y <= self.game_height:
             super().move_down()
         elif self.debug:
             print("Hit Bottom most")
 
     def move_left(self) -> None:
-        """Move the player right"""
+        """Move the player left"""
+        #If the player is not at the leftmost part of the screen allow the player to move left
         if self.x > self.image.get_width()//8:
             super().move_left()
         elif self.debug:
@@ -497,6 +524,7 @@ class Player(MovingObject):
 
     def move_right(self) -> None:
         """Move the player right"""
+        #If the player is not at the right most allow the player to move right
         if self.x <= self.game_width:
             super().move_right()
         elif self.debug:
@@ -516,13 +544,16 @@ class Player(MovingObject):
 
     def reset(self) -> None:
         """Reset the player stats"""
+        #Reset life
         self.life = self.init_life
+
+        #Reset position
         self.x = self.init_x
         self.y = self.init_y
 
 def main() -> None:
     """The main function for the file"""
-    pass
+    print("Please run the main.py file")
 
 #Run the main function if this file is main
 if __name__ == "__main__":
