@@ -67,11 +67,12 @@ class GameWindow(object):
         self.screen = pygame.display.set_mode((game_width,game_height))
 
         #Create the main groups
-        self.bullets = pygame.sprite.Group()
-        self.enemies = pygame.sprite.Group()
+        self.up_bullets = pygame.sprite.Group() #Bullets from player
+        self.down_bullets = pygame.sprite.Group() #Bullets from mobs
+        self.enemies = pygame.sprite.Group() #Enemies
 
         #Create the main sprites
-        self.player = Player(player_img_path, sensitivity, game_width, game_height, 3, debug)
+        self.player = Player(player_img_path, sensitivity, game_width, game_height, 3, maxfps, debug)
 
         #Other sprites
         self.font = pygame.font.Font(pygame.font.get_default_font(),game_width//40)
@@ -140,6 +141,21 @@ class GameWindow(object):
         else:
             return None
 
+    def check_collisions(self) -> int:
+        """Check the objects which collided"""
+        #Check if player has collided with bullets
+        bullet_collide = pygame.sprite.spritecollide(self.player, self.down_bullets, True)
+        
+        #If the set is not empty reduce player life
+        if len(bullet_collide) > 0:
+            self.player.destroy()
+
+        #Remove bullets that collide with one another
+        pygame.sprite.groupcollide(self.up_bullets, self.down_bullets, True, True)
+
+        #Remove sprites that collide with bullets and return the sum of all the scores
+        return sum(map(lambda x: x.get_points() if type(x) == EnemyShip else 0, pygame.sprite.groupcollide(self.up_bullets, self.enemies, True, True)),0)
+
     def update(self) -> None:
         """Update the player obj onto the screen"""
 
@@ -149,10 +165,12 @@ class GameWindow(object):
         #Update the enemy group TODO
 
         #Update the bullets position TODO
-        self.bullets.update()
-        self.bullets.draw(self.screen)
+        self.up_bullets.update()
+        self.down_bullets.update()
+        self.up_bullets.draw(self.screen)
+        self.down_bullets.draw(self.screen)
         if self.debug:
-            print(f"Number of bullets: {len(self.bullets)}")
+            print(f"Number of player bullets: {len(self.up_bullets)}")
 
         #Remove all bullets which are out of screen TODO
 
@@ -171,7 +189,7 @@ class GameWindow(object):
         bullet = Bullet(self.bullet_img_path, self.sensitivity * 1.5, self.player.x, self.player.y - 10, Direction.UP, self.game_width, self.game_height, self.debug)
 
         #Add the bullet to the bullet group
-        self.bullets.add(bullet)
+        self.up_bullets.add(bullet)
 
         #Spawn bullets for the rest of the entities TODO
         
@@ -251,6 +269,9 @@ class GameWindow(object):
         #Update the keypress of the player
         self.update_keypresses()
 
+        #Check object collisions
+        self.score += self.check_collisions()
+
         #Update the moving objs
         self.update()
 
@@ -276,7 +297,8 @@ class GameWindow(object):
             self.player.reset()
 
             #Remove all bullets
-            self.bullets.empty()
+            self.up_bullets.empty()
+            self.down_bullets.empty()
 
             #Remove all enemies
             self.enemies.empty()
@@ -356,15 +378,22 @@ class MovingObject(pygame.sprite.Sprite):
         self.y = initial_y
         self.debug = debug
         self.sensitivity = sensitivity
+        self.changed = True
 
         #Load the image model
         self.image = pygame.image.load(obj_path)
+
+        #Load the rect
+        self.update()
 
     def move(self,x,y) -> None:
         """Main Move Method"""
         #Add the values to x and y to change position
         self.x += x
         self.y += y
+
+        #Informed that rect has changed
+        self.changed = True
 
     def move_up(self) -> None:
         """Move the object up"""
@@ -385,8 +414,10 @@ class MovingObject(pygame.sprite.Sprite):
     def update(self) -> None:
         """Update the object rect position"""
 
-        #Set the position of the rect
-        self.rect = self.image.convert().get_rect(center=(self.x,self.y))
+        #Set the position of the rect if it has changed from before
+        if self.changed:
+            self.rect = self.image.convert().get_rect(center=(self.x,self.y))
+            self.changed = False
 
     def scale(self, width, height) -> None:
         """Scale the image"""
@@ -414,14 +445,22 @@ class Bullet(MovingObject):
     
     def __init__(self, obj_path:str, sensitivity:int, initial_x:int, initial_y:int, direction:Direction, game_width:int, game_height:int, debug:bool):
         """The constructor for the bullet class"""
+        self.direction = None
+
+        #Store the direction, move up it the enum is move up, else move it down
+        if direction == Direction.UP:
+            self.direction = self.move_up
+        elif direction == Direction.DOWN:
+            self.direction = self.move_down
+        else:
+            assert False, "Direction of bullet is invalid"
+
+        #Store the game dimensions for later use
+        self.game_width = game_width
+        self.game_height = game_height
 
         #Call the superclass
         super().__init__(obj_path, sensitivity, initial_x, initial_y, debug)
-
-        #Store the direction, move up it the enum is move up, else move it down
-        self.direction = self.move_up if direction == Direction.UP else self.move_down
-        self.game_width = game_width
-        self.game_height = game_height
 
     def update(self) -> None:
         """Update the path of the bullet"""
@@ -436,7 +475,7 @@ class Bullet(MovingObject):
             return
 
         #Update its coordinates
-        super().update()
+        return super().update()
 
 class EnemyShip(MovingObject):
     """Enemyship obj"""
@@ -444,10 +483,9 @@ class EnemyShip(MovingObject):
         """Constructor for the enemy object"""
 
         #Call the superclass
-        super().__init__(obj_path,sensitivity,initial_x, initial_y,debug)
+        super().__init__(obj_path, sensitivity, initial_x, initial_y, debug)
 
         #Store variables
-        self.debug = debug
         self.lives = lives
         self.points = points
 
@@ -469,10 +507,13 @@ class EnemyShip(MovingObject):
 
 class Player(MovingObject):
     """Player class"""
-    def __init__(self, obj_path:str, sensitivity:int, game_width:int, game_height:int, init_life:int, debug:bool):
+    def __init__(self, obj_path:str, sensitivity:int, game_width:int, game_height:int, init_life:int, fps:int ,debug:bool):
         """Constructor for the player"""
+        #Invicibility when it just spawned
+        self.invincible = fps
+        
         #Call the superclass
-        super().__init__(obj_path, sensitivity, game_width//2, game_height,debug)
+        super().__init__(obj_path, sensitivity, game_width//2, game_height, debug)
 
         #Scale the player character
         self.scale(self.get_width()*2, self.get_height()*2)
@@ -494,9 +535,10 @@ class Player(MovingObject):
         #Store game variables
         self.game_width = game_width
         self.game_height = game_height
+        self.fps = fps
 
-        #Debug variable
-        self.debug = debug
+        #Re-render the character
+        self.changed = True
 
     def move_up(self) -> None:
         """Move the player up"""
@@ -536,7 +578,8 @@ class Player(MovingObject):
 
     def destroy(self) -> None:
         """Destroys the ship 1 time"""
-        self.life -= 1 
+        if not self.invincible:
+            self.life -= 1 
 
     def get_lives(self) -> int:
         """Get the number of lives left"""
@@ -550,6 +593,21 @@ class Player(MovingObject):
         #Reset position
         self.x = self.init_x
         self.y = self.init_y
+
+        #Rerender rect
+        self.changed = True
+
+        #Give player 1s invisibility
+        self.invincible = self.fps
+
+    def update(self) -> None:
+        """Update the position of the player"""
+        #Reduce invincibility amount
+        if self.invincible:
+            self.invincible -= 1
+
+        #Call the super update
+        return super().update()
 
 def main() -> None:
     """The main function for the file"""
