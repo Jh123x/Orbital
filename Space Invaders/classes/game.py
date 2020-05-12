@@ -35,6 +35,7 @@ class GameWindow(object):
         self.state = State.MENU
         self.sensitivity = sensitivity
         self.bullet_cooldown = 0
+        self.spawn_state = 0
 
         #Store path to image files to be used when spawning enemies
         self.enemy_img_path = enemy_img_path
@@ -141,6 +142,12 @@ class GameWindow(object):
         else:
             return None
 
+    def spawn_aliens(self, number:int) -> None:
+        """Spawn aliens into the game"""
+
+        #Adding sprites
+        self.enemies.add([EnemyShip(self.enemy_img_path, self.sensitivity, self.game_width//4 + i*self.game_width//20, 0, 1, 10, self.game_width, self.debug) for i in range(number)])
+            
     def check_collisions(self) -> int:
         """Check the objects which collided"""
         #Check if player has collided with bullets
@@ -153,8 +160,29 @@ class GameWindow(object):
         #Remove bullets that collide with one another
         pygame.sprite.groupcollide(self.up_bullets, self.down_bullets, True, True)
 
-        #Remove sprites that collide with bullets and return the sum of all the scores
-        return sum(map(lambda x: x.get_points() if type(x) == EnemyShip else 0, pygame.sprite.groupcollide(self.up_bullets, self.enemies, True, True)),0)
+        #Get ships destroyed
+        ships = list(pygame.sprite.groupcollide(self.up_bullets, self.enemies, True, False).values())
+        print(ships)
+
+        if ships:
+        #Destroy the ship in the list
+            ships = ships[0]
+            for ship in ships:
+                ship.destroy()
+                if self.debug:
+                    print(f"Ship destroyed")
+        
+            #Get all ships with 0 lives
+            destroyed_ships = list(filter(lambda x: x.get_lives() == 0, ships))
+
+            #Remove the sprite from the group
+            self.enemies.remove(*destroyed_ships)
+
+            #Remove sprites that collide with bullets and return the sum of all the scores
+            return sum(map(lambda x: x.get_points(), destroyed_ships),0)
+
+        else:
+            return 0
 
     def update(self) -> None:
         """Update the player obj onto the screen"""
@@ -162,9 +190,10 @@ class GameWindow(object):
         #Update the player position
         self.player.update()
 
-        #Update the enemy group TODO
+        #Update the enemy group
+        self.enemies.update()
 
-        #Update the bullets position TODO
+        #Update the bullets positions
         self.up_bullets.update()
         self.down_bullets.update()
         self.up_bullets.draw(self.screen)
@@ -172,11 +201,10 @@ class GameWindow(object):
         if self.debug:
             print(f"Number of player bullets: {len(self.up_bullets)}")
 
-        #Remove all bullets which are out of screen TODO
-
-        #Draw the bullet TODO
-
         #Draw the enemy TODO
+        self.enemies.draw(self.screen)
+        if self.debug:
+            print(f"Number of enemies: {len(self.enemies)}")
 
         #Draw player object
         self.screen.blit(self.player.image, self.player.rect)
@@ -257,6 +285,10 @@ class GameWindow(object):
         #If player is destroyed, go to gameover state
         if self.player.get_destroyed():
             return State.GAMEOVER
+
+        #Spawn Enemies
+        if len(self.enemies) == 0:
+            self.spawn_aliens(1)
 
         #Draw the score
         score = self.font.render("Score : " + str(self.score), True, WHITE)
@@ -368,7 +400,7 @@ class GameWindow(object):
 
 class MovingObject(pygame.sprite.Sprite):
     """Main class for all objects that move"""
-    def __init__(self, obj_path:str, sensitivity:int, initial_x:int, initial_y:int, debug:bool):
+    def __init__(self, obj_path:str, sensitivity:int, initial_x:int, initial_y:int, game_width:int, game_height:int, debug:bool):
         """Constructor class for the moving object"""
         #Call the superclass init method
         super().__init__()
@@ -376,15 +408,17 @@ class MovingObject(pygame.sprite.Sprite):
         #Storing the variables
         self.x = initial_x
         self.y = initial_y
+        self.game_width = game_width
+        self.game_height = game_height
         self.debug = debug
         self.sensitivity = sensitivity
         self.changed = True
-
+        
         #Load the image model
         self.image = pygame.image.load(obj_path)
 
         #Load the rect
-        self.update()
+        self.rect = self.image.convert().get_rect(center=(initial_x,initial_y))
 
     def move(self,x,y) -> None:
         """Main Move Method"""
@@ -410,6 +444,14 @@ class MovingObject(pygame.sprite.Sprite):
     def move_right(self) -> None:
         """Move the object right"""
         self.move(self.sensitivity,0)
+
+    def get_x(self) -> int:
+        """Get the x coord of the obj"""
+        return self.x
+
+    def get_y(self) -> int:
+        """Get the y coord of the obj"""
+        return self.y
 
     def update(self) -> None:
         """Update the object rect position"""
@@ -445,7 +487,8 @@ class Bullet(MovingObject):
     
     def __init__(self, obj_path:str, sensitivity:int, initial_x:int, initial_y:int, direction:Direction, game_width:int, game_height:int, debug:bool):
         """The constructor for the bullet class"""
-        self.direction = None
+        #Call the superclass
+        super().__init__(obj_path, sensitivity, initial_x, initial_y, debug)
 
         #Store the direction, move up it the enum is move up, else move it down
         if direction == Direction.UP:
@@ -455,22 +498,14 @@ class Bullet(MovingObject):
         else:
             assert False, "Direction of bullet is invalid"
 
-        #Store the game dimensions for later use
-        self.game_width = game_width
-        self.game_height = game_height
-
-        #Call the superclass
-        super().__init__(obj_path, sensitivity, initial_x, initial_y, debug)
-
     def update(self) -> None:
         """Update the path of the bullet"""
         #Move the bullet
         self.direction()
 
         #Kill itself if the bullet is out of screen
-        if self.x < 0 or self.x > self.game_width or self.y > self.game_height or self.y < 0:
+        if self.y > self.game_height or self.y < 0:
             self.kill()
-
             #Do not continue to update position
             return
 
@@ -479,11 +514,14 @@ class Bullet(MovingObject):
 
 class EnemyShip(MovingObject):
     """Enemyship obj"""
-    def __init__(self, obj_path:str, sensitivity:int, initial_x:int, initial_y:int, lives:int, points:int, debug:bool):
+    def __init__(self, obj_path:str, sensitivity:int, initial_x:int, initial_y:int, lives:int, points:int, game_width:int, debug:bool):
         """Constructor for the enemy object"""
 
         #Call the superclass
         super().__init__(obj_path, sensitivity, initial_x, initial_y, debug)
+
+        #Scale the image
+        self.scale(self.get_width()//2, self.get_height()//2)
 
         #Store variables
         self.lives = lives
@@ -499,21 +537,41 @@ class EnemyShip(MovingObject):
 
     def destroy(self) -> None:
         """Destroy 1 life of the ship"""
-        self.lives -= 1
+        if self.lives > 0:
+            self.lives -= 1
 
     def get_lives(self) -> int: 
         """Gets the number of lives the ship has left"""
         return self.lives
 
+    def update(self) -> None:
+        """Update the movement of the enemies"""
+
+        #If the character moved to the side of the screen, move it down instead
+        # if self.x < self.game_width:
+        #     self.x += self.sensitivity
+        # else:
+        #     self.y += self.sensitivity
+
+        if self.debug:
+            print("Enemy updated")
+
+        #Move in y direction only
+        self.y += self.sensitivity
+
+        #Call superclass update
+        super().update()
+
 class Player(MovingObject):
     """Player class"""
     def __init__(self, obj_path:str, sensitivity:int, game_width:int, game_height:int, init_life:int, fps:int ,debug:bool):
         """Constructor for the player"""
-        #Invicibility when it just spawned
-        self.invincible = fps
         
         #Call the superclass
         super().__init__(obj_path, sensitivity, game_width//2, game_height, debug)
+
+        #Invicibility when it just spawned
+        self.invincible = fps
 
         #Scale the player character
         self.scale(self.get_width()*2, self.get_height()*2)
@@ -533,8 +591,6 @@ class Player(MovingObject):
         self.life = init_life
 
         #Store game variables
-        self.game_width = game_width
-        self.game_height = game_height
         self.fps = fps
 
         #Re-render the character
