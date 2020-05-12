@@ -1,14 +1,14 @@
 #Unit tests
 import pygame
+from pygame.locals import *
+import pygame.freetype
 import unittest
 import os, sys
 #Import the main file
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from main import read_settings
-from classes.game import GameWindow
+from classes.game import GameWindow, State,Direction,Bullet
 #Keyboard pip module
-# import keyboard
-from pynput.mouse import Button, Controller, Listener
 #Relavant functions to be tested
 
 #Test Classes
@@ -21,9 +21,9 @@ class MenuTest(unittest.TestCase):
         """To be called before the testing for all the testcases"""
         super().setUp()
         config = {'sensitivity' : 5,'maxfps' : 60,'game_width' : 600,'game_height' : 800,
-                        'debug' : True, 'player_img_path' : '../images/player/player.png',
-                        'enemy_img_path' : '../images/enemies/enemy.png','bullet_img_path' : 
-                        '../images/bullets/bullet.png','icon_img_path' : "../images/icon/icon.png"}
+                        'debug' : True, 'player_img_path' : 'images/player/player.png',
+                        'enemy_img_path' : 'images/enemies/enemy.png','bullet_img_path' : 
+                        'images/bullets/bullet.png','icon_img_path' : "images/icon/icon.png"}
         self.game = GameWindow(**config) 
         
 
@@ -37,26 +37,26 @@ class MenuTest(unittest.TestCase):
         """
         event = pygame.event.Event(pygame.MOUSEBUTTONDOWN,{"pos": (0,0),"button": 1})
         pygame.event.post(event)
-        assert 1==1, "Mouse Click is activating a event when it should not be activating event at this coord"
+        assert self.game.get_state()== State.MENU, "Mouse Click is activating a event when it should not be activating event at this coord"
     def testMouseB(self) -> None:
         """
         Test mouse click on exit
         """
-        event = pygame.event.Event(pygame.MOUSEBUTTONDOWN,{"pos": (320,453),"button": 1})
+        event = pygame.event.Event(pygame.MOUSEBUTTONDOWN,{"pos": (312,447),"button": 1})
         pygame.event.post(event)
-        assert 1==1, "Mouse Click is not activating a exit event it should be activating"
+        assert self.game.get_state()==State.QUIT, "Mouse Click is not activating a exit event it should be activating"
     def testMouseC(self)->None:
         """
         Test mouse click on play
         """
-        event = pygame.event.Event(pygame.MOUSEBUTTONDOWN,{"pos": (300,400),"button": 1})
+        event = pygame.event.Event(pygame.MOUSEBUTTONDOWN,{"pos": (312,400),"button": 1})
         pygame.event.post(event)
-        assert 1==1, "Mouse Click is activating a event it should not"
+        assert self.game.get_state()==State.PLAY, "Mouse Click is activating a event it should not"
     def testKeyboard(self)-> None:
         """
-        Test keyboard activation on main menu
+        Test keyboard activation on main menu -> Not Implemented
         """
-        pass
+        assert 1==1
 
 
 class BulletClassTest(unittest.TestCase):
@@ -64,7 +64,18 @@ class BulletClassTest(unittest.TestCase):
 
     def setUp(self) -> None:
         """To be called before every test case"""
-        pass
+        super().setUp()
+        config = {'sensitivity' : 5,'maxfps' : 60,'game_width' : 600,'game_height' : 800,
+                        'debug' : True, 'player_img_path' : 'images/player/player.png',
+                        'enemy_img_path' : 'images/enemies/enemy.png','bullet_img_path' : 
+                        'images/bullets/bullet.png','icon_img_path' : "images/icon/icon.png"}
+        self.bullet_img_path = config["bullet_img_path"]
+        self.up_bullet = pygame.sprite.Group() #down bullet
+        self.down_bullet = pygame.sprite.Group() # up bullet
+        self.sensitivity = config["sensitivity"]
+        self.game_width = config["game_width"]
+        self.game_height = config["game_height"]
+
 
     def tearDown(self) -> None:
         """To be called after every test case"""
@@ -72,24 +83,38 @@ class BulletClassTest(unittest.TestCase):
     
     def testA(self) -> None:
         """
-        Enemy Bullet Hits ground
+        Player Bullet Hits top bound of wall should disappear
         """
-        assert 1 == 1, "This test has passed"
+        bullet = Bullet(self.bullet_img_path,self.sensitivity*1.5,0,0,Direction.UP,self.game_width,self.game_height,True)
+        self.down_bullet.add(bullet)
+        bullet.update()
+        bullet.update()#ticks 2 times at boundary to remove from sprite group
+        #print(bullet in self.down_bullet)
+        assert bullet not in self.down_bullet, "Enemy bullet not derendering properly"
     def testB(self) -> None:
         """
-        Player Bullet hits end of Screen
+        Enemy Bullet hits bottom of Screen should disappear after calling update
         """
-        pass
+        bullet = Bullet(self.bullet_img_path,self.sensitivity*1.5,self.game_height,0,Direction.DOWN,self.game_width,self.game_height,True)
+        self.up_bullet.add(bullet)
+        bullet.update()
+        bullet.update()#ticks 2 times at boundary to remove from sprite group
+        #print(bullet in self.up_bullet)
+        assert bullet not in self.up_bullet, "Player Bullet is not derendering at end of screen"
+        
     def testC(self) -> None:
         """
-        Player Hits Enemy Alien
+        Player bullet Hits Enemy Alien
+        TBC
         """
-        pass
+        assert 1==1
+
     def testD(self) -> None:
         """
         Player Hit by enemy bullet
+        TBC
         """
-        pass
+        assert 1==1
 #Main function
 if __name__ == "__main__":
     #Runs all of the tests defined above
