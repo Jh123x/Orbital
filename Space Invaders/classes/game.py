@@ -146,7 +146,7 @@ class GameWindow(object):
         """Spawn aliens into the game"""
 
         #Adding sprites
-        self.enemies.add([EnemyShip(self.enemy_img_path, self.sensitivity, self.game_width//4 + i*self.game_width//20, 0, 1, 10, self.game_width, self.debug) for i in range(number)])
+        self.enemies.add([EnemyShip(self.enemy_img_path, self.sensitivity, self.game_width//4 + i*self.game_width//20, self.game_height//20, 1, 10, self.game_width, self.game_height, self.debug) for i in range(number)])
             
     def check_collisions(self) -> int:
         """Check the objects which collided"""
@@ -495,7 +495,7 @@ class Bullet(MovingObject):
     def __init__(self, obj_path:str, sensitivity:int, initial_x:int, initial_y:int, direction:Direction, game_width:int, game_height:int, debug:bool):
         """The constructor for the bullet class"""
         #Call the superclass
-        super().__init__(obj_path, sensitivity, initial_x, initial_y, debug)
+        super().__init__(obj_path, sensitivity, initial_x, initial_y, game_width, game_height, debug)
 
         #Store the direction, move up it the enum is move up, else move it down
         if direction == Direction.UP:
@@ -521,14 +521,11 @@ class Bullet(MovingObject):
 
 class EnemyShip(MovingObject):
     """Enemyship obj"""
-    def __init__(self, obj_path:str, sensitivity:int, initial_x:int, initial_y:int, lives:int, points:int, game_width:int, debug:bool):
+    def __init__(self, obj_path:str, sensitivity:int, initial_x:int, initial_y:int, lives:int, points:int, game_width:int, game_height:int, debug:bool):
         """Constructor for the enemy object"""
 
         #Call the superclass
-        super().__init__(obj_path, sensitivity, initial_x, initial_y, debug)
-
-        #Scale the image
-        self.scale(self.get_width()//2, self.get_height()//2)
+        super().__init__(obj_path, sensitivity, initial_x, initial_y, game_width, game_height, debug)
 
         #Store variables
         self.lives = lives
@@ -575,7 +572,7 @@ class Player(MovingObject):
         """Constructor for the player"""
         
         #Call the superclass
-        super().__init__(obj_path, sensitivity, game_width//2, game_height, debug)
+        super().__init__(obj_path, sensitivity, game_width//2, game_height, game_width, game_height, debug)
 
         #Invicibility when it just spawned
         self.invincible = fps
