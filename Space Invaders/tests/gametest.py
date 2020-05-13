@@ -117,31 +117,34 @@ class BulletClassTest(unittest.TestCase):
         init_x = bullet.get_x()
         init_y = bullet.get_y()
         bullet.update() 
-        print("\n self"+str(bullet.get_y()))
-        print(init_y)
         assert bullet in self.up_bullet
         assert bullet.get_y() == init_y-self.delta and bullet.get_x()==init_x
     def testMovementEnemyBullet(self)-> None:
         """
         Enemy Bullet should only move down, Bullet should remain inside down_group
         """
-        pygame.display.init()
         bullet = Bullet(self.bullet_img_path,self.sensitivity*1.5,300,
                 200,Direction.DOWN,self.game_width,self.game_height,True)# coordinate initialised in middle so no collision
         self.down_bullet.add(bullet)
         init_x = bullet.get_x()
         init_y = bullet.get_y()
         bullet.update()
-        print("\n enemy"+str(bullet.get_y()))
-        print(init_y)
         assert bullet in self.down_bullet , "Bullet not added to sprite group correctly"
         assert bullet.get_y() == init_y+self.delta and bullet.get_x()==init_x, "Bullet Movement not moving as expected"
-    def testC(self) -> None:
+    def testBulletOnBulletInteraction(self) -> None:
         """
-        Player bullet Hits Enemy Alien
-        TBC
+        Player bullet Hits Enemy Bullet and should delete each other
         """
-        assert 1==1
+        bullet1 = Bullet(self.bullet_img_path,self.sensitivity*1.5,300,
+                200,Direction.DOWN,self.game_width,self.game_height,True)# coordinate initialised in middle so no collision
+        bullet2 = Bullet(self.bullet_img_path,self.sensitivity*1.5,300,
+                200,Direction.UP,self.game_width,self.game_height,True)# coordinate initialised in middle so no collision
+        self.down_bullet.add(bullet1)
+        self.up_bullet.add(bullet2)
+        bullet1.update()
+        bullet2.update()
+        pygame.sprite.groupcollide(self.up_bullet,self.down_bullet,True,True)
+        assert len(self.down_bullet)==0 and len(self.up_bullet) == 0
 
     def testD(self) -> None:
         """
