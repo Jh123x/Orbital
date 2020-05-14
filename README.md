@@ -2,7 +2,7 @@
 
 Team name: Space Defenders
 
-Level of achievement: Apollo 11
+Level of achievement: Artemis
 
 ### Objectives:
 1. Make a Space invaders game
