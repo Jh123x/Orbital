@@ -70,7 +70,7 @@ class GameWindow(object):
         #Create the main groups
         self.up_bullets = pygame.sprite.Group() #Bullets from player
         self.down_bullets = pygame.sprite.Group() #Bullets from mobs
-        self.enemies = pygame.sprite.Group() #Enemies
+        self.enemies = EnemyShips(4) #Enemies
 
         #Create the main sprites
         self.player = Player(player_img_path, sensitivity, game_width, game_height, 3, maxfps, debug)
@@ -162,7 +162,9 @@ class GameWindow(object):
 
         #Get ships destroyed
         ships = list(pygame.sprite.groupcollide(self.up_bullets, self.enemies, True, False).values())
-        print(ships)
+
+        if self.debug:
+            print(ships)
 
         if ships:
         #Destroy the ship in the list
@@ -286,9 +288,17 @@ class GameWindow(object):
         if self.player.get_destroyed():
             return State.GAMEOVER
 
+        #Check if any of the enemies touched the bottom of the screen
+        if [x for x in self.enemies if x.get_y() > self.game_height - self.player.get_height()]:
+            if self.debug:
+                print("Alien hit the player")
+
+            #If so it is gameover for the player
+            return State.GAMEOVER
+
         #Spawn Enemies
         if len(self.enemies) == 0:
-            self.spawn_aliens(1)
+            self.spawn_aliens(11)
 
         #Draw the score
         score = self.font.render("Score : " + str(self.score), True, WHITE)
@@ -408,6 +418,8 @@ class MovingObject(pygame.sprite.Sprite):
         #Storing the variables
         self.x = initial_x
         self.y = initial_y
+        self.initial_x = initial_x
+        self.initial_y = initial_y
         self.game_width = game_width
         self.game_height = game_height
         self.debug = debug
@@ -429,21 +441,21 @@ class MovingObject(pygame.sprite.Sprite):
         #Informed that rect has changed
         self.changed = True
 
-    def move_up(self) -> None:
+    def move_up(self, length:int = None) -> None:
         """Move the object up"""
-        self.move(0,-self.sensitivity)
+        return self.move(0,-length if length else -self.sensitivity)
 
-    def move_down(self) -> None:
+    def move_down(self, length:int = None) -> None:
         """Move the object down"""
-        self.move(0,self.sensitivity)
+        return self.move(0,length if length else self.sensitivity)
 
-    def move_left(self) -> None:
+    def move_left(self, length:int = None) -> None:
         """Move the object right"""
-        self.move(-self.sensitivity,0)
+        return self.move(-length if length else -self.sensitivity,0)
 
-    def move_right(self) -> None:
+    def move_right(self, length:int = None) -> None:
         """Move the object right"""
-        self.move(self.sensitivity,0)
+        return self.move(length if length else self.sensitivity,0)
 
     def get_x(self) -> int:
         """Get the x coord of the obj"""
@@ -461,11 +473,14 @@ class MovingObject(pygame.sprite.Sprite):
             self.rect = self.image.convert().get_rect(center=(self.x,self.y))
             self.changed = False
 
-    def scale(self, width, height) -> None:
+    def scale(self, width:int, height:int) -> None:
         """Scale the image"""
         
         #Scale the image to the new width and height defined
-        self.image = pygame.transform.scale(self.image,(width,height))
+        self.image = pygame.transform.scale(self.image, (width, height))
+
+        #Reload the rect
+        self.rect = self.image.convert().get_rect(center=(self.x, self.y))
 
     def get_height(self) -> None:
         """Get the height of the image"""
@@ -522,6 +537,7 @@ class EnemyShip(MovingObject):
 
         #Store variables
         self.lives = lives
+        self.direction = Direction.RIGHT
         self.points = points
 
     def get_points(self) -> int:
@@ -541,23 +557,62 @@ class EnemyShip(MovingObject):
         """Gets the number of lives the ship has left"""
         return self.lives
 
-    def update(self) -> None:
+    def change_direction(self):
+        """Change the x direction the enemy is moving"""
+
+        #Swap the Right and the left position
+        if self.direction == Direction.RIGHT:
+            self.direction = Direction.LEFT
+        elif self.direction == Direction.LEFT:
+            self.direction = Direction.RIGHT
+        else:
+            assert False, "Enemy ship direction is invalid"
+
+    def update(self, multiplier:int) -> None:
         """Update the movement of the enemies"""
 
-        #If the character moved to the side of the screen, move it down instead
-        # if self.x < self.game_width:
-        #     self.x += self.sensitivity
-        # else:
-        #     self.y += self.sensitivity
+        #If enemyship is moving to the right and is not at the edge
+        if self.direction == Direction.RIGHT and self.get_x() < self.game_width:
 
-        if self.debug:
-            print("Enemy updated")
+            #Move it to the right
+            self.move_right(self.sensitivity*multiplier//1)
 
-        #Move in y direction only
-        self.y += self.sensitivity
+        #If it is moving to the left and is not at the edge
+        elif self.direction == Direction.LEFT and self.get_x() > 0:
+
+            #Move it to the left
+            self.move_left(self.sensitivity*multiplier//1)
+
+        #If it is at the edge
+        else:
+            #Move down
+            self.move_down(self.sensitivity*4)
+
+            #Swap direction of x movement
+            self.change_direction()
+            
+        # if self.debug:
+        #     print("Enemy updated")
 
         #Call superclass update
         super().update()
+
+class EnemyShips(pygame.sprite.Group):
+    def __init__(self, weight:int):
+        """The main class for the enemy ships group"""
+
+        #Initialise the superclass
+        super().__init__()
+
+        #Store variables
+        self.weight = weight
+    
+    def update(self) -> None:
+        """The update function of the group"""
+
+        #The lower the number of enemies, the greater the speed
+        super().update(self.weight//(len(self) if len(self) > 0 else 1))
+
 
 class Player(MovingObject):
     """Player class"""
@@ -597,7 +652,8 @@ class Player(MovingObject):
         """Move the player up"""
         #If the position is not at the max position allow the player to move up
         if self.y > self.image.get_height()//8:
-            super().move_up()
+            # super().move_up()
+            pass
         elif self.debug:
             print("Hit Top most")
 
@@ -605,7 +661,8 @@ class Player(MovingObject):
         """Move the player down"""
         #If the player is not at the bottom of the screen allow the player to move down
         if self.y <= self.game_height:
-            super().move_down()
+            # super().move_down()
+            pass
         elif self.debug:
             print("Hit Bottom most")
 
