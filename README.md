@@ -1,5 +1,5 @@
 # Orbital project 2020 
-
+![]()
 Team name: Space Defenders
 
 Level of achievement: Artemis
@@ -14,6 +14,9 @@ Level of achievement: Artemis
 3. PyUnit (To handle most of the testing of the game)
 4. PixelArt (For drawing of the sprites)
 5. Pynput (To simulate the keypresses when testing for bugs)
+
+### Development RoadMap
+![](images/my-visual_46603157%20(2).png)
 
 ### Task:
 - [x] Create a basic UI in pygame
