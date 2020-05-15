@@ -216,7 +216,7 @@ class GameWindow(object):
 
         #Spawn bullet for the player
         #Create the bullet object
-        bullet = Bullet(self.bullet_img_path, self.sensitivity * 1.5, self.player.x, self.player.y - 10, Direction.UP, self.game_width, self.game_height, self.debug)
+        bullet = Bullet(self.bullet_img_path, self.sensitivity * 1.5, self.player.x + self.player.get_width()//3, self.player.y, Direction.UP, self.game_width, self.game_height, self.debug)
 
         #Add the bullet to the bullet group
         self.up_bullets.add(bullet)
@@ -493,9 +493,9 @@ class MovingObject(pygame.sprite.Sprite):
 class Direction(enum.Enum):
     """Direction enum to store where objects are moving"""
     UP = 1
-    DOWN = 2
-    LEFT = 3
-    RIGHT = 4
+    DOWN = -1
+    LEFT = -2
+    RIGHT = 2
 
 class Bullet(MovingObject):
     """Bullet class for the space invaders game"""
@@ -626,7 +626,7 @@ class Player(MovingObject):
         self.invincible = fps
 
         #Scale the player character
-        self.scale(self.get_width()*2, self.get_height()*2)
+        # self.scale(self.get_width()*2, self.get_height()*2)
 
         #If the life is not valid set it to 3 by default
         if init_life > 0:
