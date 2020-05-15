@@ -3,7 +3,7 @@ Team name: Space Defenders
 
 Level of achievement: Artemis
 
-![](images\Poster.jpg)
+![](images\Poster.png)
 
 ### Objectives:
 1. Make a Space invaders game
@@ -47,6 +47,7 @@ Level of achievement: Artemis
 
 
 ### Project Log
+### Project Log
 | Date      | Event                 |Stephen Hours| Junhua Hours|Details    |
 |-----------|-----------------------|-------------|-------------|---------------------|
 |8/5/2020   | Created Repo          |0.5          | 0.5         | This Repo is started|
@@ -63,3 +64,4 @@ Level of achievement: Artemis
 |14/5/2020  | Liftoff Q&A           |0            | 1           | Attended Q&A session to find out specific details from Prof|
 |15/5/2020  | Made Project RoadMap  |2            | 1           | Design of Roadmap| 
 |15/5/2020  | Liftoff Slides        |1            | 1           | Creating Slides for use in Liftoff Presentation|
+
