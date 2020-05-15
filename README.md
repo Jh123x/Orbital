@@ -41,13 +41,15 @@ Level of achievement: Apollo 11
 
 
 ### Project Log
-| Date      | Event                 |Hours|Details    |
-|-----------|-----------------------|-----|-----------|
-|8/5/2020   | Created Repo          |0.5  | This Repo is started|
-|8/5/2020   | UI created            |1    | Created the basic UI for Space invaders|
-|8/5/2020   | Skeleton code created |2    | Skeleton code for some of the classes and tests are made|
-|8/5/2020   | Drew the sprites      |1    | Sprites of the characters are drawn|
-|8/5/2020   | Configured keystrokes |1    | Configured the keystrokes for the player to move is character|
-|9/5/2020   | Briefing about orbital|-    | Briefing about orbital|
-|9/5/2020   | Create PyUnit tests   |TBD  | Created the first wave of PyUnit tests|
-|10/5/2020  | Added Instructions    |1    | Added instructions to menu and fixed some bugs|
+| Date      | Event                 |Stephen Hours| Junhua Hours|Details    |
+|-----------|-----------------------|-------------|-------------|
+|8/5/2020   | Created Repo          |0.5          | 0.5           | This Repo is started|
+|8/5/2020   | UI created            |1            | 2           | Created the basic UI for Space invaders|
+|8/5/2020   | Skeleton code created |2            | 2           | Skeleton code for some of the classes and tests are made|
+|8/5/2020   | Drew the sprites      |1            | 1           | Sprites of the characters are drawn|
+|8/5/2020   | Configured keystrokes |1            | 2           | Configured the keystrokes for the player to move is character|
+|9/5/2020   | Briefing about orbital|1            | 1           | Briefing about orbital|
+|9/5/2020   | Create PyUnit tests   |TBD          | 1           | Created the first wave of PyUnit tests|
+|10/5/2020  | Added Instructions    |1            | 1           | Added instructions to menu and fixed some bugs|
+|12/5/2020  | Added Enemies         |             | 2           | Added the enemies to the update function|
+
