@@ -3,6 +3,7 @@ import pygame
 import pygame.freetype
 import enum
 import sys
+import random
 from pygame.locals import * 
 
 #Define the COLORS
@@ -18,7 +19,9 @@ class State(enum.Enum):
     MENU = 1
     PLAY = 2
     GAMEOVER = 3
+    PAUSE = 4
     QUIT = -1
+    
 
 class GameWindow(object):
     """The main game window for Space invaders"""
@@ -46,6 +49,7 @@ class GameWindow(object):
             State.MENU:self.handle_menu,
             State.PLAY:self.handle_play,
             State.GAMEOVER:self.handle_gameover,
+            State.PAUSE:self.handle_pause,
             State.QUIT:self.__del__
         }
 
@@ -84,7 +88,7 @@ class GameWindow(object):
         """Return the state the game is in"""
         return self.state
 
-    def update_keypresses(self) -> None:
+    def update_keypresses(self) -> bool:
         """Update the map based on what the player has pressed"""
         #Check the keys the player has pressed
         keys = pygame.key.get_pressed()
@@ -153,8 +157,17 @@ class GameWindow(object):
         #Check if player has collided with bullets
         bullet_collide = pygame.sprite.spritecollide(self.player, self.down_bullets, True)
         
+        if self.debug:
+            print(bullet_collide)
+        
         #If the set is not empty reduce player life
         if len(bullet_collide) > 0:
+
+            #If it is in debug mode, print the event
+            if self.debug:
+                print("Player hit")
+
+            #Destroy 1 of the player's life
             self.player.destroy()
 
         #Remove bullets that collide with one another
@@ -193,6 +206,9 @@ class GameWindow(object):
         #Update the enemy group
         self.enemies.update()
 
+        #Spawn bullets for enemies
+        self.spawn_enemy_bullets()
+
         #Update the bullets positions
         self.up_bullets.update()
         self.down_bullets.update()
@@ -201,7 +217,7 @@ class GameWindow(object):
         if self.debug:
             print(f"Number of player bullets: {len(self.up_bullets)}")
 
-        #Draw the enemy TODO
+        #Draw the enemy
         self.enemies.draw(self.screen)
         if self.debug:
             print(f"Number of enemies: {len(self.enemies)}")
@@ -209,17 +225,42 @@ class GameWindow(object):
         #Draw player object
         self.screen.blit(self.player.image, self.player.rect)
 
+    def spawn_enemy_bullets(self) -> None:
+        """Spawns a bullet randomly for the enemy"""
+        #Check if the enemy can shoot
+        rand = random.randint(0,self.fps*50)
+        if rand > self.fps:
+            if self.debug:
+                print(f"Random generated: {rand}")
+            return
+
+        #Get a random bullet for the entity to shoot
+        enemy = random.sample(set(self.enemies),1)
+
+        #If the set is non-empty
+        if enemy:
+
+            #Get the first element of the set
+            enemy = enemy[0]
+
+        if self.debug:
+            print(enemy)
+
+        #Create the bullet
+        bullet2 = Bullet(self.bullet_img_path, self.sensitivity * 1.5, enemy.get_x() + enemy.get_width()//3, enemy.get_y(), Direction.DOWN, self.game_width, self.game_height, self.debug)
+
+        #Add the bullet to the bullet group
+        self.down_bullets.add(bullet2)
+
     def spawn_bullets(self):
         """Spawn the bullets for each of the entities"""
 
         #Spawn bullet for the player
         #Create the bullet object
-        bullet = Bullet(self.bullet_img_path, self.sensitivity * 1.5, self.player.x + self.player.get_width()//3, self.player.y, Direction.UP, self.game_width, self.game_height, self.debug)
+        bullet = Bullet(self.bullet_img_path, self.sensitivity * 1.5, self.player.get_x() + self.player.get_width()//3, self.player.y, Direction.UP, self.game_width, self.game_height, self.debug)
 
         #Add the bullet to the bullet group
         self.up_bullets.add(bullet)
-
-        #Spawn bullets for the rest of the entities TODO
         
 
     def check_mouse_pos(self, rect_play, rect_end):
@@ -249,6 +290,35 @@ class GameWindow(object):
             #Return menu state
             return State.MENU
 
+    def pause_update_keypresses(self) -> State:
+        """Check for the keypresses within the pause screen"""
+
+        #Getting the keys which are pressed
+        keys = pygame.key.get_pressed()
+
+        #Return the play state if the player unpause his game
+        if keys[K_o]:
+            return State.PLAY
+        
+        #Return the current state if the player has not unpaused
+        return State.PAUSE
+
+    def handle_pause(self) -> State:
+        """Handles the drawing of the pause screen"""
+
+        #Draw the title of the pause screen
+        title = self.title_font.render("Paused", True, WHITE)
+        rect_title = title.get_rect(center = (self.game_width//2, self.game_height//5))
+        self.screen.blit(title, rect_title)
+
+        #Draw the instructions to unpause
+        inst1 = self.end_font.render("Press O to unpause", True, WHITE)
+        rect_inst1 = inst1.get_rect(center=(self.game_width//2, self.game_height//15 + self.game_height//2))
+        self.screen.blit(inst1, rect_inst1)
+
+        #Detect the keypress for the unpause button
+        return self.pause_update_keypresses()
+
     def handle_menu(self) -> State:
         """Handles the drawing of the menu"""
 
@@ -268,11 +338,11 @@ class GameWindow(object):
         self.screen.blit(end, rect_end)
 
         #Draw the instructions
-        inst1 = self.end_font.render("Use WASD or arrow keys to move", True, WHITE)
+        inst1 = self.end_font.render("Use AD or arrow keys to move", True, WHITE)
         rect_inst1 = inst1.get_rect(center=(self.game_width//2, self.game_height//1.5))
         self.screen.blit(inst1, rect_inst1)
 
-        inst2 = self.end_font.render("Press Spacebar to shoot", True, WHITE)
+        inst2 = self.end_font.render("Press Spacebar to shoot, P to pause", True, WHITE)
         rect_inst2 = inst2.get_rect(center=(self.game_width//2, self.game_height//1.5 + self.game_height//15))
         self.screen.blit(inst2, rect_inst2)
 
@@ -283,19 +353,23 @@ class GameWindow(object):
         """Handles the drawing of the play string"""
 
         #If player is destroyed, go to gameover state
-        if self.player.get_destroyed():
+        if self.player.is_destroyed():
             return State.GAMEOVER
 
         #Check if any of the enemies touched the bottom of the screen
         if [x for x in self.enemies if x.get_y() > self.game_height - self.player.get_height()]:
+
+            #If it is debugging mode, print out what happened
             if self.debug:
                 print("Alien hit the player")
-
+                
             #If so it is gameover for the player
             return State.GAMEOVER
 
-        #Spawn Enemies
-        if len(self.enemies) == 0:
+        #Spawn if there are no enemies 
+        if not len(self.enemies):
+
+            #Spawn the aliens
             self.spawn_aliens(11)
 
         #Draw the score
@@ -306,14 +380,18 @@ class GameWindow(object):
         lives = self.font.render("Lives : " + str(self.player.get_lives()), True, WHITE)
         self.screen.blit(lives, (self.game_width - self.game_height//12,10))
 
-        #Update the keypress of the player
-        self.update_keypresses()
-
         #Check object collisions
         self.score += self.check_collisions()
 
+        #Check the player keypress
+        self.update_keypresses()
+
         #Update the moving objs
         self.update()
+
+        #Check if the player wants to pause
+        if len(list(filter(lambda x: x.type == pygame.KEYDOWN and x.key == K_p, pygame.event.get()))):
+            return State.PAUSE
 
         #Return play state
         return State.PLAY
@@ -627,9 +705,6 @@ class Player(MovingObject):
         #Invicibility when it just spawned
         self.invincible = fps
 
-        #Scale the player character
-        # self.scale(self.get_width()*2, self.get_height()*2)
-
         #If the life is not valid set it to 3 by default
         if init_life > 0:
             init_life = 3
@@ -651,22 +726,12 @@ class Player(MovingObject):
         self.changed = True
 
     def move_up(self) -> None:
-        """Move the player up"""
-        #If the position is not at the max position allow the player to move up
-        if self.y > self.image.get_height()//8:
-            # super().move_up()
-            pass
-        elif self.debug:
-            print("Hit Top most")
+        """Do not allow the player to move up"""
+        pass
 
     def move_down(self) -> None:
-        """Move the player down"""
-        #If the player is not at the bottom of the screen allow the player to move down
-        if self.y <= self.game_height:
-            # super().move_down()
-            pass
-        elif self.debug:
-            print("Hit Bottom most")
+        """Do not allow the player to move down"""
+        pass
 
     def move_left(self) -> None:
         """Move the player left"""
@@ -684,14 +749,18 @@ class Player(MovingObject):
         elif self.debug:
             print("Hit right most")
 
-    def get_destroyed(self) -> bool:
+    def is_destroyed(self) -> bool:
         """Returns whether the ship is destroyed"""
         return self.get_lives() == 0
 
     def destroy(self) -> None:
         """Destroys the ship 1 time"""
         if not self.invincible:
+            #Reduce the life of the player
             self.life -= 1 
+
+            #Make the player invincible for 1 second
+            self.invincible = self.fps
 
     def get_lives(self) -> int:
         """Get the number of lives left"""
