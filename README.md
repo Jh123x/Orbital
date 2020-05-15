@@ -1,5 +1,4 @@
 # Orbital project 2020 
-![]()
 Team name: Space Defenders
 
 Level of achievement: Artemis
@@ -56,7 +55,11 @@ Level of achievement: Artemis
 |8/5/2020   | Drew the sprites      |1            | 1           | Sprites of the characters are drawn|
 |8/5/2020   | Configured keystrokes |1            | 2           | Configured the keystrokes for the player to move is character|
 |9/5/2020   | Briefing about orbital|1            | 1           | Briefing about orbital|
-|9/5/2020   | Create PyUnit tests   |TBD          | 1           | Created the first wave of PyUnit tests|
+|9/5/2020   | Create PyUnit tests   |2            | 1           | Created the first wave of PyUnit tests|
 |10/5/2020  | Added Instructions    |1            | 1           | Added instructions to menu and fixed some bugs|
 |12/5/2020  | Added Enemies         |1            | 2           | Added the enemies to the update function|
-
+|12/5/2020  | Adviser Meeting       |1            | 1           | Meeting with adviser to clarify doubts for Orbital|
+|13/5/2020  | Made Poster           |3            | 1           | Time taken to source sprites and create poster design|
+|14/5/2020  | Liftoff Q&A           |0            | 1           | Attended Q&A session to find out specific details from Prof|
+|15/5/2020  | Made Project RoadMap  |2            | 1           | Design of Roadmap| 
+|15/5/2020  | Liftoff Slides        |1            | 1           | Creating Slides for use in Liftoff Presentation|
