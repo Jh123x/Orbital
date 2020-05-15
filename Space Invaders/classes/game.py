@@ -77,7 +77,7 @@ class GameWindow(object):
         self.enemies = EnemyShips(4) #Enemies
 
         #Create the main sprites
-        self.player = Player(player_img_path, sensitivity, game_width, game_height, 3, maxfps, debug)
+        self.player = Player(player_img_path, sensitivity, game_width, game_height - 50, 3, maxfps, debug)
 
         #Other sprites
         self.font = pygame.font.Font(pygame.font.get_default_font(),game_width//40)
@@ -146,11 +146,11 @@ class GameWindow(object):
         else:
             return None
 
-    def spawn_aliens(self, number:int) -> None:
-        """Spawn aliens into the game"""
+    def spawn_enemies(self, number:int) -> None:
+        """Spawn enemies into the game"""
 
         #Adding sprites
-        self.enemies.add([EnemyShip(self.enemy_img_path, self.sensitivity, self.game_width//4 + i*self.game_width//20, self.game_height//20, 1, 10, self.game_width, self.game_height, self.debug) for i in range(number)])
+        self.enemies.add([EnemyShip(self.enemy_img_path, self.sensitivity, self.game_width//4 + i*self.game_width//10, self.game_height//10, 1, 10, self.game_width, self.game_height, self.debug) for i in range(number)])
             
     def check_collisions(self) -> int:
         """Check the objects which collided"""
@@ -370,7 +370,7 @@ class GameWindow(object):
         if not len(self.enemies):
 
             #Spawn the aliens
-            self.spawn_aliens(11)
+            self.spawn_enemies(7)
 
         #Draw the score
         score = self.font.render("Score : " + str(self.score), True, WHITE)
@@ -510,7 +510,12 @@ class MovingObject(pygame.sprite.Sprite):
 
     def load_rect(self):
         """Load the rectangle for the obj"""
-        self.rect = self.image.convert().get_rect(center=(self.x,self.y))
+        #Create the rectangle for the MovingObject Object
+        self.rect = pygame.Rect(self.image.get_rect().left, self.image.get_rect().top, self.get_width(), self.get_height())
+        self.rect.center=(self.x,self.y)
+
+        #Inflate the model to the correct size
+        self.rect.inflate(self.get_width()//2,self.get_height()//2)
 
     def move(self,x,y) -> None:
         """Main Move Method"""
@@ -560,7 +565,7 @@ class MovingObject(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, (width, height))
 
         #Reload the rect
-        self.rect = self.image.convert().get_rect(center=(self.x, self.y))
+        self.load_rect()
 
     def get_height(self) -> None:
         """Get the height of the image"""
@@ -630,7 +635,7 @@ class EnemyShip(MovingObject):
 
     def destroy(self) -> None:
         """Destroy 1 life of the ship"""
-        if self.lives > 0:
+        if self.lives:
             self.lives -= 1
 
     def get_lives(self) -> int: 
