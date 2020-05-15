@@ -4,7 +4,7 @@ Team name: Space Defenders
 
 Level of achievement: Artemis
 
-![](images/Poster.png)
+![](images\Poster.jpg)
 
 ### Objectives:
 1. Make a Space invaders game
@@ -18,7 +18,7 @@ Level of achievement: Artemis
 5. Pynput (To simulate the keypresses when testing for bugs)
 
 ### Development RoadMap
-![](images/RoadMap.png)
+![](images\RoadMap.png)
 
 ### Task:
 - [x] Create a basic UI in pygame
