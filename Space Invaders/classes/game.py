@@ -167,24 +167,22 @@ class GameWindow(object):
             print(ships)
 
         if ships:
-        #Destroy the ship in the list
-            ships = ships[0]
-            for ship in ships:
-                ship.destroy()
-                if self.debug:
-                    print(f"Ship destroyed")
+        #Destroy the first ship in the list
+            ships[0][0].destroy()
+            if self.debug:
+                print(f"Ship destroyed")
         
-            #Get all ships with 0 lives
-            destroyed_ships = list(filter(lambda x: x.get_lives() == 0, ships))
+            #Remove the ship from groupp if it has 0 lives
+            if ships[0][0].is_destroyed():
 
-            #Remove the sprite from the group
-            self.enemies.remove(*destroyed_ships)
+                #Remove the sprite from the group
+                self.enemies.remove(ships[0][0])
 
-            #Remove sprites that collide with bullets and return the sum of all the scores
-            return sum(map(lambda x: x.get_points(), destroyed_ships),0)
+                #Remove sprites that collide with bullets and return the sum of all the scores
+                return ships[0][0].get_points()
 
-        else:
-            return 0
+        #If nothing is destroyed return 0
+        return 0
 
     def update(self) -> None:
         """Update the player obj onto the screen"""
@@ -430,7 +428,11 @@ class MovingObject(pygame.sprite.Sprite):
         self.image = pygame.image.load(obj_path)
 
         #Load the rect
-        self.rect = self.image.convert().get_rect(center=(initial_x,initial_y))
+        self.load_rect()
+
+    def load_rect(self):
+        """Load the rectangle for the obj"""
+        self.rect = self.image.convert().get_rect(center=(self.x,self.y))
 
     def move(self,x,y) -> None:
         """Main Move Method"""
@@ -470,7 +472,7 @@ class MovingObject(pygame.sprite.Sprite):
 
         #Set the position of the rect if it has changed from before
         if self.changed:
-            self.rect = self.image.convert().get_rect(center=(self.x,self.y))
+            self.load_rect()
             self.changed = False
 
     def scale(self, width:int, height:int) -> None:
