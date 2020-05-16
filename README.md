@@ -47,7 +47,6 @@ Level of achievement: Artemis
 
 
 ### Project Log
-### Project Log
 | Date      | Event                 |Stephen Hours| Junhua Hours|Details    |
 |-----------|-----------------------|-------------|-------------|---------------------|
 |8/5/2020   | Created Repo          |0.5          | 0.5         | This Repo is started|
