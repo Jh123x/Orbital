@@ -35,7 +35,7 @@ class GameWindow(object):
     def __init__(self, sensitivity:int, maxfps:int, game_width:int, game_height:int, icon_img_path:str, player_img_paths:tuple, enemy_img_paths:tuple, bullet_img_paths:tuple, background_img_paths:tuple, p_settings:dict, wave:int = 1,  debug:bool = False):
         """The constructor for the main window"""
 
-        #Storing the variables
+        #Storing the game variables
         self.fps = maxfps
         self.p_settings = p_settings
         self.debug = debug
@@ -455,6 +455,9 @@ class GameWindow(object):
 
             #Reset player score
             self.score = 0
+
+            #Reset Wave Number
+            self.wave = 0
 
             #Reset player state
             self.player.reset()
