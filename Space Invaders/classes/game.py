@@ -21,6 +21,13 @@ class State(enum.Enum):
     GAMEOVER = 3
     PAUSE = 4
     QUIT = -1
+
+class Difficulty(enum.Enum):
+    CASUAL = 1
+    EASY = 2
+    MEDIUM = 3
+    HARD = 4
+    IMPOSSIBLE = 5
     
 
 class GameWindow(object):
@@ -40,6 +47,7 @@ class GameWindow(object):
         self.sensitivity = sensitivity
         self.bullet_cooldown = 0
         self.spawn_state = 0
+        self.difficulty = Difficulty(p_settings['difficulty'] if p_settings['difficulty'] < 5 else 5)
 
         #Store the different states the menu has
         self.states = {
@@ -766,14 +774,12 @@ class EnemyShip(MovingObject):
 class EnemyShips(pygame.sprite.Group):
     def __init__(self):
         """The main class for the enemy ships group"""
-
         #Initialise the superclass
         super().__init__()
 
     
     def update(self) -> None:
         """The update function of the group"""
-
         #The lower the number of enemies, the greater the speed
         super().update(2 // (len(self) if len(self) > 0 else 1))
 
