@@ -31,6 +31,8 @@ def read_settings(config_path:str, key:str) -> dict:
         Returns:
             Dictionary containing the settings all values are strings
     """
+
+    print(config_path, key)
     #Set up the config parser
     config = configparser.ConfigParser()
 
@@ -43,8 +45,25 @@ def read_settings(config_path:str, key:str) -> dict:
 #Run the following if the file is run as main
 if __name__ =="__main__":
 
+    settings = "settings.cfg"
+
     #Read the configuration file for space invaders
-    config = read_settings("settings.cfg","Space Invaders")
+    config = read_settings(settings,"Space Invaders")
+
+    #Get the player sprites
+    player_img_paths = tuple(read_settings(settings, "Player Sprites").values())
+
+    #Get the bullet sprites Enemy Sprites
+    bullet_img_paths = tuple(read_settings(settings, "Bullet Sprites").values())
+
+    #Get the enemy sprites
+    enemy_img_paths = tuple(read_settings(settings, "Enemy Sprites").values())
+
+    #Get the background sprites
+    background_img_paths = tuple(read_settings(settings, "Background").values())
+
+    #Get the settings
+    settings = read_settings(settings, "Player")
 
     #Print the config data if debug is on
     if config['debug']:
@@ -52,7 +71,7 @@ if __name__ =="__main__":
             print(f"{k} : {v}")
 
     #Create the new game window with the configurations
-    game = GameWindow(**config)
+    game = GameWindow(player_img_paths = player_img_paths, bullet_img_paths = bullet_img_paths, enemy_img_paths = enemy_img_paths, background_img_paths = background_img_paths, p_settings = settings, **config)
     
     #Run the mainloop for the GameWindow
     game.mainloop()
