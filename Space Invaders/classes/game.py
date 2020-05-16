@@ -278,25 +278,23 @@ class GameWindow(object):
             #Get the first element of the set
             enemy = enemy[0]
 
-        if self.debug:
-            print(enemy)
+            #Create the bullet
+            bullet2 = Bullet(self.sensitivity * 1.5, enemy.get_x() + enemy.get_width()//3, enemy.get_y(), Direction.DOWN, self.game_width, self.game_height, self.debug)
 
-        #Create the bullet
-        bullet2 = Bullet(self.sensitivity * 1.5, enemy.get_x() + enemy.get_width()//3, enemy.get_y(), Direction.DOWN, self.game_width, self.game_height, self.debug)
+            #Rotate the bullet 180 degrees
+            bullet2.rotate(180)
 
-        #Add the bullet to the bullet group
-        self.down_bullets.add(bullet2)
+            #Add the bullet to the bullet group
+            self.down_bullets.add(bullet2)
 
     def spawn_bullets(self):
         """Spawn the bullets for each of the entities"""
 
-        #Spawn bullet for the player
         #Create the bullet object
         bullet = Bullet(self.sensitivity * 1.5, self.player.get_x() + self.player.get_width()//3, self.player.y, Direction.UP, self.game_width, self.game_height, self.debug)
 
         #Add the bullet to the bullet group
         self.up_bullets.add(bullet)
-        
 
     def check_mouse_pos(self, rect_play, rect_end):
         """Check the position of the mouse on the menu to see what the player clicked"""
@@ -504,11 +502,13 @@ class GameWindow(object):
             #Set the FPS
             self.clock.tick(self.fps)
 
-            #Fills the background
+            #If the background is present
             if self.bg.is_present():
+
                 #Fill it with the background img
                 self.bg.update(self.screen)
             else:
+
                 #Fill the background to black 
                 self.screen.fill(BLACK)
                 
@@ -518,8 +518,8 @@ class GameWindow(object):
             #Update the display with the screen
             pygame.display.update()
 
-            #If the state is quit or player wats
-            if self.state == State.QUIT or pygame.QUIT in map(lambda x: x.type, pygame.event.get()):
+            #If the state is quit or player closes the game
+            if self.state == State.QUIT or pygame.QUIT in tuple(map(lambda x: x.type, pygame.event.get())):
                 running = False
 
         #Close the window
@@ -529,6 +529,7 @@ class GameWindow(object):
         """Destructor for the game window"""
         pygame.display.quit()
         pygame.font.quit()
+        pygame.mixer.quit()
         pygame.quit()
 
 class Background(pygame.sprite.Sprite):
@@ -594,7 +595,7 @@ class MovingObject(pygame.sprite.Sprite):
         #Inflate the model to the correct size
         self.rect.inflate(self.get_width()//2,self.get_height()//2)
 
-    def move(self,x,y) -> None:
+    def move(self, x:int, y:int) -> None:
         """Main Move Method"""
         #Add the values to x and y to change position
         self.x += x
@@ -602,6 +603,10 @@ class MovingObject(pygame.sprite.Sprite):
 
         #Informed that rect has changed
         self.changed = True
+
+    def rotate(self, angle:int) -> None:
+        """Rotate the image by x degrees"""
+        self.image = pygame.transform.rotate(self.image, angle)
 
     def move_up(self, length:int = None) -> None:
         """Move the object up"""

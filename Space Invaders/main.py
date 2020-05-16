@@ -32,7 +32,6 @@ def read_settings(config_path:str, key:str) -> dict:
             Dictionary containing the settings all values are strings
     """
 
-    print(config_path, key)
     #Set up the config parser
     config = configparser.ConfigParser()
 
