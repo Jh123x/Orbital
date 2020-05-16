@@ -82,9 +82,14 @@ class GameWindow(object):
         self.screen = pygame.display.set_mode((game_width,game_height))
 
         #Create the main groups
-        self.up_bullets = pygame.sprite.Group() #Bullets from player
-        self.down_bullets = pygame.sprite.Group() #Bullets from mobs
-        self.enemies = EnemyShips() #Enemies
+        #Bullets shot by player
+        self.up_bullets = pygame.sprite.Group()
+
+        #Bullet from Mobs
+        self.down_bullets = pygame.sprite.Group()
+
+        #Enemyships
+        self.enemies = EnemyShips()
 
         #Load player ship images into Player object 
         self.add_to_sprite(Player, player_img_paths)
@@ -674,16 +679,18 @@ class Bullet(MovingObject):
         #Load the image 
         self.image = self.sprites[0]
 
-        #Call the superclass
-        super().__init__(sensitivity, initial_x, initial_y, game_width, game_height, debug)
-
         #Store the direction, move up it the enum is move up, else move it down
         if direction == Direction.UP:
             self.direction = self.move_up
         elif direction == Direction.DOWN:
+            if len(Bullet.sprites) >= 2:
+                self.image = self.sprites[1]
             self.direction = self.move_down
         else:
             assert False, "Direction of bullet is invalid"
+
+        #Call the superclass
+        super().__init__(sensitivity, initial_x, initial_y, game_width, game_height, debug)
 
     def update(self) -> None:
         """Update the path of the bullet"""
