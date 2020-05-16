@@ -102,7 +102,7 @@ class GameWindow(object):
         self.player = Player(self.p_settings['ship']-1, sensitivity, game_width, game_height - 50, 3, maxfps, debug)
 
         #Create the background object
-        self.bg = Background(p_settings['bg']-1, game_width, game_height)
+        self.bg = Background(p_settings['bg'], game_width, game_height)
 
         #Other sprites
         self.font = pygame.font.Font(pygame.font.get_default_font(),game_width//40)
@@ -540,7 +540,7 @@ class Background(pygame.sprite.Sprite):
         super().__init__()
 
         #Gets the background image if any
-        self.image = Background.sprites[bg_no] if bg_no >= len(Background.sprites) else None
+        self.image = Background.sprites[bg_no - 1] if bg_no >= len(Background.sprites) else None
         self.rect = None
 
         #If there is a background image get the rect for it
