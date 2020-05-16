@@ -21,28 +21,33 @@ class State(enum.Enum):
     GAMEOVER = 3
     PAUSE = 4
     QUIT = -1
+
+class Difficulty(enum.Enum):
+    CASUAL = 1
+    EASY = 2
+    MEDIUM = 3
+    HARD = 4
+    IMPOSSIBLE = 5
     
 
 class GameWindow(object):
     """The main game window for Space invaders"""
-    def __init__(self, sensitivity:int, maxfps:int, game_width:int, game_height:int, icon_img_path:str, player_img_path:str, enemy_img_path:str, bullet_img_path:str, wave:int = 1, debug:bool = False):
+    def __init__(self, sensitivity:int, maxfps:int, game_width:int, game_height:int, icon_img_path:str, player_img_paths:tuple, enemy_img_paths:tuple, bullet_img_paths:tuple, background_img_paths:tuple, p_settings:dict, wave:int = 1,  debug:bool = False):
         """The constructor for the main window"""
 
         #Storing the variables
         self.fps = maxfps
+        self.p_settings = p_settings
         self.debug = debug
         self.score = 0
         self.game_width = game_width
         self.game_height = game_height
-        self.wave = wave
+        self.wave = wave-1
         self.state = State.MENU
         self.sensitivity = sensitivity
         self.bullet_cooldown = 0
         self.spawn_state = 0
-
-        #Store path to image files to be used when spawning enemies
-        self.enemy_img_path = enemy_img_path
-        self.bullet_img_path = bullet_img_path
+        self.difficulty = Difficulty(p_settings['difficulty'] if p_settings['difficulty'] < 5 else 5)
 
         #Store the different states the menu has
         self.states = {
@@ -55,7 +60,12 @@ class GameWindow(object):
 
         #Initialise pygame
         pygame.init()
+
+        #Initialise the font
         pygame.font.init()
+
+        #Initialise the sound
+        pygame.mixer.init()
 
         #Set the dimensions
         self.screen = pygame.display.set_mode((game_height,game_width))
@@ -74,15 +84,37 @@ class GameWindow(object):
         #Create the main groups
         self.up_bullets = pygame.sprite.Group() #Bullets from player
         self.down_bullets = pygame.sprite.Group() #Bullets from mobs
-        self.enemies = EnemyShips(4) #Enemies
+        self.enemies = EnemyShips() #Enemies
+
+        #Load player ship images into Player object 
+        self.add_to_sprite(Player, player_img_paths)
+
+        #Load Bullet images into Bullet Object 
+        self.add_to_sprite(Bullet, bullet_img_paths)
+
+        #Load enemy ships into enemy ship objects 
+        self.add_to_sprite(EnemyShip, enemy_img_paths)
+
+        #Load the backgrounds into Background obj
+        self.add_to_sprite(Background, background_img_paths)
 
         #Create the main sprites
-        self.player = Player(player_img_path, sensitivity, game_width, game_height - 50, 3, maxfps, debug)
+        self.player = Player(self.p_settings['ship']-1, sensitivity, game_width, game_height - 50, 3, maxfps, debug)
+
+        #Create the background object
+        self.bg = Background(p_settings['bg'], game_width, game_height)
 
         #Other sprites
         self.font = pygame.font.Font(pygame.font.get_default_font(),game_width//40)
         self.end_font = pygame.font.Font(pygame.font.get_default_font(),game_width//20)
         self.title_font = pygame.font.Font(pygame.font.get_default_font(), game_width // 10)
+
+    def add_to_sprite(self, obj:object, sprite_path:tuple) -> None:
+        """Add the pygame image to the object"""
+
+        #For each object add it to the sprite path
+        for path in sprite_path:
+            obj.sprites.append(pygame.image.load(path))
 
     def get_state(self) -> State:
         """Return the state the game is in"""
@@ -114,13 +146,13 @@ class GameWindow(object):
             self.player.move_up()
 
         #Check if the player pressed spacebar to spawn a bullet
-        if keys[K_SPACE] and self.bullet_cooldown == 0:
+        if keys[K_SPACE] and not self.bullet_cooldown:
 
             #Spawn a bullet
             self.spawn_bullets()
 
             #Set the bullet on cooldown
-            self.bullet_cooldown = self.fps//2
+            self.bullet_cooldown = self.fps // (3 * 0.95 ** self.wave)
 
         #Check for debug keypresses
         if self.debug:
@@ -148,17 +180,17 @@ class GameWindow(object):
 
     def spawn_enemies(self, number:int) -> None:
         """Spawn enemies into the game"""
-
         #Adding sprites
-        self.enemies.add([EnemyShip(self.enemy_img_path, self.sensitivity, self.game_width//4 + i*self.game_width//10, self.game_height//10, 1, 10, self.game_width, self.game_height, self.debug) for i in range(number)])
+        if number <= 6:
+            self.enemies.add([EnemyShip(self.sensitivity, self.game_width//4 + i*self.game_width//10, self.game_height//10, random.randint(1,self.wave), self.game_width,  self.game_height, self.debug) for i in range(number)])
+        else:
+            for j in range(number//6 if number // 6 < 5 else 5):
+                self.enemies.add([EnemyShip(self.sensitivity, self.game_width//4 + i*self.game_width//10, self.game_height//10 + EnemyShip.sprites[0].get_height() * j, random.randint(1,self.wave), self.game_width,  self.game_height, self.debug) for i in range(6)])
             
     def check_collisions(self) -> int:
         """Check the objects which collided"""
         #Check if player has collided with bullets
         bullet_collide = pygame.sprite.spritecollide(self.player, self.down_bullets, True)
-        
-        if self.debug:
-            print(bullet_collide)
         
         #If the set is not empty reduce player life
         if len(bullet_collide) > 0:
@@ -235,7 +267,10 @@ class GameWindow(object):
             return
 
         #Get a random bullet for the entity to shoot
-        enemy = random.sample(set(self.enemies),1)
+        if len(self.enemies):
+            enemy = random.sample(set(self.enemies),1)
+        else:
+            enemy = None
 
         #If the set is non-empty
         if enemy:
@@ -243,25 +278,23 @@ class GameWindow(object):
             #Get the first element of the set
             enemy = enemy[0]
 
-        if self.debug:
-            print(enemy)
+            #Create the bullet
+            bullet2 = Bullet(self.sensitivity * 1.5, enemy.get_x() + enemy.get_width()//3, enemy.get_y(), Direction.DOWN, self.game_width, self.game_height, self.debug)
 
-        #Create the bullet
-        bullet2 = Bullet(self.bullet_img_path, self.sensitivity * 1.5, enemy.get_x() + enemy.get_width()//3, enemy.get_y(), Direction.DOWN, self.game_width, self.game_height, self.debug)
+            #Rotate the bullet 180 degrees
+            bullet2.rotate(180)
 
-        #Add the bullet to the bullet group
-        self.down_bullets.add(bullet2)
+            #Add the bullet to the bullet group
+            self.down_bullets.add(bullet2)
 
     def spawn_bullets(self):
         """Spawn the bullets for each of the entities"""
 
-        #Spawn bullet for the player
         #Create the bullet object
-        bullet = Bullet(self.bullet_img_path, self.sensitivity * 1.5, self.player.get_x() + self.player.get_width()//3, self.player.y, Direction.UP, self.game_width, self.game_height, self.debug)
+        bullet = Bullet(self.sensitivity * 1.5, self.player.get_x() + self.player.get_width()//3, self.player.y, Direction.UP, self.game_width, self.game_height, self.debug)
 
         #Add the bullet to the bullet group
         self.up_bullets.add(bullet)
-        
 
     def check_mouse_pos(self, rect_play, rect_end):
         """Check the position of the mouse on the menu to see what the player clicked"""
@@ -376,16 +409,23 @@ class GameWindow(object):
         #Spawn if there are no enemies 
         if not len(self.enemies):
 
+            #Increase the wave number
+            self.wave += 1
+
             #Spawn the aliens
-            self.spawn_enemies(7)
+            self.spawn_enemies(int(6 * self.wave))
 
         #Draw the score
-        score = self.font.render("Score : " + str(self.score), True, WHITE)
+        score = self.font.render(f"Score : {self.score}" , True, WHITE)
         self.screen.blit(score, (10, 10))
 
         #Draw the live count
-        lives = self.font.render("Lives : " + str(self.player.get_lives()), True, WHITE)
+        lives = self.font.render(f"Lives : {self.player.get_lives()}", True, WHITE)
         self.screen.blit(lives, (self.game_width - self.game_height//12,10))
+
+        #Draw the wave number
+        wave = self.font.render(f"Wave : {self.wave}", True, WHITE)
+        self.screen.blit(wave, (self.game_width//2, 10))
 
         #Check object collisions
         self.score += self.check_collisions()
@@ -469,8 +509,15 @@ class GameWindow(object):
             #Set the FPS
             self.clock.tick(self.fps)
 
-            #Fill the background to black before updating the screen
-            self.screen.fill(BLACK)
+            #If the background is present
+            if self.bg.is_present():
+
+                #Fill it with the background img
+                self.bg.update(self.screen)
+            else:
+
+                #Fill the background to black 
+                self.screen.fill(BLACK)
                 
             #Load the screen based on the state
             self.state = self.states[self.state]()
@@ -478,8 +525,8 @@ class GameWindow(object):
             #Update the display with the screen
             pygame.display.update()
 
-            #If the state is quit or player wats
-            if self.state == State.QUIT or pygame.QUIT in map(lambda x: x.type, pygame.event.get()):
+            #If the state is quit or player closes the game
+            if self.state == State.QUIT or pygame.QUIT in tuple(map(lambda x: x.type, pygame.event.get())):
                 running = False
 
         #Close the window
@@ -489,11 +536,45 @@ class GameWindow(object):
         """Destructor for the game window"""
         pygame.display.quit()
         pygame.font.quit()
+        pygame.mixer.quit()
         pygame.quit()
+
+class Background(pygame.sprite.Sprite):
+    sprites = []
+    def __init__(self, bg_no:int, game_width:int, game_height:int):
+        """Constructor for the background class"""
+
+        #Calls the superclass
+        super().__init__()
+
+        #Gets the background image if any
+        self.image = Background.sprites[bg_no - 1] if bg_no >= len(Background.sprites) else None
+        self.rect = None
+
+        #If there is a background image get the rect for it
+        if self.image != None:
+
+            #Scale the image to the correct size
+            self.image = pygame.transform.scale(self.image, (game_width, game_height))
+
+            #Get the rect
+            self.rect = self.image.get_rect()
+
+            #Set the top left of rect to top left of the game
+            self.rect.left, self.rect.top = 0,0
+
+    def is_present(self) -> bool:
+        """Check if there is a valid background"""
+        return self.image
+
+    def update(self, screen) -> None:
+        """Blit the background to the screen"""
+        screen.blit(self.image, self.rect)
 
 class MovingObject(pygame.sprite.Sprite):
     """Main class for all objects that move"""
-    def __init__(self, obj_path:str, sensitivity:int, initial_x:int, initial_y:int, game_width:int, game_height:int, debug:bool):
+
+    def __init__(self, sensitivity:int, initial_x:int, initial_y:int, game_width:int, game_height:int, debug:bool):
         """Constructor class for the moving object"""
         #Call the superclass init method
         super().__init__()
@@ -508,9 +589,6 @@ class MovingObject(pygame.sprite.Sprite):
         self.debug = debug
         self.sensitivity = sensitivity
         self.changed = True
-        
-        #Load the image model
-        self.image = pygame.image.load(obj_path)
 
         #Load the rect
         self.load_rect()
@@ -524,7 +602,7 @@ class MovingObject(pygame.sprite.Sprite):
         #Inflate the model to the correct size
         self.rect.inflate(self.get_width()//2,self.get_height()//2)
 
-    def move(self,x,y) -> None:
+    def move(self, x:int, y:int) -> None:
         """Main Move Method"""
         #Add the values to x and y to change position
         self.x += x
@@ -532,6 +610,10 @@ class MovingObject(pygame.sprite.Sprite):
 
         #Informed that rect has changed
         self.changed = True
+
+    def rotate(self, angle:int) -> None:
+        """Rotate the image by x degrees"""
+        self.image = pygame.transform.rotate(self.image, angle)
 
     def move_up(self, length:int = None) -> None:
         """Move the object up"""
@@ -591,11 +673,16 @@ class Direction(enum.Enum):
 
 class Bullet(MovingObject):
     """Bullet class for the space invaders game"""
+    #Static method to store sprites
+    sprites = []
     
-    def __init__(self, obj_path:str, sensitivity:int, initial_x:int, initial_y:int, direction:Direction, game_width:int, game_height:int, debug:bool):
+    def __init__(self, sensitivity:int, initial_x:int, initial_y:int, direction:Direction, game_width:int, game_height:int, debug:bool):
         """The constructor for the bullet class"""
+        #Load the image 
+        self.image = self.sprites[0]
+
         #Call the superclass
-        super().__init__(obj_path, sensitivity, initial_x, initial_y, game_width, game_height, debug)
+        super().__init__(sensitivity, initial_x, initial_y, game_width, game_height, debug)
 
         #Store the direction, move up it the enum is move up, else move it down
         if direction == Direction.UP:
@@ -621,16 +708,21 @@ class Bullet(MovingObject):
 
 class EnemyShip(MovingObject):
     """Enemyship obj"""
-    def __init__(self, obj_path:str, sensitivity:int, initial_x:int, initial_y:int, lives:int, points:int, game_width:int, game_height:int, debug:bool):
+    #Static method to store sprites
+    sprites = []
+    def __init__(self, sensitivity:int, initial_x:int, initial_y:int, lives:int,  game_width:int, game_height:int, debug:bool):
         """Constructor for the enemy object"""
 
+        #Load the correct image
+        self.image = self.sprites[lives-1 if lives < len(EnemyShip.sprites) else len(EnemyShip.sprites)-1]
+
         #Call the superclass
-        super().__init__(obj_path, sensitivity, initial_x, initial_y, game_width, game_height, debug)
+        super().__init__(sensitivity, initial_x, initial_y, game_width, game_height, debug)
 
         #Store variables
         self.lives = lives
         self.direction = Direction.RIGHT
-        self.points = points
+        self.points = 10 * self.lives
 
     def get_points(self) -> int:
         """Get the number of points the mob is worth"""
@@ -644,6 +736,8 @@ class EnemyShip(MovingObject):
         """Destroy 1 life of the ship"""
         if self.lives:
             self.lives -= 1
+            if not self.is_destroyed():
+                self.image = self.sprites[self.lives-1 if self.lives < len(EnemyShip.sprites) else len(EnemyShip.sprites)-1]
 
     def get_lives(self) -> int: 
         """Gets the number of lives the ship has left"""
@@ -678,7 +772,7 @@ class EnemyShip(MovingObject):
         #If it is at the edge
         else:
             #Move down
-            self.move_down(self.sensitivity*4)
+            self.move_down(self.get_height()//4)
 
             #Swap direction of x movement
             self.change_direction()
@@ -690,29 +784,32 @@ class EnemyShip(MovingObject):
         super().update()
 
 class EnemyShips(pygame.sprite.Group):
-    def __init__(self, weight:int):
+    def __init__(self):
         """The main class for the enemy ships group"""
-
         #Initialise the superclass
         super().__init__()
 
-        #Store variables
-        self.weight = weight
     
     def update(self) -> None:
         """The update function of the group"""
-
         #The lower the number of enemies, the greater the speed
-        super().update(self.weight//(len(self) if len(self) > 0 else 1))
+        super().update(2 // (len(self) if len(self) > 0 else 1))
 
 
 class Player(MovingObject):
     """Player class"""
-    def __init__(self, obj_path:str, sensitivity:int, game_width:int, game_height:int, init_life:int, fps:int ,debug:bool):
+    #Static method to store sprites
+    sprites = []
+    def __init__(self, ship_no:int, sensitivity:int, game_width:int, game_height:int, init_life:int, fps:int ,debug:bool):
         """Constructor for the player"""
+        #Load the image
+        if ship_no < len(Player.sprites):
+            self.image = Player.sprites[ship_no]
+        else:
+            self.image = Player.ships[0]
         
         #Call the superclass
-        super().__init__(obj_path, sensitivity, game_width//2, game_height, game_width, game_height, debug)
+        super().__init__(sensitivity, game_width//2, game_height, game_width, game_height, debug)
 
         #Invicibility when it just spawned
         self.invincible = fps
