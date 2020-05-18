@@ -61,6 +61,9 @@ if __name__ =="__main__":
     #Get the background sprites
     background_img_paths = tuple(read_settings(settings, "Background").values())
 
+    #Get the explosion image path
+    explosion_img_paths = tuple(read_settings(settings, "Explosion Sprites").values())
+
     #Get the settings
     settings = read_settings(settings, "Player")
 
@@ -71,7 +74,7 @@ if __name__ =="__main__":
     print(config)
 
     #Create the new game window with the configurations
-    game = GameWindow(player_img_paths = player_img_paths, bullet_img_paths = bullet_img_paths, enemy_img_paths = enemy_img_paths, background_img_paths = background_img_paths, p_settings = settings, **config)
+    game = GameWindow(player_img_paths = player_img_paths, bullet_img_paths = bullet_img_paths, enemy_img_paths = enemy_img_paths, explosion_img_paths = explosion_img_paths, background_img_paths = background_img_paths, p_settings = settings, **config)
     
     #Run the mainloop for the GameWindow
     game.mainloop()
