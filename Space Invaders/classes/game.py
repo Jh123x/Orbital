@@ -135,6 +135,21 @@ class GameWindow(object):
         for path in sprite_path:
             obj.sprites.append(pygame.image.load(path))
 
+    def write(self, font_type, color:Color, word:str, x_pos:int, y_pos:int) -> None:
+        """Draw the object onto the screen"""
+        #Write the word with the font
+        sentence = font_type.render(word, True, WHITE)
+
+        #Get the rect of the font
+        rect_sentence = sentence.get_rect(center = (x_pos, y_pos))
+
+        #Draw the sentence onto the screen
+        self.screen.blit(sentence, rect_sentence)
+
+        #Return the rect for the sentence
+        return rect_sentence
+        
+
     def get_state(self) -> State:
         """Return the state the game is in"""
         return self.state
@@ -202,8 +217,8 @@ class GameWindow(object):
         #Get the keypresses of the user
         keys = pygame.key.get_pressed()
 
-        #Check if the user press the enter key
-        if keys[K_KP_ENTER]:
+        #Check if the user press the return key
+        if keys[K_RETURN]:
 
             #Start the game
             return State.PLAY
@@ -399,19 +414,16 @@ class GameWindow(object):
         """Handles the drawing of the pause screen"""
 
         #Draw the title of the pause screen
-        title = self.title_font.render("Paused", True, WHITE)
-        rect_title = title.get_rect(center = (self.game_width//2, self.game_height//5))
-        self.screen.blit(title, rect_title)
+        self.write(self.title_font, WHITE, "Paused", self.game_width//2, self.game_height//5)
+        
+        #Draw the score of the person currently
+        self.write(self.end_font, WHITE, f"Score: {self.score}", self.game_width//2, self.game_height//5 + self.game_height//15)
 
         #Draw the instructions to unpause
-        inst1 = self.end_font.render("Press O to unpause or Escape to quit", True, WHITE)
-        rect_inst1 = inst1.get_rect(center=(self.game_width//2, self.game_height//15 + self.game_height//2))
-        self.screen.blit(inst1, rect_inst1)
+        self.write(self.end_font, WHITE, "Press O to unpause", self.game_width//2, self.game_height//15 + self.game_height//2)
 
         #Draw the instructions to quit
-        inst2 = self.end_font.render("Score will not be saved", True, WHITE)
-        rect_inst2 = inst2.get_rect(center=(self.game_width//2, self.game_height//7.5 + self.game_height//2))
-        self.screen.blit(inst2, rect_inst2)
+        self.write(self.end_font, WHITE, "Escape to quit, score will not be saved", self.game_width//2, self.game_height//7.5 + self.game_height//2)
 
         #Detect the keypress for the unpause button
         return self.pause_update_keypresses()
@@ -420,28 +432,17 @@ class GameWindow(object):
         """Handles the drawing of the menu"""
 
         #Draw the title
-        title = self.title_font.render("Space Invaders", True, WHITE)
-        rect_title = title.get_rect(center=(self.game_width//2, self.game_height//5))
-        self.screen.blit(title, rect_title)
+        self.write(self.title_font, WHITE, "Space Invaders", self.game_width//2, self.game_height//5)
 
         #Draw the Play button
-        play = self.end_font.render("Play", True, WHITE)
-        rect_play = play.get_rect(center=(self.game_width//2, self.game_height//2))
-        self.screen.blit(play, rect_play)
+        rect_play = self.write(self.end_font,WHITE, "Play", self.game_width//2, self.game_height//2)
 
         #Draw the quit button
-        end = self.end_font.render("Quit", True, WHITE)
-        rect_end = end.get_rect(center=(self.game_width//2, self.game_height//15 + self.game_height//2))
-        self.screen.blit(end, rect_end)
+        rect_end = self.write(self.end_font, WHITE, "Quit", self.game_width//2, self.game_height//15 + self.game_height//2)
 
         #Draw the instructions
-        inst1 = self.end_font.render("Use AD or arrow keys to move", True, WHITE)
-        rect_inst1 = inst1.get_rect(center=(self.game_width//2, self.game_height//1.5))
-        self.screen.blit(inst1, rect_inst1)
-
-        inst2 = self.end_font.render("Press Spacebar to shoot, P to pause", True, WHITE)
-        rect_inst2 = inst2.get_rect(center=(self.game_width//2, self.game_height//1.5 + self.game_height//15))
-        self.screen.blit(inst2, rect_inst2)
+        self.write(self.end_font, WHITE, "Use AD or arrow keys to move", self.game_width//2, self.game_height//1.5)
+        self.write(self.end_font, WHITE, "Press spacebar to shoot, P to pause", self.game_width//2, self.game_height//1.5 + self.game_height//15)
 
         #Get the keypresses of the player
         state = self.menu_update_keypresses()
