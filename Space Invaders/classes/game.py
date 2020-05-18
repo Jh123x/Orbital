@@ -5,9 +5,14 @@ import enum
 import sys
 import random
 from pygame.locals import * 
+try:
+    from database import ScoreBoard
+except:
+    from classes.database import ScoreBoard
 
 #Define the COLORS
 WHITE = (255,255,255)
+GREY = (60,60,60)
 BLACK = (0,0,0)
 RED = (255,0,0)
 BLUE = (0,0,255)
@@ -28,6 +33,9 @@ class State(enum.Enum):
     PLAY = 2
     GAMEOVER = 3
     PAUSE = 4
+    HIGHSCORE = 5
+    NEWHIGHSCORE = 6
+    INSTRUCTIONS = 7
     QUIT = -1
 
 class Difficulty(enum.Enum):
@@ -40,7 +48,9 @@ class Difficulty(enum.Enum):
 
 class GameWindow(object):
     """The main game window for Space invaders"""
-    def __init__(self, sensitivity:int, maxfps:int, game_width:int, game_height:int, icon_img_path:str, player_img_paths:tuple, enemy_img_paths:tuple, bullet_img_paths:tuple, background_img_paths:tuple, explosion_img_paths:tuple, p_settings:dict, wave:int = 1,  debug:bool = False):
+    def __init__(self, sensitivity:int, maxfps:int, game_width:int, game_height:int, icon_img_path:str, player_img_paths:tuple,
+                 enemy_img_paths:tuple, bullet_img_paths:tuple, background_img_paths:tuple, explosion_img_paths:tuple, 
+                 p_settings:dict, wave:int = 1,  debug:bool = False):
         """The constructor for the main window"""
 
         #Storing the game variables
@@ -56,11 +66,21 @@ class GameWindow(object):
         self.bullet_cooldown = 0
         self.spawn_state = 0
         self.difficulty = Difficulty(p_settings['difficulty'] if p_settings['difficulty'] < 5 else 5)
+        self.written = True
+
+        #Load the highscores
+        self.score_board = ScoreBoard("data/test.db")
+        self.scores = sorted(self.score_board.fetch_all(),key = lambda x: x[2], reverse = True)
+        if self.debug:
+            print(self.scores)
+        
 
         #Store the different states the menu has
         self.states = {
             State.MENU:self.handle_menu,
             State.PLAY:self.handle_play,
+            State.HIGHSCORE:self.handle_highscore,
+            State.NEWHIGHSCORE:self.handle_newhighscore,
             State.GAMEOVER:self.handle_gameover,
             State.PAUSE:self.handle_pause,
             State.QUIT:self.__del__
@@ -127,6 +147,9 @@ class GameWindow(object):
         self.font = pygame.font.Font(pygame.font.get_default_font(),game_width//40)
         self.end_font = pygame.font.Font(pygame.font.get_default_font(),game_width//20)
         self.title_font = pygame.font.Font(pygame.font.get_default_font(), game_width // 10)
+
+        #Input vars
+        self.inputbox = InputBox(self.game_width//2, self.game_height//2, 100, 30, self.end_font, 5)
 
     def add_to_sprite(self, obj:object, sprite_path:tuple) -> None:
         """Add the pygame image to the object"""
@@ -361,32 +384,34 @@ class GameWindow(object):
         """Spawn the bullets for each of the entities"""
 
         #Create the bullet object
-        bullet = Bullet(self.sensitivity * 1.5, self.player.get_x() + self.player.get_width()//3, self.player.y, Direction.UP, self.game_width, self.game_height, self.debug)
+        bullet = Bullet(self.sensitivity * 1.5, self.player.get_center()[0], self.player.y, Direction.UP, self.game_width, self.game_height, self.debug)
 
         #Add the bullet to the bullet group
         self.up_bullets.add(bullet)
+    
+    def check_clicked(self, rect) -> bool:
+        """Check if the player clicked on the rect"""
 
-    def check_mouse_pos(self, rect_play, rect_end):
-        """Check the position of the mouse on the menu to see what the player clicked"""
         #Get the position of the mouse
         mouse_pos = pygame.mouse.get_pos()
 
-        #Set click to false
-        click = False
-
         #If player pressed the button
-        if pygame.mouse.get_pressed()[0]:
-            if self.debug:
-                print(f"Mouse clicked {pygame.mouse.get_pressed()}")
-            click = True
+        return pygame.mouse.get_pressed()[0] and rect.collidepoint(mouse_pos)
+
+
+    def menu_check_mouse_pos(self, rect_play, rect_end, rect_highscore):
+        """Check the position of the mouse on the menu to see what the player clicked"""
 
         #If mousedown and position colide with play
-        if rect_play.collidepoint(mouse_pos) and click:
+        if self.check_clicked(rect_play):
             return State.PLAY
 
         #If mousedown and position colide with quit
-        elif rect_end.collidepoint(mouse_pos) and click:
+        elif self.check_clicked(rect_end):
             return State.QUIT
+
+        elif self.check_clicked(rect_highscore):
+            return State.HIGHSCORE
 
         #Otherwise the player has not decided
         else:
@@ -405,10 +430,68 @@ class GameWindow(object):
 
         #If the player press the escape key, quit the game
         if keys[K_ESCAPE]:
-            return State.QUIT
+            return State.MENU
         
         #Return the current state if the player has not unpaused
         return State.PAUSE
+
+    def handle_newhighscore(self) -> State:
+        """Tell the user that he got a new highscore and enter his name"""
+        #Check if the player is an AI
+        if self.player.isAI():
+            return State.GAMEOVER
+        
+        #Define new variables
+        start_px = 100
+        
+        #Tell the user he has a new high score
+        self.write(self.title_font, WHITE, f"NEW HIGH SCORE", self.game_width//2, start_px)
+
+        #Tell the user to key in his name
+        self.write(self.font, WHITE, f"Please key in your name and press enter", self.game_width//2, start_px + self.game_height//10)
+
+        #Handle the keying in of name
+        for event in tuple(filter(lambda x: x.type==pygame.KEYDOWN, pygame.event.get())):
+            if event.key == K_RETURN:
+                #Add the name and score to database
+                self.scores.append((None, self.inputbox.get_text(), self.score))
+                self.scores.sort(reverse=True, key = lambda x: x[2])
+                self.written = True
+                return State.GAMEOVER
+            elif event.key == K_BACKSPACE:
+                self.inputbox.backspace()
+            else:
+                self.inputbox.input(event.unicode)
+        
+        #Update the Inputbox
+        self.inputbox.update()
+
+        #Draw the Box
+        self.inputbox.draw(self.screen)
+
+        return State.NEWHIGHSCORE
+
+    def handle_highscore(self) -> State:
+        """Handles the drawing of the highscore screen"""
+
+        #Draw the highscore header
+        self.write(self.title_font, WHITE, f"HIGH SCORES", self.game_width//2, 100)
+
+        #Start pixel to print the score
+        start_px = 200
+
+        #Draw the scores of the players
+        for index, item in enumerate(self.scores[:5]):
+            self.write(self.end_font, WHITE, f"{item[1]}".ljust(10,' ') + f": {item[2]}", self.game_width//2, start_px + self.game_height//(15/(index+1)))
+
+        #Draw the button for back
+        end_rect = self.write(self.end_font, WHITE, "Back", self.game_width//2, self.game_height//2 + self.game_height//3)
+
+        #Check for click
+        if self.check_clicked(end_rect):
+            return State.MENU
+        else:
+            return State.HIGHSCORE
 
     def handle_pause(self) -> State:
         """Handles the drawing of the pause screen"""
@@ -437,8 +520,11 @@ class GameWindow(object):
         #Draw the Play button
         rect_play = self.write(self.end_font,WHITE, "Play", self.game_width//2, self.game_height//2)
 
+        #Draw the highscore button
+        rect_highscore = self.write(self.end_font, WHITE, "High Score", self.game_width//2, self.game_height//15 + self.game_height//2)
+
         #Draw the quit button
-        rect_end = self.write(self.end_font, WHITE, "Quit", self.game_width//2, self.game_height//15 + self.game_height//2)
+        rect_end = self.write(self.end_font, WHITE, "Quit", self.game_width//2, self.game_height//7.5 + self.game_height//2)
 
         #Draw the instructions
         self.write(self.end_font, WHITE, "Use AD or arrow keys to move", self.game_width//2, self.game_height//1.5)
@@ -448,10 +534,13 @@ class GameWindow(object):
         state = self.menu_update_keypresses()
 
         #Check the position of the mouse to return the state
-        return state if state else self.check_mouse_pos(rect_play, rect_end)
+        return state if state else self.menu_check_mouse_pos(rect_play, rect_end, rect_highscore)
 
     def handle_play(self) -> State:
         """Handles the drawing of the play string"""
+
+        if self.written:
+            self.written = False
 
         #If player is destroyed, go to gameover state
         if self.player.is_destroyed():
@@ -506,6 +595,9 @@ class GameWindow(object):
 
     def handle_gameover(self) -> State:
         """Handles drawing of the gameover screen"""
+        #Check if player has got a new highscore
+        if not self.written and (self.score > self.scores[4][-1] or len(self.scores) < 10):
+            return State.NEWHIGHSCORE
 
         #Update the stay status
         stay = self.end_update_keypresses()
@@ -598,10 +690,49 @@ class GameWindow(object):
 
     def __del__(self) -> None:
         """Destructor for the game window"""
+        #Write the new highscores into DB
+        self.score_board.add_all(*self.scores)
+
+        #Remove the last 3 entries
+        self.score_board.remove_all(*self.scores[5:])
+
+        #Quit the game
         pygame.display.quit()
         pygame.font.quit()
         pygame.mixer.quit()
         pygame.quit()
+
+class InputBox(object):
+    def __init__(self, initial_x:int, initial_y:int, width:int, height:int, font, max_length = 5):
+        """Constructor for the inputbox"""
+        self.text = ""
+        self.max_length = max_length
+        self.rect = pygame.Rect(initial_x, initial_y, width, height)
+        self.rect.center = (initial_x, initial_y)
+        self.color = WHITE
+        self.font = font
+
+    def update(self) -> None:
+        """Update the InputBox"""
+        width = max(self.max_length, len(self.text))
+        self.rect.w = width
+
+    def draw(self, screen) -> None:
+        """Draw the input box"""
+        screen.blit(self.font.render(f"{self.text}", True, self.color), self.rect)
+
+    def input(self, char:str) -> None:
+        """Add input"""
+        self.text += char
+
+    def backspace(self) -> None:
+        """Remove the last letter"""
+        if len(self.text):
+            self.text = self.text[:-1]
+
+    def get_text(self) -> str:
+        """Get what is in the inputbox"""
+        return self.text
 
 class Background(pygame.sprite.Sprite):
     sprites = []
@@ -699,6 +830,10 @@ class MovingObject(pygame.sprite.Sprite):
         """Get the x coord of the obj"""
         return self.x
 
+    def get_center(self) -> tuple:
+        """Get the coordinate of the center of the object"""
+        return self.rect.center
+
     def get_y(self) -> int:
         """Get the y coord of the obj"""
         return self.y
@@ -708,7 +843,11 @@ class MovingObject(pygame.sprite.Sprite):
 
         #Set the position of the rect if it has changed from before
         if self.changed:
+
+            #Load the rectangle of the object again
             self.load_rect()
+
+            #Set the changed variable to False
             self.changed = False
 
     def scale(self, width:int, height:int) -> None:
@@ -756,6 +895,7 @@ class Explosion(MovingObject):
         else:
             self.kill()
 
+        #Call the superclass update method
         super().update()
 
 class Bullet(MovingObject):
@@ -772,8 +912,12 @@ class Bullet(MovingObject):
         if direction == Direction.UP:
             self.direction = self.move_up
         elif direction == Direction.DOWN:
+
+            #If there is another sprite, use that sprite for down instead
             if len(Bullet.sprites) >= 2:
                 self.image = self.sprites[1]
+            
+            #Set the direction to down
             self.direction = self.move_down
         else:
             assert False, "Direction of bullet is invalid"
@@ -788,7 +932,10 @@ class Bullet(MovingObject):
 
         #Kill itself if the bullet is out of screen
         if self.y > self.game_height or self.y < 0:
+
+            #Kill the object
             self.kill()
+
             #Do not continue to update position
             return
 
@@ -823,10 +970,20 @@ class EnemyShip(MovingObject):
 
     def destroy(self) -> None:
         """Destroy 1 life of the ship"""
+        #If the ship is still alive
         if self.lives:
+
+            #Reduce the life of the ship
             self.lives -= 1
+
+            #If the ship still has lives
             if not self.is_destroyed():
+
+                #Update the image to the new image of sprite
                 self.image = self.sprites[self.lives-1 if self.lives < len(EnemyShip.sprites) else len(EnemyShip.sprites)-1]
+        else:
+            #If it ends up here the destroy object is being destroyed somemore
+            assert False, "Destroying destroyed object"
 
     def get_lives(self) -> int: 
         """Gets the number of lives the ship has left"""
@@ -865,9 +1022,6 @@ class EnemyShip(MovingObject):
 
             #Swap direction of x movement
             self.change_direction()
-            
-        # if self.debug:
-        #     print("Enemy updated")
 
         #Call superclass update
         super().update()
@@ -889,8 +1043,11 @@ class Player(MovingObject):
     """Player class"""
     #Static method to store sprites
     sprites = []
-    def __init__(self, ship_no:int, sensitivity:int, game_width:int, game_height:int, init_life:int, fps:int ,debug:bool):
+    def __init__(self, ship_no:int, sensitivity:int, game_width:int, game_height:int, init_life:int, fps:int, debug:bool = False, AI:bool = False):
         """Constructor for the player"""
+        #Store the items
+        self.AI = AI
+
         #Load the image
         if ship_no < len(Player.sprites):
             self.image = Player.sprites[ship_no]
@@ -922,6 +1079,10 @@ class Player(MovingObject):
 
         #Re-render the character
         self.changed = True
+
+    def isAI(self) -> bool:
+        """Check if it is an ai instance of the Player"""
+        return self.AI
 
     def move_up(self) -> None:
         """Do not allow the player to move up"""
