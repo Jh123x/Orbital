@@ -21,11 +21,13 @@ class MenuTest(unittest.TestCase):
     def setUp(self) -> None:
         """To be called before the testing for all the testcases"""
         super().setUp()
-        config = {'sensitivity' : 5,'maxfps' : 60,'game_width' : 600,'game_height' : 800,
-                        'debug' : True, 'player_img_path' : 'images/player/player.png',
-                        'enemy_img_path' : 'images/enemies/enemy.png','bullet_img_path' : 
-                        'images/bullets/bullet.png','icon_img_path' : "images/icon/icon.png"}
-        self.game = GameWindow(**config) 
+        config = {'sensitivity': 5, 'maxfps': 60, 'game_width': 600, 'game_height': 800, 'debug': True, 'icon_img_path': 'images/icon/icon.png'}
+        settings = {'ship': 1, 'bg': 1, 'difficulty': 4}
+        background_img_paths = ('images/backgrounds/Space.png',)
+        enemy_img_paths = ('images/enemies/enemy.png', 'images/enemies/enemy2.png', 'images/enemies/enemy3.png', 'images/enemies/enemy4.png', 'images/enemies/mothership.png')
+        bullet_img_paths = ('images/bullets/bullet.png',)
+        player_img_paths = ('images/player/default.png', 'images/player/Spaceship.png', 'images/player/UFO.png')
+        self.game = GameWindow(player_img_paths = player_img_paths, bullet_img_paths = bullet_img_paths, enemy_img_paths = enemy_img_paths, background_img_paths = background_img_paths, p_settings = settings, **config)
         
 
     def tearDown(self) -> None:
@@ -61,95 +63,6 @@ class MenuTest(unittest.TestCase):
     def testKeyboard(self)-> None:
         """
         Test keyboard activation on main menu -> Not Implemented
-        """
-        assert 1==1
-
-
-class BulletClassTest(unittest.TestCase):
-    """Unit test for the bullets"""
-
-    def setUp(self) -> None:
-        """To be called before every test case to simulate bullet movements"""
-        super().setUp()
-        config = {'sensitivity' : 5,'maxfps' : 60,'game_width' : 600,'game_height' : 800,
-                        'debug' : True, 'player_img_path' : 'images/player/player.png',
-                        'enemy_img_path' : 'images/enemies/enemy.png','bullet_img_path' : 
-                        'images/bullets/bullet.png','icon_img_path' : "images/icon/icon.png"}
-        self.bullet_img_path = config["bullet_img_path"]
-        self.up_bullet = pygame.sprite.Group() #down bullet group
-        self.down_bullet = pygame.sprite.Group() # up bullet group
-        self.sensitivity = config["sensitivity"]
-        self.game_width = config["game_width"]
-        self.game_height = config["game_height"]
-        self.delta = self.sensitivity*1.5#based on sensitivity, a tick implies movement of bullet by a constant delta
-        self.screen = pygame.display.set_mode((self.game_height,self.game_width))
-
-    def tearDown(self) -> None:
-        """To be called after every test case"""
-        pass
-    
-    def testSelfBulletDeletion(self) -> None:
-        """
-        Player Bullet Hits top bound of wall should disappear
-        """
-        bullet = Bullet(self.bullet_img_path,self.sensitivity*1.5,0,0,Direction.UP,self.game_width,self.game_height,True)
-        self.down_bullet.add(bullet)
-        bullet.update()
-        bullet.update()#ticks 2 times at boundary to remove from sprite group
-        #print(bullet in self.down_bullet)
-        assert bullet not in self.down_bullet, "Enemy bullet not derendering properly"
-    def testEnemyBulletDeletion(self) -> None:
-        """
-        Enemy Bullet hits bottom of Screen should disappear after calling update
-        """
-        bullet = Bullet(self.bullet_img_path,self.sensitivity*1.5,self.game_height,0,Direction.DOWN,self.game_width,self.game_height,True)
-        self.down_bullet.add(bullet)
-        bullet.update()
-        bullet.update()#ticks 2 times at boundary to remove from sprite group
-        #print(bullet in self.up_bullet)
-        assert bullet not in self.up_bullet, "Player Bullet is not derendering at end of screen"
-    def testMovementSelfBullet(self)-> None:
-        """
-        Own bullet should only move up, and bullet should also remain inside up bullet group
-        """
-        bullet = Bullet(self.bullet_img_path,self.sensitivity*1.5,300,200,Direction.UP,self.game_width,self.game_height,True)# coordinate initialised in middle so no collision 
-        self.up_bullet.add(bullet)
-        init_x = bullet.get_x()
-        init_y = bullet.get_y()
-        bullet.update() 
-        assert bullet in self.up_bullet
-        assert bullet.get_y() == init_y-self.delta and bullet.get_x()==init_x
-    def testMovementEnemyBullet(self)-> None:
-        """
-        Enemy Bullet should only move down, Bullet should remain inside down_group
-        """
-        bullet = Bullet(self.bullet_img_path,self.sensitivity*1.5,300,
-                200,Direction.DOWN,self.game_width,self.game_height,True)# coordinate initialised in middle so no collision
-        self.down_bullet.add(bullet)
-        init_x = bullet.get_x()
-        init_y = bullet.get_y()
-        bullet.update()
-        assert bullet in self.down_bullet , "Bullet not added to sprite group correctly"
-        assert bullet.get_y() == init_y+self.delta and bullet.get_x()==init_x, "Bullet Movement not moving as expected"
-    def testBulletOnBulletInteraction(self) -> None:
-        """
-        Player bullet Hits Enemy Bullet and should delete each other
-        """
-        bullet1 = Bullet(self.bullet_img_path,self.sensitivity*1.5,300,
-                200,Direction.DOWN,self.game_width,self.game_height,True)# coordinate initialised in middle so no collision
-        bullet2 = Bullet(self.bullet_img_path,self.sensitivity*1.5,300,
-                200,Direction.UP,self.game_width,self.game_height,True)# coordinate initialised in middle so no collision
-        self.down_bullet.add(bullet1)
-        self.up_bullet.add(bullet2)
-        bullet1.update()
-        bullet2.update()
-        pygame.sprite.groupcollide(self.up_bullet,self.down_bullet,True,True)
-        assert len(self.down_bullet)==0 and len(self.up_bullet) == 0
-
-    def testD(self) -> None:
-        """
-        Player Hit by enemy bullet
-        TBC
         """
         assert 1==1
 #Main function

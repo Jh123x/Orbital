@@ -71,8 +71,6 @@ if __name__ =="__main__":
     if config['debug']:
         for k,v in config.items():
             print(f"{k} : {v}")
-    print(config)
-
     #Create the new game window with the configurations
     game = GameWindow(player_img_paths = player_img_paths, bullet_img_paths = bullet_img_paths, enemy_img_paths = enemy_img_paths, explosion_img_paths = explosion_img_paths, background_img_paths = background_img_paths, p_settings = settings, **config)
     

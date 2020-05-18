@@ -404,23 +404,11 @@ class GameWindow(object):
         """Check the position of the mouse on the menu to see what the player clicked"""
 
         #If mousedown and position colide with play
-<<<<<<< HEAD
-        if rect_play.collidepoint(mouse_pos) and click:
-            if self.debug:
-                print("Mouse clicked play")
-            return State.PLAY
-
-        #If mousedown and position colide with quit
-        elif rect_end.collidepoint(mouse_pos) and click:
-            if self.debug:
-                print("Mouse clicked quit")
-=======
         if self.check_clicked(rect_play):
             return State.PLAY
 
         #If mousedown and position colide with quit
         elif self.check_clicked(rect_end):
->>>>>>> be2a0fae615b83a77a4b80c26ff1a12ecc2dea50
             return State.QUIT
 
         elif self.check_clicked(rect_highscore):
