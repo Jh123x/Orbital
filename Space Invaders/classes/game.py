@@ -15,7 +15,15 @@ GREEN = (0,128,0)
 LIME = (0,255,0)
 YELLOW = (255,255,0)
 
+class Direction(enum.Enum):
+    """Direction enum to store where objects are moving"""
+    UP = 1
+    DOWN = -1
+    LEFT = -2
+    RIGHT = 2
+
 class State(enum.Enum):
+    """State enum to keep track of the state of the game"""
     MENU = 1
     PLAY = 2
     GAMEOVER = 3
@@ -23,16 +31,16 @@ class State(enum.Enum):
     QUIT = -1
 
 class Difficulty(enum.Enum):
+    """Difficulty enum to hold the difficultly of the game"""
     CASUAL = 1
     EASY = 2
     MEDIUM = 3
     HARD = 4
     IMPOSSIBLE = 5
-    
 
 class GameWindow(object):
     """The main game window for Space invaders"""
-    def __init__(self, sensitivity:int, maxfps:int, game_width:int, game_height:int, icon_img_path:str, player_img_paths:tuple, enemy_img_paths:tuple, bullet_img_paths:tuple, background_img_paths:tuple, p_settings:dict, wave:int = 1,  debug:bool = False):
+    def __init__(self, sensitivity:int, maxfps:int, game_width:int, game_height:int, icon_img_path:str, player_img_paths:tuple, enemy_img_paths:tuple, bullet_img_paths:tuple, background_img_paths:tuple, explosion_img_paths:tuple, p_settings:dict, wave:int = 1,  debug:bool = False):
         """The constructor for the main window"""
 
         #Storing the game variables
@@ -91,6 +99,9 @@ class GameWindow(object):
         #Enemyships
         self.enemies = EnemyShips()
 
+        #Explosions
+        self.explosions = pygame.sprite.Group()
+
         #Load player ship images into Player object 
         self.add_to_sprite(Player, player_img_paths)
 
@@ -102,6 +113,9 @@ class GameWindow(object):
 
         #Load the backgrounds into Background obj
         self.add_to_sprite(Background, background_img_paths)
+
+        #Load the sprites for the explosion
+        self.add_to_sprite(Explosion, explosion_img_paths)
 
         #Create the main sprites
         self.player = Player(self.p_settings['ship']-1, sensitivity, game_width, game_height - 50, 3, maxfps, debug)
@@ -183,6 +197,28 @@ class GameWindow(object):
         else:
             return None
 
+    def menu_update_keypresses(self) -> State:
+        """Track the keypress for the menu"""
+        #Get the keypresses of the user
+        keys = pygame.key.get_pressed()
+
+        #Check if the user press the enter key
+        if keys[K_KP_ENTER]:
+
+            #Start the game
+            return State.PLAY
+
+        #Check if the user epressed the escape key
+        elif keys[K_ESCAPE]:
+
+            #Quit the game
+            return State.QUIT
+
+        else:
+
+            #Otherwise return none
+            return None
+
     def spawn_enemies(self, number:int) -> None:
         """Spawn enemies into the game"""
         #Adding sprites
@@ -216,20 +252,28 @@ class GameWindow(object):
         if self.debug:
             print(ships)
 
+        #If the list of collision is non-empty
         if ships:
-        #Destroy the first ship in the list
-            ships[0][0].destroy()
+            #Get the ship it collided with 
+            ship = ships[0][0]
+
+            #Destroy the first ship in the list
+            ship.destroy()
+
             if self.debug:
                 print(f"Ship destroyed")
         
             #Remove the ship from groupp if it has 0 lives
-            if ships[0][0].is_destroyed():
+            if ship.is_destroyed():
 
-                #Remove the sprite from the group
-                self.enemies.remove(ships[0][0])
+                #Spawn an explosion in its place
+                self.explosions.add(Explosion(0, self.fps//4, ship.get_x(), ship.get_y(), self.game_width, self.game_height, 0, self.debug))
+
+                #Remove the ship from all groups
+                ship.kill()
 
                 #Remove sprites that collide with bullets and return the sum of all the scores
-                return ships[0][0].get_points()
+                return ship.get_points()
 
         #If nothing is destroyed return 0
         return 0
@@ -242,6 +286,9 @@ class GameWindow(object):
 
         #Update the enemy group
         self.enemies.update()
+
+        #Update the explosions group
+        self.explosions.update()
 
         #Spawn bullets for enemies
         self.spawn_enemy_bullets()
@@ -258,6 +305,9 @@ class GameWindow(object):
         self.enemies.draw(self.screen)
         if self.debug:
             print(f"Number of enemies: {len(self.enemies)}")
+
+        #Draw the explosions
+        self.explosions.draw(self.screen)
 
         #Draw player object
         self.screen.blit(self.player.image, self.player.rect)
@@ -337,6 +387,10 @@ class GameWindow(object):
         #Return the play state if the player unpause his game
         if keys[K_o]:
             return State.PLAY
+
+        #If the player press the escape key, quit the game
+        if keys[K_ESCAPE]:
+            return State.QUIT
         
         #Return the current state if the player has not unpaused
         return State.PAUSE
@@ -350,9 +404,14 @@ class GameWindow(object):
         self.screen.blit(title, rect_title)
 
         #Draw the instructions to unpause
-        inst1 = self.end_font.render("Press O to unpause", True, WHITE)
+        inst1 = self.end_font.render("Press O to unpause or Escape to quit", True, WHITE)
         rect_inst1 = inst1.get_rect(center=(self.game_width//2, self.game_height//15 + self.game_height//2))
         self.screen.blit(inst1, rect_inst1)
+
+        #Draw the instructions to quit
+        inst2 = self.end_font.render("Score will not be saved", True, WHITE)
+        rect_inst2 = inst2.get_rect(center=(self.game_width//2, self.game_height//7.5 + self.game_height//2))
+        self.screen.blit(inst2, rect_inst2)
 
         #Detect the keypress for the unpause button
         return self.pause_update_keypresses()
@@ -384,8 +443,11 @@ class GameWindow(object):
         rect_inst2 = inst2.get_rect(center=(self.game_width//2, self.game_height//1.5 + self.game_height//15))
         self.screen.blit(inst2, rect_inst2)
 
+        #Get the keypresses of the player
+        state = self.menu_update_keypresses()
+
         #Check the position of the mouse to return the state
-        return self.check_mouse_pos(rect_play, rect_end)
+        return state if state else self.check_mouse_pos(rect_play, rect_end)
 
     def handle_play(self) -> State:
         """Handles the drawing of the play string"""
@@ -665,12 +727,35 @@ class MovingObject(pygame.sprite.Sprite):
         """Get the width of the image"""
         return self.image.get_width()
 
-class Direction(enum.Enum):
-    """Direction enum to store where objects are moving"""
-    UP = 1
-    DOWN = -1
-    LEFT = -2
-    RIGHT = 2
+class Explosion(MovingObject):
+    sprites = []
+    def __init__(self, sprite:pygame.sprite.Sprite, tick_life:int, initial_x:int, initial_y:int, game_width:int, game_height:int, image_no:int = 0, debug:bool = False):
+        """The main class for the explosion"""
+
+        #Set the time to live for the explosion
+        self.tts = tick_life
+
+        #Get the correct image of the explosion
+        if image_no < len(Explosion.sprites):
+            self.image = Explosion.sprites[image_no]
+        else:
+            self.image = Explosion.sprites[0]
+
+        #Call the superclass method
+        super().__init__(0, initial_x, initial_y, game_width, game_height, debug)
+
+
+    def update(self):
+        """Update the explosion"""
+        #If the explosion still has TTS
+        if self.tts:
+            self.tts -= 1
+        
+        #Otherwise kill it
+        else:
+            self.kill()
+
+        super().update()
 
 class Bullet(MovingObject):
     """Bullet class for the space invaders game"""
