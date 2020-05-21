@@ -3,19 +3,24 @@ import pygame
 import pygame.freetype
 import sys
 import random
+import multiprocessing as mp
 from pygame.locals import * 
 from .Enums import *
 from .database import ScoreBoard
+from .Player import Player
+from .Bullet import Bullet
+from .EnemyShip import EnemyShip
+from .Explosion import Explosion
+from .Background import Background
+from .Colors import *
+from .InputBox import InputBox
 
-#Define the COLORS
-WHITE = (255,255,255)
-GREY = (60,60,60)
-BLACK = (0,0,0)
-RED = (255,0,0)
-BLUE = (0,0,255)
-GREEN = (0,128,0)
-LIME = (0,255,0)
-YELLOW = (255,255,0)
+def add_to_sprite(obj:object, sprite_path:tuple) -> None:
+    """Add the pygame image to the object"""
+    #For each object add it to the sprite path
+    for path in sprite_path:
+        obj.sprites.append(pygame.image.load(path))
+
 
 class GameWindow(object):
     """The main game window for Space invaders"""
@@ -44,7 +49,6 @@ class GameWindow(object):
         if self.debug:
             print(self.scores)
         
-
         #Store the different states the menu has
         self.states = {
             State.MENU:self.handle_menu,
@@ -95,22 +99,22 @@ class GameWindow(object):
         self.explosions = pygame.sprite.Group()
 
         #Load player ship images into Player object 
-        self.add_to_sprite(Player, player_img_paths)
+        add_to_sprite(Player, player_img_paths)
 
         #Load Bullet images into Bullet Object 
-        self.add_to_sprite(Bullet, bullet_img_paths)
+        add_to_sprite(Bullet, bullet_img_paths)
 
         #Load enemy ships into enemy ship objects 
-        self.add_to_sprite(EnemyShip, enemy_img_paths)
+        add_to_sprite(EnemyShip, enemy_img_paths)
 
         #Load the backgrounds into Background obj
-        self.add_to_sprite(Background, background_img_paths)
+        add_to_sprite(Background, background_img_paths)
 
         #Load the sprites for the explosion
-        self.add_to_sprite(Explosion, explosion_img_paths)
+        add_to_sprite(Explosion, explosion_img_paths)
 
         #Create the main sprites
-        self.player = Player(self.p_settings['ship']-1, sensitivity, game_width, game_height - 50, 3, maxfps, debug)
+        self.player = Player(sensitivity, game_width, game_height - 50, 3, maxfps, debug)
 
         #Create the background object
         self.bg = Background(p_settings['bg'], game_width, game_height)
@@ -123,13 +127,6 @@ class GameWindow(object):
         #Input vars
         self.inputbox = InputBox(self.game_width//2, self.game_height//2, 100, 30, self.end_font, 5)
 
-    def add_to_sprite(self, obj:object, sprite_path:tuple) -> None:
-        """Add the pygame image to the object"""
-
-        #For each object add it to the sprite path
-        for path in sprite_path:
-            obj.sprites.append(pygame.image.load(path))
-
     def get_2d_array(self):
         """Returns the 2d array of pixels without the background
             Arguments:
@@ -137,7 +134,7 @@ class GameWindow(object):
             Returns:
                 Return a 2d array of colored pixels
         """
-        return pygame.PixelArray(self.screen)
+        return pygame.surfarray.pixels3d(self.screen)
 
     def write(self, font_type, color:Color, word:str, x_pos:int, y_pos:int, direction:Direction = Direction.CENTER) -> None:
         """Draw the object onto the screen"""
@@ -712,347 +709,6 @@ class GameWindow(object):
         pygame.mixer.quit()
         pygame.quit()
 
-class InputBox(object):
-    def __init__(self, initial_x:int, initial_y:int, width:int, height:int, font, max_length = 5):
-        """Constructor for the inputbox"""
-        self.text = []
-        self.max_length = max_length
-        self.rect = pygame.Rect(initial_x, initial_y, width, height)
-        self.rect.center = (initial_x, initial_y)
-        self.color = WHITE
-        self.font = font
-
-    def update(self) -> None:
-        """Update the InputBox"""
-        width = max(self.max_length, len(self.text))
-        self.rect.w = width
-
-    def draw(self, screen) -> None:
-        """Draw the input box"""
-        screen.blit(self.font.render(f"{self.text}", True, self.color), self.rect)
-
-    def input(self, char:str) -> None:
-        """Add input"""
-        self.text.append(char)
-
-    def backspace(self) -> None:
-        """Remove the last letter"""
-
-        #If the text is not empty
-        if self.text:
-
-            #Remove the last character
-            self.text.pop()
-
-    def get_text(self) -> str:
-        """Get what is in the inputbox"""
-        return self.__str__()
-
-    def __str__(self) -> str:
-        return "".join(self.text)
-
-    def __repr__(self) -> str:
-        return "".join(self.text)
-        
-
-class Background(pygame.sprite.Sprite):
-
-    #To store the background sprites
-    sprites = []
-
-    def __init__(self, bg_no:int, game_width:int, game_height:int):
-        """Constructor for the background class"""
-
-        #Calls the superclass
-        super().__init__()
-
-        #Gets the background image if any
-        self.image = Background.sprites[bg_no - 1] if bg_no >= len(Background.sprites) else None
-        self.rect = None
-
-        #If there is a background image get the rect for it
-        if self.image != None:
-
-            #Scale the image to the correct size
-            self.image = pygame.transform.scale(self.image, (game_width, game_height))
-
-            #Get the rect
-            self.rect = self.image.get_rect()
-
-            #Set the top left of rect to top left of the game
-            self.rect.left, self.rect.top = 0,0
-
-    def is_present(self) -> bool:
-        """Check if there is a valid background"""
-        return self.image
-
-    def update(self, screen) -> None:
-        """Blit the background to the screen"""
-        screen.blit(self.image, self.rect)
-
-class MovingObject(pygame.sprite.Sprite):
-    """Main class for all objects that move"""
-    def __init__(self, sensitivity:int, initial_x:int, initial_y:int, game_width:int, game_height:int, debug:bool):
-        """Constructor class for the moving object"""
-        #Call the superclass init method
-        super().__init__()
-
-        #Storing the variables
-        self.x = initial_x
-        self.y = initial_y
-        self.initial_x = initial_x
-        self.initial_y = initial_y
-        self.game_width = game_width
-        self.game_height = game_height
-        self.debug = debug
-        self.sensitivity = sensitivity
-        self.changed = True
-
-        #Load the rect
-        self.load_rect()
-
-    def load_rect(self):
-        """Load the rectangle for the obj"""
-        #Create the rectangle for the MovingObject Object
-        self.rect = pygame.Rect(self.image.get_rect().left, self.image.get_rect().top, self.get_width(), self.get_height())
-        self.rect.center=(self.x,self.y)
-
-        #Inflate the model to the correct size
-        self.rect.inflate(self.get_width()//2,self.get_height()//2)
-
-    def move(self, x:int, y:int) -> None:
-        """Main Move Method"""
-        #Add the values to x and y to change position
-        self.x += x
-        self.y += y
-
-        #Informed that rect has changed
-        self.changed = True
-
-    def rotate(self, angle:int) -> None:
-        """Rotate the image by x degrees"""
-        self.image = pygame.transform.rotate(self.image, angle)
-
-    def move_up(self, length:int = None) -> None:
-        """Move the object up"""
-        return self.move(0,-length if length else -self.sensitivity)
-
-    def move_down(self, length:int = None) -> None:
-        """Move the object down"""
-        return self.move(0,length if length else self.sensitivity)
-
-    def move_left(self, length:int = None) -> None:
-        """Move the object right"""
-        return self.move(-length if length else -self.sensitivity,0)
-
-    def move_right(self, length:int = None) -> None:
-        """Move the object right"""
-        return self.move(length if length else self.sensitivity,0)
-
-    def get_x(self) -> int:
-        """Get the x coord of the obj"""
-        return self.x
-
-    def get_center(self) -> tuple:
-        """Get the coordinate of the center of the object"""
-        return self.rect.center
-
-    def get_y(self) -> int:
-        """Get the y coord of the obj"""
-        return self.y
-
-    def update(self) -> None:
-        """Update the object rect position"""
-
-        #Set the position of the rect if it has changed from before
-        if self.changed:
-
-            #Load the rectangle of the object again
-            self.load_rect()
-
-            #Set the changed variable to False
-            self.changed = False
-
-    def scale(self, width:int, height:int) -> None:
-        """Scale the image"""
-        
-        #Scale the image to the new width and height defined
-        self.image = pygame.transform.scale(self.image, (width, height))
-
-        #Reload the rect
-        self.load_rect()
-
-    def get_height(self) -> None:
-        """Get the height of the image"""
-        return self.image.get_height()
-
-    def get_width(self) -> None:
-        """Get the width of the image"""
-        return self.image.get_width()
-
-class Explosion(MovingObject):
-
-    #To store the sprites for the explosions
-    sprites = []
-
-    def __init__(self, sprite:pygame.sprite.Sprite, tick_life:int, initial_x:int, initial_y:int, game_width:int, game_height:int, image_no:int = 0, debug:bool = False):
-        """The main class for the explosion"""
-
-        #Set the time to live for the explosion
-        self.tts = tick_life
-
-        #Get the correct image of the explosion
-        if image_no < len(Explosion.sprites):
-            self.image = Explosion.sprites[image_no]
-        else:
-            self.image = Explosion.sprites[0]
-
-        #Call the superclass method
-        super().__init__(0, initial_x, initial_y, game_width, game_height, debug)
-
-
-    def update(self):
-        """Update the explosion"""
-        #If the explosion still has TTS
-        if self.tts:
-            self.tts -= 1
-        
-        #Otherwise kill it
-        else:
-            self.kill()
-
-        #Call the superclass update method
-        super().update()
-
-class Bullet(MovingObject):
-    """Bullet class for the space invaders game"""
-
-    #Static method to store sprites
-    sprites = []
-
-    def __init__(self, sensitivity:int, initial_x:int, initial_y:int, direction:Direction, game_width:int, game_height:int, debug:bool):
-        """The constructor for the bullet class"""
-        #Load the image 
-        self.image = self.sprites[0]
-
-        #Store the direction, move up it the enum is move up, else move it down
-        if direction == Direction.UP:
-            self.direction = self.move_up
-        elif direction == Direction.DOWN:
-
-            #If there is another sprite, use that sprite for down instead
-            if len(Bullet.sprites) >= 2:
-                self.image = self.sprites[1]
-            
-            #Set the direction to down
-            self.direction = self.move_down
-        else:
-            assert False, "Direction of bullet is invalid"
-
-        #Call the superclass
-        super().__init__(sensitivity, initial_x, initial_y, game_width, game_height, debug)
-
-    def update(self) -> None:
-        """Update the path of the bullet"""
-        #Move the bullet
-        self.direction()
-
-        #Kill itself if the bullet is out of screen
-        if self.y > self.game_height or self.y < 0:
-
-            #Kill the object
-            self.kill()
-
-            #Do not continue to update position
-            return
-
-        #Update its coordinates
-        return super().update()
-
-class EnemyShip(MovingObject):
-    """Enemyship obj"""
-    #Static method to store sprites
-    sprites = []
-    def __init__(self, sensitivity:int, initial_x:int, initial_y:int, lives:int,  game_width:int, game_height:int, debug:bool):
-        """Constructor for the enemy object"""
-
-        #Load the correct image
-        self.image = self.sprites[lives-1 if lives < len(EnemyShip.sprites) else len(EnemyShip.sprites)-1]
-
-        #Call the superclass
-        super().__init__(sensitivity, initial_x, initial_y, game_width, game_height, debug)
-
-        #Store variables
-        self.lives = lives
-        self.direction = Direction.RIGHT
-        self.points = 10 * self.lives
-
-    def get_points(self) -> int:
-        """Get the number of points the mob is worth"""
-        return self.points
-
-    def is_destroyed(self) -> bool:
-        """Returns whether the ship is destroyed"""
-        return self.get_lives() == 0
-
-    def destroy(self) -> None:
-        """Destroy 1 life of the ship"""
-        #If the ship is still alive
-        if self.lives:
-
-            #Reduce the life of the ship
-            self.lives -= 1
-
-            #If the ship still has lives
-            if not self.is_destroyed():
-
-                #Update the image to the new image of sprite
-                self.image = self.sprites[self.lives-1 if self.lives < len(EnemyShip.sprites) else len(EnemyShip.sprites)-1]
-        else:
-            #If it ends up here the destroy object is being destroyed somemore
-            assert False, "Destroying destroyed object"
-
-    def get_lives(self) -> int: 
-        """Gets the number of lives the ship has left"""
-        return self.lives
-
-    def change_direction(self):
-        """Change the x direction the enemy is moving"""
-
-        #Swap the Right and the left position
-        if self.direction == Direction.RIGHT:
-            self.direction = Direction.LEFT
-        elif self.direction == Direction.LEFT:
-            self.direction = Direction.RIGHT
-        else:
-            assert False, "Enemy ship direction is invalid"
-
-    def update(self, multiplier:int) -> None:
-        """Update the movement of the enemies"""
-
-        #If enemyship is moving to the right and is not at the edge
-        if self.direction == Direction.RIGHT and self.get_x() < self.game_width:
-
-            #Move it to the right
-            self.move_right(self.sensitivity*multiplier//1)
-
-        #If it is moving to the left and is not at the edge
-        elif self.direction == Direction.LEFT and self.get_x() > 0:
-
-            #Move it to the left
-            self.move_left(self.sensitivity*multiplier//1)
-
-        #If it is at the edge
-        else:
-            #Move down
-            self.move_down(self.get_height()//4)
-
-            #Swap direction of x movement
-            self.change_direction()
-
-        #Call superclass update
-        super().update()
-
 class EnemyShips(pygame.sprite.Group):
     def __init__(self):
         """The main class for the enemy ships group"""
@@ -1064,121 +720,6 @@ class EnemyShips(pygame.sprite.Group):
         """The update function of the group"""
         #The lower the number of enemies, the greater the speed
         super().update(2 // (len(self) if len(self) > 0 else 1))
-
-
-class Player(MovingObject):
-    """Player class"""
-    #Static method to store sprites
-    sprites = []
-
-    def __init__(self, ship_no:int, sensitivity:int, game_width:int, game_height:int, init_life:int, fps:int, debug:bool = False, AI:bool = False):
-        """Constructor for the player"""
-        #Store the items
-        self.AI = AI
-
-        #Load the image
-        if ship_no < len(Player.sprites):
-            self.image = Player.sprites[ship_no]
-        else:
-            self.image = Player.ships[0]
-        
-        #Call the superclass
-        super().__init__(sensitivity, game_width//2, game_height, game_width, game_height, debug)
-
-        #Invicibility when it just spawned
-        self.invincible = fps
-
-        #If the life is not valid set it to 3 by default
-        if init_life > 0:
-            init_life = 3
-
-        #Initial position
-        self.init_x = game_width//2
-        self.init_y = game_height
-
-        #Initial amount of life
-        self.init_life = init_life
-
-        #Current life
-        self.life = init_life
-
-        #Store game variables
-        self.fps = fps
-
-        #Re-render the character
-        self.changed = True
-
-    def isAI(self) -> bool:
-        """Check if it is an ai instance of the Player"""
-        return self.AI
-
-    def move_up(self) -> None:
-        """Do not allow the player to move up"""
-        pass
-
-    def move_down(self) -> None:
-        """Do not allow the player to move down"""
-        pass
-
-    def move_left(self) -> None:
-        """Move the player left"""
-        #If the player is not at the leftmost part of the screen allow the player to move left
-        if self.x > self.image.get_width()//8:
-            super().move_left()
-        elif self.debug:
-            print("Hit left most")
-
-    def move_right(self) -> None:
-        """Move the player right"""
-        #If the player is not at the right most allow the player to move right
-        if self.x <= self.game_width:
-            super().move_right()
-        elif self.debug:
-            print("Hit right most")
-
-    def is_destroyed(self) -> bool:
-        """Returns whether the ship is destroyed"""
-        return self.get_lives() == 0
-
-    def destroy(self) -> None:
-        """Destroys the ship 1 time"""
-        if not self.invincible:
-            #Reduce the life of the player
-            self.life -= 1 
-
-            #Make the player invincible for 1 second
-            self.invincible = self.fps
-
-    def get_lives(self) -> int:
-        """Get the number of lives left"""
-        return self.life
-
-    def reset(self) -> None:
-        """Reset the player stats"""
-        #Reset life
-        self.life = self.init_life
-
-        #Reset position
-        self.x = self.init_x
-        self.y = self.init_y
-
-        #Rerender rect
-        self.changed = True
-
-        #Give player 1s invisibility
-        self.invincible = self.fps
-
-    def update(self) -> None:
-        """Update the position of the player"""
-        #Reduce invincibility amount
-        if self.invincible:
-            self.invincible -= 1
-
-        #Load the Image of the player based on his life
-        self.image = Player.sprites[self.get_lives()-1]
-
-        #Call the super update
-        return super().update()
 
 def main() -> None:
     """The main function for the file"""
