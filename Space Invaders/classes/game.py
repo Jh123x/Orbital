@@ -5,10 +5,8 @@ import enum
 import sys
 import random
 from pygame.locals import * 
-try:
-    from database import ScoreBoard
-except:
-    from classes.database import ScoreBoard
+from .database import ScoreBoard
+
 
 #Define the COLORS
 WHITE = (255,255,255)
@@ -96,7 +94,8 @@ class GameWindow(object):
         pygame.mixer.init()
 
         #Set the dimensions
-        self.screen = pygame.display.set_mode((game_height,game_width))
+        self.main_screen = pygame.display.set_mode((game_height,game_width))
+        self.screen = pygame.Surface((game_height,game_width), pygame.SRCALPHA, 32)
 
         #Set the title
         pygame.display.set_caption("Space Invaders")
@@ -157,6 +156,15 @@ class GameWindow(object):
         #For each object add it to the sprite path
         for path in sprite_path:
             obj.sprites.append(pygame.image.load(path))
+
+    def get_2d_array(self):
+        """Returns the 2d array of pixels without the background
+            Arguments:
+                No arguments
+            Returns:
+                Return a 2d array of colored pixels
+        """
+        return pygame.PixelArray(self.screen)
 
     def write(self, font_type, color:Color, word:str, x_pos:int, y_pos:int) -> None:
         """Draw the object onto the screen"""
@@ -596,7 +604,7 @@ class GameWindow(object):
     def handle_gameover(self) -> State:
         """Handles drawing of the gameover screen"""
         #Check if player has got a new highscore
-        if not self.written and (self.score > self.scores[4][-1] or len(self.scores) < 10):
+        if not self.written and (self.score > self.scores[4][-1] or len(self.scores) < 5):
             return State.NEWHIGHSCORE
 
         #Update the stay status
@@ -669,12 +677,12 @@ class GameWindow(object):
             if self.bg.is_present():
 
                 #Fill it with the background img
-                self.bg.update(self.screen)
+                self.bg.update(self.main_screen)
             else:
 
                 #Fill the background to black 
-                self.screen.fill(BLACK)
-                
+                self.main_screen.fill(BLACK)
+
             #Load the screen based on the state
             self.state = self.states[self.state]()
 
