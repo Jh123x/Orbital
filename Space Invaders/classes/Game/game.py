@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 import pygame
 import pygame.freetype
-import enum
 import sys
 import random
 from pygame.locals import * 
+from .Enums import *
 from .database import ScoreBoard
-
 
 #Define the COLORS
 WHITE = (255,255,255)
@@ -18,39 +17,12 @@ GREEN = (0,128,0)
 LIME = (0,255,0)
 YELLOW = (255,255,0)
 
-class Direction(enum.Enum):
-    """Direction enum to store where objects are moving"""
-    UP = 1
-    DOWN = -1
-    LEFT = -2
-    RIGHT = 2
-
-class State(enum.Enum):
-    """State enum to keep track of the state of the game"""
-    MENU = 1
-    PLAY = 2
-    GAMEOVER = 3
-    PAUSE = 4
-    HIGHSCORE = 5
-    NEWHIGHSCORE = 6
-    INSTRUCTIONS = 7
-    QUIT = -1
-
-class Difficulty(enum.Enum):
-    """Difficulty enum to hold the difficultly of the game"""
-    CASUAL = 1
-    EASY = 2
-    MEDIUM = 3
-    HARD = 4
-    IMPOSSIBLE = 5
-
 class GameWindow(object):
     """The main game window for Space invaders"""
     def __init__(self, sensitivity:int, maxfps:int, game_width:int, game_height:int, icon_img_path:str, player_img_paths:tuple,
                  enemy_img_paths:tuple, bullet_img_paths:tuple, background_img_paths:tuple, explosion_img_paths:tuple, 
                  p_settings:dict, wave:int = 1,  debug:bool = False):
         """The constructor for the main window"""
-
         #Storing the game variables
         self.fps = maxfps
         self.p_settings = p_settings
@@ -80,6 +52,7 @@ class GameWindow(object):
             State.HIGHSCORE:self.handle_highscore,
             State.NEWHIGHSCORE:self.handle_newhighscore,
             State.GAMEOVER:self.handle_gameover,
+            State.INSTRUCTIONS:self.handle_instructions,
             State.PAUSE:self.handle_pause,
             State.QUIT:self.__del__
         }
@@ -166,13 +139,16 @@ class GameWindow(object):
         """
         return pygame.PixelArray(self.screen)
 
-    def write(self, font_type, color:Color, word:str, x_pos:int, y_pos:int) -> None:
+    def write(self, font_type, color:Color, word:str, x_pos:int, y_pos:int, direction:Direction = Direction.CENTER) -> None:
         """Draw the object onto the screen"""
         #Write the word with the font
         sentence = font_type.render(word, True, WHITE)
 
         #Get the rect of the font
-        rect_sentence = sentence.get_rect(center = (x_pos, y_pos))
+        if direction == Direction.CENTER:
+            rect_sentence = sentence.get_rect(center = (x_pos, y_pos))
+        if direction == Direction.LEFT:
+            rect_sentence = sentence.get_rect(left = x_pos, top = y_pos)
 
         #Draw the sentence onto the screen
         self.screen.blit(sentence, rect_sentence)
@@ -288,6 +264,7 @@ class GameWindow(object):
 
             #Destroy 1 of the player's life
             self.player.destroy()
+            self.explosions.add(Explosion(self.player,self.fps//2,self.player.get_x(),self.player.get_y(),self.game_width,self.game_height))
 
         #Remove bullets that collide with one another
         pygame.sprite.groupcollide(self.up_bullets, self.down_bullets, True, True)
@@ -407,7 +384,7 @@ class GameWindow(object):
         return pygame.mouse.get_pressed()[0] and rect.collidepoint(mouse_pos)
 
 
-    def menu_check_mouse_pos(self, rect_play, rect_end, rect_highscore):
+    def menu_check_mouse_pos(self, rect_play, rect_end, rect_highscore, rect_instructions):
         """Check the position of the mouse on the menu to see what the player clicked"""
 
         #If mousedown and position colide with play
@@ -420,6 +397,9 @@ class GameWindow(object):
 
         elif self.check_clicked(rect_highscore):
             return State.HIGHSCORE
+        
+        elif self.check_clicked(rect_instructions):
+            return State.INSTRUCTIONS
 
         #Otherwise the player has not decided
         else:
@@ -490,7 +470,12 @@ class GameWindow(object):
 
         #Draw the scores of the players
         for index, item in enumerate(self.scores[:5]):
-            self.write(self.end_font, WHITE, f"{item[1]}".ljust(10,' ') + f": {item[2]}", self.game_width//2, start_px + self.game_height//(15/(index+1)))
+
+            #Draw the first half of the scoreboard
+            self.write(self.end_font, WHITE, f"{index+1}. {item[1]}".ljust(15, ' '), self.game_width//4, start_px + self.game_height//(15/(index+1)),Direction.LEFT)
+
+            #Draw the 2nd half of the scoreboard
+            self.write(self.end_font, WHITE, f"{item[2]:<5}",self.game_width//1.6, start_px + self.game_height//(15/(index+1)),Direction.LEFT)
 
         #Draw the button for back
         end_rect = self.write(self.end_font, WHITE, "Back", self.game_width//2, self.game_height//2 + self.game_height//3)
@@ -518,6 +503,27 @@ class GameWindow(object):
 
         #Detect the keypress for the unpause button
         return self.pause_update_keypresses()
+        
+
+    def handle_instructions(self) -> State:
+        """Handles the drawing of the instructions"""
+        #The first pixel to align
+        first_px = self.game_height//2
+
+        #Draw the header
+        self.write(self.title_font, WHITE, "Instructions", self.game_width//2, first_px - self.game_height//5)
+
+        #Draw the instructions
+        self.write(self.end_font, WHITE, "Use AD or arrow keys to move", self.game_width//2, first_px)
+        self.write(self.end_font, WHITE, "Press spacebar to shoot, P to pause", self.game_width//2, first_px + self.game_height//15)
+        self.write(self.end_font, WHITE, "Press O to unpause", self.game_width//2, first_px + self.game_height//7.5)
+
+        #Draw the back button
+        back_rect = self.write(self.end_font,WHITE, "Back", self.game_width//2, self.game_height-self.game_height//5)
+        if self.check_clicked(back_rect):
+            return State.MENU
+
+        return State.INSTRUCTIONS
 
     def handle_menu(self) -> State:
         """Handles the drawing of the menu"""
@@ -531,18 +537,17 @@ class GameWindow(object):
         #Draw the highscore button
         rect_highscore = self.write(self.end_font, WHITE, "High Score", self.game_width//2, self.game_height//15 + self.game_height//2)
 
-        #Draw the quit button
-        rect_end = self.write(self.end_font, WHITE, "Quit", self.game_width//2, self.game_height//7.5 + self.game_height//2)
+        #Draw the instructions button
+        rect_instruction = self.write(self.end_font, WHITE, "Instructions", self.game_width//2, self.game_height//7.5 + self.game_height//2)
 
-        #Draw the instructions
-        self.write(self.end_font, WHITE, "Use AD or arrow keys to move", self.game_width//2, self.game_height//1.5)
-        self.write(self.end_font, WHITE, "Press spacebar to shoot, P to pause", self.game_width//2, self.game_height//1.5 + self.game_height//15)
+        #Draw the quit button
+        rect_end = self.write(self.end_font, WHITE, "Quit", self.game_width//2, self.game_height//5 + self.game_height//2)
 
         #Get the keypresses of the player
         state = self.menu_update_keypresses()
 
         #Check the position of the mouse to return the state
-        return state if state else self.menu_check_mouse_pos(rect_play, rect_end, rect_highscore)
+        return state if state else self.menu_check_mouse_pos(rect_play, rect_end, rect_highscore,rect_instruction)
 
     def handle_play(self) -> State:
         """Handles the drawing of the play string"""
@@ -604,7 +609,7 @@ class GameWindow(object):
     def handle_gameover(self) -> State:
         """Handles drawing of the gameover screen"""
         #Check if player has got a new highscore
-        if not self.written and (self.score > self.scores[4][-1] or len(self.scores) < 5):
+        if not self.written and (self.score > self.scores[-1][-1] or len(self.scores) < 5):
             return State.NEWHIGHSCORE
 
         #Update the stay status
@@ -642,16 +647,13 @@ class GameWindow(object):
         else:
 
             #Draw the words for gameover
-            gameover = self.end_font.render("Game Over", True, WHITE)
-            self.screen.blit(gameover, (self.game_width // 2 - self.game_width // 7, self.game_height // 2 - self.game_height//12))
+            gameover = self.write(self.title_font, WHITE, "Game Over", self.game_width//2, self.game_height//5)
 
             #Draw the score
-            score = self.end_font.render("Score : " + str(self.score), True, WHITE)
-            self.screen.blit(score, (self.game_width // 2 - self.game_width // 7, self.game_height // 2))
+            self.write(self.end_font, WHITE,"Score : " + str(self.score),self.game_width // 2, self.game_height // 2)
 
             #Prompt player to update
-            inst = self.end_font.render("Press Y to go back and N to quit", True, WHITE)
-            self.screen.blit(inst, (self.game_height//12, self.game_height // 2 + self.game_height//12))
+            self.write(self.end_font, WHITE, "Press Y to go back and N to quit", self.game_width//2, self.game_height // 2 + self.game_height//12)
             
             #Return the gameover state
             return State.GAMEOVER
@@ -713,7 +715,7 @@ class GameWindow(object):
 class InputBox(object):
     def __init__(self, initial_x:int, initial_y:int, width:int, height:int, font, max_length = 5):
         """Constructor for the inputbox"""
-        self.text = ""
+        self.text = []
         self.max_length = max_length
         self.rect = pygame.Rect(initial_x, initial_y, width, height)
         self.rect.center = (initial_x, initial_y)
@@ -731,19 +733,33 @@ class InputBox(object):
 
     def input(self, char:str) -> None:
         """Add input"""
-        self.text += char
+        self.text.append(char)
 
     def backspace(self) -> None:
         """Remove the last letter"""
-        if len(self.text):
-            self.text = self.text[:-1]
+
+        #If the text is not empty
+        if self.text:
+
+            #Remove the last character
+            self.text.pop()
 
     def get_text(self) -> str:
         """Get what is in the inputbox"""
-        return self.text
+        return self.__str__()
+
+    def __str__(self) -> str:
+        return "".join(self.text)
+
+    def __repr__(self) -> str:
+        return "".join(self.text)
+        
 
 class Background(pygame.sprite.Sprite):
+
+    #To store the background sprites
     sprites = []
+
     def __init__(self, bg_no:int, game_width:int, game_height:int):
         """Constructor for the background class"""
 
@@ -776,7 +792,6 @@ class Background(pygame.sprite.Sprite):
 
 class MovingObject(pygame.sprite.Sprite):
     """Main class for all objects that move"""
-
     def __init__(self, sensitivity:int, initial_x:int, initial_y:int, game_width:int, game_height:int, debug:bool):
         """Constructor class for the moving object"""
         #Call the superclass init method
@@ -876,7 +891,10 @@ class MovingObject(pygame.sprite.Sprite):
         return self.image.get_width()
 
 class Explosion(MovingObject):
+
+    #To store the sprites for the explosions
     sprites = []
+
     def __init__(self, sprite:pygame.sprite.Sprite, tick_life:int, initial_x:int, initial_y:int, game_width:int, game_height:int, image_no:int = 0, debug:bool = False):
         """The main class for the explosion"""
 
@@ -908,9 +926,10 @@ class Explosion(MovingObject):
 
 class Bullet(MovingObject):
     """Bullet class for the space invaders game"""
+
     #Static method to store sprites
     sprites = []
-    
+
     def __init__(self, sensitivity:int, initial_x:int, initial_y:int, direction:Direction, game_width:int, game_height:int, debug:bool):
         """The constructor for the bullet class"""
         #Load the image 
@@ -1051,6 +1070,7 @@ class Player(MovingObject):
     """Player class"""
     #Static method to store sprites
     sprites = []
+
     def __init__(self, ship_no:int, sensitivity:int, game_width:int, game_height:int, init_life:int, fps:int, debug:bool = False, AI:bool = False):
         """Constructor for the player"""
         #Store the items
@@ -1153,6 +1173,9 @@ class Player(MovingObject):
         #Reduce invincibility amount
         if self.invincible:
             self.invincible -= 1
+
+        #Load the Image of the player based on his life
+        self.image = Player.sprites[self.get_lives()-1]
 
         #Call the super update
         return super().update()
