@@ -3,17 +3,39 @@ import pygame
 import pygame.freetype
 import sys
 import random
-import multiprocessing as mp
-from pygame.locals import * 
-from .Enums import *
-from .database import ScoreBoard
-from .Player import Player
-from .Bullet import Bullet
-from .EnemyShip import EnemyShip
-from .Explosion import Explosion
-from .Background import Background
-from .Colors import *
-from .InputBox import InputBox
+import asyncio
+from pygame.locals import *
+try:
+    from .Enums import *
+    from .database import ScoreBoard
+    from .Player import Player
+    from .Bullet import Bullet
+    from .EnemyShip import EnemyShip
+    from .Explosion import Explosion
+    from .Background import Background
+    from .Colors import *
+    from .InputBox import InputBox
+    from .Screens import InstructionScreen, MenuScreen
+except ImportError:
+    from Enums import *
+    from database import ScoreBoard
+    from Player import Player
+    from Bullet import Bullet
+    from EnemyShip import EnemyShip
+    from Explosion import Explosion
+    from Background import Background
+    from Colors import *
+    from InputBox import InputBox
+    from Screens import InstructionScreen, MenuScreen
+
+#Initialise pygame
+pygame.init()
+
+#Initialise the font
+pygame.font.init()
+
+#Initialise the sound
+pygame.mixer.init()
 
 def add_to_sprite(obj:object, sprite_path:tuple) -> None:
     """Add the pygame image to the object"""
@@ -21,13 +43,17 @@ def add_to_sprite(obj:object, sprite_path:tuple) -> None:
     for path in sprite_path:
         obj.sprites.append(pygame.image.load(path))
 
-
 class GameWindow(object):
     """The main game window for Space invaders"""
     def __init__(self, sensitivity:int, maxfps:int, game_width:int, game_height:int, icon_img_path:str, player_img_paths:tuple,
                  enemy_img_paths:tuple, bullet_img_paths:tuple, background_img_paths:tuple, explosion_img_paths:tuple, 
                  p_settings:dict, wave:int = 1,  debug:bool = False):
         """The constructor for the main window"""
+
+        #Set the dimensions
+        self.main_screen = pygame.display.set_mode((game_height,game_width))
+        self.screen = pygame.Surface((game_height,game_width), pygame.SRCALPHA, 32)
+
         #Storing the game variables
         self.fps = maxfps
         self.p_settings = p_settings
@@ -46,33 +72,22 @@ class GameWindow(object):
         #Load the highscores
         self.score_board = ScoreBoard("data/test.db")
         self.scores = sorted(self.score_board.fetch_all(),key = lambda x: x[2], reverse = True)
-        if self.debug:
-            print(self.scores)
+
+        #Create the static screens
+        self.instructions = InstructionScreen(game_width, game_height, self.main_screen)
+        self.menu = MenuScreen(game_width, game_height, self.main_screen)
         
         #Store the different states the menu has
         self.states = {
-            State.MENU:self.handle_menu,
+            State.MENU:self.menu.handle,
             State.PLAY:self.handle_play,
             State.HIGHSCORE:self.handle_highscore,
             State.NEWHIGHSCORE:self.handle_newhighscore,
             State.GAMEOVER:self.handle_gameover,
-            State.INSTRUCTIONS:self.handle_instructions,
+            State.INSTRUCTIONS:self.instructions.handle,
             State.PAUSE:self.handle_pause,
             State.QUIT:self.__del__
         }
-
-        #Initialise pygame
-        pygame.init()
-
-        #Initialise the font
-        pygame.font.init()
-
-        #Initialise the sound
-        pygame.mixer.init()
-
-        #Set the dimensions
-        self.main_screen = pygame.display.set_mode((game_height,game_width))
-        self.screen = pygame.Surface((game_height,game_width), pygame.SRCALPHA, 32)
 
         #Set the title
         pygame.display.set_caption("Space Invaders")
@@ -119,7 +134,7 @@ class GameWindow(object):
         #Create the background object
         self.bg = Background(p_settings['bg'], game_width, game_height)
 
-        #Other sprites
+        #Fonts
         self.font = pygame.font.Font(pygame.font.get_default_font(),game_width//40)
         self.end_font = pygame.font.Font(pygame.font.get_default_font(),game_width//20)
         self.title_font = pygame.font.Font(pygame.font.get_default_font(), game_width // 10)
@@ -144,7 +159,7 @@ class GameWindow(object):
         #Get the rect of the font
         if direction == Direction.CENTER:
             rect_sentence = sentence.get_rect(center = (x_pos, y_pos))
-        if direction == Direction.LEFT:
+        elif direction == Direction.LEFT:
             rect_sentence = sentence.get_rect(left = x_pos, top = y_pos)
 
         #Draw the sentence onto the screen
@@ -214,28 +229,6 @@ class GameWindow(object):
         
         #Otherwise return None for it to be asked in the next iteration
         else:
-            return None
-
-    def menu_update_keypresses(self) -> State:
-        """Track the keypress for the menu"""
-        #Get the keypresses of the user
-        keys = pygame.key.get_pressed()
-
-        #Check if the user press the return key
-        if keys[K_RETURN]:
-
-            #Start the game
-            return State.PLAY
-
-        #Check if the user epressed the escape key
-        elif keys[K_ESCAPE]:
-
-            #Quit the game
-            return State.QUIT
-
-        else:
-
-            #Otherwise return none
             return None
 
     def spawn_enemies(self, number:int) -> None:
@@ -380,29 +373,6 @@ class GameWindow(object):
         #If player pressed the button
         return pygame.mouse.get_pressed()[0] and rect.collidepoint(mouse_pos)
 
-
-    def menu_check_mouse_pos(self, rect_play, rect_end, rect_highscore, rect_instructions):
-        """Check the position of the mouse on the menu to see what the player clicked"""
-
-        #If mousedown and position colide with play
-        if self.check_clicked(rect_play):
-            return State.PLAY
-
-        #If mousedown and position colide with quit
-        elif self.check_clicked(rect_end):
-            return State.QUIT
-
-        elif self.check_clicked(rect_highscore):
-            return State.HIGHSCORE
-        
-        elif self.check_clicked(rect_instructions):
-            return State.INSTRUCTIONS
-
-        #Otherwise the player has not decided
-        else:
-            #Return menu state
-            return State.MENU
-
     def pause_update_keypresses(self) -> State:
         """Check for the keypresses within the pause screen"""
 
@@ -500,51 +470,6 @@ class GameWindow(object):
 
         #Detect the keypress for the unpause button
         return self.pause_update_keypresses()
-        
-
-    def handle_instructions(self) -> State:
-        """Handles the drawing of the instructions"""
-        #The first pixel to align
-        first_px = self.game_height//2
-
-        #Draw the header
-        self.write(self.title_font, WHITE, "Instructions", self.game_width//2, first_px - self.game_height//5)
-
-        #Draw the instructions
-        self.write(self.end_font, WHITE, "Use AD or arrow keys to move", self.game_width//2, first_px)
-        self.write(self.end_font, WHITE, "Press spacebar to shoot, P to pause", self.game_width//2, first_px + self.game_height//15)
-        self.write(self.end_font, WHITE, "Press O to unpause", self.game_width//2, first_px + self.game_height//7.5)
-
-        #Draw the back button
-        back_rect = self.write(self.end_font,WHITE, "Back", self.game_width//2, self.game_height-self.game_height//5)
-        if self.check_clicked(back_rect):
-            return State.MENU
-
-        return State.INSTRUCTIONS
-
-    def handle_menu(self) -> State:
-        """Handles the drawing of the menu"""
-
-        #Draw the title
-        self.write(self.title_font, WHITE, "Space Invaders", self.game_width//2, self.game_height//5)
-
-        #Draw the Play button
-        rect_play = self.write(self.end_font,WHITE, "Play", self.game_width//2, self.game_height//2)
-
-        #Draw the highscore button
-        rect_highscore = self.write(self.end_font, WHITE, "High Score", self.game_width//2, self.game_height//15 + self.game_height//2)
-
-        #Draw the instructions button
-        rect_instruction = self.write(self.end_font, WHITE, "Instructions", self.game_width//2, self.game_height//7.5 + self.game_height//2)
-
-        #Draw the quit button
-        rect_end = self.write(self.end_font, WHITE, "Quit", self.game_width//2, self.game_height//5 + self.game_height//2)
-
-        #Get the keypresses of the player
-        state = self.menu_update_keypresses()
-
-        #Check the position of the mouse to return the state
-        return state if state else self.menu_check_mouse_pos(rect_play, rect_end, rect_highscore,rect_instruction)
 
     def handle_play(self) -> State:
         """Handles the drawing of the play string"""
@@ -703,6 +628,9 @@ class GameWindow(object):
         #Remove the last 3 entries
         self.score_board.remove_all(*self.scores[5:])
 
+        #Close the database
+        self.score_board.__del__()
+
         #Quit the game
         pygame.display.quit()
         pygame.font.quit()
@@ -715,7 +643,6 @@ class EnemyShips(pygame.sprite.Group):
         #Initialise the superclass
         super().__init__()
 
-    
     def update(self) -> None:
         """The update function of the group"""
         #The lower the number of enemies, the greater the speed
