@@ -10,15 +10,21 @@ except ImportError:
     from Colors import WHITE
 
 class MenuScreen(Screen):
-    def __init__(self, game_width:int, game_height:int, screen):
+    def __init__(self, game_width:int, game_height:int, screen, debug:bool = False):
         """Constructor for the menu screen
             Arguments:
-                game_width: the width of the game in pixels
-                game_height: the height of the game in pixels
-                screen: The screen that it is blited to
+                game_width: the width of the game in pixels (int)
+                game_height: the height of the game in pixels (int)
+                screen: The screen that it is blited to (pygame.Surface)
+                debug: Toggles debug mode (bool)
+
+            Methods:
+                update_keypress: Checks for the keypress of the player and mutate relavant states
+                check_mouse: Check for the user's click on the screen
+                handle: Handles the drawing and updating of the objects on the screen
         """
         #Call the superclass
-        super().__init__(game_width, game_height, State.MENU, screen)
+        super().__init__(game_width, game_height, State.MENU, screen, debug)
 
         #Draw the title
         self.write(Screen.title_font, WHITE, "Space Invaders", self.game_width//2, self.game_height//5)
@@ -41,7 +47,9 @@ class MenuScreen(Screen):
             Arguments:
                 No arguments
             Returns: 
-                Returns the State of the next game
+                Returns the State of the next game (State)
+                or 
+                None if there are no relavant keys which are pressed
         """
         #Get the keypresses of the user
         keys = pygame.key.get_pressed()
@@ -59,25 +67,27 @@ class MenuScreen(Screen):
             return State.QUIT
 
         else:
-
             #Otherwise return none
             return None
 
-
-    def check_mouse_pos(self, rects, states):
+    def check_mouse(self, rects:list, states:list):
         """Check the position of the mouse on the menu to see what the player clicked
             Arguments:
-                rect_play: Rectangle containing the play button
-                rect_end: Rectangle containing the end button
-                rect_highscore: Rectangle containing the highscore button
-                rect_instructions: Rectangle containing the highscore button
+                rects: List of Rects to be checked (list of pygame.Rects)
+                states: List of states to be returned if it is clicked (list of States)
             Return:
-                Returns the next state of the game
+                Returns the next state of the game (State)
         """
+        #Iterate through each of the rects
         for i in range(len(rects)):
+
+            #Check if the rect is clicked
             if self.check_clicked(rects[i]):
+
+                #Return the state if it is clicked
                 return states[i]
 
+        #Otherwise return the Menu state
         return State.MENU
 
     def handle(self) -> State:
@@ -85,12 +95,13 @@ class MenuScreen(Screen):
             Arguments:
                 No Arguments
             Returns:
-                Returns the State the game should be in
+                Returns the State the game should be in (State)
         """
+        #Update the screen
         self.update()
 
-        #Get the keypresses of the player
+        #Check for keypress of user
         state = self.update_keypresses()
 
-        #Check the position of the mouse to return the state
-        return state if state else self.check_mouse_pos([self.rect_play, self.rect_end, self.rect_highscore, self.rect_instruction],[State.PLAY,State.QUIT, State.HIGHSCORE, State.INSTRUCTIONS])
+        #Check the position of the mouse to return the state and combine it with the keypress of user
+        return state if state else self.check_mouse([self.rect_play, self.rect_end, self.rect_highscore, self.rect_instruction],[State.PLAY,State.QUIT, State.HIGHSCORE, State.INSTRUCTIONS])

@@ -14,28 +14,33 @@ if __name__ =="__main__":
     settings = "settings.cfg"
 
     #Read the configuration file for space invaders
-    config = read_all(settings,"Space Invaders")
+    all_cfg = read_all(settings)
+
+    #Main configurations
+    config = all_cfg['Space Invaders']
 
     #Get the player sprites
-    player_img_paths = config["Player Sprites"].values()
+    player_img_paths = all_cfg["Player Sprites"].values()
 
     #Get the bullet sprites Enemy Sprites
-    bullet_img_paths = config["Bullet Sprites"].values()
+    bullet_img_paths = all_cfg["Bullet Sprites"].values()
 
     #Get the enemy sprites
-    enemy_img_paths = config["Enemy Sprites"].values()
+    enemy_img_paths = all_cfg["Enemy Sprites"].values()
 
     #Get the background sprites
-    background_img_paths = config["Background"].values()
+    background_img_paths = all_cfg["Background"].values()
 
     #Get the explosion image path
-    explosion_img_paths = config["Explosion Sprites"].values()
+    explosion_img_paths = all_cfg["Explosion Sprites"].values()
 
     #Get the settings
-    settings = config["Player"]
+    settings = all_cfg["Player"]
 
     #Print the config data if debug is on
     if config['debug']:
+
+        #Print the main config
         for k,v in config.items():
             print(f"{k} : {v}")
 

@@ -14,7 +14,6 @@ try:
     from .Colors import *
     from .InputBox import InputBox
     from .InstructionsScreen import InstructionScreen
-    from .SettingsScreen import SettingsScreen
     from .MenuScreen import MenuScreen
     from .PlayScreen import PlayScreen
     from .GameoverScreen import GameoverScreen
@@ -23,7 +22,7 @@ try:
     from .HighscoreScreen import HighscoreScreen
     from .NewhighscoreScreen import NewhighscoreScreen
     
-except ImportError:
+except ImportError as exp:
     from Enums import *
     from database import ScoreBoard
     from Player import Player
@@ -58,16 +57,37 @@ def add_to_sprite(obj:object, sprite_path:tuple) -> None:
         obj.sprites.append(pygame.image.load(path))
 
 class GameWindow(object):
-    """The main game window for Space invaders"""
     def __init__(self, sensitivity:int, maxfps:int, game_width:int, game_height:int, icon_img_path:str, player_img_paths:tuple,
                  enemy_img_paths:tuple, bullet_img_paths:tuple, background_img_paths:tuple, explosion_img_paths:tuple, 
                  p_settings:dict, wave:int = 1,  debug:bool = False):
-        """The constructor for the main window"""
+        """The constructor for the main window
+            Arguments:
+                Sensitivity: Sensitivity of controls (int)
+                maxfps: Max fps for the game to go (int)
+                game_width: Width of the game window (int)
+                game_height: Height of the game window (int)
+                icon_img_path: Path to icon image (string)
+                player_img_paths: Paths to all player images (tuple of string)
+                enemy_img_paths: Paths to all enemy sprites (tuple of string)
+                bullet_img_paths: Paths to all the bullet sprites (tuple of string)
+                background_img_path: Path to the background (string)
+                explosion_img_paths: Path to all the explosion sprites (string)
+                p_settings: Dictionary of setting values (dictionary)
+                wave: Wave of the mobs to start (int): default = 1
+                debug: Toggle whether the game is in debug mode (bool): default = False
+
+            Methods:
+                handle_newhighscore: Handles the display of new highscores
+                handle_pause: Handles the display of the pause screen
+                handle_gameover: Handles the state of the gameover screen
+                get_state: Get the current state of the game
+                mainloop: Run the mainloop for the gamewindow
+        """
 
         #Set the title
         pygame.display.set_caption("Space Invaders")
 
-        #Load the Icon
+        #Load and set the Icon
         icon = pygame.image.load(icon_img_path)
         pygame.display.set_icon(icon)
 
@@ -92,7 +112,7 @@ class GameWindow(object):
         self.difficulty = Difficulty(p_settings['difficulty'] if p_settings['difficulty'] < 5 else 5)
 
         #Load the highscores
-        self.score_board = ScoreBoard("data/test.db")
+        self.score_board = ScoreBoard("data/test.db") #TODO To be changed when game is officially launched
 
         #Load player ship images into Player object 
         add_to_sprite(Player, player_img_paths)
@@ -109,12 +129,11 @@ class GameWindow(object):
         #Load the sprites for the explosion
         add_to_sprite(Explosion, explosion_img_paths)
 
-        #Create the static screens
-        self.instructions = InstructionScreen(game_width, game_height, self.main_screen)
-        self.menu = MenuScreen(game_width, game_height, self.main_screen)
-        self.settings = SettingsScreen(game_width, game_height, self.main_screen)
-        self.play = PlayScreen(game_width, game_height, self.main_screen, sensitivity, maxfps)
-        self.highscore = HighscoreScreen(game_width, game_height, self.main_screen, self.score_board.fetch_all(), self.debug)
+        #Create the Screen objects
+        self.instructions = InstructionScreen(game_width, game_height, self.main_screen, debug = self.debug)
+        self.menu = MenuScreen(game_width, game_height, self.main_screen, debug = self.debug)
+        self.play = PlayScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug = self.debug)
+        self.highscore = HighscoreScreen(game_width, game_height, self.main_screen, self.score_board.fetch_all(), debug = self.debug)
         
         #Store the different states the menu has
         self.states = {
@@ -125,7 +144,6 @@ class GameWindow(object):
             State.GAMEOVER:self.handle_gameover,
             State.INSTRUCTIONS:self.instructions.handle,
             State.PAUSE:self.handle_pause,
-            State.SETTINGS: self.settings.handle,
             State.QUIT:self.__del__
         }
 
@@ -133,7 +151,12 @@ class GameWindow(object):
         self.bg = Background(p_settings['bg'], game_width, game_height)
 
     def handle_newhighscore(self) -> State:
-        """Handle the new highscore state"""
+        """Handle the displaying of the highscore screen
+            Arguments: 
+                No arguments
+            Returns:
+                Returns the state the game is suppose to be in next (State)
+        """
         #Create the new highscore screen
         self.newhighscore = NewhighscoreScreen(self.game_width, self.game_height, self.main_screen, self.play.get_score())
 
@@ -143,6 +166,7 @@ class GameWindow(object):
         #If the state is gameover
         if state == State.GAMEOVER:
             
+            #Debugging information
             if self.debug:
                 print(f"Name:{NewhighscoreScreen.get_name()}\nScore:{self.play.get_score()}")
 
@@ -154,13 +178,17 @@ class GameWindow(object):
             
             #Mark as highscore written
             self.written = True
-            return State.GAMEOVER
 
         #Return the next state
         return state
 
     def handle_pause(self) -> State:
-        """Handle the pause state"""
+        """Handle the displaying of the pause screen
+            Arguments:
+                No arguments
+            Returns:
+                Returns the next state the game is suppose to be in (State)
+        """
         #Create the pause screen
         self.pause = PauseScreen(self.game_width,self.game_height, self.main_screen, self.play.get_score(), self.debug)
 
@@ -168,8 +196,12 @@ class GameWindow(object):
         return self.pause.handle()
         
     def handle_gameover(self) -> State:
-        """Handle the gameover state"""
-
+        """Handle the displaying of the gameover screen
+            Arguments: 
+                No arguments
+            Returns: 
+                Returns the next state the game is suppose to be in (State)
+        """
         #If it is a new highscore
         if self.highscore.beat_highscore(self.play.get_score()) and not self.written:
 
@@ -192,13 +224,23 @@ class GameWindow(object):
         return state
 
     def get_state(self) -> State:
-        """Return the state the game is in"""
+        """Return the state the game is in
+            Arguments:
+                No arguments
+            Returns: 
+                Returns the current state of the game (State)
+        """
         return self.state
 
     def mainloop(self) -> None:
-        """The mainloop to run the game"""
+        """The mainloop to load the screen of the game
+            Arguments: 
+                No arguments
+            Returns:
+                No return
+        """
 
-        #If debugging
+        #Print the mainloop run based on debug mode
         if self.debug:
             print("Running the main loop")
 
@@ -235,7 +277,13 @@ class GameWindow(object):
         self.__del__()
 
     def __del__(self) -> None:
-        """Destructor for the game window"""
+        """Destructor for the game window.
+            Closes all the relavent processes
+            Arguments:
+                No arguments
+            Returns: 
+                No return
+        """
         #Add the new highscores into DB
         self.score_board.add_all(*self.highscore.get_scores())
 

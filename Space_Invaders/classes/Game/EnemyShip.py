@@ -6,11 +6,29 @@ except ImportError:
     from Enums import Direction
 
 class EnemyShip(MovingObject):
-    """Enemyship obj"""
+
     #Static method to store sprites
     sprites = []
+
     def __init__(self, sensitivity:int, initial_x:int, initial_y:int, lives:int,  game_width:int, game_height:int, debug:bool):
-        """Constructor for the enemy object"""
+        """Constructor for the enemy object
+            Arguments:
+                sensitivity: Sensitivity of the enemy ship (int)
+                initial_x: Get the initial x coordinate for the ship (int)
+                initial_y: Get the initial y coordinate for the ship (int)
+                lives: get the number of lives that the ship has left (int)
+                game_width: Width of the game in pixels (int)
+                game_height: Height of the game in pixels (int)
+                debug: Toggles debug mode (bool)
+
+            Methods:
+                get_points: Returns the points of that the mob is worth
+                is_destroyed: Returns whether the ship is destroyed
+                destroy: Kill the mob 1 time
+                get_lives: Get the number of lives that the mob has left
+                change_direction: Change the direction that the mob is moving
+                update: Update the position of the mob
+        """
 
         #Load the correct image
         self.image = self.sprites[lives-1 if lives < len(EnemyShip.sprites) else len(EnemyShip.sprites)-1]
@@ -24,15 +42,30 @@ class EnemyShip(MovingObject):
         self.points = 10 * self.lives
 
     def get_points(self) -> int:
-        """Get the number of points the mob is worth"""
+        """Get the number of points the mob is worth
+            Arguments:
+                No arguments:
+            Returns: 
+                Returns the number of points the mob is worth (int)
+        """
         return self.points
 
     def is_destroyed(self) -> bool:
-        """Returns whether the ship is destroyed"""
+        """Returns whether the ship is destroyed
+            Arguments:
+                No arguments:
+            Returns: 
+                Returns if the mob is destroyed
+        """
         return self.get_lives() == 0
 
     def destroy(self) -> None:
-        """Destroy 1 life of the ship"""
+        """Destroy 1 life of the ship
+            Arguments:
+                No arguments:
+            Returns: 
+                No return
+        """
         #If the ship is still alive
         if self.lives:
 
@@ -49,11 +82,21 @@ class EnemyShip(MovingObject):
             assert False, "Destroying destroyed object"
 
     def get_lives(self) -> int: 
-        """Gets the number of lives the ship has left"""
+        """Gets the number of lives the ship has left
+            Arguments:
+                No arguments:
+            Returns: 
+                Returns the number of lives the mob have left (int)
+        """
         return self.lives
 
-    def change_direction(self):
-        """Change the x direction the enemy is moving"""
+    def change_direction(self) -> None:
+        """Change the x direction the enemy is moving
+            Arguments:
+                No arguments:
+            Returns: 
+                No return
+        """
 
         #Swap the Right and the left position
         if self.direction == Direction.RIGHT:
@@ -64,7 +107,12 @@ class EnemyShip(MovingObject):
             assert False, "Enemy ship direction is invalid"
 
     def update(self, multiplier:int) -> None:
-        """Update the movement of the enemies"""
+        """Update the movement of the enemies
+            Arguments:
+                No arguments:
+            Returns: 
+                No return
+        """
 
         #If enemyship is moving to the right and is not at the edge
         if self.direction == Direction.RIGHT and self.get_x() < self.game_width:

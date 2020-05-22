@@ -55,7 +55,7 @@ def read_all(config_path:str) -> dict:
     config.read(config_path)
 
     #Return all of the configs as a dictionary
-    return dict(map(lambda x: (x[0],dict(x[1])), config.items()))
+    return dict(map(lambda x: (x[0],dict(map(lambda x: convertType(x),x[1].items()))), config.items()))
 
 def main() -> None:
     """The main function for this file"""

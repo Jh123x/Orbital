@@ -5,7 +5,17 @@ class Background(pygame.sprite.Sprite):
     sprites = []
 
     def __init__(self, bg_no:int, game_width:int, game_height:int):
-        """Constructor for the background class"""
+        """Constructor for the background class
+            Arguments:
+                bg_no: Background number to be used (int)
+                game_width: Width of the game in pixels (int)
+                game_height: Height of the game in pixels (int)
+
+            Methods:
+                is_present: Checks if any backgrounds are present
+                update: Update the background
+            
+        """
 
         #Calls the superclass
         super().__init__()
@@ -27,9 +37,19 @@ class Background(pygame.sprite.Sprite):
             self.rect.left, self.rect.top = 0,0
 
     def is_present(self) -> bool:
-        """Check if there is a valid background"""
-        return self.image
+        """Check if there is a valid background
+            Arguments:
+                No arguments
+            Returns: 
+                Returns a boolean showing if an image is available
+        """
+        return True if self.image else False
 
     def update(self, screen) -> None:
-        """Blit the background to the screen"""
+        """Blit the background to the screen
+            Arguments:
+                screen: Screen to draw the background onto (pygame.Surface)
+            Returns: 
+                No return
+        """
         screen.blit(self.image, self.rect)

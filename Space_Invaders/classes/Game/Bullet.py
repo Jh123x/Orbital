@@ -6,13 +6,25 @@ except ImportError:
     from Enums import Direction
 
 class Bullet(MovingObject):
-    """Bullet class for the space invaders game"""
 
     #Static method to store sprites
     sprites = []
 
-    def __init__(self, sensitivity:int, initial_x:int, initial_y:int, direction:Direction, game_width:int, game_height:int, debug:bool):
-        """The constructor for the bullet class"""
+    def __init__(self, sensitivity:int, initial_x:int, initial_y:int, direction:Direction, game_width:int, game_height:int, debug:bool = False):
+        """The constructor for the bullet class
+            Arguments:
+                sensitivity: Sensitivity of the bullets (int)
+                initial_x: Initial x position of the bullet (int)
+                initial_y: Initial y position of the bullet (int)
+                direction: Direction of bullet (Direction)
+                game_width: Width of the game in pixels (int)
+                game_height: Height of the game in pixels (int)
+                debug: Toggles debug mode (bool): default = False
+
+            Methods:
+                update: Update the position of the bullet
+            
+        """
         #Load the image 
         self.image = self.sprites[0]
 
@@ -27,14 +39,22 @@ class Bullet(MovingObject):
             
             #Set the direction to down
             self.direction = self.move_down
+
         else:
+
+            #Otherwise it is invalid
             assert False, "Direction of bullet is invalid"
 
         #Call the superclass
         super().__init__(sensitivity, initial_x, initial_y, game_width, game_height, debug)
 
     def update(self) -> None:
-        """Update the path of the bullet"""
+        """Update the path of the bullet
+            Arguments:
+                No arguments
+            Returns: 
+                No return
+        """
         #Move the bullet
         self.direction()
 

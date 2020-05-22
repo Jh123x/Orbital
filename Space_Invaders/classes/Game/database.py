@@ -5,10 +5,18 @@ class ScoreBoard(object):
     def __init__(self, dbpath:str, max_length:int = 5):
         """Class for keeping track of the high score
             Arguments:
-                dbpath: A string containing the path to the database
-                max_length: An integer containing the max length to keep track of (Default 5)
-            Returns:
-                A score board object
+                dbpath: A string containing the path to the database (string)
+                max_length: An integer containing the max length to keep track of (int): default = 5
+            
+            Methods:
+                execute: Execute a particular string in sql
+                remove: Remove a name from the scoreboard
+                remove_exact: Remove the exact copy of the name and score from the scoreboard
+                add: Add the name and score to the scoreboard
+                add_all: Add all items passed into the scoreboard
+                remove_all: Remove all names,score pairs that are provided
+                fetch_all: Fetch all the data in database
+                is_cache: Check if the database data is stored in cache
         
         """
 
@@ -34,8 +42,8 @@ class ScoreBoard(object):
     def execute(self, command:str, *args) -> None:
         """Execute the command in the form of a string
             Arguments:  
-                command: a string containing the sql command
-                *args: The arguments to the placed within the command wildcards if any
+                command: a string containing the sql command (string)
+                *args: The arguments to the placed within the command wildcards if any (tuple)
             Returns:
                 No return
         """
@@ -49,7 +57,7 @@ class ScoreBoard(object):
     def remove(self, name:str) -> None:
         """Remove the last entry from the highscore board
             Arguments:
-                name: Name of the entry to be removed
+                name: Name of the entry to be removed (string)
             Returns:
                 No return
         """
@@ -62,8 +70,8 @@ class ScoreBoard(object):
     def remove_exact(self, name:str, score:int) -> None:
         """Removes the entry that matches both the name and the highscore
             Arguments:
-                name: Name of the entry to be removed
-                score: Score of the entry to be removed
+                name: Name of the entry to be removed (string)
+                score: Score of the entry to be removed (int)
             Returns:
                 There is no return
         """
@@ -77,8 +85,8 @@ class ScoreBoard(object):
     def add(self, name:str, score:int) -> None:
         """Add a name and a score to the scoreboard
             Arguments:
-                name: Name of the person to be inserted
-                score: Score of the person to be inserted
+                name: Name of the person to be inserted (string)
+                score: Score of the person to be inserted (int)
             Returns: 
                 Does not return 
         """
@@ -94,7 +102,7 @@ class ScoreBoard(object):
     def add_all(self, *args) -> None:
         """Add all the items into the database
             Arguments: 
-                *args: list of items to be added to the database
+                *args: list of items to be added to the database (List of tuples)
             Returns: 
                 No return
         """
@@ -115,7 +123,7 @@ class ScoreBoard(object):
     def remove_all(self, *args):
         """Remove all the items from the table
             Arguments:
-                *args: list of items to be removed from the database
+                *args: list of items to be removed from the database (list of tuples)
             Returns:
                 No return
         """
@@ -135,7 +143,7 @@ class ScoreBoard(object):
             Arguments:
                 No arguments
             Returns: 
-                A tuple containing all the entries in the highscore table
+                A tuple containing all the entries in the highscore table (tuple of tuple)
         """
         
         #If there is no cache or if there are changes in the cache
@@ -156,7 +164,7 @@ class ScoreBoard(object):
             Arguments: 
                 No arguments
             Returns:
-                Returns a boolean to indicate if there is a cache
+                Returns a boolean to indicate if there is a cache (bool)
         """
         return True if self.cache else False
 

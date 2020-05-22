@@ -8,8 +8,20 @@ except ImportError:
     from Enums import State
 
 class InstructionScreen(Screen):
-    def __init__(self, game_width, game_height, screen):
-        super().__init__(game_width, game_height, State.INSTRUCTIONS, screen)
+    def __init__(self, game_width:int, game_height:int, screen, debug:bool = False):
+        """Screen for displaying the instructions
+            Arguments:  
+                game_width: Width of the screen in pixels (int)
+                game_height: Height of the screen in pixels (int)
+                screen: Surface that the screen will be drawn on (pygame.Surface)
+                debug: Toggles debug mode (bool)
+
+            Methods:
+                handle: Handles the drawing of the instructions screen on the surface
+        """
+
+        #Call the superclass
+        super().__init__(game_width, game_height, State.INSTRUCTIONS, screen, debug)
 
         #The first pixel to align
         first_px = self.game_height//2
@@ -30,7 +42,7 @@ class InstructionScreen(Screen):
             Arguments:
                 No Arguments
             Returns:
-                Returns the State the game should be in
+                Returns the State the game should be in (State)
         """
 
         #Update onto the screen
