@@ -1,11 +1,19 @@
-from .MovingObject import MovingObject
+import pygame
+try:
+    from .MovingObject import MovingObject
+    from .Bullet import Bullet
+    from .Enums import Direction
+except ImportError:
+    from MovingObject import MovingObject
+    from Bullet import Bullet
+    from Enums import Direction
 
 class Player(MovingObject):
     """Player class"""
     #Static method to store sprites
     sprites = []
 
-    def __init__(self, sensitivity:int, game_width:int, game_height:int, init_life:int, fps:int, debug:bool = False, AI:bool = False):
+    def __init__(self, sensitivity:int, game_width:int, game_height:int, init_life:int, fps:int, bullet_grp:pygame.sprite.Group(), debug:bool = False, AI:bool = False):
         """Constructor for the player"""
         #Store the items
         self.AI = AI
@@ -18,6 +26,12 @@ class Player(MovingObject):
 
         #Invicibility when it just spawned
         self.invincible = fps
+
+        #Player bullet group
+        self.bullet_grp = bullet_grp
+
+        #Keep track of bullet cooldown
+        self.cooldown = 0
 
         #If the life is not valid set it to 3 by default
         if init_life > 0:
@@ -42,6 +56,22 @@ class Player(MovingObject):
     def isAI(self) -> bool:
         """Check if it is an ai instance of the Player"""
         return self.AI
+
+    def on_cooldown(self) -> bool:
+        """Check if shooting is on cooldown"""
+        return self.cooldown > 0
+    
+    def shoot(self) -> None:
+        """Shoot a bullet"""
+
+        #If the player is not on cooldown 
+        if not self.on_cooldown():
+
+            #Add the bullet to the bullet group
+            self.bullet_grp.add(Bullet(self.sensitivity * 1.5, self.get_center()[0], self.get_y(), Direction.UP, self.game_width, self.game_height, self.debug))
+
+            #Reset the cooldown
+            self.cooldown = self.fps // (3 * 0.95)
 
     def move_up(self) -> None:
         """Do not allow the player to move up"""
@@ -102,8 +132,11 @@ class Player(MovingObject):
     def update(self) -> None:
         """Update the position of the player"""
         #Reduce invincibility amount
-        if self.invincible:
+        if self.invincible > 0:
             self.invincible -= 1
+
+        if self.cooldown > 0:
+            self.cooldown -= 1
 
         #Load the Image of the player based on his life
         self.image = Player.sprites[self.get_lives()-1]

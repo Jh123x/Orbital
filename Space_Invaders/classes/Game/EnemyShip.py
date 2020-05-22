@@ -1,5 +1,9 @@
-from .MovingObject import MovingObject
-from .Enums import Direction
+try:
+    from .MovingObject import MovingObject
+    from .Enums import Direction
+except ImportError:
+    from MovingObject import MovingObject
+    from Enums import Direction
 
 class EnemyShip(MovingObject):
     """Enemyship obj"""

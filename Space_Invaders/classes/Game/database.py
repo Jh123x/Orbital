@@ -178,11 +178,14 @@ def main() -> None:
             No returns
     """
     #Create the scoreboard database
-    db = ScoreBoard("../data/test.db")
+    db = ScoreBoard("../../data/test.db")
 
     #For debugging
     print(f"Running the main function from database file")
     print(f"Scoreboard db created")
+
+    #Print entries
+    print(db.fetch_all())
 
     #Create a while loop for the user to test commands as they are typed into the terminal
     while(True):

@@ -1,5 +1,8 @@
-from .MovingObject import MovingObject
 import pygame
+try:
+    from .MovingObject import MovingObject
+except ImportError:
+    from MovingObject import MovingObject
 
 class Explosion(MovingObject):
 

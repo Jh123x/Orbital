@@ -1,5 +1,9 @@
-from .MovingObject import MovingObject
-from .Enums import Direction
+try:
+    from .MovingObject import MovingObject
+    from .Enums import Direction
+except ImportError:
+    from MovingObject import MovingObject
+    from Enums import Direction
 
 class Bullet(MovingObject):
     """Bullet class for the space invaders game"""
