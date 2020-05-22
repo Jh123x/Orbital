@@ -1,13 +1,13 @@
-#!/usr/bin/env python
-
-############################
-#-------Orbital 2020-------#
-############################
+#To read the configuration files
 import configparser
-from classes.game import GameWindow
 
 def convertType(pair:tuple):
-    """Convert items to the appropriate types"""
+    """Convert items to the appropriate types
+        Arguments:
+            pair: A tuple containing 2 items
+        Returns:
+            pair: A tuple containing 2 items where the second item is converted to the appropriate types
+    """
 
     #Check if it is boolean
     if pair[1] == "True" or pair[1] == "true":
@@ -31,6 +31,7 @@ def read_settings(config_path:str, key:str) -> dict:
         Returns:
             Dictionary containing the settings all values are strings
     """
+
     #Set up the config parser
     config = configparser.ConfigParser()
 
@@ -39,20 +40,26 @@ def read_settings(config_path:str, key:str) -> dict:
 
     #Return the dictionary after converting numbers to int
     return dict(map(lambda x: convertType(x) ,config[key].items()))
-    
-#Run the following if the file is run as main
-if __name__ =="__main__":
 
-    #Read the configuration file for space invaders
-    config = read_settings("settings.cfg","Space Invaders")
+def read_all(config_path:str) -> dict:
+    """Read all the configurations from the config file
+        Arguments: 
+            config_path: path to the config file
+        returns: 
+            A dictionary with each of the keywords matched to the keys
+    """
+    #Set up the config parser
+    config = configparser.ConfigParser()
 
-    #Print the config data if debug is on
-    if config['debug']:
-        for k,v in config.items():
-            print(f"{k} : {v}")
+    #Read the configs
+    config.read(config_path)
 
-    #Create the new game window with the configurations
-    game = GameWindow(**config)
-    
-    #Run the mainloop for the GameWindow
-    game.mainloop()
+    #Return all of the configs as a dictionary
+    return dict(map(lambda x: (x[0],dict(map(lambda x: convertType(x),x[1].items()))), config.items()))
+
+def main() -> None:
+    """The main function for this file"""
+    print(read_all('../../settings.cfg'))
+
+if __name__ == '__main__':
+    main()
