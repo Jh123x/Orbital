@@ -48,6 +48,14 @@ class Screen(object):
         #If player pressed the button
         return pygame.mouse.get_pressed()[0] and rect.collidepoint(mouse_pos)
 
+class SettingsMenu(Screen):
+    def __init__(self, game_width:int, game_height:int, screen):
+        """Constructor for the settings menu class"""
+        super().__init__(game_width, game_height, State.SETTINGS, screen)
+
+        #Getting the current settings
+        # self.load_current() #TODO
+
 class InstructionScreen(Screen):
     def __init__(self, game_width, game_height, screen):
         super().__init__(game_width, game_height, State.INSTRUCTIONS, screen)
@@ -85,8 +93,13 @@ class InstructionScreen(Screen):
         return self.state
 
 class MenuScreen(Screen):
-    def __init__(self, game_width, game_height, screen):
-
+    def __init__(self, game_width:int, game_height:int, screen):
+        """Constructor for the menu screen
+            Arguments:
+                game_width: the width of the game in pixels
+                game_height: the height of the game in pixels
+                screen: The screen that it is blited to
+        """
         #Call the superclass
         super().__init__(game_width, game_height, State.MENU, screen)
 
@@ -107,7 +120,12 @@ class MenuScreen(Screen):
 
 
     def update_keypresses(self) -> State:
-        """Track the keypress for the menu"""
+        """Track the keypress for the menu
+            Arguments:
+                No arguments
+            Returns: 
+                Returns the State of the next game
+        """
         #Get the keypresses of the user
         keys = pygame.key.get_pressed()
 
@@ -129,27 +147,21 @@ class MenuScreen(Screen):
             return None
 
 
-    def check_mouse_pos(self, rect_play, rect_end, rect_highscore, rect_instructions):
-        """Check the position of the mouse on the menu to see what the player clicked"""
+    def check_mouse_pos(self, rects, states):
+        """Check the position of the mouse on the menu to see what the player clicked
+            Arguments:
+                rect_play: Rectangle containing the play button
+                rect_end: Rectangle containing the end button
+                rect_highscore: Rectangle containing the highscore button
+                rect_instructions: Rectangle containing the highscore button
+            Return:
+                Returns the next state of the game
+        """
+        for i in range(len(rects)):
+            if self.check_clicked(rects[i]):
+                return states[i]
 
-        #If mousedown and position colide with play
-        if self.check_clicked(rect_play):
-            return State.PLAY
-
-        #If mousedown and position colide with quit
-        elif self.check_clicked(rect_end):
-            return State.QUIT
-
-        elif self.check_clicked(rect_highscore):
-            return State.HIGHSCORE
-        
-        elif self.check_clicked(rect_instructions):
-            return State.INSTRUCTIONS
-
-        #Otherwise the player has not decided
-        else:
-            #Return menu state
-            return State.MENU
+        return State.MENU
 
     def handle(self) -> State:
         """Load the Menu onto the screen
@@ -164,7 +176,7 @@ class MenuScreen(Screen):
         state = self.update_keypresses()
 
         #Check the position of the mouse to return the state
-        return state if state else self.check_mouse_pos(self.rect_play, self.rect_end, self.rect_highscore, self.rect_instruction)
+        return state if state else self.check_mouse_pos([self.rect_play, self.rect_end, self.rect_highscore, self.rect_instruction],[State.PLAY,State.QUIT, State.HIGHSCORE, State.INSTRUCTIONS])
 
 def main() -> None:
     game_height = 800
@@ -172,7 +184,6 @@ def main() -> None:
     screen = pygame.display.set_mode((game_width,game_height))
     clock = pygame.time.Clock()
     fps = 60
-
     inst = InstructionScreen(game_width,game_height,screen)
 
     while True:

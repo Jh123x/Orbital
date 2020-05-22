@@ -17,6 +17,7 @@ class State(enum.Enum):
     HIGHSCORE = 5
     NEWHIGHSCORE = 6
     INSTRUCTIONS = 7
+    SETTINGS = 8
     QUIT = -1
 
 class Difficulty(enum.Enum):

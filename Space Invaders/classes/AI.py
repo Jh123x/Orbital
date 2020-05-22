@@ -1,5 +1,9 @@
-#Code for the AI of the bot
 from __future__ import print_function
+
+#Import the everything from the game folder
+from Game import *
+
+#Code for the AI of the bot
 import torch
 
 #Creating random tensor

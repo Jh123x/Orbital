@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import pygame
 import pygame.freetype
-import sys
 import random
 import asyncio
 from pygame.locals import *
@@ -15,7 +14,7 @@ try:
     from .Background import Background
     from .Colors import *
     from .InputBox import InputBox
-    from .Screens import InstructionScreen, MenuScreen
+    from .Screens import *
 except ImportError:
     from Enums import *
     from database import ScoreBoard
@@ -26,7 +25,7 @@ except ImportError:
     from Background import Background
     from Colors import *
     from InputBox import InputBox
-    from Screens import InstructionScreen, MenuScreen
+    from Screens import *
 
 #Initialise pygame
 pygame.init()
@@ -76,6 +75,7 @@ class GameWindow(object):
         #Create the static screens
         self.instructions = InstructionScreen(game_width, game_height, self.main_screen)
         self.menu = MenuScreen(game_width, game_height, self.main_screen)
+        self.settings = SettingsMenu(game_width,game_height, self.main_screen)
         
         #Store the different states the menu has
         self.states = {
@@ -86,6 +86,7 @@ class GameWindow(object):
             State.GAMEOVER:self.handle_gameover,
             State.INSTRUCTIONS:self.instructions.handle,
             State.PAUSE:self.handle_pause,
+            State.SETTINGS: self.settings.handle,
             State.QUIT:self.__del__
         }
 
