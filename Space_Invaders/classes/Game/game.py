@@ -217,6 +217,9 @@ class GameWindow(object):
         #If player is going back
         if state == State.MENU:
 
+            #Mark written as false
+            self.written = False
+
             #Reset the play screen
             self.play.reset()
 

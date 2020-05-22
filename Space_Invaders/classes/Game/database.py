@@ -192,13 +192,17 @@ def main() -> None:
     print(f"Running the main function from database file")
     print(f"Scoreboard db created")
 
-    #Print entries
-    print(db.fetch_all())
+    
 
     #Create a while loop for the user to test commands as they are typed into the terminal
     while(True):
+        #Print entries
+        print(db.fetch_all())
         try:
-            print(eval(input("Type in the command: ").strip()))
+            command = input("Type in the command: ").strip()
+            if command == 'q':
+                break
+            print(eval(command))
         except Exception as exp:
             print(exp)
 

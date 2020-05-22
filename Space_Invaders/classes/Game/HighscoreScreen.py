@@ -55,7 +55,7 @@ class HighscoreScreen(Screen):
         self.sort_scores()
 
         #Remove the other scores while there are more than 5 of them
-        if len(self.scores) > 5:
+        while len(self.scores) > 5:
             self.removed.append(self.scores.pop())
 
         #Redraw the sprites
@@ -77,7 +77,7 @@ class HighscoreScreen(Screen):
             Returns:
                 A boolean indicating if it is a new highscore (bool)
         """
-        return len(self.scores) < 5 or score > self.scores[4][-1]
+        return len(self.scores) < 5 or score > self.scores[-1][-1]
 
     def get_scores(self) -> list:
         """Get the high score list
