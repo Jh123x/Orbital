@@ -5,7 +5,7 @@ Level of achievement: Artemis
 
 ![](images/Poster.png)
 
-* Video Link:[here](https://youtu.be/UNIIZMoY21Y)
+* Video Link: [here](https://youtu.be/UNIIZMoY21Y)
 
 ### Objectives:
 1. Make a Space invaders game
