@@ -72,6 +72,10 @@ class PlayScreen(Screen):
         #Reset the variables
         self.reset()
 
+    def get_hitboxes(self) -> list:
+        """Get a list of hitboxes of mobs"""
+        return [(self.player.get_coord()), tuple(x.get_coord() for x in self.up_bullets), tuple(x.get_coord() for x in self.enemies), tuple(x.get_coord() for x in self.down_bullets)]
+
     def update_keypresses(self) -> None:
         """Update the screen based on what the player has pressed
             Arguments:
