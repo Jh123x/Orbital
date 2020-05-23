@@ -74,6 +74,10 @@ class MovingObject(pygame.sprite.Sprite):
         #Informed that rect has changed
         self.changed = True
 
+    def get_coord(self) -> tuple:
+        """Get the coordinates of the object"""
+        return (self.x, self.y)
+
     def rotate(self, angle:int) -> None:
         """Rotate the image by x degrees
             Arguments:

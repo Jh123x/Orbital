@@ -64,7 +64,7 @@ class InputBox(object):
             Returns: 
                 No return
         """
-        if len(self.text) <= self.max_length:
+        if char and len(self.text) <= self.max_length:
             self.text.append(char.strip())
 
     def blit(self, screen) -> None:
