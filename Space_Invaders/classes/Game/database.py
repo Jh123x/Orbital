@@ -83,7 +83,6 @@ class Database(object):
         #Close the connection to the database
         self.connection.close()
 
-
 class Achievements(Database):
     def __init__(self, dbpath:str):
         """Class for keeping track of achievements"""

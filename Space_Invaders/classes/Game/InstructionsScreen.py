@@ -24,10 +24,10 @@ class InstructionScreen(Screen):
         super().__init__(screen_width, screen_height, State.INSTRUCTIONS, screen, 0, 0, debug)
 
         #The first pixel to align
-        first_px = self.screen_height//2
+        first_px = self.screen_height//2 - 100
 
         #Draw the header
-        self.write(Screen.title_font, WHITE, "Instructions", self.screen_width//2, first_px - self.screen_height//5)
+        self.write(Screen.title_font, WHITE, "Instructions", self.screen_width//2, first_px - self.screen_height//7)
 
         #Draw the instructions
         self.write(Screen.end_font, WHITE, "Use AD or arrow keys to move", self.screen_width//2, first_px)
