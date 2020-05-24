@@ -1,4 +1,4 @@
-#Define the COLORS
+#Define the COLORS in terms of RGB
 WHITE = (255,255,255)
 GREY = (60,60,60)
 BLACK = (0,0,0)
