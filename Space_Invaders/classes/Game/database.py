@@ -220,7 +220,7 @@ class ScoreBoard(Database):
 
     
 def main() -> None:
-    """The main function for the database class used for testing
+    """The main function for the database class used for debuging and modifying database
         Arguments:
             No arguments
         Returns: 
@@ -236,14 +236,19 @@ def main() -> None:
 
     #Create a while loop for the user to test commands as they are typed into the terminal
     while(True):
+
         #Print entries
         print(f"Highscore: {db.fetch_all()}")
         print(f"Achievements: {ac.fetch_all()}")
+        
+        #Get commands from user
         try:
             command = input("Type in the command: ").strip()
             if command == 'q':
                 break
             print(eval(command))
+        
+        #If there is an error print the error message
         except Exception as exp:
             print(exp)
 

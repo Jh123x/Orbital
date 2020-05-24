@@ -110,7 +110,6 @@ class Screen(Object):
 
             Return:
                 Rect containing the words created (pygame.Rect)
-
         """
         #If no screen is specified
         if screen == None:

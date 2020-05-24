@@ -23,14 +23,20 @@ class Popup(Screen):
         self.set_background((0,0,0))
 
         #Render the words for the popup
-        self.write(Screen.font, WHITE, sentence, initial_x - len(sentence) * 14, initial_y)
+        self.write(Screen.font, WHITE, sentence, popup_width // 2, 10)
 
     def update(self):
         """Update function for the popup"""
-        #Reduce the ttl of the popup
+        #If time to live > 0
         if self.ttl:
+
+            #Reduce the ttl of the popup
             self.ttl -= 1
+
+            #Call the superclass update
             super().update()
+
+            #Return itself
             return self
         else:
             return None

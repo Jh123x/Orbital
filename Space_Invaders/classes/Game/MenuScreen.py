@@ -58,7 +58,7 @@ class MenuScreen(Screen):
         if keys[K_RETURN]:
 
             #Start the game
-            return State.PLAY
+            return State.PLAYMODE
 
         else:
             #Otherwise return none
@@ -98,4 +98,4 @@ class MenuScreen(Screen):
         state = self.update_keypresses()
 
         #Check the position of the mouse to return the state and combine it with the keypress of user
-        return state if state else self.check_mouse([self.rect_play, self.rect_end, self.rect_highscore, self.rect_instruction],[State.PLAY,State.QUIT, State.HIGHSCORE, State.INSTRUCTIONS])
+        return state if state else self.check_mouse([self.rect_play, self.rect_end, self.rect_highscore, self.rect_instruction],[State.PLAYMODE,State.QUIT, State.HIGHSCORE, State.INSTRUCTIONS])

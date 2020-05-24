@@ -22,6 +22,8 @@ try:
     from .EnemyGroup import EnemyShips
     from .HighscoreScreen import HighscoreScreen
     from .NewhighscoreScreen import NewhighscoreScreen
+    from .PlayModesScreen import PlayModeScreen
+    from .TwoPlayerScreen import TwoPlayerScreen
     from .Popup import Popup
     
 except ImportError as exp:
@@ -42,6 +44,8 @@ except ImportError as exp:
     from EnemyGroup import EnemyShips
     from HighscoreScreen import HighscoreScreen
     from NewhighscoreScreen import NewhighscoreScreen
+    from PlayModesScreen import PlayModeScreen
+    from TwoPlayerScreen import TwoPlayerScreen
     from Popup import Popup
 
 #Initialise pygame
@@ -140,18 +144,25 @@ class GameWindow(object):
         self.instructions = InstructionScreen(game_width, game_height, self.main_screen, debug = self.debug)
         self.menu = MenuScreen(game_width, game_height, self.main_screen, debug = self.debug)
         self.play = PlayScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug = self.debug)
+        self.play_menu = PlayModeScreen(game_width, game_height, self.main_screen, debug)
         self.highscore = HighscoreScreen(game_width, game_height, self.main_screen, self.score_board.fetch_all(), debug = self.debug)
+        self.two_player = TwoPlayerScreen(game_width, game_height, self.main_screen, self.debug)
         self.popup = None
         
         #Store the different states the menu has
         self.states = {
             State.MENU:self.menu.handle,
+            State.PLAYMODE:self.play_menu.handle,
             State.PLAY:self.play.handle,
             State.HIGHSCORE:self.highscore.handle,
             State.NEWHIGHSCORE:self.handle_newhighscore,
             State.GAMEOVER:self.handle_gameover,
             State.INSTRUCTIONS:self.instructions.handle,
             State.PAUSE:self.handle_pause,
+            State.TWO_PLAYER_MENU: self.two_player.handle,
+            State.AI_COOP: self.two_player.handle,
+            State.AI_VS: self.two_player.handle,
+            State.PVP: self.two_player.handle,
             State.QUIT:self.__del__
         }
 
@@ -324,9 +335,6 @@ class GameWindow(object):
             if self.state == State.QUIT or pygame.QUIT in tuple(map(lambda x: x.type, pygame.event.get())):
                 running = False
 
-        #Close the window
-        self.__del__()
-
     def __del__(self) -> None:
         """Destructor for the game window.
             Closes all the relavent processes
@@ -341,11 +349,12 @@ class GameWindow(object):
         #Remove all entries beyond 5
         self.score_board.remove_all(*self.highscore.get_removed())
 
-        #Close the database
-        self.score_board.__del__()
-
         #Quit the game
         pygame.display.quit()
         pygame.font.quit()
         pygame.mixer.quit()
         pygame.quit()
+
+        #Debug message
+        if self.debug:
+            print("Closed Game Window")

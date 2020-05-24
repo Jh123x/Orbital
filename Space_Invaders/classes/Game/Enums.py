@@ -18,6 +18,11 @@ class State(enum.Enum):
     NEWHIGHSCORE = 6
     INSTRUCTIONS = 7
     SETTINGS = 8
+    PLAYMODE = 9
+    TWO_PLAYER_MENU = 10
+    AI_COOP = 11
+    AI_VS = 12
+    PVP = 13
     QUIT = -1
     NONE = None
 
