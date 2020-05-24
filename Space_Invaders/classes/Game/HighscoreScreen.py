@@ -9,11 +9,11 @@ except ImportError:
     
 
 class HighscoreScreen(Screen):
-    def __init__(self, game_width:int, game_height:int, screen, scores:tuple, debug:bool = False):
+    def __init__(self, screen_width:int, screen_height:int, screen, scores:tuple, debug:bool = False):
         """Constructor for the Highscore screen
             Arguments:
-                game_width: Width of the game window (int)
-                game_height: Height of the game window (int)
+                screen_width: Width of the game window (int)
+                screen_height: Height of the game window (int)
                 screen: Surface for the screen to blit to (pygame.Surface)
                 scores: List of 5 top scores recorded (tuple of tuple)
                 debug: Toggle whether the screen is in debug mode (bool): default = False
@@ -34,7 +34,7 @@ class HighscoreScreen(Screen):
         self.removed = []
 
         #Call the superclass
-        super().__init__(game_width, game_height, State.HIGHSCORE, screen, debug)
+        super().__init__(screen_width, screen_height, State.HIGHSCORE, screen, 0, 0, debug)
 
         #Draw the sprite
         self.draw()
@@ -111,19 +111,19 @@ class HighscoreScreen(Screen):
         start_px = 200
 
         #Draw the button for back
-        self.end_rect = self.write(Screen.end_font, WHITE, "Back", self.game_width//2, self.game_height//2 + self.game_height//3)
+        self.end_rect = self.write(Screen.end_font, WHITE, "Back", self.screen_width//2, self.screen_height//2 + self.screen_height//3)
 
         #Draw the highscore header
-        self.write(Screen.title_font, WHITE, f"HIGH SCORES", self.game_width//2, 100)
+        self.write(Screen.title_font, WHITE, f"HIGH SCORES", self.screen_width//2, 100)
 
         #Draw the scores of the players
         for index, item in enumerate(self.scores[:5]):
 
             #Draw the first half of the scoreboard
-            self.write(Screen.end_font, WHITE, f"{index+1}. {item[1]}".ljust(15, ' '), self.game_width//4, start_px + self.game_height//(15/(index+1)),Direction.LEFT)
+            self.write(Screen.end_font, WHITE, f"{index+1}. {item[1]}".ljust(15, ' '), self.screen_width//4, start_px + self.screen_height//(15/(index+1)),Direction.LEFT)
 
             #Draw the 2nd half of the scoreboard
-            self.write(Screen.end_font, WHITE, f"{item[2]:<5}",self.game_width//1.6, start_px + self.game_height//(15/(index+1)),Direction.LEFT)
+            self.write(Screen.end_font, WHITE, f"{item[2]:<5}",self.screen_width//1.6, start_px + self.screen_height//(15/(index+1)),Direction.LEFT)
 
     def handle(self) -> State:
         """Handles the drawing of the highscore screen

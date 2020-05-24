@@ -4,29 +4,31 @@ try:
     from .Enums import State, Direction
     from .Colors import *
     from .Player import Player
+    from .Object import Object
 except ImportError:
     from Enums import State, Direction
     from Colors import *
     from Player import Player
+    from Object import Object
 
 #Initialise the fonts
 pygame.font.init()
 
-class Screen(object):
+class Screen(Object):
 
     #Store the fonts in the Screen Object
     font = pygame.font.Font(pygame.font.get_default_font(),15)
     end_font = pygame.font.Font(pygame.font.get_default_font(),30)
     title_font = pygame.font.Font(pygame.font.get_default_font(), 60)
 
-    def __init__(self, game_width:int, game_height:int, state:State, screen, debug:bool):
+    def __init__(self, screen_width:int, screen_height:int, state:State, screen, initial_x:int, initial_y:int, debug:bool = False):
         """Base Screen object
             Arguments:
-                game_width: Width of the game in pixels (int)
-                game_height: Height of the game in pixels (int)
+                screen_width: Width of the game in pixels (int)
+                screen_height: Height of the game in pixels (int)
                 state: State that the game is in (State)
                 screen: Surface that the game will be blited to (pygame.Surface)
-                debug: toggles debug mode (bool)
+                debug: toggles debug mode (bool): default = False
 
             Methods:
                 update: Blit the Screen onto the surface
@@ -35,16 +37,24 @@ class Screen(object):
                 write: Write Words onto the screen
                 check_clicked: Checks of the rect is clicked on by user
         """
+        #Call superclass
+        super().__init__(initial_x, initial_y, debug)
 
         #Store the variables
         self.screen = screen
         self.state = state
-        self.game_width = game_width
-        self.game_height = game_height
+        self.screen_width = screen_width
+        self.screen_height = screen_height
         self.debug = debug
+        self.bg = None
 
         #Create a surface with a transparent background
-        self.surface = pygame.Surface((game_width,game_height), pygame.SRCALPHA, 32)
+        self.surface = pygame.Surface((screen_width,screen_height), pygame.SRCALPHA, 32)
+
+    def set_background(self, bg) -> None:
+        """Update the background"""
+        self.bg = bg
+        self.surface.fill(self.bg)
 
     def update(self) -> None:
         """Blits the screen onto the surface
@@ -53,7 +63,19 @@ class Screen(object):
             Returns: 
                 No returns
         """
-        self.screen.blit(self.surface.convert_alpha(), (0,0))
+        
+        #If the screen has a background
+        if self.bg:
+
+            #Blit the screen without make it transparent
+            self.screen.blit(self.surface, self.get_coord())
+
+        #Otherwise
+        else:
+
+            #Blit the screen while making background transparent
+            self.screen.blit(self.surface.convert_alpha(), self.get_coord())
+
 
     def reset(self) -> None:
         """Resets the surface to transparent
@@ -62,7 +84,7 @@ class Screen(object):
             Returns: 
                 No returns
         """
-        self.surface = pygame.Surface((self.game_width, self.game_height), pygame.SRCALPHA, 32)
+        self.surface = pygame.Surface((self.screen_width, self.screen_height), pygame.SRCALPHA, 32)
     
     def handle(self) -> State:
         """Placeholder method to be overwritten
@@ -73,7 +95,11 @@ class Screen(object):
         """
         return self.state
 
-    def write(self, font_type, color: Color, words:str, xpos:int, ypos:int, direction:Direction = Direction.CENTER) -> pygame.Rect:
+    def write_main(self,font_type, color: Color, words:str, xpos:int, ypos:int, direction:Direction = Direction.CENTER):
+        """Write to main surface directly"""
+        return self.write(font_type, color, words, xpos, ypos, direction, self.screen)
+
+    def write(self, font_type, color: Color, words:str, xpos:int, ypos:int, direction:Direction = Direction.CENTER, screen = None) -> pygame.Rect:
         """Write words onto the screen
             Arguments:
                 font_type: The type of font to be used (pygame.font)
@@ -86,6 +112,11 @@ class Screen(object):
                 Rect containing the words created (pygame.Rect)
 
         """
+        #If no screen is specified
+        if screen == None:
+
+            #Make it the surface
+            screen = self.surface
 
         #Render the sentence using the font
         sentence = font_type.render(words, True, color)
@@ -106,16 +137,16 @@ class Screen(object):
         elif direction == Direction.RIGHT:
 
             #Set the top right corner to the coordinate
-            rect_sentence = sentence.get_rect(right = xpos, top = ypos)
+            rect = sentence.get_rect(right = xpos, top = ypos)
 
         #Otherwise it is an invalid justification
         else:
 
             #Assert an Error
-            assert False, "Invalid write justification"
+            assert False, f"Invalid write justification {direction}"
 
         #Draw the words onto the screen
-        self.surface.blit(sentence,rect)
+        screen.blit(sentence,rect)
 
         #Return the rectangle object
         return rect

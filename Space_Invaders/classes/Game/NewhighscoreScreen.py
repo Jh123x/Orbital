@@ -16,11 +16,11 @@ class NewhighscoreScreen(Screen):
     #Input box for the player to key in his name
     inputbox = InputBox(300, 400, 30, Screen.end_font)
 
-    def __init__(self, game_width:int, game_height:int, screen, score:int, debug:bool = False):
+    def __init__(self, screen_width:int, screen_height:int, screen, score:int, debug:bool = False):
         """Main screen for the new highscore screen
             Arguments:
-                game_width: Width of the game in pixels (int)
-                game_height: Height of the game in pixels (int)
+                screen_width: Width of the game in pixels (int)
+                screen_height: Height of the game in pixels (int)
                 screen: Surface to blit our screen onto (pygame.Surface)
                 score: Score that the player obtained (int)
                 debug: Toggles debugging on the screen (bool): default = False
@@ -33,7 +33,7 @@ class NewhighscoreScreen(Screen):
                 handle: Handles the drawing of the screen onto the surface
         """
         #Call the superclass
-        super().__init__(game_width, game_height, State.NEWHIGHSCORE, screen, debug)
+        super().__init__(screen_width, screen_height, State.NEWHIGHSCORE, screen, 0, 0, debug)
 
         #Define new variables
         self.score = score
@@ -63,10 +63,10 @@ class NewhighscoreScreen(Screen):
         start_px = 100
 
         #Tell the user he has a new high score
-        self.write(self.title_font, WHITE, f"NEW HIGH SCORE", self.game_width//2, start_px)
+        self.write(self.title_font, WHITE, f"NEW HIGH SCORE", self.screen_width//2, start_px)
 
         #Tell the user to key in his name
-        self.write(self.font, WHITE, f"Please key in your name and press enter", self.game_width//2, start_px + self.game_height//10)
+        self.write(self.font, WHITE, f"Please key in your name and press enter", self.screen_width//2, start_px + self.screen_height//10)
 
         #Draw the inputbox
         NewhighscoreScreen.inputbox.blit(self.screen)

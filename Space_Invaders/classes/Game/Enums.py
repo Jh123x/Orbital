@@ -19,6 +19,7 @@ class State(enum.Enum):
     INSTRUCTIONS = 7
     SETTINGS = 8
     QUIT = -1
+    NONE = None
 
 class Difficulty(enum.Enum):
     """Difficulty enum to hold the difficultly of the game"""

@@ -1,10 +1,14 @@
 import pygame
+try:
+    from .ImageObject import ImageObject
+except ImportError:
+    from .ImageObject import ImageObject
 
-class Background(pygame.sprite.Sprite):
+class Background(ImageObject):
     #To store the background sprites
     sprites = []
 
-    def __init__(self, bg_no:int, game_width:int, game_height:int):
+    def __init__(self, bg_no:int, game_width:int, game_height:int, debug:bool = False):
         """Constructor for the background class
             Arguments:
                 bg_no: Background number to be used (int)
@@ -18,10 +22,9 @@ class Background(pygame.sprite.Sprite):
         """
 
         #Calls the superclass
-        super().__init__()
+        super().__init__(0, 0, game_width, game_height, Background.sprites[bg_no - 1] if bg_no >= len(Background.sprites) else None, debug)
 
         #Gets the background image if any
-        self.image = Background.sprites[bg_no - 1] if bg_no >= len(Background.sprites) else None
         self.rect = None
 
         #If there is a background image get the rect for it

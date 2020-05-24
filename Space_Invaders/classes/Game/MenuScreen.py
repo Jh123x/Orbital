@@ -10,11 +10,11 @@ except ImportError:
     from Colors import WHITE
 
 class MenuScreen(Screen):
-    def __init__(self, game_width:int, game_height:int, screen, debug:bool = False):
+    def __init__(self, screen_width:int, screen_height:int, screen, debug:bool = False):
         """Constructor for the menu screen
             Arguments:
-                game_width: the width of the game in pixels (int)
-                game_height: the height of the game in pixels (int)
+                screen_width: the width of the game in pixels (int)
+                screen_height: the height of the game in pixels (int)
                 screen: The screen that it is blited to (pygame.Surface)
                 debug: Toggles debug mode (bool)
 
@@ -24,22 +24,22 @@ class MenuScreen(Screen):
                 handle: Handles the drawing and updating of the objects on the screen
         """
         #Call the superclass
-        super().__init__(game_width, game_height, State.MENU, screen, debug)
+        super().__init__(screen_width, screen_height, State.MENU, screen, 0, 0, debug)
 
         #Draw the title
-        self.write(Screen.title_font, WHITE, "Space Invaders", self.game_width//2, self.game_height//5)
+        self.write(Screen.title_font, WHITE, "Space Invaders", self.screen_width//2, self.screen_height//5)
 
         #Draw the Play button
-        self.rect_play = self.write(Screen.end_font,WHITE, "Play", self.game_width//2, self.game_height//2)
+        self.rect_play = self.write(Screen.end_font,WHITE, "Play", self.screen_width//2, self.screen_height//2)
 
         #Draw the highscore button
-        self.rect_highscore = self.write(Screen.end_font, WHITE, "High Score", self.game_width//2, self.game_height//15 + self.game_height//2)
+        self.rect_highscore = self.write(Screen.end_font, WHITE, "High Score", self.screen_width//2, self.screen_height//15 + self.screen_height//2)
 
         #Draw the instructions button
-        self.rect_instruction = self.write(Screen.end_font, WHITE, "Instructions", self.game_width//2, self.game_height//7.5 + self.game_height//2)
+        self.rect_instruction = self.write(Screen.end_font, WHITE, "Instructions", self.screen_width//2, self.screen_height//7.5 + self.screen_height//2)
 
         #Draw the quit button
-        self.rect_end = self.write(Screen.end_font, WHITE, "Quit", self.game_width//2, self.game_height//5 + self.game_height//2)
+        self.rect_end = self.write(Screen.end_font, WHITE, "Quit", self.screen_width//2, self.screen_height//5 + self.screen_height//2)
 
 
     def update_keypresses(self) -> State:
@@ -59,12 +59,6 @@ class MenuScreen(Screen):
 
             #Start the game
             return State.PLAY
-
-        #Check if the user epressed the escape key
-        elif keys[K_ESCAPE]:
-
-            #Quit the game
-            return State.QUIT
 
         else:
             #Otherwise return none

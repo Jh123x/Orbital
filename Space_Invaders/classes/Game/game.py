@@ -2,6 +2,7 @@
 import pygame
 import pygame.freetype
 import random
+import datetime
 from pygame.locals import *
 try:
     from .Enums import *
@@ -21,6 +22,7 @@ try:
     from .EnemyGroup import EnemyShips
     from .HighscoreScreen import HighscoreScreen
     from .NewhighscoreScreen import NewhighscoreScreen
+    from .Popup import Popup
     
 except ImportError as exp:
     from Enums import *
@@ -40,6 +42,7 @@ except ImportError as exp:
     from EnemyGroup import EnemyShips
     from HighscoreScreen import HighscoreScreen
     from NewhighscoreScreen import NewhighscoreScreen
+    from Popup import Popup
 
 #Initialise pygame
 pygame.init()
@@ -92,12 +95,10 @@ class GameWindow(object):
         pygame.display.set_icon(icon)
 
         #Set the dimensions
-        self.main_screen = pygame.display.set_mode((game_height,game_width))
-        self.screen = pygame.Surface((game_height,game_width), pygame.SRCALPHA, 32)
+        self.main_screen = pygame.display.set_mode((game_width,game_height))
 
         #Initialise the pygame window
         self.clock = pygame.time.Clock()
-        self.screen = pygame.display.set_mode((game_width,game_height))
 
         #Storing the game variables
         self.p_settings = p_settings
@@ -107,8 +108,14 @@ class GameWindow(object):
         self.sensitivity = sensitivity
         self.game_width = game_width
         self.game_height = game_height
+
+        #Starting State
         self.state = State.MENU
+
+        #Check if highscore is written
         self.written = False
+
+        #Set difficulty
         self.difficulty = Difficulty(p_settings['difficulty'] if p_settings['difficulty'] < 5 else 5)
 
         #Load the highscores
@@ -134,6 +141,7 @@ class GameWindow(object):
         self.menu = MenuScreen(game_width, game_height, self.main_screen, debug = self.debug)
         self.play = PlayScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug = self.debug)
         self.highscore = HighscoreScreen(game_width, game_height, self.main_screen, self.score_board.fetch_all(), debug = self.debug)
+        self.popup = None
         
         #Store the different states the menu has
         self.states = {
@@ -235,6 +243,53 @@ class GameWindow(object):
         """
         return self.state
 
+    def check_keypresses(self) -> None:
+        """Check global keypresses within the game
+            Arguments:
+                No arguments
+            Returns:
+                No return
+        """
+
+        #Get the keys which are pressed
+        keys = pygame.key.get_pressed()
+
+        #Check each key individually
+        if keys[K_x]:
+
+            #Save a screenshot named based on date and time
+            name = f'screenshots/{datetime.datetime.now().strftime("%d_%m_%Y_%H_%M_%S")}.png'
+
+            #Print debug message
+            if self.debug:
+                print(name)
+            
+            #Save the image
+            pygame.image.save(self.main_screen, name)
+
+            #Create a 1 second popup saying screenshot is taken 
+            self.popup = Popup(20*8, 30, "Screenshot taken", self.fps, self.game_width//2, 15, self.main_screen, debug = self.debug)
+
+    def update(self) -> None:
+        #If the background is present
+        if self.bg.is_present():
+
+            #Fill it with the background img
+            self.bg.update(self.main_screen)
+        else:
+
+            #Fill the background to black 
+            self.main_screen.fill(BLACK)
+
+        #Load the screen based on the state
+        self.state = self.states[self.state]()
+
+        #Check popups
+        if self.popup:
+
+            #Update popups
+            self.popup.update()
+
     def mainloop(self) -> None:
         """The mainloop to load the screen of the game
             Arguments: 
@@ -256,21 +311,14 @@ class GameWindow(object):
             #Set the FPS
             self.clock.tick(self.fps)
 
-            #If the background is present
-            if self.bg.is_present():
-
-                #Fill it with the background img
-                self.bg.update(self.main_screen)
-            else:
-
-                #Fill the background to black 
-                self.main_screen.fill(BLACK)
-
-            #Load the screen based on the state
-            self.state = self.states[self.state]()
+            #Update game states
+            self.update()
 
             #Update the display with the screen
             pygame.display.update()
+
+            #Check Global keypresses
+            self.check_keypresses()
 
             #If the state is quit or player closes the game
             if self.state == State.QUIT or pygame.QUIT in tuple(map(lambda x: x.type, pygame.event.get())):

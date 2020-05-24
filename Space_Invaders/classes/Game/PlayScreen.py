@@ -22,11 +22,11 @@ except ImportError:
     from Bullet import Bullet
 
 class PlayScreen(Screen):
-    def __init__(self, game_width:int, game_height:int, screen, sensitivity:int, max_fps:int, wave:int = 1, debug:bool = False):
+    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, wave:int = 1, debug:bool = False):
         """The Play screen
             Arguments:
-                game_width: Width of the game in pixels (int)
-                game_height: Height of the game in pixels (int)
+                screen_width: Width of the game in pixels (int)
+                screen_height: Height of the game in pixels (int)
                 screen: Surface where the play screen is blited to (pygame.Surface)
                 sensitivity: Sensitivity of the player controls (int)
                 max_fps: fps at which the game is run at (int)
@@ -36,7 +36,7 @@ class PlayScreen(Screen):
             Methods:
                 update_keypresses: Update the player's keypress to update the screen
                 spawn_enemy_bullets: Make the enemies shoot randomly
-                update_sprites: Update the movement of the sprites
+                update: Update the movement of the sprites
                 get_score: Get the current score of the player
                 reset: Reset the play state
                 check_collisions: Check for collisions between the entities and the bullets
@@ -45,7 +45,7 @@ class PlayScreen(Screen):
         """
 
         #Call the superclass init
-        super().__init__(game_width, game_height, State.PLAY, screen, debug)
+        super().__init__(screen_width, screen_height, State.PLAY, screen, 0, 0, debug)
 
         #Store the variables
         self.score = 0
@@ -67,7 +67,7 @@ class PlayScreen(Screen):
         self.explosions = pygame.sprite.Group()
 
         #Create the player
-        self.player = Player(sensitivity, game_width, game_height - 50, 3, max_fps, self.up_bullets, debug)
+        self.player = Player(sensitivity, screen_width, screen_height - 50, 3, max_fps, self.up_bullets, debug)
 
         #Reset the variables
         self.reset()
@@ -146,7 +146,7 @@ class PlayScreen(Screen):
             enemy = enemy[0]
 
             #Create the bullet
-            bullet2 = Bullet(self.sensitivity * 1.5, enemy.get_x() + enemy.get_width()//3, enemy.get_y(), Direction.DOWN, self.game_width, self.game_height, self.debug)
+            bullet2 = Bullet(self.sensitivity * 1.5, enemy.get_x() + enemy.get_width()//3, enemy.get_y(), Direction.DOWN, self.screen_width, self.screen_height, self.debug)
 
             #Rotate the bullet 180 degrees to face it down
             bullet2.rotate(180)
@@ -154,7 +154,7 @@ class PlayScreen(Screen):
             #Add the bullet to the bullet group
             self.down_bullets.add(bullet2)
 
-    def update_sprites(self) -> None:
+    def update(self) -> None:
         """Update the sprites
             Arguments: 
                 No arguments
@@ -196,6 +196,9 @@ class PlayScreen(Screen):
 
         #Draw player object
         self.screen.blit(self.player.image, self.player.rect)
+
+        #Call superclass update
+        super().update()
 
     def get_score(self) -> int:
         """Gets the score of the player in the current state
@@ -247,7 +250,7 @@ class PlayScreen(Screen):
             self.player.destroy()
             
             #Add explosion to the player's position
-            self.explosions.add(Explosion(self.fps//2,self.player.get_x(),self.player.get_y(),self.game_width,self.game_height))
+            self.explosions.add(Explosion(self.fps//2,self.player.get_x(),self.player.get_y(),self.screen_width,self.screen_height))
 
         #Remove bullets that collide with one another
         pygame.sprite.groupcollide(self.up_bullets, self.down_bullets, True, True)
@@ -275,7 +278,7 @@ class PlayScreen(Screen):
             if ship.is_destroyed():
 
                 #Spawn an explosion in its place
-                self.explosions.add(Explosion(self.fps//4, ship.get_x(), ship.get_y(), self.game_width, self.game_height, 0, self.debug))
+                self.explosions.add(Explosion(self.fps//4, ship.get_x(), ship.get_y(), self.screen_width, self.screen_height, 0, self.debug))
 
                 #Remove the ship from all groups
                 ship.kill()
@@ -298,12 +301,12 @@ class PlayScreen(Screen):
         if number <= 6:
 
             #Spawn them in 1 row
-            self.enemies.add([EnemyShip(self.sensitivity, self.game_width//4 + i*self.game_width//10, self.game_height//10, random.randint(1,self.wave), self.game_width,  self.game_height, self.debug) for i in range(number)])
+            self.enemies.add([EnemyShip(self.sensitivity, self.screen_width//4 + i*self.screen_width//10, self.screen_height//10, random.randint(1,self.wave), self.screen_width,  self.screen_height, self.debug) for i in range(number)])
         else:
 
             #Otherwise make them into rows of 6
             for j in range(number//6 if number // 6 < 5 else 5):
-                self.enemies.add([EnemyShip(self.sensitivity, self.game_width//4 + i*self.game_width//10, self.game_height//10 + EnemyShip.sprites[0].get_height() * j, random.randint(1,self.wave), self.game_width,  self.game_height, self.debug) for i in range(6)])
+                self.enemies.add([EnemyShip(self.sensitivity, self.screen_width//4 + i*self.screen_width//10, self.screen_height//10 + EnemyShip.sprites[0].get_height() * j, random.randint(1,self.wave), self.screen_width,  self.screen_height, self.debug) for i in range(6)])
 
         
     def handle(self) -> State:
@@ -318,7 +321,7 @@ class PlayScreen(Screen):
             return State.GAMEOVER
 
         #Check if any of the enemies touched the bottom of the screen
-        if [x for x in self.enemies if x.get_y() > self.game_height - self.player.get_height()]:
+        if [x for x in self.enemies if x.get_y() > self.screen_height - self.player.get_height()]:
 
             #If it is debugging mode, print out what happened
             if self.debug:
@@ -336,26 +339,23 @@ class PlayScreen(Screen):
             #Spawn the aliens
             self.spawn_enemies(int(6 * self.wave))
 
-        #Draw the score
-        score = Screen.font.render(f"Score : {self.score}" , True, WHITE)
-        self.screen.blit(score, (10, 10))
-
-        #Draw the live count
-        lives = Screen.font.render(f"Lives : {self.player.get_lives()}", True, WHITE)
-        self.screen.blit(lives, (self.game_width - self.game_height//12,10))
-
-        #Draw the wave number
-        wave = Screen.font.render(f"Wave : {self.wave}", True, WHITE)
-        self.screen.blit(wave, (self.game_width//2, 10))
-
         #Check object collisions
         self.score += self.check_collisions()
+
+        #Draw the score
+        self.write_main(Screen.font, WHITE, f"Score : {self.score}", 10, 10, Direction.LEFT)
+
+        #Draw the live count
+        self.write_main(Screen.font, WHITE, f"Lives : {self.player.get_lives()}", self.screen_width - 10, 10, Direction.RIGHT)
+
+        #Draw the wave number
+        self.write_main(Screen.font, WHITE, f"Wave : {self.wave}",self.screen_width//2, 15)
 
         #Check the player keypress
         self.update_keypresses()
 
         #Update the moving objs
-        self.update_sprites()
+        self.update()
 
         #Check if the player wants to pause
         if len(list(filter(lambda x: x.type == pygame.KEYDOWN and x.key == K_p, pygame.event.get()))):
