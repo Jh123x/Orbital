@@ -25,8 +25,9 @@ class Bullet(MovingObject):
                 update: Update the position of the bullet
             
         """
-        #Load the image 
-        self.image = self.sprites[0]
+
+        #Call the superclass
+        super().__init__(sensitivity, initial_x, initial_y, game_width, game_height,self.sprites[0], debug)
 
         #Store the direction, move up it the enum is move up, else move it down
         if direction == Direction.UP:
@@ -45,9 +46,7 @@ class Bullet(MovingObject):
             #Otherwise it is invalid
             assert False, "Direction of bullet is invalid"
 
-        #Call the superclass
-        super().__init__(sensitivity, initial_x, initial_y, game_width, game_height, debug)
-
+       
     def update(self) -> None:
         """Update the path of the bullet
             Arguments:

@@ -8,11 +8,11 @@ except ImportError:
     from Enums import State
 
 class InstructionScreen(Screen):
-    def __init__(self, game_width:int, game_height:int, screen, debug:bool = False):
+    def __init__(self, screen_width:int, screen_height:int, screen, debug:bool = False):
         """Screen for displaying the instructions
             Arguments:  
-                game_width: Width of the screen in pixels (int)
-                game_height: Height of the screen in pixels (int)
+                screen_width: Width of the screen in pixels (int)
+                screen_height: Height of the screen in pixels (int)
                 screen: Surface that the screen will be drawn on (pygame.Surface)
                 debug: Toggles debug mode (bool)
 
@@ -21,21 +21,22 @@ class InstructionScreen(Screen):
         """
 
         #Call the superclass
-        super().__init__(game_width, game_height, State.INSTRUCTIONS, screen, debug)
+        super().__init__(screen_width, screen_height, State.INSTRUCTIONS, screen, 0, 0, debug)
 
         #The first pixel to align
-        first_px = self.game_height//2
+        first_px = self.screen_height//2 - 100
 
         #Draw the header
-        self.write(Screen.title_font, WHITE, "Instructions", self.game_width//2, first_px - self.game_height//5)
+        self.write(Screen.title_font, WHITE, "Instructions", self.screen_width//2, first_px - self.screen_height//7)
 
         #Draw the instructions
-        self.write(Screen.end_font, WHITE, "Use AD or arrow keys to move", self.game_width//2, first_px)
-        self.write(Screen.end_font, WHITE, "Press spacebar to shoot, P to pause", self.game_width//2, first_px + self.game_height//15)
-        self.write(Screen.end_font, WHITE, "Press O to unpause", self.game_width//2, first_px + self.game_height//7.5)
+        self.write(Screen.end_font, WHITE, "Use AD or arrow keys to move", self.screen_width//2, first_px)
+        self.write(Screen.end_font, WHITE, "Press spacebar to shoot, P to pause", self.screen_width//2, first_px + self.screen_height//15)
+        self.write(Screen.end_font, WHITE, "Press O to unpause", self.screen_width//2, first_px + self.screen_height//7.5)
+        self.write(Screen.end_font, WHITE, "Press X to screenshot anytime", self.screen_width//2, first_px + self.screen_height//5)
 
         #Draw the back button
-        self.back_rect = self.write(Screen.end_font,WHITE, "Back", self.game_width//2, self.game_height-self.game_height//5)
+        self.back_rect = self.write(Screen.end_font,WHITE, "Back", self.screen_width//2, self.screen_height-self.screen_height//5)
 
     def handle(self) -> State:
         """Load the Instructions onto the screen

@@ -1,10 +1,10 @@
 import pygame
 try:
-    from .MovingObject import MovingObject
+    from .ImageObject import ImageObject
 except ImportError:
-    from MovingObject import MovingObject
+    from ImageObject import ImageObject
 
-class Explosion(MovingObject):
+class Explosion(ImageObject):
 
     #To store the sprites for the explosions
     sprites = []
@@ -24,17 +24,17 @@ class Explosion(MovingObject):
                 update: Update the position of the sprite
         """
 
-        #Set the time to live for the explosion
-        self.tts = tick_life
-
         #Get the correct image of the explosion
         if image_no < len(Explosion.sprites):
-            self.image = Explosion.sprites[image_no]
+            image = Explosion.sprites[image_no]
         else:
-            self.image = Explosion.sprites[0]
+            image = Explosion.sprites[0]
 
         #Call the superclass method
-        super().__init__(0, initial_x, initial_y, game_width, game_height, debug)
+        super().__init__(initial_x, initial_y, game_width, game_height, image, debug)
+
+        #Set the time to live for the explosion
+        self.tts = tick_life
 
 
     def update(self):

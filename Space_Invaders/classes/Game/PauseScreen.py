@@ -12,11 +12,11 @@ except ImportError:
     from Colors import WHITE
 
 class PauseScreen(Screen):
-    def __init__(self, game_width:int, game_height:int, screen, score:int, debug:bool = False):
+    def __init__(self, screen_width:int, screen_height:int, screen, score:int, debug:bool = False):
         """Main class for the pause screen
             Arguments:
-                game_width: The width of the game in terms of pixels (int)
-                game_height: The height of the game in terms of pixels (int)
+                screen_width: The width of the game in terms of pixels (int)
+                screen_height: The height of the game in terms of pixels (int)
                 screen: The Surface that the screen is drawn onto (pygame.Surface)
                 score: Score that the player has currently (int)
                 debug: Toggles debug mode (bool)
@@ -26,19 +26,19 @@ class PauseScreen(Screen):
                 handle: handles the drawing of the pause state
         """
         #Call the superclass
-        super().__init__(game_width, game_height, State.PAUSE, screen, debug)
+        super().__init__(screen_width, screen_height, State.PAUSE, screen, 0, 0, debug)
 
         #Draw the title of the pause screen
-        self.write(self.title_font, WHITE, "Paused", self.game_width//2, self.game_height//5)
+        self.write(self.title_font, WHITE, "Paused", self.screen_width//2, self.screen_height//5)
         
         #Draw the score of the person currently
-        self.write(self.end_font, WHITE, f"Score: {score}", self.game_width//2, self.game_height//5 + self.game_height//15)
+        self.write(self.end_font, WHITE, f"Score: {score}", self.screen_width//2, self.screen_height//5 + self.screen_height//15)
 
         #Draw the instructions to unpause
-        self.write(self.end_font, WHITE, "Press O to unpause", self.game_width//2, self.game_height//15 + self.game_height//2)
+        self.write(self.end_font, WHITE, "Press O to unpause", self.screen_width//2, self.screen_height//15 + self.screen_height//2)
 
         #Draw the instructions to quit
-        self.write(self.end_font, WHITE, "Escape to quit, score will not be saved", self.game_width//2, self.game_height//7.5 + self.game_height//2)
+        self.write(self.end_font, WHITE, "Escape to quit, score will not be saved", self.screen_width//2, self.screen_height//7.5 + self.screen_height//2)
 
     def update_keypresses(self) -> State:
         """Check for the keypresses within the pause screen

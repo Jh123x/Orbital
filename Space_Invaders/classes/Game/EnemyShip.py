@@ -30,11 +30,8 @@ class EnemyShip(MovingObject):
                 update: Update the position of the mob
         """
 
-        #Load the correct image
-        self.image = self.sprites[lives-1 if lives < len(EnemyShip.sprites) else len(EnemyShip.sprites)-1]
-
         #Call the superclass
-        super().__init__(sensitivity, initial_x, initial_y, game_width, game_height, debug)
+        super().__init__(sensitivity, initial_x, initial_y, game_width, game_height, EnemyShip.sprites[lives-1 if lives < len(EnemyShip.sprites) else len(EnemyShip.sprites)-1], debug)
 
         #Store variables
         self.lives = lives

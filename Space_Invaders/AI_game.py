@@ -1,3 +1,5 @@
+#Version of the game to train the AI
+
 import pygame
 from classes import *
 

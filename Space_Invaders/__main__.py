@@ -15,7 +15,7 @@ if __name__ =="__main__":
 
     #Read the configuration file for space invaders
     all_cfg = read_all(settings)
-
+    
     #Main configurations
     config = all_cfg['Space Invaders']
 

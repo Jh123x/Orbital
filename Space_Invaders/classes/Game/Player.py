@@ -40,12 +40,9 @@ class Player(MovingObject):
         """
         #Store the items
         self.AI = isAI
-
-        #Load the image based on his health
-        self.image = Player.sprites[-1]
         
         #Call the superclass
-        super().__init__(sensitivity, game_width//2, game_height, game_width, game_height, debug)
+        super().__init__(sensitivity, game_width//2, game_height, game_width, game_height, Player.sprites[-1], debug)
 
         #Invicibility when it just spawned
         self.invincible = fps
