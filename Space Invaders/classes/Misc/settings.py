@@ -48,12 +48,21 @@ def read_all(config_path:str) -> dict:
         returns: 
             A dictionary with each of the keywords matched to the keys
     """
-    #TODO
-    pass
+    #Set up the config parser
+    config = configparser.ConfigParser()
+
+    #Read the configs
+    config.read(config_path)
+
+    #Return all of the configs as a dictionary
+    return dict(
+        map(lambda x: (x[0],
+        read_settings(config_path,x[0])), 
+            config.items()))
 
 def main() -> None:
     """The main function for this file"""
-    print(f"Please run the file in the main.py")
+    print(read_all('../../settings.cfg'))
 
 if __name__ == '__main__':
     main()

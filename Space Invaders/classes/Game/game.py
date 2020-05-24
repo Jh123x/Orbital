@@ -151,6 +151,18 @@ class GameWindow(object):
                 Return a 2d array of colored pixels
         """
         return pygame.surfarray.pixels3d(self.screen)
+    
+    def get_screen_bound(self)-> tuple:
+        """
+        Return the dimensions of the game screen
+        """
+        return (self.game_width,self.game_height)
+    
+    def get_score(self)-> int:
+        """
+        Get score of the game at this point
+        """
+        return self.score
 
     def write(self, font_type, color:Color, word:str, x_pos:int, y_pos:int, direction:Direction = Direction.CENTER) -> None:
         """Draw the object onto the screen"""
