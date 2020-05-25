@@ -12,7 +12,7 @@ class Player(MovingObject):
     #Static method to store sprites
     sprites = []
 
-    def __init__(self, sensitivity:int, game_width:int, game_height:int, init_life:int, fps:int, bullet_grp:pygame.sprite.Group(), debug:bool = False, isAI:bool = False):
+    def __init__(self, sensitivity:int, game_width:int, game_height:int, initial_x:int, initial_y:int, init_life:int, fps:int, bullet_grp:pygame.sprite.Group(), bullet_direction:Direction, debug:bool = False, isAI:bool = False):
         """Constructor for the player
             Arguments:
                 sensitivity: Sensitivity of the player controls (int)
@@ -40,9 +40,10 @@ class Player(MovingObject):
         """
         #Store the items
         self.AI = isAI
+        self.bullet_direction = bullet_direction
         
         #Call the superclass
-        super().__init__(sensitivity, game_width//2, game_height, game_width, game_height, Player.sprites[-1], debug)
+        super().__init__(sensitivity, initial_x, initial_y, game_width, game_height, Player.sprites[-1], debug)
 
         #Invicibility when it just spawned
         self.invincible = fps
@@ -56,10 +57,6 @@ class Player(MovingObject):
         #If the life is not valid set it to 3 by default
         if init_life > 0:
             init_life = 3
-
-        #Initial position
-        self.init_x = game_width//2
-        self.init_y = game_height
 
         #Initial amount of life
         self.init_life = init_life
@@ -90,6 +87,10 @@ class Player(MovingObject):
                 Returns True if the guns are on cooldown (bool)
         """
         return self.cooldown > 0
+
+    def draw(self, screen) -> None:
+        """Draw the player onto the screen"""
+        screen.blit(self.image, self.rect)
     
     def shoot(self) -> None:
         """Lets the player shoot a bullet
@@ -103,7 +104,7 @@ class Player(MovingObject):
         if not self.on_cooldown():
 
             #Add the bullet to the bullet group
-            self.bullet_grp.add(Bullet(self.sensitivity * 1.5, self.get_center()[0], self.get_y(), Direction.UP, self.game_width, self.game_height, self.debug))
+            self.bullet_grp.add(Bullet(self.sensitivity * 1.5, self.get_center()[0], self.get_y(), self.bullet_direction, self.game_width, self.game_height, self.debug))
 
             #Reset the cooldown
             self.cooldown = self.fps // (3 * 0.95)
@@ -206,8 +207,8 @@ class Player(MovingObject):
         self.life = self.init_life
 
         #Reset position
-        self.x = self.init_x
-        self.y = self.init_y
+        self.x = self.initial_x
+        self.y = self.initial_y
 
         #Rerender rect
         self.changed = True

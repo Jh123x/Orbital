@@ -21,8 +21,11 @@ class State(enum.Enum):
     PLAYMODE = 9
     TWO_PLAYER_MENU = 10
     AI_COOP = 11
-    AI_VS = 12
-    PVP = 13
+    AI_COOP_GAMEOVER  = 12
+    AI_VS = 13
+    AI_VS_GAMEOVER = 14
+    PVP = 15
+    PVP_GAMEOVER = 16
     QUIT = -1
     NONE = None
 

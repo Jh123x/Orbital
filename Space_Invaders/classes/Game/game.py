@@ -25,6 +25,8 @@ try:
     from .PlayModesScreen import PlayModeScreen
     from .TwoPlayerScreen import TwoPlayerScreen
     from .Popup import Popup
+    from .LocalPVPScreen import LocalPVPScreen
+    from .PVPGameoverScreen import PVPGameoverScreen
     
 except ImportError as exp:
     from Enums import *
@@ -47,6 +49,8 @@ except ImportError as exp:
     from PlayModesScreen import PlayModeScreen
     from TwoPlayerScreen import TwoPlayerScreen
     from Popup import Popup
+    from LocalPVPScreen import LocalPVPScreen
+    from PVPGameoverScreen import PVPGameoverScreen
 
 #Initialise pygame
 pygame.init()
@@ -147,7 +151,9 @@ class GameWindow(object):
         self.play_menu = PlayModeScreen(game_width, game_height, self.main_screen, debug)
         self.highscore = HighscoreScreen(game_width, game_height, self.main_screen, self.score_board.fetch_all(), debug = self.debug)
         self.two_player = TwoPlayerScreen(game_width, game_height, self.main_screen, self.debug)
+        self.pvp = LocalPVPScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, 3, debug)
         self.popup = None
+        self.cooldown = self.fps/5
         
         #Store the different states the menu has
         self.states = {
@@ -162,7 +168,8 @@ class GameWindow(object):
             State.TWO_PLAYER_MENU: self.two_player.handle,
             State.AI_COOP: self.two_player.handle,
             State.AI_VS: self.two_player.handle,
-            State.PVP: self.two_player.handle,
+            State.PVP: self.pvp.handle,
+            State.PVP_GAMEOVER:self.handle_PVP_gameover,
             State.QUIT:self.__del__
         }
 
@@ -213,6 +220,12 @@ class GameWindow(object):
 
         #Handle the pause screen
         return self.pause.handle()
+
+    def handle_PVP_gameover(self) -> State:
+        """Handle the PVP gameover screen"""
+        self.pvp_gameover = PVPGameoverScreen(self.game_width,self.game_height,self.main_screen, *self.pvp.get_scores())
+
+        return self.pvp_gameover.handle()
         
     def handle_gameover(self) -> State:
         """Handle the displaying of the gameover screen
@@ -292,8 +305,24 @@ class GameWindow(object):
             #Fill the background to black 
             self.main_screen.fill(BLACK)
 
+        #Save previous state
+        prev = self.state
+
         #Load the screen based on the state
-        self.state = self.states[self.state]()
+        if self.cooldown:
+            self.cooldown -= 1
+            self.states[self.state]()
+        else:
+            self.state = self.states[self.state]()
+
+        #If the state is different
+        if prev != self.state:
+
+            #Reset the cooldown
+            self.cooldown = self.fps/5
+
+            #Reset Popups
+            self.popup = None
 
         #Check popups
         if self.popup:
