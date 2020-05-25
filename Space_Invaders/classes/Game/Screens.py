@@ -15,7 +15,6 @@ except ImportError:
 pygame.font.init()
 
 class Screen(Object):
-
     #Store the fonts in the Screen Object
     font = pygame.font.Font(pygame.font.get_default_font(),15)
     end_font = pygame.font.Font(pygame.font.get_default_font(),30)

@@ -51,7 +51,7 @@ class InstructionScreen(Screen):
 
         #Check if the back button is clicked
         if self.check_clicked(self.back_rect):
-            return State.MENU
+            return State.INSTRUCTIONS_MENU
 
         #Otherwise return the current state
         return self.state

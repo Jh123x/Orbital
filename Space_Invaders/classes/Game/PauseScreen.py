@@ -3,12 +3,12 @@ from pygame.locals import *
 
 try:
     from .Screens import Screen
-    from .Enums import State
+    from .Enums import State, Direction
     from .Colors import WHITE
 
 except ImportError:
     from Screens import Screen
-    from Enums import State
+    from Enums import State, Direction
     from Colors import WHITE
 
 class PauseScreen(Screen):
@@ -29,10 +29,10 @@ class PauseScreen(Screen):
         super().__init__(screen_width, screen_height, State.PAUSE, screen, 0, 0, debug)
 
         #Draw the title of the pause screen
-        self.write(self.title_font, WHITE, "Paused", self.screen_width//2, self.screen_height//5)
+        self.write(self.title_font, WHITE, "Paused", self.screen_width//4, self.screen_height//5, Direction.LEFT)
         
         #Draw the score of the person currently
-        self.write(self.end_font, WHITE, f"Score: {score}", self.screen_width//2, self.screen_height//5 + self.screen_height//15)
+        self.write(self.end_font, WHITE, f"Score: {score}", self.screen_width//4, self.screen_height//5 + self.screen_height//15, Direction.LEFT)
 
         #Draw the instructions to unpause
         self.write(self.end_font, WHITE, "Press O to unpause", self.screen_width//2, self.screen_height//15 + self.screen_height//2)

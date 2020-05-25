@@ -10,24 +10,38 @@ class Direction(enum.Enum):
 
 class State(enum.Enum):
     """State enum to keep track of the state of the game"""
+    QUIT = -1
+    NONE = None
+
     MENU = 1
-    PLAY = 2
-    GAMEOVER = 3
-    PAUSE = 4
-    HIGHSCORE = 5
-    NEWHIGHSCORE = 6
-    INSTRUCTIONS = 7
-    SETTINGS = 8
-    PLAYMODE = 9
+    PLAYMODE = 2
+    SETTINGS = 3
+
+    PLAY = 20
+    GAMEOVER = 21
+    PAUSE = 22
+    NEWHIGHSCORE = 23
+
+    HIGHSCORE = 30
+    
+    INSTRUCTIONS_MENU = 40
+    INSTRUCTIONS = 41
+    PVP_INSTRUCTIONS = 42
+    AI_VS_INSTRUCTIONS = 43
+    AI_COOP_INSTRUCTIONS = 44
+    
     TWO_PLAYER_MENU = 10
     AI_COOP = 11
     AI_COOP_GAMEOVER  = 12
-    AI_VS = 13
-    AI_VS_GAMEOVER = 14
-    PVP = 15
-    PVP_GAMEOVER = 16
-    QUIT = -1
-    NONE = None
+
+    AI_VS = 14
+    AI_VS_GAMEOVER = 15
+
+    PVP = 16
+    PVP_GAMEOVER = 17
+    PVP_PAUSE = 18
+
+    
 
 class Difficulty(enum.Enum):
     """Difficulty enum to hold the difficultly of the game"""

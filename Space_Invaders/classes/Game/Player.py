@@ -70,6 +70,9 @@ class Player(MovingObject):
         #Re-render the character
         self.changed = True
 
+    def isInvincible(self) -> bool:
+        return self.invincible > 0
+
     def isAI(self) -> bool:
         """Check if it is an ai instance of the Player
             Arguments:

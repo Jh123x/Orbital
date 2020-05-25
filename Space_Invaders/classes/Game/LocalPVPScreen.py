@@ -31,6 +31,7 @@ class LocalPVPScreen(Screen):
         self.sensitivity = sensitivity
         self.fps = fps
         self.player_lives = player_lives
+        self.resetted = False
 
         #Bullet groups
         self.player1_bullet = pygame.sprite.Group()
@@ -56,6 +57,8 @@ class LocalPVPScreen(Screen):
         
     def reset(self) -> None:
         """Reset the environment"""
+        if self.resetted:
+            return
 
         #Reset score
         self.p1_score = 0
@@ -70,10 +73,16 @@ class LocalPVPScreen(Screen):
         self.player1_bullet.empty()
         self.player2_bullet.empty()
 
-    def check_keypresses(self) -> None:
+        self.resetted = True
+
+    def check_keypresses(self) -> bool:
         """Check the keys which are pressed"""
         #Get all the number of keys
         keys = pygame.key.get_pressed()
+
+        #Check if they want to pause game
+        if keys[K_p]:
+            return True
 
         if not self.player1.is_destroyed():
             #Check player 1 keys
@@ -92,6 +101,7 @@ class LocalPVPScreen(Screen):
                 #Let the player shoot
                 self.player1.shoot()
 
+        #If player 2 is not destroyed
         if not self.player2.is_destroyed():
 
             #Check player 2 keys
@@ -103,6 +113,8 @@ class LocalPVPScreen(Screen):
 
             if keys[K_0]:
                 self.player2.shoot()
+
+        return False
 
     def spawn_enemy_bullets(self) -> None:
         """Spawn bullets for mobs"""
@@ -171,6 +183,11 @@ class LocalPVPScreen(Screen):
 
     def update(self) -> None:
         """Update the movement of the sprites"""
+
+        #Set reset to false
+        if self.resetted:
+            self.resetted = not self.resetted
+
         #Spawn the mobs
         self.spawn_mobs()
 
@@ -249,21 +266,28 @@ class LocalPVPScreen(Screen):
         #Check Collision of player 1
         bullet_hit_p = len(pygame.sprite.spritecollide(self.player1, self.player2_bullet, True)) 
         bullet_hit_m = len(pygame.sprite.spritecollide(self.player1, self.mob_bullet, True))
+
+        #Check if it player bullet hit the other player
+        if bullet_hit_p and not self.player1.isInvincible():
+            self.p2_score += 500
+
         if bullet_hit_p + bullet_hit_m > 0 and not self.player1.is_destroyed():
             self.player1.destroy()
             self.explosions.add(Explosion(self.fps//4, self.player1.get_x(), self.player1.get_y(), self.screen_width, self.screen_height, 0, self.debug))
-        if bullet_hit_p:
-            self.p2_score += 500
+        
             
 
         #Check Collision of player 2
         bullet_hit_p = len(pygame.sprite.spritecollide(self.player2, self.player1_bullet, True))
         bullet_hit_m = len(pygame.sprite.spritecollide(self.player2, self.mob_bullet, True))
+        if bullet_hit_p and not self.player2.isInvincible():
+            self.p1_score += 500
+
+
         if bullet_hit_p + bullet_hit_m > 0 and not self.player2.is_destroyed():
             self.player2.destroy()
             self.explosions.add(Explosion(self.fps//4, self.player2.get_x(), self.player2.get_y(), self.screen_width, self.screen_height, 0, self.debug))
-        if bullet_hit_p:
-            self.p1_score += 500
+        
 
         #Check collision of mobs with player 1 bullet
         self.p1_score += self.check_player_mob_collision(self.player1_bullet)
@@ -276,7 +300,8 @@ class LocalPVPScreen(Screen):
         """Handle the drawing of the screen"""
 
         #Check keypresses
-        self.check_keypresses()
+        if self.check_keypresses():
+            return State.PVP_PAUSE
 
         #Check collisions
         self.check_collision()
