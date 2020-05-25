@@ -14,7 +14,7 @@ class PVPPauseScreen(Screen):
         """Main class for PVP pause screen"""
         
         #Call the superclass
-        super().__init__(screen_width, screen_height, State.PVP_PAUSE_SCREEN, screen, 0, 0, debug)
+        super().__init__(screen_width, screen_height, State.PVP_PAUSE, screen, 0, 0, debug)
 
         #Store the vars
         self.p1 = p1_score
@@ -27,16 +27,16 @@ class PVPPauseScreen(Screen):
         first_pixel = screen_height // 2
 
         #Draw the player 1 score
-        self.write(Screen.end_font, WHITE, f"Player 1: {p1_score}", screen_width//4, first_pixel, Direction.LEFT)
+        self.write(Screen.end_font, WHITE, f"Player 1: {p1_score}", screen_width//2, first_pixel)
 
         #Draw the player 2 score
         self.write(Screen.end_font, WHITE, f"Player 2: {p2_score}", screen_width//4, first_pixel + self.screen_height//15, Direction.LEFT)
 
         #Draw the instructions to unpause
-        self.write(self.end_font, WHITE, "Press O to unpause", self.screen_width//4, first_pixel + self.screen_height//7.5, Direction.LEFT)
+        self.write(Screen.end_font, WHITE, "Press O to unpause", self.screen_width//4, first_pixel + self.screen_height//7.5, Direction.LEFT)
 
         #Draw the instructions to quit
-        self.write(self.end_font, WHITE, "Escape to quit", self.screen_width//4, first_pixel + self.screen_height//5, Direction.LEFT)
+        self.write(Screen.end_font, WHITE, "Escape to quit", self.screen_width//4, first_pixel + self.screen_height//5, Direction.LEFT)
         
 
     def update_keypresses(self) -> State:
@@ -58,7 +58,7 @@ class PVPPauseScreen(Screen):
             return State.MENU
         
         #Return the current state if the player has not unpaused
-        return State.PVP_PAUSE_SCREEN
+        return State.PVP_PAUSE
 
     def handle(self) -> State:
         """Handle the drawing of the pause screen"""

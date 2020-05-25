@@ -241,7 +241,7 @@ class GameWindow(object):
                 Returns the next state the game is suppose to be in (State)
         """
         #Create the pause screen
-        self.pause = PauseScreen(self.game_width,self.game_height, self.main_screen, *self.play.get_score(), self.debug)
+        self.pause = PauseScreen(self.game_width,self.game_height, self.main_screen, self.play.get_score(), self.debug)
 
         #Handle the pause screen
         return self.pause.handle()
@@ -313,7 +313,7 @@ class GameWindow(object):
         keys = pygame.key.get_pressed()
 
         #Check each key individually
-        if keys[K_x]:
+        if keys[K_x] and self.state != State.NEWHIGHSCORE:
 
             #Save a screenshot named based on date and time
             name = f'screenshots/{datetime.datetime.now().strftime("%d_%m_%Y_%H_%M_%S")}.png'
