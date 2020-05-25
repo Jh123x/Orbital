@@ -2,7 +2,7 @@ import pygame
 try:
     from .ImageObject import ImageObject
 except ImportError:
-    from .ImageObject import ImageObject
+    from ImageObject import ImageObject
 
 class Background(ImageObject):
     #To store the background sprites

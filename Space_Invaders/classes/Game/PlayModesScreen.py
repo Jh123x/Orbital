@@ -18,10 +18,10 @@ class PlayModeScreen(Screen):
         super().__init__(screen_width, screen_height, State.PLAYMODE, screen, 0, 0, debug)
 
         #First pixel for alignment
-        first_pixel = self.screen_height // 2 + 100
+        first_pixel = self.screen_height // 2
 
         #Draw the Header
-        self.header = self.write(Screen.title_font, WHITE, "Modes", self.screen_width//2, self.screen_height//4)
+        self.header = self.write(Screen.title_font, WHITE, "Modes", self.screen_width//2, self.screen_height//5)
 
         #Draw the rectangles for the different game modes
         #Rectangle for the endless mode (Default)
@@ -59,6 +59,7 @@ class PlayModeScreen(Screen):
 
     def check_keypresses(self) -> State:
         """Check the keyboard inputsof the user"""
+
         #Get the keypresses that the user pressed
         keys = pygame.key.get_pressed()
 

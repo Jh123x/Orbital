@@ -15,10 +15,10 @@ except ImportError:
 pygame.font.init()
 
 class Screen(Object):
-
     #Store the fonts in the Screen Object
     font = pygame.font.Font(pygame.font.get_default_font(),15)
     end_font = pygame.font.Font(pygame.font.get_default_font(),30)
+    subtitle_font = pygame.font.Font(pygame.font.get_default_font(), 40)
     title_font = pygame.font.Font(pygame.font.get_default_font(), 60)
 
     def __init__(self, screen_width:int, screen_height:int, state:State, screen, initial_x:int, initial_y:int, debug:bool = False):
@@ -47,6 +47,7 @@ class Screen(Object):
         self.screen_height = screen_height
         self.debug = debug
         self.bg = None
+        self.cooldown = 20
 
         #Create a surface with a transparent background
         self.surface = pygame.Surface((screen_width,screen_height), pygame.SRCALPHA, 32)

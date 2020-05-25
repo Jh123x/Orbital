@@ -67,7 +67,7 @@ class PlayScreen(Screen):
         self.explosions = pygame.sprite.Group()
 
         #Create the player
-        self.player = Player(sensitivity, screen_width, screen_height - 50, 3, max_fps, self.up_bullets, debug)
+        self.player = Player(sensitivity, screen_width, screen_height, screen_width//2, screen_height - 50, 3, max_fps, self.up_bullets, Direction.UP, debug)
 
         #Reset the variables
         self.reset()
@@ -99,9 +99,6 @@ class PlayScreen(Screen):
 
             #Make the player shoot
             self.player.shoot()
-
-            #Set the bullet on cooldown
-            self.bullet_cooldown = self.fps // (3 * 0.95 ** self.wave)
 
         #Check for debug keypresses
         if self.debug:
@@ -195,7 +192,7 @@ class PlayScreen(Screen):
         self.explosions.draw(self.screen)
 
         #Draw player object
-        self.screen.blit(self.player.image, self.player.rect)
+        self.player.draw(self.screen)
 
         #Call superclass update
         super().update()
@@ -301,12 +298,12 @@ class PlayScreen(Screen):
         if number <= 6:
 
             #Spawn them in 1 row
-            self.enemies.add([EnemyShip(self.sensitivity, self.screen_width//4 + i*self.screen_width//10, self.screen_height//10, random.randint(1,self.wave), self.screen_width,  self.screen_height, self.debug) for i in range(number)])
+            self.enemies.add([EnemyShip(self.sensitivity, self.screen_width//4 + i*self.screen_width//10, self.screen_height//10, random.randint(1,self.wave), self.screen_width,  self.screen_height, Direction.DOWN, self.debug) for i in range(number)])
         else:
 
             #Otherwise make them into rows of 6
             for j in range(number//6 if number // 6 < 5 else 5):
-                self.enemies.add([EnemyShip(self.sensitivity, self.screen_width//4 + i*self.screen_width//10, self.screen_height//10 + EnemyShip.sprites[0].get_height() * j, random.randint(1,self.wave), self.screen_width,  self.screen_height, self.debug) for i in range(6)])
+                self.enemies.add([EnemyShip(self.sensitivity, self.screen_width//4 + i*self.screen_width//10, self.screen_height//10 + EnemyShip.sprites[0].get_height() * j, random.randint(1,self.wave), self.screen_width,  self.screen_height, Direction.DOWN, self.debug) for i in range(6)])
 
         
     def handle(self) -> State:
