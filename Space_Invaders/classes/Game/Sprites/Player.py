@@ -1,12 +1,6 @@
 import pygame
-try:
-    from .MovingObject import MovingObject
-    from .Bullet import Bullet
-    from .Enums import Direction
-except ImportError:
-    from MovingObject import MovingObject
-    from Bullet import Bullet
-    from Enums import Direction
+from . import MovingObject, Bullet
+from .. import Direction
 
 class Player(MovingObject):
     #Static method to store sprites

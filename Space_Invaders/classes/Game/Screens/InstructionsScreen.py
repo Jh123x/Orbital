@@ -1,11 +1,5 @@
-try:
-    from .Screens import Screen
-    from .Colors import WHITE
-    from .Enums import State
-except ImportError:
-    from Screens import Screen
-    from Colors import WHITE
-    from Enums import State
+from . import Screen
+from .. import *
 
 class InstructionScreen(Screen):
     def __init__(self, screen_width:int, screen_height:int, screen, debug:bool = False):
@@ -36,7 +30,7 @@ class InstructionScreen(Screen):
         self.write(Screen.end_font, WHITE, "Press X to screenshot anytime", self.screen_width//2, first_px + self.screen_height//5)
 
         #Draw the back button
-        self.back_rect = self.write(Screen.end_font,WHITE, "Back", self.screen_width//2, self.screen_height-self.screen_height//5)
+        self.back_rect = self.write(Screen.end_font,WHITE, "Back", self.screen_width//2, self.screen_height//1.2)
 
     def handle(self) -> State:
         """Load the Instructions onto the screen

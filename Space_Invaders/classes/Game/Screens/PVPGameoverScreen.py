@@ -1,24 +1,8 @@
 import pygame
 import random
 from pygame.locals import *
-try:
-    from .Screens import Screen
-    from .Enums import State, Direction
-    from .Player import Player
-    from .EnemyGroup import EnemyShips
-    from .Bullet import Bullet
-    from .Explosion import Explosion
-    from .EnemyShip import EnemyShip
-    from .Colors import WHITE
-except ImportError:
-    from Screens import Screen
-    from Enums import State, Direction
-    from Player import Player
-    from EnemyGroup import EnemyShips
-    from Bullet import Bullet
-    from Explosion import Explosion
-    from EnemyShip import EnemyShip
-    from Colors import WHITE
+from . import Screen
+from .. import State, WHITE, Direction
 
 class PVPGameoverScreen(Screen):
     def __init__(self, screen_width:int, screen_height:int, screen, p1_score:int, p2_score:int, debug:bool = False):

@@ -1,25 +1,8 @@
 import pygame
 import random
 from pygame.locals import *
-
-try: 
-    from .Enums import State, Direction
-    from .Player import Player
-    from .EnemyGroup import EnemyShips
-    from .EnemyShip import EnemyShip
-    from .Colors import WHITE
-    from .Screens import Screen
-    from .Explosion import Explosion
-    from .Bullet import Bullet
-except ImportError:
-    from Enums import State, Direction
-    from Player import Player
-    from EnemyGroup import EnemyShips
-    from EnemyShip import EnemyShip
-    from Colors import WHITE
-    from Screens import Screen
-    from Explosion import Explosion
-    from Bullet import Bullet
+from . import Screen
+from .. import State, EnemyShips, Player, Direction, EnemyShip, WHITE, Bullet, Explosion
 
 class PlayScreen(Screen):
     def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, wave:int = 1, debug:bool = False):
@@ -61,7 +44,7 @@ class PlayScreen(Screen):
         self.down_bullets = pygame.sprite.Group()
 
         #Enemyships
-        self.enemies = EnemyShips()
+        self.enemies = EnemyShips(self.state)
 
         #Explosions
         self.explosions = pygame.sprite.Group()
@@ -247,7 +230,7 @@ class PlayScreen(Screen):
             self.player.destroy()
             
             #Add explosion to the player's position
-            self.explosions.add(Explosion(self.fps//2,self.player.get_x(),self.player.get_y(),self.screen_width,self.screen_height))
+            self.explosions.add(Explosion(self.fps//2, self.player.get_x(), self.player.get_y(), self.screen_width, self.screen_height))
 
         #Remove bullets that collide with one another
         pygame.sprite.groupcollide(self.up_bullets, self.down_bullets, True, True)
@@ -359,4 +342,4 @@ class PlayScreen(Screen):
             return State.PAUSE
 
         #Return play state
-        return State.PLAY
+        return self.state

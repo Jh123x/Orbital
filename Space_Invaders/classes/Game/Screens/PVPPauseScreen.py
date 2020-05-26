@@ -1,13 +1,7 @@
 import pygame
 from pygame.locals import *
-try:
-    from .Screens import Screen
-    from .Enums import State, Direction
-    from .Colors import WHITE
-except ImportError:
-    from Screens import Screen
-    from Enums import State, Direction
-    from Colors import WHITE
+from . import Screen
+from .. import WHITE, State, Direction
 
 class PVPPauseScreen(Screen):
     def __init__(self, screen_width:int, screen_height:int, screen, p1_score:int, p2_score:int, debug:bool = False):

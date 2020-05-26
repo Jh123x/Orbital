@@ -1,5 +1,6 @@
 #To manage the database
 import sqlite3
+import os
 
 class Database(object):
     def __init__(self, dbpath:str, name:str):
@@ -227,8 +228,8 @@ def main() -> None:
             No returns
     """
     #Create the scoreboard database
-    db = ScoreBoard("../../data/test.db")
-    ac = Achievements("../../data/test.db")
+    db = ScoreBoard(os.path.dirname(os.path.realpath(__file__)) + '/' + "../../data/test.db")
+    ac = Achievements(os.path.dirname(os.path.realpath(__file__)) + '/' + "../../data/test.db")
 
     #For debugging
     print(f"Running the main function from database file")
