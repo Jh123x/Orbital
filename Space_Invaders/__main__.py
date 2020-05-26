@@ -9,7 +9,7 @@ from classes import *
 import os
 
 def form_abs_path(filepath):
-    return f"{os.path.dirname(os.path.realpath(__file__))}\\{filepath}"
+    return f"{os.path.dirname(os.path.realpath(__file__))}/{filepath}"
     
 #Run the following if the file is run as main
 if __name__ =="__main__":
@@ -19,6 +19,8 @@ if __name__ =="__main__":
 
     #Read the configuration file for space invaders
     all_cfg = read_all(form_abs_path(settings))
+    print(form_abs_path(settings))
+    print(all_cfg)
     
     #Main configurations
     config = all_cfg['Space Invaders']
