@@ -1,24 +1,8 @@
 import pygame
 import random
 from pygame.locals import *
-try:
-    from .Screens import Screen
-    from .Enums import State, Direction
-    from .Player import Player
-    from .EnemyGroup import EnemyShips
-    from .Bullet import Bullet
-    from .Explosion import Explosion
-    from .EnemyShip import EnemyShip
-    from .Colors import WHITE
-except ImportError:
-    from Screens import Screen
-    from Enums import State, Direction
-    from Player import Player
-    from EnemyGroup import EnemyShips
-    from Bullet import Bullet
-    from Explosion import Explosion
-    from EnemyShip import EnemyShip
-    from Colors import WHITE
+from . import Screen
+from .. import State, EnemyShips, Player, Direction, EnemyShip, WHITE, Explosion, Bullet
 
 class LocalPVPScreen(Screen):
     def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, fps:int, player_lives:int = 3, debug:bool = False):
@@ -42,7 +26,7 @@ class LocalPVPScreen(Screen):
         self.explosions = pygame.sprite.Group()
 
         #Enemyships
-        self.enemies = EnemyShips()
+        self.enemies = EnemyShips(self.state)
 
         #Get wave
         self.wave = 0

@@ -1,13 +1,7 @@
 import pygame
 from pygame.locals import *
-try:
-    from .Screens import Screen
-    from .Enums import State
-    from .Colors import WHITE
-except ImportError:
-    from Screens import Screen
-    from Enums import State
-    from Colors import WHITE
+from . import Screen
+from .. import State, WHITE
 
 class MenuScreen(Screen):
     def __init__(self, screen_width:int, screen_height:int, screen, debug:bool = False):

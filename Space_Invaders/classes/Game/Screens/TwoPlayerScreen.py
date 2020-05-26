@@ -1,16 +1,7 @@
 import pygame
 from pygame.locals import *
-
-try: 
-    from .Screens import Screen
-    from .Enums import State, Direction
-    from .Colors import WHITE
-    from .Popup import Popup
-except:
-    from Screens import Screen
-    from Enums import State, Direction
-    from Colors import WHITE
-    from Popup import Popup
+from . import Screen, Popup
+from .. import WHITE, State
 
 class TwoPlayerScreen(Screen):
     def __init__(self, screen_width:int, screen_height:int, screen, debug:bool = False):

@@ -1,9 +1,6 @@
 import pygame
 from pygame.locals import *
-try:
-    from .Colors import *
-except ImportError:
-    from Colors import *
+from .. import *
 
 class InputBox(object):
     def __init__(self, initial_x:int, initial_y:int, height:int, font, max_length:int = 10):
@@ -64,8 +61,8 @@ class InputBox(object):
             Returns: 
                 No return
         """
-        if char and len(self.text) <= self.max_length:
-            self.text.append(char.strip())
+        if char != '' and len(self.text) <= self.max_length:
+            self.text.append(char)
 
     def blit(self, screen) -> None:
         """Draw the inputbox onto the screen

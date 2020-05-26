@@ -4,58 +4,9 @@ import pygame.freetype
 import random
 import datetime
 from pygame.locals import *
-try:
-    from .Enums import *
-    from .database import ScoreBoard
-    from .Player import Player
-    from .Bullet import Bullet
-    from .EnemyShip import EnemyShip
-    from .Explosion import Explosion
-    from .Background import Background
-    from .Colors import *
-    from .InputBox import InputBox
-    from .InstructionsScreen import InstructionScreen
-    from .MenuScreen import MenuScreen
-    from .PlayScreen import PlayScreen
-    from .GameoverScreen import GameoverScreen
-    from .PauseScreen import PauseScreen
-    from .EnemyGroup import EnemyShips
-    from .HighscoreScreen import HighscoreScreen
-    from .NewhighscoreScreen import NewhighscoreScreen
-    from .PlayModesScreen import PlayModeScreen
-    from .TwoPlayerScreen import TwoPlayerScreen
-    from .Popup import Popup
-    from .LocalPVPScreen import LocalPVPScreen
-    from .PVPGameoverScreen import PVPGameoverScreen
-    from .InstructionsMenuScreen import InstructionsMenuScreen
-    from .PVPInstructionsScreen import PVPInstructionsScreen
-    from .PVPPauseScreen import PVPPauseScreen
+from . import *
+from .Screens import *
     
-except ImportError as exp:
-    from Enums import *
-    from database import ScoreBoard
-    from Player import Player
-    from Bullet import Bullet
-    from EnemyShip import EnemyShip
-    from Explosion import Explosion
-    from Background import Background
-    from Colors import *
-    from InputBox import InputBox
-    from InstructionsScreen import InstructionScreen
-    from MenuScreen import MenuScreen
-    from PlayScreen import PlayScreen
-    from GameoverScreen import GameoverScreen
-    from PauseScreen import PauseScreen
-    from EnemyGroup import EnemyShips
-    from HighscoreScreen import HighscoreScreen
-    from NewhighscoreScreen import NewhighscoreScreen
-    from PlayModesScreen import PlayModeScreen
-    from TwoPlayerScreen import TwoPlayerScreen
-    from Popup import Popup
-    from LocalPVPScreen import LocalPVPScreen
-    from PVPGameoverScreen import PVPGameoverScreen
-    from InstructionsMenuScreen import InstructionsMenuScreen
-    from PVPInstructionsScreen import PVPInstructionsScreen
 
 #Initialise pygame
 pygame.init()
@@ -159,7 +110,9 @@ class GameWindow(object):
         self.pvp = LocalPVPScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, 3, debug)
         self.pvp_menu = PVPInstructionsScreen(game_width, game_height, self.main_screen, debug)
         self.inst_menu = InstructionsMenuScreen(game_width, game_height, self.main_screen, debug)
+        self.classic = ClassicScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug = self.debug)
         self.popup = None
+        self.prev = None
         self.cooldown = self.fps/5
         
         #Store the different states the menu has
@@ -180,6 +133,7 @@ class GameWindow(object):
             State.PVP: self.pvp.handle,
             State.PVP_GAMEOVER:self.handle_PVP_gameover,
             State.PVP_PAUSE: self.handle_PVP_pause,
+            State.CLASSIC: self.classic.handle,
             State.QUIT:self.__del__
         }
 
@@ -240,8 +194,12 @@ class GameWindow(object):
             Returns:
                 Returns the next state the game is suppose to be in (State)
         """
-        #Create the pause screen
-        self.pause = PauseScreen(self.game_width,self.game_height, self.main_screen, self.play.get_score(), self.debug)
+        if self.prev == State.PLAY:
+            #Create the pause screen
+            self.pause = PauseScreen(self.game_width,self.game_height, self.main_screen, self.play.get_score(), self.prev, self.debug)
+        elif self.prev == State.CLASSIC:
+            #Create the pause screen
+            self.pause = PauseScreen(self.game_width,self.game_height, self.main_screen, self.classic.get_score(), self.prev, self.debug)
 
         #Handle the pause screen
         return self.pause.handle()
@@ -268,26 +226,44 @@ class GameWindow(object):
             Returns: 
                 Returns the next state the game is suppose to be in (State)
         """
-        #If it is a new highscore
-        if self.highscore.beat_highscore(self.play.get_score()) and not self.written:
+        if self.prev == State.PLAY or self.prev == State.NEWHIGHSCORE:
+            #If it is a new highscore
+            if self.highscore.beat_highscore(self.play.get_score()) and not self.written:
 
-            #Go to the new highscore state
-            return State.NEWHIGHSCORE
+                #Go to the new highscore state
+                return State.NEWHIGHSCORE
 
-        #Create the gameover screen
-        self.game_over = GameoverScreen(self.game_width,self.game_height, self.main_screen, self.play.get_score(), self.debug)
+            #Create the gameover screen
+            self.game_over = GameoverScreen(self.game_width,self.game_height, self.main_screen, self.play.get_score(), self.debug)
 
-        #Check the state given by gameover
-        state = self.game_over.handle()
+            #Check the state given by gameover
+            state = self.game_over.handle()
 
-        #If player is going back
-        if state == State.MENU:
+            #If player is going back
+            if state == State.MENU:
 
-            #Mark written as false
-            self.written = False
+                #Mark written as false
+                self.written = False
 
-            #Reset the play screen
-            self.play.reset()
+                #Reset the play screen
+                self.play.reset()
+
+        elif self.prev == State.CLASSIC:
+
+            #Create the gameover screen
+            self.game_over = GameoverScreen(self.game_width,self.game_height, self.main_screen, self.classic.get_score(), self.debug)
+
+            #Check the state given by gameover
+            state = self.game_over.handle()
+
+            #If player is going back
+            if state == State.MENU:
+
+                #Mark written as false
+                self.written = False
+
+                #Reset the play screen
+                self.classic.reset()
 
         #Return the state
         return state
@@ -352,11 +328,15 @@ class GameWindow(object):
         #If the state is different
         if prev != self.state:
 
+            #Set the self.prev state
+            self.prev = prev
+
             #Reset the cooldown
             self.cooldown = self.fps/5
 
             #Reset Popups
             self.popup = None
+
 
         #Check popups
         if self.popup:

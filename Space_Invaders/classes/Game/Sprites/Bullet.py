@@ -1,9 +1,5 @@
-try:
-    from .MovingObject import MovingObject
-    from .Enums import Direction
-except ImportError:
-    from MovingObject import MovingObject
-    from Enums import Direction
+from . import MovingObject
+from .. import *
 
 class Bullet(MovingObject):
 

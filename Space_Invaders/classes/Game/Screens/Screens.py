@@ -1,15 +1,6 @@
 import pygame
 from pygame.locals import *
-try:
-    from .Enums import State, Direction
-    from .Colors import *
-    from .Player import Player
-    from .Object import Object
-except ImportError:
-    from Enums import State, Direction
-    from Colors import *
-    from Player import Player
-    from Object import Object
+from .. import Object, State, Direction
 
 #Initialise the fonts
 pygame.font.init()
