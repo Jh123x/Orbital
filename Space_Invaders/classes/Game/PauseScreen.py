@@ -29,16 +29,16 @@ class PauseScreen(Screen):
         super().__init__(screen_width, screen_height, State.PAUSE, screen, 0, 0, debug)
 
         #Draw the title of the pause screen
-        self.write(self.title_font, WHITE, "Paused", self.screen_width//4, self.screen_height//5, Direction.LEFT)
+        self.write(Screen.title_font, WHITE, "Paused", self.screen_width//2, self.screen_height//5)
         
         #Draw the score of the person currently
-        self.write(self.end_font, WHITE, f"Score: {score}", self.screen_width//4, self.screen_height//5 + self.screen_height//15, Direction.LEFT)
+        self.write(Screen.subtitle_font, WHITE, f"Score: {score}", self.screen_width//2, self.screen_height//2)
 
         #Draw the instructions to unpause
-        self.write(self.end_font, WHITE, "Press O to unpause", self.screen_width//2, self.screen_height//15 + self.screen_height//2)
+        self.write(Screen.end_font, WHITE, "Press O to unpause", self.screen_width//2, self.screen_height//15 + self.screen_height//2)
 
         #Draw the instructions to quit
-        self.write(self.end_font, WHITE, "Escape to quit, score will not be saved", self.screen_width//2, self.screen_height//7.5 + self.screen_height//2)
+        self.write(Screen.end_font, WHITE, "Escape to quit, score will not be saved", self.screen_width//2, self.screen_height//7.5 + self.screen_height//2)
 
     def update_keypresses(self) -> State:
         """Check for the keypresses within the pause screen

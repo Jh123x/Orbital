@@ -75,7 +75,7 @@ def add_to_sprite(obj:object, sprite_path:tuple) -> None:
 class GameWindow(object):
     def __init__(self, sensitivity:int, maxfps:int, game_width:int, game_height:int, icon_img_path:str, player_img_paths:tuple,
                  enemy_img_paths:tuple, bullet_img_paths:tuple, background_img_paths:tuple, explosion_img_paths:tuple, 
-                 p_settings:dict, wave:int = 1,  debug:bool = False):
+                 p_settings:dict, db_path:str, wave:int = 1,  debug:bool = False):
         """The constructor for the main window
             Arguments:
                 Sensitivity: Sensitivity of controls (int)
@@ -132,7 +132,7 @@ class GameWindow(object):
         self.difficulty = Difficulty(p_settings['difficulty'] if p_settings['difficulty'] < 5 else 5)
 
         #Load the highscores
-        self.score_board = ScoreBoard("data/test.db") #TODO To be changed when game is officially launched
+        self.score_board = ScoreBoard(db_path)
 
         #Load player ship images into Player object 
         add_to_sprite(Player, player_img_paths)
@@ -241,7 +241,7 @@ class GameWindow(object):
                 Returns the next state the game is suppose to be in (State)
         """
         #Create the pause screen
-        self.pause = PauseScreen(self.game_width,self.game_height, self.main_screen, *self.play.get_score(), self.debug)
+        self.pause = PauseScreen(self.game_width,self.game_height, self.main_screen, self.play.get_score(), self.debug)
 
         #Handle the pause screen
         return self.pause.handle()
@@ -313,7 +313,7 @@ class GameWindow(object):
         keys = pygame.key.get_pressed()
 
         #Check each key individually
-        if keys[K_x]:
+        if keys[K_x] and self.state != State.NEWHIGHSCORE:
 
             #Save a screenshot named based on date and time
             name = f'screenshots/{datetime.datetime.now().strftime("%d_%m_%Y_%H_%M_%S")}.png'
