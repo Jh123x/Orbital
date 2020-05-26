@@ -41,6 +41,8 @@ class State(enum.Enum):
     PVP_GAMEOVER = 17
     PVP_PAUSE = 18
 
+    CLASSIC = 60
+
     
 
 class Difficulty(enum.Enum):
