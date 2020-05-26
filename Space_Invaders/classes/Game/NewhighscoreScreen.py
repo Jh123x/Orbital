@@ -66,7 +66,7 @@ class NewhighscoreScreen(Screen):
         self.write(self.title_font, WHITE, f"NEW HIGH SCORE", self.screen_width//2, start_px)
 
         #Tell the user to key in his name
-        self.write(self.font, WHITE, f"Please key in your name and press enter", self.screen_width//2, start_px + self.screen_height//10)
+        self.write(self.font, WHITE, f"Please enter your name and press enter", self.screen_width//2, start_px + self.screen_height//10)
 
         #Draw the inputbox
         NewhighscoreScreen.inputbox.blit(self.screen)

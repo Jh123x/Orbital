@@ -41,7 +41,7 @@ if __name__ =="__main__":
     explosion_img_paths = list(map(lambda x: form_abs_path(x), all_cfg["Explosion Sprites"].values()))
 
     #DBPath
-    db_path = form_abs_path('data\\test.db')
+    db_path = form_abs_path('data/test.db')
 
     #Get the settings
     settings = all_cfg["Player"]

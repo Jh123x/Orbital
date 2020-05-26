@@ -24,11 +24,14 @@ class PlayModeScreen(Screen):
         self.header = self.write(Screen.title_font, WHITE, "Modes", self.screen_width//2, self.screen_height//5)
 
         #Draw the rectangles for the different game modes
+        #Rect for the classic mode
+        self.classic = self.write(Screen.end_font, WHITE, "Classic Mode", self.screen_width//2, first_pixel)
+
         #Rectangle for the endless mode (Default)
-        self.play = self.write(Screen.end_font, WHITE, "Endless Mode", self.screen_width//2, first_pixel)
+        self.play = self.write(Screen.end_font, WHITE, "Endless Mode", self.screen_width//2, first_pixel + self.screen_height//15)
 
         #2 Player mode (2 player mode menu)
-        self.two_player = self.write(Screen.end_font, WHITE, "2 Player mode", self.screen_width//2, first_pixel + self.screen_height//15)
+        self.two_player = self.write(Screen.end_font, WHITE, "2 Player Modes", self.screen_width//2, first_pixel + self.screen_height//7.5)
 
         #Back button
         self.back = self.write(Screen.end_font, WHITE, "Back", self.screen_width // 2, self.screen_height//1.2)
@@ -53,6 +56,11 @@ class PlayModeScreen(Screen):
 
             #Go to the main menu after that
             return State.MENU
+
+        elif self.check_clicked(self.classic):
+
+            #Go to the classic screen
+            return State.CLASSIC
 
         #Otherwise the player has not decided
         return False

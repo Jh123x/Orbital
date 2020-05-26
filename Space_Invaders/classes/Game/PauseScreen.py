@@ -12,7 +12,7 @@ except ImportError:
     from Colors import WHITE
 
 class PauseScreen(Screen):
-    def __init__(self, screen_width:int, screen_height:int, screen, score:int, debug:bool = False):
+    def __init__(self, screen_width:int, screen_height:int, screen, score:int, previous_state: State, debug:bool = False):
         """Main class for the pause screen
             Arguments:
                 screen_width: The width of the game in terms of pixels (int)
@@ -27,6 +27,7 @@ class PauseScreen(Screen):
         """
         #Call the superclass
         super().__init__(screen_width, screen_height, State.PAUSE, screen, 0, 0, debug)
+        self.previous_state = previous_state
 
         #Draw the title of the pause screen
         self.write(Screen.title_font, WHITE, "Paused", self.screen_width//2, self.screen_height//5)
@@ -53,7 +54,7 @@ class PauseScreen(Screen):
 
         #Return the play state if the player unpause his game
         if keys[K_o]:
-            return State.PLAY
+            return self.previous_state
 
         #If the player press the escape key, quit the game
         if keys[K_ESCAPE]:

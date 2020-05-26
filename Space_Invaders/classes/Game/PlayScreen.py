@@ -1,7 +1,6 @@
 import pygame
 import random
 from pygame.locals import *
-
 try: 
     from .Enums import State, Direction
     from .Player import Player
@@ -247,7 +246,7 @@ class PlayScreen(Screen):
             self.player.destroy()
             
             #Add explosion to the player's position
-            self.explosions.add(Explosion(self.fps//2,self.player.get_x(),self.player.get_y(),self.screen_width,self.screen_height))
+            self.explosions.add(Explosion(self.fps//2, self.player.get_x(), self.player.get_y(), self.screen_width, self.screen_height))
 
         #Remove bullets that collide with one another
         pygame.sprite.groupcollide(self.up_bullets, self.down_bullets, True, True)
@@ -359,4 +358,4 @@ class PlayScreen(Screen):
             return State.PAUSE
 
         #Return play state
-        return State.PLAY
+        return self.state
