@@ -1,6 +1,7 @@
 #Version of the game to train the AI
 
 import pygame
+import os
 from classes import *
 
 def add_to_sprite(obj:object, sprite_path:tuple) -> None:
@@ -9,28 +10,33 @@ def add_to_sprite(obj:object, sprite_path:tuple) -> None:
     for path in sprite_path:
         obj.sprites.append(pygame.image.load(path))
 
+def form_abs_path(filepath):
+    """Get the absolute path of a filepath"""
+    return f"{os.path.dirname(os.path.realpath(__file__))}/{filepath}"
+
 class Pygame_2D(object):
     def __init__(self, settings:str):
         #Read the configuration file for space invaders
         all_cfg = read_all(settings)
 
-        #Main configurations
+            #Main configurations
         config = all_cfg['Space Invaders']
+        config['icon_img_path'] = form_abs_path(config['icon_img_path'])
 
         #Get the player sprites
-        player_img_paths = all_cfg["Player Sprites"].values()
+        player_img_paths = list(map(lambda x: form_abs_path(x), all_cfg["Player Sprites"].values()))
 
         #Get the bullet sprites Enemy Sprites
-        bullet_img_paths = all_cfg["Bullet Sprites"].values()
+        bullet_img_paths = list(map(lambda x: form_abs_path(x), all_cfg["Bullet Sprites"].values()))
 
         #Get the enemy sprites
-        enemy_img_paths = all_cfg["Enemy Sprites"].values()
+        enemy_img_paths = list(map(lambda x: form_abs_path(x), all_cfg["Enemy Sprites"].values()))
 
         #Get the background sprites
-        background_img_paths = all_cfg["Background"].values()
+        background_img_paths = list(map(lambda x: form_abs_path(x), all_cfg["Background"].values()))
 
         #Get the explosion image path
-        explosion_img_paths = all_cfg["Explosion Sprites"].values()
+        explosion_img_paths = list(map(lambda x: form_abs_path(x), all_cfg["Explosion Sprites"].values()))
 
         #Get the settings
         settings = all_cfg["Player"]
@@ -123,6 +129,6 @@ class Pygame_2D(object):
 
 if __name__ == '__main__':
     settings = "settings.cfg"
-    game = Pygame_2D(settings)
+    game = Pygame_2D(form_abs_path(settings))
     game.mainloop()
     
