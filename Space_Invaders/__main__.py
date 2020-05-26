@@ -9,6 +9,7 @@ from classes import *
 import os
 
 def form_abs_path(filepath):
+    """Get the absolute path of a filepath"""
     return f"{os.path.dirname(os.path.realpath(__file__))}/{filepath}"
     
 #Run the following if the file is run as main
