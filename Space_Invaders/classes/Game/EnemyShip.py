@@ -104,6 +104,10 @@ class EnemyShip(MovingObject):
         else:
             assert False, "Enemy ship direction is invalid"
 
+    def touch_edge(self) -> bool:
+        """If it is touching the edge"""
+        return self.get_x() >= self.game_width - self.get_width()//2 or self.get_x() < self.get_width()//2
+
     def update(self, multiplier:int) -> None:
         """Update the movement of the enemies
             Arguments:
