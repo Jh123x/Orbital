@@ -75,7 +75,7 @@ def add_to_sprite(obj:object, sprite_path:tuple) -> None:
 class GameWindow(object):
     def __init__(self, sensitivity:int, maxfps:int, game_width:int, game_height:int, icon_img_path:str, player_img_paths:tuple,
                  enemy_img_paths:tuple, bullet_img_paths:tuple, background_img_paths:tuple, explosion_img_paths:tuple, 
-                 p_settings:dict, wave:int = 1,  debug:bool = False):
+                 p_settings:dict, db_path:str, wave:int = 1,  debug:bool = False):
         """The constructor for the main window
             Arguments:
                 Sensitivity: Sensitivity of controls (int)
@@ -132,7 +132,7 @@ class GameWindow(object):
         self.difficulty = Difficulty(p_settings['difficulty'] if p_settings['difficulty'] < 5 else 5)
 
         #Load the highscores
-        self.score_board = ScoreBoard("data/test.db") #TODO To be changed when game is officially launched
+        self.score_board = ScoreBoard(db_path)
 
         #Load player ship images into Player object 
         add_to_sprite(Player, player_img_paths)
