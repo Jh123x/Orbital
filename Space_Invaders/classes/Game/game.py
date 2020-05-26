@@ -25,6 +25,11 @@ try:
     from .PlayModesScreen import PlayModeScreen
     from .TwoPlayerScreen import TwoPlayerScreen
     from .Popup import Popup
+    from .LocalPVPScreen import LocalPVPScreen
+    from .PVPGameoverScreen import PVPGameoverScreen
+    from .InstructionsMenuScreen import InstructionsMenuScreen
+    from .PVPInstructionsScreen import PVPInstructionsScreen
+    from .PVPPauseScreen import PVPPauseScreen
     
 except ImportError as exp:
     from Enums import *
@@ -47,6 +52,10 @@ except ImportError as exp:
     from PlayModesScreen import PlayModeScreen
     from TwoPlayerScreen import TwoPlayerScreen
     from Popup import Popup
+    from LocalPVPScreen import LocalPVPScreen
+    from PVPGameoverScreen import PVPGameoverScreen
+    from InstructionsMenuScreen import InstructionsMenuScreen
+    from PVPInstructionsScreen import PVPInstructionsScreen
 
 #Initialise pygame
 pygame.init()
@@ -66,7 +75,7 @@ def add_to_sprite(obj:object, sprite_path:tuple) -> None:
 class GameWindow(object):
     def __init__(self, sensitivity:int, maxfps:int, game_width:int, game_height:int, icon_img_path:str, player_img_paths:tuple,
                  enemy_img_paths:tuple, bullet_img_paths:tuple, background_img_paths:tuple, explosion_img_paths:tuple, 
-                 p_settings:dict, wave:int = 1,  debug:bool = False):
+                 p_settings:dict, db_path:str, wave:int = 1,  debug:bool = False):
         """The constructor for the main window
             Arguments:
                 Sensitivity: Sensitivity of controls (int)
@@ -123,7 +132,7 @@ class GameWindow(object):
         self.difficulty = Difficulty(p_settings['difficulty'] if p_settings['difficulty'] < 5 else 5)
 
         #Load the highscores
-        self.score_board = ScoreBoard("data/test.db") #TODO To be changed when game is officially launched
+        self.score_board = ScoreBoard(db_path)
 
         #Load player ship images into Player object 
         add_to_sprite(Player, player_img_paths)
@@ -147,7 +156,11 @@ class GameWindow(object):
         self.play_menu = PlayModeScreen(game_width, game_height, self.main_screen, debug)
         self.highscore = HighscoreScreen(game_width, game_height, self.main_screen, self.score_board.fetch_all(), debug = self.debug)
         self.two_player = TwoPlayerScreen(game_width, game_height, self.main_screen, self.debug)
+        self.pvp = LocalPVPScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, 3, debug)
+        self.pvp_menu = PVPInstructionsScreen(game_width, game_height, self.main_screen, debug)
+        self.inst_menu = InstructionsMenuScreen(game_width, game_height, self.main_screen, debug)
         self.popup = None
+        self.cooldown = self.fps/5
         
         #Store the different states the menu has
         self.states = {
@@ -157,17 +170,36 @@ class GameWindow(object):
             State.HIGHSCORE:self.highscore.handle,
             State.NEWHIGHSCORE:self.handle_newhighscore,
             State.GAMEOVER:self.handle_gameover,
+            State.INSTRUCTIONS_MENU: self.inst_menu.handle,
             State.INSTRUCTIONS:self.instructions.handle,
+            State.PVP_INSTRUCTIONS: self.pvp_menu.handle,
             State.PAUSE:self.handle_pause,
             State.TWO_PLAYER_MENU: self.two_player.handle,
             State.AI_COOP: self.two_player.handle,
             State.AI_VS: self.two_player.handle,
-            State.PVP: self.two_player.handle,
+            State.PVP: self.pvp.handle,
+            State.PVP_GAMEOVER:self.handle_PVP_gameover,
+            State.PVP_PAUSE: self.handle_PVP_pause,
             State.QUIT:self.__del__
         }
 
         #Create the background object
         self.bg = Background(p_settings['bg'], game_width, game_height)
+
+    def handle_PVP_pause(self) -> State:
+        """Handle the PVP pause screen"""
+        #Create the pause screen
+        self.PVP_pause = PVPPauseScreen(self.game_width, self.game_height, self.main_screen, *self.pvp.get_scores(), self.debug)
+
+        #Return the function
+        state = self.PVP_pause.handle()
+
+        #If the state changes
+        if state != State.PVP_PAUSE:
+            self.pvp.reset()
+
+        #Return the state
+        return state
 
     def handle_newhighscore(self) -> State:
         """Handle the displaying of the highscore screen
@@ -213,6 +245,21 @@ class GameWindow(object):
 
         #Handle the pause screen
         return self.pause.handle()
+
+    def handle_PVP_gameover(self) -> State:
+        """Handle the PVP gameover screen"""
+        #Generate gameover screen
+        self.pvp_gameover = PVPGameoverScreen(self.game_width,self.game_height,self.main_screen, *self.pvp.get_scores())
+
+        #Get next state
+        state = self.pvp_gameover.handle()
+
+        #If the state changes
+        if state != State.PVP_GAMEOVER:
+            self.pvp.reset()
+
+        #Return the state
+        return state
         
     def handle_gameover(self) -> State:
         """Handle the displaying of the gameover screen
@@ -266,7 +313,7 @@ class GameWindow(object):
         keys = pygame.key.get_pressed()
 
         #Check each key individually
-        if keys[K_x]:
+        if keys[K_x] and self.state != State.NEWHIGHSCORE:
 
             #Save a screenshot named based on date and time
             name = f'screenshots/{datetime.datetime.now().strftime("%d_%m_%Y_%H_%M_%S")}.png'
@@ -292,8 +339,24 @@ class GameWindow(object):
             #Fill the background to black 
             self.main_screen.fill(BLACK)
 
+        #Save previous state
+        prev = self.state
+
         #Load the screen based on the state
-        self.state = self.states[self.state]()
+        if self.cooldown:
+            self.cooldown -= 1
+            self.states[self.state]()
+        else:
+            self.state = self.states[self.state]()
+
+        #If the state is different
+        if prev != self.state:
+
+            #Reset the cooldown
+            self.cooldown = self.fps/5
+
+            #Reset Popups
+            self.popup = None
 
         #Check popups
         if self.popup:

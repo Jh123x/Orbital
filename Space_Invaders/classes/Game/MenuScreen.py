@@ -39,7 +39,7 @@ class MenuScreen(Screen):
         self.rect_instruction = self.write(Screen.end_font, WHITE, "Instructions", self.screen_width//2, self.screen_height//7.5 + self.screen_height//2)
 
         #Draw the quit button
-        self.rect_end = self.write(Screen.end_font, WHITE, "Quit", self.screen_width//2, self.screen_height//5 + self.screen_height//2)
+        self.rect_end = self.write(Screen.end_font, WHITE, "Quit", self.screen_width//2, self.screen_height//1.2)
 
 
     def update_keypresses(self) -> State:
@@ -51,6 +51,7 @@ class MenuScreen(Screen):
                 or 
                 None if there are no relavant keys which are pressed
         """
+
         #Get the keypresses of the user
         keys = pygame.key.get_pressed()
 
@@ -72,6 +73,7 @@ class MenuScreen(Screen):
             Return:
                 Returns the next state of the game (State)
         """
+        
         #Iterate through each of the rects
         for i in range(len(rects)):
 
@@ -98,4 +100,4 @@ class MenuScreen(Screen):
         state = self.update_keypresses()
 
         #Check the position of the mouse to return the state and combine it with the keypress of user
-        return state if state else self.check_mouse([self.rect_play, self.rect_end, self.rect_highscore, self.rect_instruction],[State.PLAYMODE,State.QUIT, State.HIGHSCORE, State.INSTRUCTIONS])
+        return state if state else self.check_mouse([self.rect_play, self.rect_end, self.rect_highscore, self.rect_instruction],[State.PLAYMODE,State.QUIT, State.HIGHSCORE, State.INSTRUCTIONS_MENU])
