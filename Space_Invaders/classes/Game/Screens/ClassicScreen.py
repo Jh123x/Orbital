@@ -1,14 +1,9 @@
 import pygame
 import random
 from pygame.locals import *
-try: 
-    from .PlayScreen import PlayScreen
-    from .BlocksGroup import BlockGroup
-    from .Enums import State
-except ImportError:
-    from PlayScreen import PlayScreen
-    from Enums import State
-    from BlocksGroup import BlockGroup
+from . import PlayScreen
+from .. import BlockGroup, State
+
 
 class ClassicScreen(PlayScreen):
     def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, wave:int = 1, debug:bool = False):

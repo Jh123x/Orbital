@@ -1,14 +1,8 @@
 #Play mode screen
 import pygame
 from pygame.locals import *
-try:
-    from .Enums import State
-    from .Screens import Screen
-    from .Colors import WHITE
-except:
-    from Enums import State
-    from Screens import Screen
-    from Colors import WHITE
+from . import Screen
+from .. import State, WHITE
 
 class PlayModeScreen(Screen):
     def __init__(self, screen_width:int, screen_height:int, screen, debug:bool = False):

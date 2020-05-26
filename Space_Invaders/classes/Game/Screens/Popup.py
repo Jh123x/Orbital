@@ -1,14 +1,6 @@
 import pygame
-try:
-    from .Screens import Screen
-    from .Colors import WHITE
-    from .Enums import State, Direction
-    from .Object import Object
-except ImportError:
-    from Screens import Screen
-    from Colors import WHITE
-    from Enums import State
-    from Object import Object
+from . import Screen
+from .. import State, Direction, WHITE
 
 class Popup(Screen):
     def __init__(self, popup_width:int, popup_height:int, sentence:str, tick_life:int, initial_x:int, initial_y:int, screen, debug:bool = False):

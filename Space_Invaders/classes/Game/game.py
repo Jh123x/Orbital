@@ -4,60 +4,9 @@ import pygame.freetype
 import random
 import datetime
 from pygame.locals import *
-try:
-    from .Enums import *
-    from .database import ScoreBoard
-    from .Player import Player
-    from .Bullet import Bullet
-    from .EnemyShip import EnemyShip
-    from .Explosion import Explosion
-    from .Background import Background
-    from .Colors import *
-    from .InputBox import InputBox
-    from .InstructionsScreen import InstructionScreen
-    from .MenuScreen import MenuScreen
-    from .PlayScreen import PlayScreen
-    from .GameoverScreen import GameoverScreen
-    from .PauseScreen import PauseScreen
-    from .EnemyGroup import EnemyShips
-    from .HighscoreScreen import HighscoreScreen
-    from .NewhighscoreScreen import NewhighscoreScreen
-    from .PlayModesScreen import PlayModeScreen
-    from .TwoPlayerScreen import TwoPlayerScreen
-    from .Popup import Popup
-    from .LocalPVPScreen import LocalPVPScreen
-    from .PVPGameoverScreen import PVPGameoverScreen
-    from .InstructionsMenuScreen import InstructionsMenuScreen
-    from .PVPInstructionsScreen import PVPInstructionsScreen
-    from .PVPPauseScreen import PVPPauseScreen
-    from .ClassicScreen import ClassicScreen
+from . import *
+from .Screens import *
     
-except ImportError as exp:
-    from Enums import *
-    from database import ScoreBoard
-    from Player import Player
-    from Bullet import Bullet
-    from EnemyShip import EnemyShip
-    from Explosion import Explosion
-    from Background import Background
-    from Colors import *
-    from InputBox import InputBox
-    from InstructionsScreen import InstructionScreen
-    from MenuScreen import MenuScreen
-    from PlayScreen import PlayScreen
-    from GameoverScreen import GameoverScreen
-    from PauseScreen import PauseScreen
-    from EnemyGroup import EnemyShips
-    from HighscoreScreen import HighscoreScreen
-    from NewhighscoreScreen import NewhighscoreScreen
-    from PlayModesScreen import PlayModeScreen
-    from TwoPlayerScreen import TwoPlayerScreen
-    from Popup import Popup
-    from LocalPVPScreen import LocalPVPScreen
-    from PVPGameoverScreen import PVPGameoverScreen
-    from InstructionsMenuScreen import InstructionsMenuScreen
-    from PVPInstructionsScreen import PVPInstructionsScreen
-    from ClassicScreen import ClassicScreen
 
 #Initialise pygame
 pygame.init()
@@ -245,8 +194,12 @@ class GameWindow(object):
             Returns:
                 Returns the next state the game is suppose to be in (State)
         """
-        #Create the pause screen
-        self.pause = PauseScreen(self.game_width,self.game_height, self.main_screen, self.play.get_score(), self.prev, self.debug)
+        if self.prev == State.PLAY:
+            #Create the pause screen
+            self.pause = PauseScreen(self.game_width,self.game_height, self.main_screen, self.play.get_score(), self.prev, self.debug)
+        elif self.prev == State.CLASSIC:
+            #Create the pause screen
+            self.pause = PauseScreen(self.game_width,self.game_height, self.main_screen, self.classic.get_score(), self.prev, self.debug)
 
         #Handle the pause screen
         return self.pause.handle()
@@ -273,7 +226,7 @@ class GameWindow(object):
             Returns: 
                 Returns the next state the game is suppose to be in (State)
         """
-        if self.prev == State.PLAY:
+        if self.prev == State.PLAY or self.prev == State.NEWHIGHSCORE:
             #If it is a new highscore
             if self.highscore.beat_highscore(self.play.get_score()) and not self.written:
 
@@ -294,6 +247,7 @@ class GameWindow(object):
 
                 #Reset the play screen
                 self.play.reset()
+
         elif self.prev == State.CLASSIC:
 
             #Create the gameover screen

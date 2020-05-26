@@ -1,15 +1,7 @@
 import pygame
 from pygame.locals import *
-try:
-    from .Screens import Screen
-    from .Enums import State, Direction
-    from .Colors import WHITE
-    from .InputBox import InputBox
-except ImportError:
-    from Screens import Screen
-    from Enums import State, Direction
-    from Colors import WHITE
-    from InputBox import InputBox
+from . import Screen
+from .. import InputBox, State, WHITE
 
 class NewhighscoreScreen(Screen):
 

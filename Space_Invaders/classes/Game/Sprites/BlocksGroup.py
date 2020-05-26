@@ -1,8 +1,5 @@
 import pygame
-try:
-    from .Block import Block
-except ImportError:
-    from Block import Block
+from . import Block
 
 class BlockGroup(pygame.sprite.Group):
     def __init__(self, total_length:int, initial_y:int, screen, number:int, debug:bool = False):

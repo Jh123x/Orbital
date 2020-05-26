@@ -1,12 +1,5 @@
-try:
-    from .Screens import Screen
-    from .Enums import State, Direction
-    from .Colors import WHITE
-except ImportError:
-    from Screens import Screen
-    from Enums import State, Direction
-    from Colors import WHITE
-    
+from . import Screen
+from .. import State, WHITE, Direction
 
 class HighscoreScreen(Screen):
     def __init__(self, screen_width:int, screen_height:int, screen, scores:tuple, debug:bool = False):

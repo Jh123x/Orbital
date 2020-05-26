@@ -1,10 +1,6 @@
 import pygame
-try:
-    from .Object import Object
-    from .Colors import YELLOW
-except: 
-    from Object import Object
-    from Colors import YELLOW
+from ..Colors import *
+from . import *
 
 class Block(Object):
     def __init__(self, initial_x:int, initial_y:int, screen, color:tuple = YELLOW, debug:bool = False):
