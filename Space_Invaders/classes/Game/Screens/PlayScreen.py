@@ -125,14 +125,9 @@ class PlayScreen(Screen):
             #Get the first enemy of the set
             enemy = enemy[0]
 
-            #Create the bullet
-            bullet2 = Bullet(self.sensitivity * 1.5, enemy.get_x() + enemy.get_width()//3, enemy.get_y(), Direction.DOWN, self.screen_width, self.screen_height, self.debug)
+            #Make the enemy shoot
+            enemy.shoot()
 
-            #Rotate the bullet 180 degrees to face it down
-            bullet2.rotate(180)
-
-            #Add the bullet to the bullet group
-            self.down_bullets.add(bullet2)
 
     def update(self) -> None:
         """Update the sprites
@@ -281,12 +276,12 @@ class PlayScreen(Screen):
         if number <= 6:
 
             #Spawn them in 1 row
-            self.enemies.add([EnemyShip(self.sensitivity, self.screen_width//4 + i*self.screen_width//10, self.screen_height//10, random.randint(1,self.wave), self.screen_width,  self.screen_height, Direction.DOWN, self.debug) for i in range(number)])
+            self.enemies.add([EnemyShip(self.sensitivity, self.screen_width//4 + i*self.screen_width//10, self.screen_height//10, random.randint(1,self.wave), self.screen_width,  self.screen_height, Direction.DOWN, self.down_bullets, self.debug) for i in range(number)])
         else:
 
             #Otherwise make them into rows of 6
             for j in range(number//6 if number // 6 < 5 else 5):
-                self.enemies.add([EnemyShip(self.sensitivity, self.screen_width//4 + i*self.screen_width//10, self.screen_height//10 + EnemyShip.sprites[0].get_height() * j, random.randint(1,self.wave), self.screen_width,  self.screen_height, Direction.DOWN, self.debug) for i in range(6)])
+                self.enemies.add([EnemyShip(self.sensitivity, self.screen_width//4 + i*self.screen_width//10, self.screen_height//10 + EnemyShip.sprites[0].get_height() * j, random.randint(1,self.wave), self.screen_width,  self.screen_height, Direction.DOWN, self.down_bullets, self.debug) for i in range(6)])
 
         
     def handle(self) -> State:

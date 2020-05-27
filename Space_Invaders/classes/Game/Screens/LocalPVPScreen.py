@@ -130,22 +130,17 @@ class LocalPVPScreen(Screen):
             #Randomly get a direction
             if self.player1.is_destroyed():
                 direction = Direction.DOWN
+
             elif self.player2.is_destroyed():
                 direction = Direction.UP
+                
             elif random.randint(0,1):
                 direction = Direction.UP
             else:
                 direction = Direction.DOWN
 
-            #Create the bullet
-            bullet2 = Bullet(self.sensitivity * 1.5, enemy.get_x() + enemy.get_width()//3, enemy.get_y(), direction, self.screen_width, self.screen_height, self.debug)
-
-            #Rotate the bullet 180 degrees to face it down
-            if direction == Direction.DOWN:
-                bullet2.rotate(180)
-
-            #Add the bullet to the bullet group
-            self.mob_bullet.add(bullet2)
+            #Make the mob shoot
+            enemy.shoot(direction)
 
     def spawn_mobs(self) -> None:
         """Spawn enemies for the game"""
@@ -158,8 +153,7 @@ class LocalPVPScreen(Screen):
 
         #Spawn the enemies
         for j in range(2):
-            self.enemies.add([EnemyShip(self.sensitivity, self.screen_width//4 + i*self.screen_width//10, self.screen_height//2 - 50 + 50 * j, random.randint(1,self.wave), self.screen_width,  self.screen_height, None, self.debug) for i in range(6)])
-
+            self.enemies.add([EnemyShip(self.sensitivity, self.screen_width//4 + i*self.screen_width//10, self.screen_height//2 - 50 + 50 * j, random.randint(1,self.wave), self.screen_width,  self.screen_height, None, self.mob_bullet, self.debug) for i in range(6)])
 
     def get_scores(self) -> tuple:
         """Get the scores of the players"""

@@ -6,6 +6,9 @@ except ImportError:
 
 class Explosion(ImageObject):
 
+    #Init for the sound
+    sound = None
+
     #To store the sprites for the explosions
     sprites = []
 
@@ -32,6 +35,12 @@ class Explosion(ImageObject):
 
         #Call the superclass method
         super().__init__(initial_x, initial_y, game_width, game_height, image, debug)
+
+        #If sound sprite exists
+        if Explosion.sound:
+
+            #Play it
+            self.sound.play()
 
         #Set the time to live for the explosion
         self.tts = tick_life

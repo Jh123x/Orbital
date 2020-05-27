@@ -22,6 +22,9 @@ class Bullet(MovingObject):
             
         """
 
+        #Play the shoot sound
+        self.sound.play()
+
         #Call the superclass
         super().__init__(sensitivity, initial_x, initial_y, game_width, game_height,self.sprites[0], debug)
 

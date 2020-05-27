@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 import pygame
-import pygame.freetype
 import random
 import datetime
+import asyncio
+import time
 from pygame.locals import *
 from . import *
-from .Screens import *
-    
 
 #Initialise pygame
 pygame.init()
@@ -17,16 +16,42 @@ pygame.font.init()
 #Initialise the sound
 pygame.mixer.init()
 
-def add_to_sprite(obj:object, sprite_path:tuple) -> None:
+def load_sprites(obj_list:list, paths:list):
+    """Load the sprites for each of the items in parallel"""
+
+    #Create event loop
+    evloop = asyncio.get_event_loop()
+
+    #Create list of tasks
+    tasks = []
+
+    #Add the function to list of tasks
+    for i, obj in enumerate(obj_list):
+        tasks.append(add_to_sprite(obj, paths[i]))
+
+    #Run the tasks
+    evloop.run_until_complete(asyncio.gather(*tasks))
+
+    #Close the loop
+    evloop.close()
+
+async def add_to_sprite(obj, sprite_path:str) -> None:
     """Add the pygame image to the object"""
     #For each object add it to the sprite path
     for path in sprite_path:
         obj.sprites.append(pygame.image.load(path))
 
+async def load_sound(sound_path) -> None:
+    """Load the sounds"""
+    return dict(map(lambda x: (x[0], pygame.mixer.Sound(x[1])), sound_path.items()))
+
 class GameWindow(object):
+    #Store the sound objects
+    Sound = []
+
     def __init__(self, sensitivity:int, maxfps:int, game_width:int, game_height:int, icon_img_path:str, player_img_paths:tuple,
                  enemy_img_paths:tuple, bullet_img_paths:tuple, background_img_paths:tuple, explosion_img_paths:tuple, 
-                 p_settings:dict, db_path:str, wave:int = 1,  debug:bool = False):
+                 p_settings:dict, db_path:str, sound_path:dict, wave:int = 1,  debug:bool = False):
         """The constructor for the main window
             Arguments:
                 Sensitivity: Sensitivity of controls (int)
@@ -40,6 +65,7 @@ class GameWindow(object):
                 background_img_path: Path to the background (string)
                 explosion_img_paths: Path to all the explosion sprites (string)
                 p_settings: Dictionary of setting values (dictionary)
+                db_path: Path to the database file
                 wave: Wave of the mobs to start (int): default = 1
                 debug: Toggle whether the game is in debug mode (bool): default = False
 
@@ -85,20 +111,11 @@ class GameWindow(object):
         #Load the highscores
         self.score_board = ScoreBoard(db_path)
 
-        #Load player ship images into Player object 
-        add_to_sprite(Player, player_img_paths)
+        #Load sprites
+        load_sprites((Player, Bullet, EnemyShip, Background, Explosion), (player_img_paths, bullet_img_paths, enemy_img_paths, background_img_paths, explosion_img_paths))
 
-        #Load Bullet images into Bullet Object 
-        add_to_sprite(Bullet, bullet_img_paths)
-
-        #Load enemy ships into enemy ship objects 
-        add_to_sprite(EnemyShip, enemy_img_paths)
-
-        #Load the backgrounds into Background obj
-        add_to_sprite(Background, background_img_paths)
-
-        #Load the sprites for the explosion
-        add_to_sprite(Explosion, explosion_img_paths)
+        #Load sounds
+        self.sound = asyncio.run(load_sound(sound_path))
 
         #Create the Screen objects
         self.instructions = InstructionScreen(game_width, game_height, self.main_screen, debug = self.debug)
@@ -111,8 +128,10 @@ class GameWindow(object):
         self.pvp_menu = PVPInstructionsScreen(game_width, game_height, self.main_screen, debug)
         self.inst_menu = InstructionsMenuScreen(game_width, game_height, self.main_screen, debug)
         self.classic = ClassicScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug = self.debug)
+
+        #Store the variables
         self.popup = None
-        self.prev = None
+        self.prev = State.NONE
         self.cooldown = self.fps/5
         
         #Store the different states the menu has
@@ -139,6 +158,18 @@ class GameWindow(object):
 
         #Create the background object
         self.bg = Background(p_settings['bg'], game_width, game_height)
+
+        #Load the sounds into the relavant Sprites
+
+        #Add shooting sound
+        Bullet.sound = self.sound['shooting']
+
+        #Add explosion sound
+        Explosion.sound = self.sound['explosion']
+
+        #Add pause sound
+        PVPPauseScreen.sound = self.sound['pause']
+        PauseScreen.sound = self.sound['pause']
 
     def handle_PVP_pause(self) -> State:
         """Handle the PVP pause screen"""
@@ -206,6 +237,9 @@ class GameWindow(object):
 
     def handle_PVP_gameover(self) -> State:
         """Handle the PVP gameover screen"""
+        #Play gameover sound
+        self.sound['gameover'].play()
+
         #Generate gameover screen
         self.pvp_gameover = PVPGameoverScreen(self.game_width,self.game_height,self.main_screen, *self.pvp.get_scores())
 
@@ -226,7 +260,12 @@ class GameWindow(object):
             Returns: 
                 Returns the next state the game is suppose to be in (State)
         """
+        #Play gameover sound
+        self.sound['gameover'].play()
+
+        #Check previous state
         if self.prev == State.PLAY or self.prev == State.NEWHIGHSCORE:
+
             #If it is a new highscore
             if self.highscore.beat_highscore(self.play.get_score()) and not self.written:
 
@@ -248,6 +287,7 @@ class GameWindow(object):
                 #Reset the play screen
                 self.play.reset()
 
+        #If it is classic mode
         elif self.prev == State.CLASSIC:
 
             #Create the gameover screen
@@ -277,6 +317,23 @@ class GameWindow(object):
         """
         return self.state
 
+    async def screenshot(self) -> None:
+        """Take a screenshot
+            Runs in parallel to the game to reduce lag while screenshotting in game
+        """
+        #Save a screenshot named based on date and time
+        name = f'screenshots/{datetime.datetime.now().strftime("%d_%m_%Y_%H_%M_%S")}.png'
+
+        #Play the screenshot sound
+        self.sound['screenshot'].play()
+
+        #Print debug message
+        if self.debug:
+            print(f"Saved at: {name}")
+        
+        #Save the image
+        pygame.image.save(self.main_screen, name)
+
     def check_keypresses(self) -> None:
         """Check global keypresses within the game
             Arguments:
@@ -291,15 +348,8 @@ class GameWindow(object):
         #Check each key individually
         if keys[K_x] and self.state != State.NEWHIGHSCORE:
 
-            #Save a screenshot named based on date and time
-            name = f'screenshots/{datetime.datetime.now().strftime("%d_%m_%Y_%H_%M_%S")}.png'
-
-            #Print debug message
-            if self.debug:
-                print(name)
-            
-            #Save the image
-            pygame.image.save(self.main_screen, name)
+            #Run the screenshot in parallel
+            asyncio.run(self.screenshot())
 
             #Create a 1 second popup saying screenshot is taken 
             self.popup = Popup(20*8, 30, "Screenshot taken", self.fps, self.game_width//2, 15, self.main_screen, debug = self.debug)
@@ -312,7 +362,7 @@ class GameWindow(object):
             self.bg.update(self.main_screen)
         else:
 
-            #Fill the background to black 
+            #Fill the background to black
             self.main_screen.fill(BLACK)
 
         #Save previous state
@@ -327,6 +377,12 @@ class GameWindow(object):
 
         #If the state is different
         if prev != self.state:
+
+            #Stop all sounds
+            pygame.mixer.stop()
+
+            #Play the click sound
+            self.sound['click'].play()
 
             #Set the self.prev state
             self.prev = prev
@@ -377,6 +433,9 @@ class GameWindow(object):
             #If the state is quit or player closes the game
             if self.state == State.QUIT or pygame.QUIT in tuple(map(lambda x: x.type, pygame.event.get())):
                 running = False
+
+        #Play the exit sound
+        self.sound['exit'].play()
 
     def __del__(self) -> None:
         """Destructor for the game window.
