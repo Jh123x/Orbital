@@ -4,6 +4,8 @@ from . import Screen
 from .. import State, WHITE
 
 class PauseScreen(Screen):
+    sound = None
+    played = False
     def __init__(self, screen_width:int, screen_height:int, screen, score:int, previous_state: State, debug:bool = False):
         """Main class for the pause screen
             Arguments:
@@ -17,6 +19,14 @@ class PauseScreen(Screen):
                 update_keypresses: Update the state based on keypress of user
                 handle: handles the drawing of the pause state
         """
+
+        #If there is a pausescreen sound
+        if PauseScreen.sound and not PauseScreen.played:
+
+            #Play the pause screen sound
+            PauseScreen.sound.play()
+            PauseScreen.played = True
+
         #Call the superclass
         super().__init__(screen_width, screen_height, State.PAUSE, screen, 0, 0, debug)
         self.previous_state = previous_state
@@ -46,10 +56,12 @@ class PauseScreen(Screen):
 
         #Return the play state if the player unpause his game
         if keys[K_o]:
+            PauseScreen.played = False
             return self.previous_state
 
         #If the player press the escape key, quit the game
         if keys[K_ESCAPE]:
+            PauseScreen.played = False
             return State.MENU
         
         #Return the current state if the player has not unpaused

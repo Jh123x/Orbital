@@ -4,11 +4,19 @@ from . import Screen
 from .. import WHITE, State, Direction
 
 class PVPPauseScreen(Screen):
+    sound = None
+    played = False
     def __init__(self, screen_width:int, screen_height:int, screen, p1_score:int, p2_score:int, debug:bool = False):
         """Main class for PVP pause screen"""
         
         #Call the superclass
         super().__init__(screen_width, screen_height, State.PVP_PAUSE, screen, 0, 0, debug)
+
+        #Play the pause sound
+        if PVPPauseScreen.sound and not PVPPauseScreen.played:
+            #Play the sound
+            PVPPauseScreen.sound.play()
+            PVPPauseScreen.played = True
 
         #Store the vars
         self.p1 = p1_score
@@ -45,10 +53,12 @@ class PVPPauseScreen(Screen):
 
         #Return the play state if the player unpause his game
         if keys[K_o]:
+            PVPPauseScreen.played = False
             return State.PVP
 
         #If the player press the escape key, quit the game
         if keys[K_ESCAPE]:
+            PVPPauseScreen.played = False
             return State.MENU
         
         #Return the current state if the player has not unpaused

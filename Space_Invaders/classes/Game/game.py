@@ -170,6 +170,8 @@ class GameWindow(object):
         #Add pause sound
         PVPPauseScreen.sound = self.sound['pause']
         PauseScreen.sound = self.sound['pause']
+        GameoverScreen.sound = self.sound['gameover']
+        PVPGameoverScreen.sound = self.sound['gameover']
 
     def handle_PVP_pause(self) -> State:
         """Handle the PVP pause screen"""
@@ -237,8 +239,6 @@ class GameWindow(object):
 
     def handle_PVP_gameover(self) -> State:
         """Handle the PVP gameover screen"""
-        #Play gameover sound
-        self.sound['gameover'].play()
 
         #Generate gameover screen
         self.pvp_gameover = PVPGameoverScreen(self.game_width,self.game_height,self.main_screen, *self.pvp.get_scores())
@@ -260,8 +260,6 @@ class GameWindow(object):
             Returns: 
                 Returns the next state the game is suppose to be in (State)
         """
-        #Play gameover sound
-        self.sound['gameover'].play()
 
         #Check previous state
         if self.prev == State.PLAY or self.prev == State.NEWHIGHSCORE:
@@ -368,21 +366,29 @@ class GameWindow(object):
         #Save previous state
         prev = self.state
 
-        #Load the screen based on the state
+        #If on cooldown
         if self.cooldown:
+
+            #Lower cooldown
             self.cooldown -= 1
+
+            #Continue running current state
             self.states[self.state]()
+
+        #Otherwise
         else:
+
+            #Check if there is new state
             self.state = self.states[self.state]()
 
         #If the state is different
         if prev != self.state:
 
-            #Stop all sounds
-            pygame.mixer.stop()
+            # #Stop all sounds
+            # pygame.mixer.stop()
 
-            #Play the click sound
-            self.sound['click'].play()
+            # #Play the click sound
+            # self.sound['click'].play()
 
             #Set the self.prev state
             self.prev = prev
