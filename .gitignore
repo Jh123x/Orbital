@@ -5,7 +5,7 @@ __pycache__/
 
 # C extensions
 *.so
-.DS_store
+
 # Distribution / packaging
 .Python
 build/
@@ -73,7 +73,7 @@ docs/_build/
 
 # PyBuilder
 target/
-
+.DS_store
 # Jupyter Notebook
 .ipynb_checkpoints
 
