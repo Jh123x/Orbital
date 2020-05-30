@@ -15,7 +15,7 @@ class PVPPauseScreen(Screen):
         #Play the pause sound
         if PVPPauseScreen.sound and not PVPPauseScreen.played:
             #Play the sound
-            PVPPauseScreen.sound.play()
+            PVPPauseScreen.sound.play('pause')
             PVPPauseScreen.played = True
 
         #Store the vars
@@ -29,7 +29,7 @@ class PVPPauseScreen(Screen):
         first_pixel = screen_height // 2
 
         #Draw the player 1 score
-        self.write(Screen.end_font, WHITE, f"Player 1: {p1_score}", screen_width//2, first_pixel)
+        self.write(Screen.end_font, WHITE, f"Player 1: {p1_score}", screen_width//4, first_pixel, Direction.LEFT)
 
         #Draw the player 2 score
         self.write(Screen.end_font, WHITE, f"Player 2: {p2_score}", screen_width//4, first_pixel + self.screen_height//15, Direction.LEFT)

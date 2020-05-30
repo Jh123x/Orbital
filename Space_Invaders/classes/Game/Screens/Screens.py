@@ -2,7 +2,7 @@ import pygame
 from pygame.locals import *
 from .. import Object, State, Direction
 
-#Initialise the fonts
+
 pygame.font.init()
 
 class Screen(Object):
@@ -153,7 +153,7 @@ class Screen(Object):
         #Get the position of the mouse
         mouse_pos = pygame.mouse.get_pos()
 
-        #Return if the mouse position is within the rect and teh player clicked
+        #Return if the mouse position is within the rect and the player clicked
         return pygame.mouse.get_pressed()[0] and rect.collidepoint(mouse_pos)
 
 

@@ -2,6 +2,14 @@
 import configparser
 import os
 
+def list_dir(filepath):
+    """List the files in the directory"""
+    return tuple(map(lambda x: "/".join((filepath,x)),os.listdir(filepath)))
+
+def num_files(filepath):
+    """Find the number of files in the directory"""
+    return len(list_dir(filepath))
+
 def load_all(kv:tuple, keys:tuple, dic:dict, curr_path:str):
     """Load all the sprites"""
     #Create dict

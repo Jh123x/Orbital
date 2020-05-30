@@ -22,7 +22,7 @@ class GameoverScreen(Screen):
 
         #Check if the sound has been played
         if not GameoverScreen.played and GameoverScreen.sound:
-            GameoverScreen.sound.play()
+            GameoverScreen.sound.play('gameover')
             GameoverScreen.played = True
 
         #Store the variables

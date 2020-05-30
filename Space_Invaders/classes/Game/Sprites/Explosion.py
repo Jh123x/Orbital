@@ -40,7 +40,7 @@ class Explosion(ImageObject):
         if Explosion.sound:
 
             #Play it
-            self.sound.play()
+            self.sound.play('explosion')
 
         #Set the time to live for the explosion
         self.tts = tick_life

@@ -22,10 +22,16 @@ def main() -> None:
     config['icon_img_path'] = form_abs_path(__file__, config['icon_img_path'])
 
     #Load all
-    d = load_all(("player_img_paths", "bullet_img_paths", "enemy_img_paths", "background_img_paths", "explosion_img_paths"), 
-                    ("Player Sprites", "Bullet Sprites", "Enemy Sprites", "Background", "Explosion Sprites"), 
-                    all_cfg, 
-                    __file__)
+    d = load_all(("bullet_img_paths",), ("Bullet Sprites",), all_cfg, __file__)
+
+    #Load the other sprites
+    d["player_img_paths"] = list_dir(form_abs_path(__file__, "images/player"))
+    d["enemy_img_paths"] = list_dir(form_abs_path(__file__, "images/enemies"))
+    d["background_img_paths"] = list_dir(form_abs_path(__file__, "images/backgrounds"))
+    d["explosion_img_paths"] = list_dir(form_abs_path(__file__, "images/explosions"))
+
+    #Get the number of backgrounds
+    bg_limit = len(d["background_img_paths"])
 
     #DBPath
     db_path = form_abs_path(__file__,'data/test.db')
@@ -44,7 +50,7 @@ def main() -> None:
             print(f"{k} : {v}")
 
     #Create the new game window with the configurations
-    game = GameWindow(**d, sound_path = sound_path, p_settings = settings, **config, db_path = db_path)
+    game = GameWindow(**d, sound_path = sound_path, p_settings = settings, **config, db_path = db_path, bg_limit = bg_limit)
 
     #Run the mainloop for the GameWindow
     game.mainloop()

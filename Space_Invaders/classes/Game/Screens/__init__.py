@@ -16,3 +16,4 @@ from .PVPGameoverScreen import PVPGameoverScreen
 from .PVPInstructionsScreen import PVPInstructionsScreen
 from .PVPPauseScreen import PVPPauseScreen
 from .TwoPlayerScreen import TwoPlayerScreen
+from .SettingsScreen import SettingsScreen

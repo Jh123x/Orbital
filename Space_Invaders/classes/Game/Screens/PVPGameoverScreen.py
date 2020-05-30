@@ -10,7 +10,7 @@ class PVPGameoverScreen(Screen):
     def __init__(self, screen_width:int, screen_height:int, screen, p1_score:int, p2_score:int, debug:bool = False):
         """Constructor for the PVP gameover class"""
         if not PVPGameoverScreen.played and PVPGameoverScreen.sound:
-            PVPGameoverScreen.sound.play()
+            PVPGameoverScreen.sound.play('gameover')
             PVPGameoverScreen.played = True
         
         #Call the superclass

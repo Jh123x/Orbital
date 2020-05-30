@@ -51,7 +51,7 @@ class GameWindow(object):
 
     def __init__(self, sensitivity:int, maxfps:int, game_width:int, game_height:int, icon_img_path:str, player_img_paths:tuple,
                  enemy_img_paths:tuple, bullet_img_paths:tuple, background_img_paths:tuple, explosion_img_paths:tuple, 
-                 p_settings:dict, db_path:str, sound_path:dict, wave:int = 1,  debug:bool = False):
+                 p_settings:dict, db_path:str, sound_path:dict, bg_limit:int, wave:int = 1,  debug:bool = False):
         """The constructor for the main window
             Arguments:
                 Sensitivity: Sensitivity of controls (int)
@@ -115,19 +115,23 @@ class GameWindow(object):
         load_sprites((Player, Bullet, EnemyShip, Background, Explosion), (player_img_paths, bullet_img_paths, enemy_img_paths, background_img_paths, explosion_img_paths))
 
         #Load sounds
-        self.sound = asyncio.run(load_sound(sound_path))
+        self.sound = Sound(asyncio.run(load_sound(sound_path)), debug)
+
+        #Create the background object
+        self.bg = Background(p_settings['bg'], game_width, game_height, bg_limit, debug)
 
         #Create the Screen objects
-        self.instructions = InstructionScreen(game_width, game_height, self.main_screen, debug = self.debug)
+        self.instructions = InstructionScreen(game_width, game_height, self.main_screen,  debug = self.debug)
         self.menu = MenuScreen(game_width, game_height, self.main_screen, debug = self.debug)
-        self.play = PlayScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug = self.debug)
-        self.play_menu = PlayModeScreen(game_width, game_height, self.main_screen, debug)
+        self.play = PlayScreen(game_width, game_height, self.main_screen, sensitivity, maxfps,  debug = self.debug)
+        self.play_menu = PlayModeScreen(game_width, game_height, self.main_screen,  debug)
         self.highscore = HighscoreScreen(game_width, game_height, self.main_screen, self.score_board.fetch_all(), debug = self.debug)
-        self.two_player = TwoPlayerScreen(game_width, game_height, self.main_screen, self.debug)
-        self.pvp = LocalPVPScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, 3, debug)
+        self.two_player = TwoPlayerScreen(game_width, game_height, self.main_screen,  self.debug)
+        self.pvp = LocalPVPScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, 3,  debug)
         self.pvp_menu = PVPInstructionsScreen(game_width, game_height, self.main_screen, debug)
-        self.inst_menu = InstructionsMenuScreen(game_width, game_height, self.main_screen, debug)
+        self.inst_menu = InstructionsMenuScreen(game_width, game_height, self.main_screen,  debug)
         self.classic = ClassicScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug = self.debug)
+        self.settings = SettingsScreen(game_width, game_height, self.main_screen, self.fps, self.sound, self.bg, debug)
 
         #Store the variables
         self.popup = None
@@ -153,25 +157,21 @@ class GameWindow(object):
             State.PVP_GAMEOVER:self.handle_PVP_gameover,
             State.PVP_PAUSE: self.handle_PVP_pause,
             State.CLASSIC: self.classic.handle,
+            State.SETTINGS: self.settings.handle,
             State.QUIT:self.__del__
         }
 
-        #Create the background object
-        self.bg = Background(p_settings['bg'], game_width, game_height)
-
         #Load the sounds into the relavant Sprites
-
-        #Add shooting sound
-        Bullet.sound = self.sound['shooting']
+        Bullet.sound = self.sound
 
         #Add explosion sound
-        Explosion.sound = self.sound['explosion']
+        Explosion.sound = self.sound
 
         #Add pause sound
-        PVPPauseScreen.sound = self.sound['pause']
-        PauseScreen.sound = self.sound['pause']
-        GameoverScreen.sound = self.sound['gameover']
-        PVPGameoverScreen.sound = self.sound['gameover']
+        PVPPauseScreen.sound = self.sound
+        PauseScreen.sound = self.sound
+        GameoverScreen.sound = self.sound
+        PVPGameoverScreen.sound = self.sound
 
     def handle_PVP_pause(self) -> State:
         """Handle the PVP pause screen"""
@@ -323,7 +323,7 @@ class GameWindow(object):
         name = f'screenshots/{datetime.datetime.now().strftime("%d_%m_%Y_%H_%M_%S")}.png'
 
         #Play the screenshot sound
-        self.sound['screenshot'].play()
+        self.sound.play('screenshot')
 
         #Print debug message
         if self.debug:
@@ -353,12 +353,22 @@ class GameWindow(object):
             self.popup = Popup(20*8, 30, "Screenshot taken", self.fps, self.game_width//2, 15, self.main_screen, debug = self.debug)
 
     def update(self) -> None:
+        """Update the main screen"""
+
         #If the background is present
         if self.bg.is_present():
 
+            if self.debug:
+                print("Background present")
+
             #Fill it with the background img
             self.bg.update(self.main_screen)
+        
+        #Otherwise
         else:
+
+            if self.debug:
+                print("No background present")
 
             #Fill the background to black
             self.main_screen.fill(BLACK)
@@ -384,17 +394,17 @@ class GameWindow(object):
         #If the state is different
         if prev != self.state:
 
-            # #Stop all sounds
-            # pygame.mixer.stop()
+            #If music is enabled
+            if self.sound.get_state():
 
-            # #Play the click sound
-            # self.sound['click'].play()
+                #Play the click sound
+                self.sound.play('click')
 
             #Set the self.prev state
             self.prev = prev
 
             #Reset the cooldown
-            self.cooldown = self.fps/5
+            self.cooldown = self.fps//5
 
             #Reset Popups
             self.popup = None
@@ -440,8 +450,11 @@ class GameWindow(object):
             if self.state == State.QUIT or pygame.QUIT in tuple(map(lambda x: x.type, pygame.event.get())):
                 running = False
 
-        #Play the exit sound
-        self.sound['exit'].play()
+        #If music is enabled
+        if self.sound.get_state():
+            
+            #Play the exit sound
+            self.sound.play('exit')
 
     def __del__(self) -> None:
         """Destructor for the game window.

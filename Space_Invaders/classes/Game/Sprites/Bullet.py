@@ -21,9 +21,8 @@ class Bullet(MovingObject):
                 update: Update the position of the bullet
             
         """
-
         #Play the shoot sound
-        self.sound.play()
+        self.sound.play('shooting')
 
         #Call the superclass
         super().__init__(sensitivity, initial_x, initial_y, game_width, game_height,self.sprites[0], debug)

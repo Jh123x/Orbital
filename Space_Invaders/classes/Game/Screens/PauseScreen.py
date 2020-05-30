@@ -24,7 +24,7 @@ class PauseScreen(Screen):
         if PauseScreen.sound and not PauseScreen.played:
 
             #Play the pause screen sound
-            PauseScreen.sound.play()
+            PauseScreen.sound.play('pause')
             PauseScreen.played = True
 
         #Call the superclass

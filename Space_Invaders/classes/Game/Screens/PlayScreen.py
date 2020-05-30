@@ -2,7 +2,7 @@ import pygame
 import random
 from pygame.locals import *
 from . import Screen
-from .. import State, EnemyShips, Player, Direction, EnemyShip, WHITE, Bullet, Explosion
+from .. import *
 
 class PlayScreen(Screen):
     def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, wave:int = 1, debug:bool = False):
