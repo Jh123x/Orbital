@@ -18,3 +18,4 @@ from .TwoPlayerPauseScreen import TwoPlayerPauseScreen
 from .TwoPlayerScreen import TwoPlayerScreen
 from .SettingsScreen import SettingsScreen
 from .CoopScreen import CoopScreen
+from .AIPVPScreen import AIPVPScreen

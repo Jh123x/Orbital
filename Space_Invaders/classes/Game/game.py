@@ -130,6 +130,7 @@ class GameWindow(object):
         self.classic = ClassicScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug = self.debug)
         self.settings = SettingsScreen(game_width, game_height, self.main_screen, self.fps, self.sound, self.bg, debug)
         self.coop = CoopScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, 3,  debug)
+        self.ai_vs = AIPVPScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, 3,  debug)
 
         #Store the variables
         self.popup = None
@@ -150,7 +151,7 @@ class GameWindow(object):
             State.PAUSE:self.handle_pause,
             State.TWO_PLAYER_MENU: self.two_player.handle,
             State.AI_COOP: self.two_player.handle,
-            State.AI_VS: self.two_player.handle,
+            State.AI_VS: self.ai_vs.handle,
             State.PVP: self.pvp.handle,
             State.TWO_PLAYER_GAMEOVER:self.handle_two_player_gameover,
             State.TWO_PLAYER_PAUSE: self.handle_two_player_pause,
@@ -182,6 +183,9 @@ class GameWindow(object):
         elif self.prev == State.COOP:
             prev = State.COOP
             scores = self.coop.get_scores()
+        elif self.prev == State.AI_VS:
+            prev = State.AI_VS
+            scores = self.ai_vs.get_scores()
         else:
             assert False, f"{self.state}, cannot be paused"
 
@@ -259,9 +263,15 @@ class GameWindow(object):
         if self.prev == State.PVP:
             prev = State.PVP
             scores = self.pvp.get_scores()
+
         elif self.prev == State.COOP:
             prev = State.COOP
             scores = self.coop.get_scores()
+
+        elif self.prev == State.AI_VS:
+            prev = State.AI_VS
+            scores = self.ai_vs.get_scores()
+
         else:
             assert False, f"{self.state}, cannot have gameover"
 
@@ -277,6 +287,8 @@ class GameWindow(object):
                 self.pvp.reset()
             elif prev == State.COOP:
                 self.coop.reset()
+            elif prev == State.AI_VS:
+                self.ai_vs.reset()
 
         #Return the state
         return state

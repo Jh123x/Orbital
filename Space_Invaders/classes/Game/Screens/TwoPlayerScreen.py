@@ -46,7 +46,7 @@ class TwoPlayerScreen(Screen):
 
         #Check if the person clicked on the AI Vs rect
         elif self.check_clicked(self.ai_vs):
-            self.popup = Popup(200, 20, "Still under construction", 60, self.screen_width//2, 10, self.screen)
+
             #Return the AI Vs mode state
             return State.AI_VS
         
