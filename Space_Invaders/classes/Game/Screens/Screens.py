@@ -68,6 +68,9 @@ class Screen(Object):
             #Blit the screen while making background transparent
             self.screen.blit(self.surface.convert_alpha(), self.get_coord())
 
+    def set_state(self, state:State):
+        """Set the current state of the screen"""
+        self.state = state
 
     def reset(self) -> None:
         """Resets the surface to transparent

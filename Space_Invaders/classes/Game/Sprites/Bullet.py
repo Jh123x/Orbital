@@ -30,8 +30,8 @@ class Bullet(MovingObject):
         #Store the direction, move up it the enum is move up, else move it down
         if direction == Direction.UP:
             self.direction = self.move_up
-        elif direction == Direction.DOWN:
 
+        elif direction == Direction.DOWN:
             #If there is another sprite, use that sprite for down instead
             if len(Bullet.sprites) >= 2:
                 self.image = self.sprites[1]
@@ -42,7 +42,7 @@ class Bullet(MovingObject):
         else:
 
             #Otherwise it is invalid
-            assert False, "Direction of bullet is invalid"
+            assert False, f"Direction of bullet is invalid: {direction}"
 
        
     def update(self) -> None:

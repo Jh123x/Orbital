@@ -36,11 +36,8 @@ class Explosion(ImageObject):
         #Call the superclass method
         super().__init__(initial_x, initial_y, game_width, game_height, image, debug)
 
-        #If sound sprite exists
-        if Explosion.sound:
-
-            #Play it
-            self.sound.play('explosion')
+        #Play it
+        self.sound.play('explosion')
 
         #Set the time to live for the explosion
         self.tts = tick_life

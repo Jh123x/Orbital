@@ -36,7 +36,7 @@ class SettingsScreen(Screen):
         """Handle the mouse presses on the settings screen"""
 
         #If it is not on cooldown
-        if self.cooldown == 0:
+        if self.cooldown <= 0:
 
             #If the back button is clicked
             if self.check_clicked(self.back):
@@ -46,19 +46,22 @@ class SettingsScreen(Screen):
             if self.check_clicked(self.background):
                 self.bg.cycle()
 
+                #Reset the cooldown
+                self.cooldown = self.fps//10
+
             #If the music button is pressed
             if self.check_clicked(self.music):
 
                 #Toggle the music state
                 self.sound.toggle()
 
-            #Reset the cooldown
-            self.cooldown = self.fps//10
+                #Reset the cooldown
+                self.cooldown = self.fps//10
         
         #Otherwise
         else:
             if self.debug:
-                print("On cooldown")
+                print(f"On cooldown: {self.cooldown}")
 
             #Reduce the cooldown
             self.cooldown -= 1

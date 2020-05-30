@@ -12,8 +12,9 @@ from .MenuScreen import MenuScreen
 from .NewhighscoreScreen import NewhighscoreScreen
 from .PauseScreen import PauseScreen
 from .PlayModesScreen import PlayModeScreen
-from .PVPGameoverScreen import PVPGameoverScreen
+from .TwoPlayerGameover import TwoPlayerGameoverScreen
 from .PVPInstructionsScreen import PVPInstructionsScreen
-from .PVPPauseScreen import PVPPauseScreen
+from .TwoPlayerPauseScreen import TwoPlayerPauseScreen
 from .TwoPlayerScreen import TwoPlayerScreen
 from .SettingsScreen import SettingsScreen
+from .CoopScreen import CoopScreen

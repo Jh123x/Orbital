@@ -5,9 +5,9 @@
 ############################
 
 #Import all functions from the class package
-from classes import *
+from classes import GameWindow, list_dir, form_abs_path, read_all, load_all
 import time
-    
+
 def main() -> None:
     """The main function"""
 

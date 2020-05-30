@@ -46,9 +46,6 @@ async def load_sound(sound_path) -> None:
     return dict(map(lambda x: (x[0], pygame.mixer.Sound(x[1])), sound_path.items()))
 
 class GameWindow(object):
-    #Store the sound objects
-    Sound = []
-
     def __init__(self, sensitivity:int, maxfps:int, game_width:int, game_height:int, icon_img_path:str, player_img_paths:tuple,
                  enemy_img_paths:tuple, bullet_img_paths:tuple, background_img_paths:tuple, explosion_img_paths:tuple, 
                  p_settings:dict, db_path:str, sound_path:dict, bg_limit:int, wave:int = 1,  debug:bool = False):
@@ -132,6 +129,7 @@ class GameWindow(object):
         self.inst_menu = InstructionsMenuScreen(game_width, game_height, self.main_screen,  debug)
         self.classic = ClassicScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug = self.debug)
         self.settings = SettingsScreen(game_width, game_height, self.main_screen, self.fps, self.sound, self.bg, debug)
+        self.coop = CoopScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, 3,  debug)
 
         #Store the variables
         self.popup = None
@@ -154,10 +152,11 @@ class GameWindow(object):
             State.AI_COOP: self.two_player.handle,
             State.AI_VS: self.two_player.handle,
             State.PVP: self.pvp.handle,
-            State.PVP_GAMEOVER:self.handle_PVP_gameover,
-            State.PVP_PAUSE: self.handle_PVP_pause,
+            State.TWO_PLAYER_GAMEOVER:self.handle_two_player_gameover,
+            State.TWO_PLAYER_PAUSE: self.handle_two_player_pause,
             State.CLASSIC: self.classic.handle,
             State.SETTINGS: self.settings.handle,
+            State.COOP: self.coop.handle,
             State.QUIT:self.__del__
         }
 
@@ -168,24 +167,41 @@ class GameWindow(object):
         Explosion.sound = self.sound
 
         #Add pause sound
-        PVPPauseScreen.sound = self.sound
+        TwoPlayerPauseScreen.sound = self.sound
         PauseScreen.sound = self.sound
         GameoverScreen.sound = self.sound
-        PVPGameoverScreen.sound = self.sound
+        TwoPlayerGameoverScreen.sound = self.sound
 
-    def handle_PVP_pause(self) -> State:
+    def handle_two_player_pause(self) -> State:
         """Handle the PVP pause screen"""
+
+        #Check based on previous state
+        if self.prev == State.PVP:
+            prev = State.PVP
+            scores = self.pvp.get_scores()
+        elif self.prev == State.COOP:
+            prev = State.COOP
+            scores = self.coop.get_scores()
+        else:
+            assert False, f"{self.state}, cannot be paused"
+
         #Create the pause screen
-        self.PVP_pause = PVPPauseScreen(self.game_width, self.game_height, self.main_screen, *self.pvp.get_scores(), self.debug)
+        self.two_player_pause = TwoPlayerPauseScreen(self.game_width, self.game_height, self.main_screen, *scores, self.prev, self.debug)
 
         #Return the function
-        state = self.PVP_pause.handle()
+        state = self.two_player_pause.handle()
 
-        #If the state changes
-        if state != State.PVP_PAUSE:
+        #If new state is menu state
+        if state == State.MENU:
             self.pvp.reset()
+            self.coop.reset()
+            return state
 
-        #Return the state
+        #If it goes back to the game
+        elif state != State.TWO_PLAYER_PAUSE:
+            return prev
+
+        #Otherwise return the state
         return state
 
     def handle_newhighscore(self) -> State:
@@ -237,18 +253,30 @@ class GameWindow(object):
         #Handle the pause screen
         return self.pause.handle()
 
-    def handle_PVP_gameover(self) -> State:
+    def handle_two_player_gameover(self) -> State:
         """Handle the PVP gameover screen"""
+        #Check based on previous state
+        if self.prev == State.PVP:
+            prev = State.PVP
+            scores = self.pvp.get_scores()
+        elif self.prev == State.COOP:
+            prev = State.COOP
+            scores = self.coop.get_scores()
+        else:
+            assert False, f"{self.state}, cannot have gameover"
 
         #Generate gameover screen
-        self.pvp_gameover = PVPGameoverScreen(self.game_width,self.game_height,self.main_screen, *self.pvp.get_scores())
+        self.pvp_gameover = TwoPlayerGameoverScreen(self.game_width, self.game_height, self.main_screen, *scores)
 
         #Get next state
         state = self.pvp_gameover.handle()
 
         #If the state changes
-        if state != State.PVP_GAMEOVER:
-            self.pvp.reset()
+        if state != State.TWO_PLAYER_GAMEOVER:
+            if prev == State.PVP:
+                self.pvp.reset()
+            elif prev == State.COOP:
+                self.coop.reset()
 
         #Return the state
         return state
@@ -358,17 +386,11 @@ class GameWindow(object):
         #If the background is present
         if self.bg.is_present():
 
-            if self.debug:
-                print("Background present")
-
             #Fill it with the background img
             self.bg.update(self.main_screen)
         
         #Otherwise
         else:
-
-            if self.debug:
-                print("No background present")
 
             #Fill the background to black
             self.main_screen.fill(BLACK)
@@ -394,11 +416,8 @@ class GameWindow(object):
         #If the state is different
         if prev != self.state:
 
-            #If music is enabled
-            if self.sound.get_state():
-
-                #Play the click sound
-                self.sound.play('click')
+            #Play the click sound
+            self.sound.play('click')
 
             #Set the self.prev state
             self.prev = prev
@@ -450,11 +469,8 @@ class GameWindow(object):
             if self.state == State.QUIT or pygame.QUIT in tuple(map(lambda x: x.type, pygame.event.get())):
                 running = False
 
-        #If music is enabled
-        if self.sound.get_state():
-            
-            #Play the exit sound
-            self.sound.play('exit')
+        #Play the exit sound
+        self.sound.play('exit')
 
     def __del__(self) -> None:
         """Destructor for the game window.
