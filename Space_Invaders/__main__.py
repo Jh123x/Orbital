@@ -4,7 +4,7 @@
 #-------Orbital 2020-------#
 ############################
 
-#Import all functions from the class package
+#Import functions from the class package
 from classes import GameWindow, list_dir, form_abs_path, read_all, load_all
 import time
 
@@ -24,7 +24,7 @@ def main() -> None:
     #Load all
     d = load_all(("bullet_img_paths",), ("Bullet Sprites",), all_cfg, __file__)
 
-    #Load the other sprites
+    #Load the other sprites 
     d["player_img_paths"] = list_dir(form_abs_path(__file__, "images/player"))
     d["enemy_img_paths"] = list_dir(form_abs_path(__file__, "images/enemies"))
     d["background_img_paths"] = list_dir(form_abs_path(__file__, "images/backgrounds"))
