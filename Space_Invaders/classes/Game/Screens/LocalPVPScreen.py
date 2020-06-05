@@ -34,10 +34,14 @@ class LocalPVPScreen(Screen):
         #Init scores
         self.p1_score = 0
         self.p2_score = 0
-    
+
+        #Spawn Players
+        self.spawn_players()
+
+    def spawn_players(self) -> None:
         #Call the players
-        self.player1 = Player(sensitivity, screen_width, screen_height, screen_width//2, 50, player_lives, fps, self.player1_bullet, Direction.DOWN, debug)
-        self.player2 = Player(sensitivity, screen_width, screen_height, screen_width//2, screen_height-50, player_lives, fps, self.player2_bullet, Direction.UP, debug)
+        self.player1 = Player(self.sensitivity, self.screen_width, self.screen_height, self.screen_width//2, 50, self.player_lives, self.fps, self.player1_bullet, Direction.DOWN, self.debug)
+        self.player2 = Player(self.sensitivity, self.screen_width, self.screen_height, self.screen_width//2, self.screen_height-50, self.player_lives, self.fps, self.player2_bullet, Direction.UP, self.debug)
         
     def reset(self) -> None:
         """Reset the environment"""
@@ -48,6 +52,9 @@ class LocalPVPScreen(Screen):
         self.p1_score = 0
         self.p2_score = 0
 
+        #Reset Wave
+        self.wave = 0
+
         #Reset player model
         self.player1.reset()
         self.player2.reset()
@@ -56,6 +63,8 @@ class LocalPVPScreen(Screen):
         self.explosions.empty()
         self.player1_bullet.empty()
         self.player2_bullet.empty()
+        self.mob_bullet.empty()
+        self.enemies.empty()
 
         self.resetted = True
 
@@ -127,25 +136,28 @@ class LocalPVPScreen(Screen):
             #Get the first enemy of the set
             enemy = enemy[0]
 
-            #Randomly get a direction
-            if self.player1.is_destroyed():
-                direction = Direction.DOWN
-            elif self.player2.is_destroyed():
-                direction = Direction.UP
-            elif random.randint(0,1):
-                direction = Direction.UP
-            else:
-                direction = Direction.DOWN
+            #Get direction of bullet
+            direction = self.bullet_direction()
 
-            #Create the bullet
-            bullet2 = Bullet(self.sensitivity * 1.5, enemy.get_x() + enemy.get_width()//3, enemy.get_y(), direction, self.screen_width, self.screen_height, self.debug)
+            #Make the mob shoot
+            enemy.shoot(direction)
 
-            #Rotate the bullet 180 degrees to face it down
-            if direction == Direction.DOWN:
-                bullet2.rotate(180)
+    def bullet_direction(self) -> Direction:
+        #Randomly get a direction
+        if self.player1.is_destroyed():
+            direction = Direction.DOWN
 
-            #Add the bullet to the bullet group
-            self.mob_bullet.add(bullet2)
+        elif self.player2.is_destroyed():
+            direction = Direction.UP
+
+        elif random.randint(0,1):
+            direction = Direction.UP
+
+        else:
+            direction = Direction.DOWN
+
+        print(direction)
+        return direction
 
     def spawn_mobs(self) -> None:
         """Spawn enemies for the game"""
@@ -158,8 +170,7 @@ class LocalPVPScreen(Screen):
 
         #Spawn the enemies
         for j in range(2):
-            self.enemies.add([EnemyShip(self.sensitivity, self.screen_width//4 + i*self.screen_width//10, self.screen_height//2 - 50 + 50 * j, random.randint(1,self.wave), self.screen_width,  self.screen_height, None, self.debug) for i in range(6)])
-
+            self.enemies.add([EnemyShip(self.sensitivity, self.screen_width//4 + i*self.screen_width//10, self.screen_height//2 - 50 + 50 * j, random.randint(1,self.wave), self.screen_width,  self.screen_height, None, self.mob_bullet, self.debug) for i in range(6)])
 
     def get_scores(self) -> tuple:
         """Get the scores of the players"""
@@ -237,6 +248,8 @@ class LocalPVPScreen(Screen):
 
                     #Remove sprites that collide with bullets and return the sum of all the scores
                     pts += ship.get_points()
+
+        #Return with the points the player got
         return pts
         
 
@@ -247,11 +260,23 @@ class LocalPVPScreen(Screen):
         pygame.sprite.groupcollide(self.player1_bullet, self.mob_bullet, True, True)
         pygame.sprite.groupcollide(self.player2_bullet, self.mob_bullet, True, True)
 
-        #Check Collision of player 1
+        #Check player vs player collisions
+        self.check_players_collision()
+        
+        #Check collision of mobs with player 1 bullet
+        self.p1_score += self.check_player_mob_collision(self.player1_bullet)
+
+        #Check collision of mobs with player 2 bullet
+        self.p2_score += self.check_player_mob_collision(self.player2_bullet)
+
+
+    def check_players_collision(self):
+        """Check collisions between the players"""
+        #Check if bullet hit the player 1
         bullet_hit_p = len(pygame.sprite.spritecollide(self.player1, self.player2_bullet, True)) 
         bullet_hit_m = len(pygame.sprite.spritecollide(self.player1, self.mob_bullet, True))
 
-        #Check if it player bullet hit the other player
+        #Check if bullet hit the player 2
         if bullet_hit_p and not self.player1.isInvincible():
             self.p2_score += 500
 
@@ -259,9 +284,7 @@ class LocalPVPScreen(Screen):
             self.player1.destroy()
             self.explosions.add(Explosion(self.fps//4, self.player1.get_x(), self.player1.get_y(), self.screen_width, self.screen_height, 0, self.debug))
         
-            
-
-        #Check Collision of player 2
+        #Check if Player 2 bullet hit the player 1
         bullet_hit_p = len(pygame.sprite.spritecollide(self.player2, self.player1_bullet, True))
         bullet_hit_m = len(pygame.sprite.spritecollide(self.player2, self.mob_bullet, True))
         if bullet_hit_p and not self.player2.isInvincible():
@@ -271,28 +294,9 @@ class LocalPVPScreen(Screen):
         if bullet_hit_p + bullet_hit_m > 0 and not self.player2.is_destroyed():
             self.player2.destroy()
             self.explosions.add(Explosion(self.fps//4, self.player2.get_x(), self.player2.get_y(), self.screen_width, self.screen_height, 0, self.debug))
-        
 
-        #Check collision of mobs with player 1 bullet
-        self.p1_score += self.check_player_mob_collision(self.player1_bullet)
-
-        #Check collision of mobs with player 2 bullet
-        self.p2_score += self.check_player_mob_collision(self.player2_bullet)
-
-
-    def handle(self) -> State:
-        """Handle the drawing of the screen"""
-
-        #Check keypresses
-        if self.check_keypresses():
-            return State.PVP_PAUSE
-
-        #Check collisions
-        self.check_collision()
-
-        #Update position of sprites
-        self.update()
-
+    def draw_words(self) -> None:
+        """Draw the words on the screen"""
         #Draw the wave number
         self.write_main(Screen.font, WHITE, f"Wave: {self.wave}", self.screen_width // 2, 20)
 
@@ -308,8 +312,24 @@ class LocalPVPScreen(Screen):
         #Draw score of player 2
         self.write_main(Screen.font, WHITE, f"Score: {self.p2_score}", 10, self.screen_height - 20, Direction.LEFT)
 
+    def handle(self) -> State:
+        """Handle the drawing of the screen"""
+
+        #Check keypresses
+        if self.check_keypresses():
+            return State.TWO_PLAYER_PAUSE
+
+        #Check collisions
+        self.check_collision()
+
+        #Update position of sprites
+        self.update()
+
+        #Draw the words
+        self.draw_words()
+
         #Check if both players are destroyed
         if self.player1.is_destroyed() or self.player2.is_destroyed():
-            return State.PVP_GAMEOVER
+            return State.TWO_PLAYER_GAMEOVER
 
-        return State.PVP
+        return self.state

@@ -32,6 +32,9 @@ class MenuScreen(Screen):
         #Draw the instructions button
         self.rect_instruction = self.write(Screen.end_font, WHITE, "Instructions", self.screen_width//2, self.screen_height//7.5 + self.screen_height//2)
 
+        #Draw the settings button
+        self.rect_settings = self.write(Screen.end_font, WHITE, "Settings", self.screen_width//2, self.screen_height//5 + self.screen_height//2)
+
         #Draw the quit button
         self.rect_end = self.write(Screen.end_font, WHITE, "Quit", self.screen_width//2, self.screen_height//1.2)
 
@@ -94,4 +97,4 @@ class MenuScreen(Screen):
         state = self.update_keypresses()
 
         #Check the position of the mouse to return the state and combine it with the keypress of user
-        return state if state else self.check_mouse([self.rect_play, self.rect_end, self.rect_highscore, self.rect_instruction],[State.PLAYMODE,State.QUIT, State.HIGHSCORE, State.INSTRUCTIONS_MENU])
+        return state if state else self.check_mouse([self.rect_play, self.rect_end, self.rect_highscore, self.rect_instruction, self.rect_settings],[State.PLAYMODE,State.QUIT, State.HIGHSCORE, State.INSTRUCTIONS_MENU, State.SETTINGS])

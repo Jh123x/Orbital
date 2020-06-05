@@ -38,8 +38,10 @@ class State(enum.Enum):
     AI_VS_GAMEOVER = 15
 
     PVP = 16
-    PVP_GAMEOVER = 17
-    PVP_PAUSE = 18
+    TWO_PLAYER_GAMEOVER = 17
+    TWO_PLAYER_PAUSE = 18
+
+    COOP = 19
 
     CLASSIC = 60
 
