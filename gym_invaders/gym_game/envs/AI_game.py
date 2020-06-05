@@ -113,7 +113,7 @@ class PyGame_2D(object):
 
             #Update the display with the screen
             pygame.display.update()
-            print("hello from mainloop")
+            #print("hello from mainloop")
 
             #If the state is quit or player closes the game
             if pygame.QUIT in tuple(map(lambda x: x.type, pygame.event.get())):
@@ -139,19 +139,25 @@ class PyGame_2D(object):
     def get_space(self) -> list:
         """Returns the pixel space of the screen"""
         return pygame.surfarray.array2d(self.state.screen)
+
     def is_over(self):
         '''Returns if game state is over or quit'''
-        return self.nextState == State.GAMEOVER
+        return self.player.is_destroyed()
+
     def is_playing(self):
         return self.nextState ==State.PLAY
+
     def get_score(self):
         return self.state.get_score()
+
     def reset(self):
         '''Wrapper method for reseting the screen'''
         self.state.reset()
+
     def get_player(self):
         '''get the player character position -- for Debugging Purposes'''
         return (self.player.get_x(),self.player.get_y())
+
     def get_enemies(self):
         '''Get positions of each enemy'''
         enemy_grp = self.state.get_enemies()

@@ -319,6 +319,7 @@ class PlayScreen(Screen):
         """
         #If player is destroyed, go to gameover state
         if self.player.is_destroyed():
+            print('hi')
             return State.GAMEOVER
 
         #Check if any of the enemies touched the bottom of the screen
@@ -332,7 +333,7 @@ class PlayScreen(Screen):
             return State.GAMEOVER
         #Spawn if there are no enemies 
         if not len(self.enemies):
-            print("test")
+            #print("test")
             #Increase the wave number
             self.wave += 1
 

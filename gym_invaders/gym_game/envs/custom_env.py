@@ -52,14 +52,17 @@ class CustomEnv(gym.Env):
         pygame.display.update()
         obs = self.pygame.get_space() # observations for the next timestep
         self.time += 1
-        score = self.pygame.get_score()
+        score = self.pygame.get_score() - self.score
+        self.score = self.pygame.get_score()
         # Reward is a combination of current score*(time/max_time) + Penalty of timestep
-        reward = self.score * (self.time/self.max_step)
+        reward = score
+
         done = self.pygame.is_over()
         debug = {'score': score, 'timestep': self.time, 'reward': reward}
-        print(obs.shape)
-        print(self.pygame.get_player())
-        print(self.pygame.get_enemies())
+
+        #print(obs.shape)
+        #print(self.pygame.get_player())
+        #print(self.pygame.get_enemies())
 
         return obs, reward, done, debug
 

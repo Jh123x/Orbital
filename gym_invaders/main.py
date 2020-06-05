@@ -1,29 +1,42 @@
 import gym
 import gym_game
+from gym import wrappers
 import pygame
-import numpy as np
-import torch
-import torch.nn as nn
+from skimage import transform
+from collections import deque,namedtuple
+import matplotlib.pyplot as plt
+import time
+import warnings
+import math
 import random
+import numpy as np
+import numpy.random as rand
+import torch
+import torch.optim as optim
+import torch.nn as nn
+import torch.nn.functional as F
+import torchvision.transforms as T
+import torch.autograd as autograd
+import cv2
+import ai_invader
 env = gym.make("Invader-v0")
-def simulate(env):
-    sum_reward = 0
-    for i in range(2):
-        state = env.reset()
-        for j in range(10000):
-            act = env.action_space.sample()
-            next_state, reward, done, _ = env.step(act)
-            #print(next_state)
-            sum_reward +=1
-            print(sum_reward)
-            state = next_state
-            if done == True:
-                break
-        sum_reward = 0
-        env.reset()
+
+def random_play():
+    score = 0
+    env.reset()
+    while True:
+        #env.render()
+        action = env.action_space.sample()
+        state, reward, done, _ = env.step(action)
+        score += reward
+        print(reward)
+        if done:
+            env.close()
+            print("Your Score at end of game is: ", score)
+            break
 
 
 
 if __name__ == "__main__":
     env = gym.make("Invader-v0")
-    simulate(env)
+    random_play()
