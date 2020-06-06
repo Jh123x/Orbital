@@ -6,7 +6,9 @@ class Player(MovingObject):
     #Static method to store sprites
     sprites = []
 
-    def __init__(self, sensitivity:int, game_width:int, game_height:int, initial_x:int, initial_y:int, init_life:int, fps:int, bullet_grp:pygame.sprite.Group(), bullet_direction:Direction, debug:bool = False, isAI:bool = False):
+    def __init__(self, sensitivity:int, game_width:int, game_height:int, initial_x:int, initial_y:int, init_life:int, 
+                fps:int, bullet_grp:pygame.sprite.Group(), bullet_direction:Direction, 
+                debug:bool = False, isAI:bool = False):
         """Constructor for the player
             Arguments:
                 sensitivity: Sensitivity of the player controls (int)
@@ -33,7 +35,7 @@ class Player(MovingObject):
                 update: Update the position of the player
         """
         #Store the items
-        self.AI = isAI
+        self.is_AI = isAI
         self.bullet_direction = bullet_direction
         
         #Call the superclass
@@ -74,7 +76,7 @@ class Player(MovingObject):
             Returns: 
                 Returns True if player is an ai otherwise false (bool)
         """
-        return self.AI
+        return self.is_AI
 
     def on_cooldown(self) -> bool:
         """Check if shooting is on cooldown

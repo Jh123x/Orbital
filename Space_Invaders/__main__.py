@@ -5,43 +5,39 @@
 ############################
 
 #Import all functions from the class package
-from classes import *
-import os
+from classes import GameWindow, list_dir, form_abs_path, read_all, load_all
+import time
 
-def form_abs_path(filepath):
-    """Get the absolute path of a filepath"""
-    return f"{os.path.dirname(os.path.realpath(__file__))}/{filepath}"
-    
-#Run the following if the file is run as main
-if __name__ =="__main__":
+def main() -> None:
+    """The main function"""
 
     #The path of the configuration file
     settings = "settings.cfg"
 
     #Read the configuration file for space invaders
-    all_cfg = read_all(form_abs_path(settings))
+    all_cfg = read_all(form_abs_path(__file__,settings))
     
     #Main configurations
     config = all_cfg['Space Invaders']
-    config['icon_img_path'] = form_abs_path(config['icon_img_path'])
+    config['icon_img_path'] = form_abs_path(__file__, config['icon_img_path'])
 
-    #Get the player sprites
-    player_img_paths = list(map(lambda x: form_abs_path(x), all_cfg["Player Sprites"].values()))
+    #Load all
+    d = load_all(("bullet_img_paths",), ("Bullet Sprites",), all_cfg, __file__)
 
-    #Get the bullet sprites Enemy Sprites
-    bullet_img_paths = list(map(lambda x: form_abs_path(x), all_cfg["Bullet Sprites"].values()))
+    #Load the other sprites
+    d["player_img_paths"] = list_dir(form_abs_path(__file__, "images/player"))
+    d["enemy_img_paths"] = list_dir(form_abs_path(__file__, "images/enemies"))
+    d["background_img_paths"] = list_dir(form_abs_path(__file__, "images/backgrounds"))
+    d["explosion_img_paths"] = list_dir(form_abs_path(__file__, "images/explosions"))
 
-    #Get the enemy sprites
-    enemy_img_paths = list(map(lambda x: form_abs_path(x), all_cfg["Enemy Sprites"].values()))
-
-    #Get the background sprites
-    background_img_paths = list(map(lambda x: form_abs_path(x), all_cfg["Background"].values()))
-
-    #Get the explosion image path
-    explosion_img_paths = list(map(lambda x: form_abs_path(x), all_cfg["Explosion Sprites"].values()))
+    #Get the number of backgrounds
+    bg_limit = len(d["background_img_paths"])
 
     #DBPath
-    db_path = form_abs_path('data/test.db')
+    db_path = form_abs_path(__file__,'data/test.db')
+
+    #Sound
+    sound_path = dict(zip(all_cfg["Sounds"].keys(),list(map(lambda x: form_abs_path(__file__, x), all_cfg["Sounds"].values()))))
 
     #Get the settings
     settings = all_cfg["Player"]
@@ -54,7 +50,11 @@ if __name__ =="__main__":
             print(f"{k} : {v}")
 
     #Create the new game window with the configurations
-    game = GameWindow(player_img_paths = player_img_paths, bullet_img_paths = bullet_img_paths, enemy_img_paths = enemy_img_paths, explosion_img_paths = explosion_img_paths, background_img_paths = background_img_paths, p_settings = settings, **config, db_path = db_path)
-    
+    game = GameWindow(**d, sound_path = sound_path, p_settings = settings, **config, db_path = db_path, bg_limit = bg_limit)
+
     #Run the mainloop for the GameWindow
     game.mainloop()
+
+#Run the following if the file is run as main
+if __name__ =="__main__":
+    main()

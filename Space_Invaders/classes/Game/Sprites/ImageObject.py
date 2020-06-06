@@ -42,21 +42,28 @@ class ImageObject(Object):
             Returns: 
                 No return
         """
+        #If image exists
         if self.image:
             #Create the rectangle for the ImageObject Object
             self.rect = pygame.Rect(self.image.get_rect().left, self.image.get_rect().top, self.get_width(), self.get_height())
+
+        #If image does not exists
         else:
+
             #Create custom rect
             self.rect = pygame.Rect(self.get_x(), self.get_y(), self.get_width(), self.get_height())
+
             #Print debug message
             if self.debug:
                 print("No image found")
+
+            #Inflate the model to the correct size
+            self.rect.inflate(self.get_width()//2,self.get_height()//2)
         
         #Set the center of the rect
-        self.rect.center=(self.x,self.y)
+        self.rect.center = (self.x,self.y)
 
-        #Inflate the model to the correct size
-        self.rect.inflate(self.get_width()//2,self.get_height()//2)
+        
 
     def get_center(self) -> tuple:
         """Get the coordinate of the center of the object
