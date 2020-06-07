@@ -101,6 +101,7 @@ class SettingsDB(Database):
             self.add("background",0)
             self.add("music",False)
 
+    def add(self, name:str, setting:str) -> None:
         """Add the settings to the table"""
         #Insert the element into the table
         print(self.execute('INSERT INTO settings VALUES(?, ?, ?)', (None, name, setting)))
