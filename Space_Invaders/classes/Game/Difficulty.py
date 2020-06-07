@@ -6,7 +6,8 @@ class Difficulty(object):
         self.difficulty = Difficulty_enum(difficulty)
         self.load()
 
-    def load(self):
+    def load(self) -> None:
+        """Load the value and name value"""
         self.value = self.difficulty.value
         self.name = self.difficulty.name
 
@@ -18,3 +19,8 @@ class Difficulty(object):
             self.difficulty = Difficulty_enum(1)
 
         self.load()
+
+    def get_multiplier(self) -> float:
+        """Get multiplier"""
+        return self.value / 2
+        

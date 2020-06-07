@@ -35,6 +35,7 @@ class PlayScreen(Screen):
         self.wave = wave - 1 
         self.sensitivity = sensitivity
         self.fps = max_fps
+        self.difficulty = difficulty
 
         #Create the groups
         #Bullets shot by player
@@ -278,10 +279,9 @@ class PlayScreen(Screen):
             #Spawn them in 1 row
             self.enemies.add([EnemyShip(self.sensitivity, self.screen_width//4 + i*self.screen_width//10, self.screen_height//10, random.randint(1,int(self.wave*self.difficulty.value/4)), self.screen_width,  self.screen_height, Direction.DOWN, self.down_bullets, self.debug) for i in range(number)])
         else:
-
             #Otherwise make them into rows of 6
             for j in range(number//6 if number // 6 < 5 else 5):
-                self.enemies.add([EnemyShip(self.sensitivity, self.screen_width//4 + i*self.screen_width//10, self.screen_height//10 + EnemyShip.sprites[0].get_height() * j, random.randint(1,int(self.wave*self.difficulty.value()/4)), self.screen_width,  self.screen_height, Direction.DOWN, self.down_bullets, self.debug) for i in range(6)])
+                self.enemies.add([EnemyShip(self.sensitivity, self.screen_width//4 + i*self.screen_width//10, self.screen_height//10 + EnemyShip.sprites[0].get_height() * j, random.randint(1,int(self.wave*self.difficulty.get_multiplier())), self.screen_width,  self.screen_height, Direction.DOWN, self.down_bullets, self.debug) for i in range(6)])
 
         
     def handle(self) -> State:

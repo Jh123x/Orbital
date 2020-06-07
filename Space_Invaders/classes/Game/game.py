@@ -133,7 +133,7 @@ class GameWindow(object):
         self.inst_menu = InstructionsMenuScreen(game_width, game_height, self.main_screen,  debug)
         self.classic = ClassicScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.difficulty, debug = self.debug)
         self.settings = SettingsScreen(game_width, game_height, self.main_screen, self.fps, self.sound, self.bg, self.difficulty, debug)
-        self.coop = CoopScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, 3,  debug)
+        self.coop = CoopScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.difficulty, 3,  debug)
         self.ai_vs = AIPVPScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, 3,  debug)
 
         #Store the variables
