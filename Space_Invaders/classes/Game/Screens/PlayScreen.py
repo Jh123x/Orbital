@@ -5,7 +5,7 @@ from . import Screen
 from .. import *
 
 class PlayScreen(Screen):
-    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, wave:int = 1, debug:bool = False):
+    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, difficulty: Difficulty, wave:int = 1, player_lives:int = 3, debug:bool = False):
         """The Play screen
             Arguments:
                 screen_width: Width of the game in pixels (int)
@@ -276,12 +276,12 @@ class PlayScreen(Screen):
         if number <= 6:
 
             #Spawn them in 1 row
-            self.enemies.add([EnemyShip(self.sensitivity, self.screen_width//4 + i*self.screen_width//10, self.screen_height//10, random.randint(1,self.wave), self.screen_width,  self.screen_height, Direction.DOWN, self.down_bullets, self.debug) for i in range(number)])
+            self.enemies.add([EnemyShip(self.sensitivity, self.screen_width//4 + i*self.screen_width//10, self.screen_height//10, random.randint(1,int(self.wave*self.difficulty.value/4)), self.screen_width,  self.screen_height, Direction.DOWN, self.down_bullets, self.debug) for i in range(number)])
         else:
 
             #Otherwise make them into rows of 6
             for j in range(number//6 if number // 6 < 5 else 5):
-                self.enemies.add([EnemyShip(self.sensitivity, self.screen_width//4 + i*self.screen_width//10, self.screen_height//10 + EnemyShip.sprites[0].get_height() * j, random.randint(1,self.wave), self.screen_width,  self.screen_height, Direction.DOWN, self.down_bullets, self.debug) for i in range(6)])
+                self.enemies.add([EnemyShip(self.sensitivity, self.screen_width//4 + i*self.screen_width//10, self.screen_height//10 + EnemyShip.sprites[0].get_height() * j, random.randint(1,int(self.wave*self.difficulty.value()/4)), self.screen_width,  self.screen_height, Direction.DOWN, self.down_bullets, self.debug) for i in range(6)])
 
         
     def handle(self) -> State:

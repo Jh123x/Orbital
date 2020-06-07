@@ -32,15 +32,13 @@ def main() -> None:
 
     #Get the number of backgrounds
     bg_limit = len(d["background_img_paths"])
+    
 
     #DBPath
     db_path = form_abs_path(__file__,'data/test.db')
 
     #Sound
     sound_path = dict(zip(all_cfg["Sounds"].keys(),list(map(lambda x: form_abs_path(__file__, x), all_cfg["Sounds"].values()))))
-
-    #Get the settings
-    settings = all_cfg["Player"]
 
     #Print the config data if debug is on
     if config['debug']:
@@ -50,7 +48,7 @@ def main() -> None:
             print(f"{k} : {v}")
 
     #Create the new game window with the configurations
-    game = GameWindow(**d, sound_path = sound_path, p_settings = settings, **config, db_path = db_path, bg_limit = bg_limit)
+    game = GameWindow(**d, sound_path = sound_path, **config, db_path = db_path, bg_limit = bg_limit)
 
     #Run the mainloop for the GameWindow
     game.mainloop()

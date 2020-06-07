@@ -48,7 +48,7 @@ async def load_sound(sound_path) -> None:
 class GameWindow(object):
     def __init__(self, sensitivity:int, maxfps:int, game_width:int, game_height:int, icon_img_path:str, player_img_paths:tuple,
                  enemy_img_paths:tuple, bullet_img_paths:tuple, background_img_paths:tuple, explosion_img_paths:tuple, 
-                 p_settings:dict, db_path:str, sound_path:dict, bg_limit:int, wave:int = 1,  debug:bool = False):
+                 db_path:str, sound_path:dict, bg_limit:int, wave:int = 1,  debug:bool = False):
         """The constructor for the main window
             Arguments:
                 Sensitivity: Sensitivity of controls (int)
@@ -86,9 +86,6 @@ class GameWindow(object):
 
         #Initialise the pygame window
         self.clock = pygame.time.Clock()
-
-        #Storing the game variables
-        self.p_settings = p_settings
         self.debug = debug
         self.score = 0
         self.fps = maxfps
@@ -102,8 +99,7 @@ class GameWindow(object):
         #Check if highscore is written
         self.written = False
 
-        #Set difficulty
-        self.difficulty = Difficulty(p_settings['difficulty'] if p_settings['difficulty'] < 5 else 5)
+        
 
         #Load the highscores
         self.score_board = ScoreBoard(db_path)
@@ -111,24 +107,32 @@ class GameWindow(object):
         #Load sprites
         load_sprites((Player, Bullet, EnemyShip, Background, Explosion), (player_img_paths, bullet_img_paths, enemy_img_paths, background_img_paths, explosion_img_paths))
 
+        #Load setting menu settings
+        self.settingsdb = SettingsDB(db_path)
+        self.settings_data = dict(map(lambda x: x[1:], self.settingsdb.fetch_all()))
+
+        #Set difficulty
+        difficulty = int(self.settings_data['difficulty'])
+        self.difficulty = Difficulty(difficulty if difficulty < 5 else 5)
+
         #Load sounds
-        self.sound = Sound(asyncio.run(load_sound(sound_path)), debug)
+        self.sound = Sound(asyncio.run(load_sound(sound_path)), bool(int(self.settings_data['music'])), debug)
 
         #Create the background object
-        self.bg = Background(p_settings['bg'], game_width, game_height, bg_limit, debug)
+        self.bg = Background(int(self.settings_data['background']), game_width, game_height, bg_limit, debug)
 
         #Create the Screen objects
         self.instructions = InstructionScreen(game_width, game_height, self.main_screen,  debug = self.debug)
         self.menu = MenuScreen(game_width, game_height, self.main_screen, debug = self.debug)
-        self.play = PlayScreen(game_width, game_height, self.main_screen, sensitivity, maxfps,  debug = self.debug)
+        self.play = PlayScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.difficulty, 3, debug = self.debug)
         self.play_menu = PlayModeScreen(game_width, game_height, self.main_screen,  debug)
         self.highscore = HighscoreScreen(game_width, game_height, self.main_screen, self.score_board.fetch_all(), debug = self.debug)
         self.two_player = TwoPlayerScreen(game_width, game_height, self.main_screen,  self.debug)
         self.pvp = LocalPVPScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, 3,  debug)
         self.pvp_menu = PVPInstructionsScreen(game_width, game_height, self.main_screen, debug)
         self.inst_menu = InstructionsMenuScreen(game_width, game_height, self.main_screen,  debug)
-        self.classic = ClassicScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug = self.debug)
-        self.settings = SettingsScreen(game_width, game_height, self.main_screen, self.fps, self.sound, self.bg, debug)
+        self.classic = ClassicScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.difficulty, debug = self.debug)
+        self.settings = SettingsScreen(game_width, game_height, self.main_screen, self.fps, self.sound, self.bg, self.difficulty, debug)
         self.coop = CoopScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, 3,  debug)
         self.ai_vs = AIPVPScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, 3,  debug)
 
@@ -497,6 +501,11 @@ class GameWindow(object):
 
         #Remove all entries beyond 5
         self.score_board.remove_all(*self.highscore.get_removed())
+
+        #Get the settings that was saved and save it to the DB
+        self.settingsdb.update('background',str(self.settings.get_bg_no()))
+        self.settingsdb.update('music',int(self.settings.get_music_enabled()))
+        self.settingsdb.update('difficulty', int(self.settings.get_difficulty_no()))
 
         #Quit the game
         pygame.display.quit()

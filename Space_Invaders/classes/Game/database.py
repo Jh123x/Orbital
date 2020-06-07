@@ -84,6 +84,51 @@ class Database(object):
         #Close the connection to the database
         self.connection.close()
 
+class SettingsDB(Database):
+    def __init__(self, dbpath:str):
+        """Constructor for the settings db class"""
+        #Call the superclass
+        super().__init__(dbpath, 'settings')
+
+        #Create the table if it does not exist
+        self.execute("CREATE TABLE IF NOT EXISTS settings (id INTEGER, name TEXT, settings TEXT)")
+
+        #get the count of tables with the name
+        self.execute(''' SELECT count(name) FROM sqlite_master WHERE type='table' AND name='settings' ''')
+        bo = self.cursor.fetchone()[0]
+        if bo == 0:
+            """Add the relavant settings"""
+            self.add("background",0)
+            self.add("music",False)
+
+        """Add the settings to the table"""
+        #Insert the element into the table
+        print(self.execute('INSERT INTO settings VALUES(?, ?, ?)', (None, name, setting)))
+
+        #Mark the database as changed
+        self.changed = True
+
+    def update(self, name:str, setting:str) -> None:
+        """Update the value of the settings"""
+        #Call the update function
+        self.execute("UPDATE settings SET settings = ? WHERE name = ?", (setting,name))
+
+        #Mark db as changed
+        self.changed = True
+
+    def remove(self, name:str) -> None:
+        """Remove the last entry from the highscore board
+            Arguments:
+                name: Name of the entry to be removed (string)
+            Returns:
+                No return
+        """
+        #Remove from the database where the name matches the name to be removed
+        self.execute(f"DELETE FROM {self.name} WHERE name = ?", (name,))
+
+        #Mark the database as changed
+        self.changed = True
+
 class Achievements(Database):
     def __init__(self, dbpath:str):
         """Class for keeping track of achievements"""
@@ -227,9 +272,12 @@ def main() -> None:
         Returns: 
             No returns
     """
+    dbpath = os.path.dirname(os.path.realpath(__file__)) + '/' + "../../data/test.db"
+
     #Create the scoreboard database
-    db = ScoreBoard(os.path.dirname(os.path.realpath(__file__)) + '/' + "../../data/test.db")
-    ac = Achievements(os.path.dirname(os.path.realpath(__file__)) + '/' + "../../data/test.db")
+    db = ScoreBoard(dbpath)
+    ac = Achievements(dbpath)
+    s = SettingsDB(dbpath)
 
     #For debugging
     print(f"Running the main function from database file")
@@ -241,6 +289,8 @@ def main() -> None:
         #Print entries
         print(f"Highscore: {db.fetch_all()}")
         print(f"Achievements: {ac.fetch_all()}")
+        print(f"Settings: {s.fetch_all()}")
+
         
         #Get commands from user
         try:

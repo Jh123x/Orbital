@@ -1,8 +1,8 @@
 from . import Screen, Popup
-from .. import State, WHITE, Direction, Sound, Background
+from .. import State, WHITE, Direction, Sound, Background, Difficulty
 
 class SettingsScreen(Screen):
-    def __init__(self, screen_width:int, screen_height:int, screen, fps:int, sound:Sound, background:Background, debug:bool = False):
+    def __init__(self, screen_width:int, screen_height:int, screen, fps:int, sound:Sound, background:Background, difficulty: Difficulty, debug:bool = False):
         """Constructor for the settings screen"""
 
         #Call the superclass
@@ -11,9 +11,8 @@ class SettingsScreen(Screen):
         #Store the variables
         self.fps = fps
         self.sound = sound
-
-        #Music 
         self.bg = background
+        self.difficulty = difficulty
 
         #Set a cooldown
         self.cooldown = self.fps//10
@@ -31,6 +30,14 @@ class SettingsScreen(Screen):
     def get_music_enabled(self) -> bool:
         """Get the state of music"""
         return self.sound.get_state()
+
+    def get_difficulty(self) -> str:
+        """Get the difficulty name"""
+        return self.difficulty.name
+
+    def get_difficulty_no(self) -> int:
+        """Get the difficulty number"""
+        return self.difficulty.value
 
     def handle_mouse_presses(self) -> State:
         """Handle the mouse presses on the settings screen"""
@@ -57,6 +64,16 @@ class SettingsScreen(Screen):
 
                 #Reset the cooldown
                 self.cooldown = self.fps//10
+
+            #If the difficulty button is pressed
+            if self.check_clicked(self.difficulty_rect):
+
+                #Toggle difficulty
+                self.difficulty.toggle()
+
+                #Reset the cooldown
+                self.cooldown = self.fps//10
+            
         
         #Otherwise
         else:
@@ -80,6 +97,7 @@ class SettingsScreen(Screen):
         #Draw the different settings options
         self.background = self.write_main(Screen.end_font, WHITE, f"Background: {self.get_bg_no()}", self.screen_width//4, first_pixel, Direction.LEFT)
         self.music = self.write_main(Screen.end_font, WHITE, f"Music enabled: {self.get_music_enabled()}", self.screen_width//4, first_pixel + self.screen_height//15, Direction.LEFT)
+        self.difficulty_rect = self.write_main(Screen.end_font, WHITE, f"Difficulty: {self.get_difficulty().title()}", self.screen_width//4, first_pixel + self.screen_height//7.5, Direction.LEFT)
 
         #Return based on what the user press
         return self.handle_mouse_presses()
