@@ -39,7 +39,7 @@ class Database(object):
         """
 
         #Run the command
-        self.cursor.execute(command, *args)
+        return self.cursor.execute(command, *args)
 
     def is_cache(self) -> bool:
         """Check if there is a cached copy
@@ -83,6 +83,38 @@ class Database(object):
 
         #Close the connection to the database
         self.connection.close()
+
+class SettingsDB(Database):
+    def __init__(self, dbpath:str):
+        """"""
+        #Call the superclass
+        super().__init__(dbpath, 'settings')
+
+        #Create the table if it does not exist
+        self.execute("CREATE TABLE IF NOT EXISTS settings (id INTEGER, name TEXT, setting TEXT)")
+    
+    def add(self, name:str, setting:str):
+        #Adds the setting to the list
+        self.execute('INSERT INTO settings VALUES(NULL, ?, ?)', (name, setting))
+        self.changed = True
+
+    def update(self, name:str, setting:str):
+        """Update the setting with a value"""
+        self.execute('UPDATE settings SET ? WHERE name = ?', (setting, name))
+        self.changed = True
+
+    def remove(self, name:str) -> None:
+        """Remove the last entry from the highscore board
+            Arguments:
+                name: Name of the entry to be removed (string)
+            Returns:
+                No return
+        """
+        #Remove from the database where the name matches the name to be removed
+        self.execute(f"DELETE FROM {self.name} WHERE name = ?", (name,))
+
+        #Mark the database as changed
+        self.changed = True
 
 class Achievements(Database):
     def __init__(self, dbpath:str):
@@ -230,6 +262,7 @@ def main() -> None:
     #Create the scoreboard database
     db = ScoreBoard(os.path.dirname(os.path.realpath(__file__)) + '/' + "../../data/test.db")
     ac = Achievements(os.path.dirname(os.path.realpath(__file__)) + '/' + "../../data/test.db")
+    s = SettingsDB(os.path.dirname(os.path.realpath(__file__)) + '/' + "../../data/test.db")
 
     #For debugging
     print(f"Running the main function from database file")
@@ -241,6 +274,7 @@ def main() -> None:
         #Print entries
         print(f"Highscore: {db.fetch_all()}")
         print(f"Achievements: {ac.fetch_all()}")
+        print(f"Settings: {s.fetch_all()}")
         
         #Get commands from user
         try:
