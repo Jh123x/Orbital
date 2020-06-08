@@ -26,6 +26,9 @@ class TwoPlayerScreen(Screen):
         #Draw the Player vs player mode
         self.local_vs = self.write(Screen.end_font, WHITE, "Player VS Player", self.screen_width // 2, first_pixel + self.screen_height // 7.5)
 
+        #Draw the Player and Player Coop
+        self.coop = self.write(Screen.end_font, WHITE, "2 Player Coop", self.screen_width // 2, first_pixel + self.screen_height // 5)
+
         #Draw the back button
         self.back = self.write(Screen.end_font, WHITE, "Back", self.screen_width // 2, self.screen_height // 1.2)
 
@@ -43,7 +46,7 @@ class TwoPlayerScreen(Screen):
 
         #Check if the person clicked on the AI Vs rect
         elif self.check_clicked(self.ai_vs):
-            self.popup = Popup(200, 20, "Still under construction", 60, self.screen_width//2, 10, self.screen)
+
             #Return the AI Vs mode state
             return State.AI_VS
         
@@ -58,6 +61,12 @@ class TwoPlayerScreen(Screen):
 
             #Return the previous screen
             return State.PLAYMODE
+
+        #If the person clicked on coop
+        elif self.check_clicked(self.coop):
+
+            #Return the Coop mode
+            return State.COOP
 
         #Otherwise
         return State.TWO_PLAYER_MENU

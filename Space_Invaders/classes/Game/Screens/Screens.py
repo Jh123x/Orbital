@@ -1,11 +1,10 @@
 import pygame
 from pygame.locals import *
-from .. import Object, State, Direction
+from .. import BaseObject, State, Direction
 
-#Initialise the fonts
 pygame.font.init()
 
-class Screen(Object):
+class Screen(BaseObject):
     #Store the fonts in the Screen Object
     font = pygame.font.Font(pygame.font.get_default_font(),15)
     end_font = pygame.font.Font(pygame.font.get_default_font(),30)
@@ -68,6 +67,9 @@ class Screen(Object):
             #Blit the screen while making background transparent
             self.screen.blit(self.surface.convert_alpha(), self.get_coord())
 
+    def set_state(self, state:State):
+        """Set the current state of the screen"""
+        self.state = state
 
     def reset(self) -> None:
         """Resets the surface to transparent
@@ -153,7 +155,7 @@ class Screen(Object):
         #Get the position of the mouse
         mouse_pos = pygame.mouse.get_pos()
 
-        #Return if the mouse position is within the rect and teh player clicked
+        #Return if the mouse position is within the rect and the player clicked
         return pygame.mouse.get_pressed()[0] and rect.collidepoint(mouse_pos)
 
 

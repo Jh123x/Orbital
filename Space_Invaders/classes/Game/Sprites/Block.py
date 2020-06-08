@@ -2,7 +2,7 @@ import pygame
 from ..Colors import *
 from . import *
 
-class Block(Object):
+class Block(BaseObject):
     def __init__(self, initial_x:int, initial_y:int, screen, color:tuple = YELLOW, debug:bool = False):
         """Blocks"""
 

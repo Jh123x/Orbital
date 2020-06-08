@@ -1,4 +1,4 @@
-from .Object import Object
+from .BaseObject import BaseObject
 from .ImageObject import ImageObject
 from .MovingObject import MovingObject
 from .Background import Background
@@ -10,3 +10,4 @@ from .EnemyShip import EnemyShip
 from .Explosion import Explosion
 from .Player import Player
 from .InputBox import InputBox
+from .AIPlayer import AIPlayer

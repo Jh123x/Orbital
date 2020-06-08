@@ -1,12 +1,12 @@
-from . import MovingObject
-from .. import *
+from . import MovingObject, Bullet
+from .. import Direction
 
 class EnemyShip(MovingObject):
 
     #Static method to store sprites
     sprites = []
 
-    def __init__(self, sensitivity:int, initial_x:int, initial_y:int, lives:int,  game_width:int, game_height:int, switch_direction:Direction, debug:bool):
+    def __init__(self, sensitivity:int, initial_x:int, initial_y:int, lives:int,  game_width:int, game_height:int, switch_direction:Direction, bullet_grp, debug:bool):
         """Constructor for the enemy object
             Arguments:
                 sensitivity: Sensitivity of the enemy ship (int)
@@ -29,11 +29,21 @@ class EnemyShip(MovingObject):
         #Call the superclass
         super().__init__(sensitivity, initial_x, initial_y, game_width, game_height, EnemyShip.sprites[lives-1 if lives < len(EnemyShip.sprites) else len(EnemyShip.sprites)-1], debug)
 
+        if self.debug:
+            print(switch_direction)
+
         #Store variables
         self.switch_direction = switch_direction
         self.lives = lives
         self.direction = Direction.RIGHT
         self.points = 10 * self.lives
+        self.bullet_grp = bullet_grp
+
+    def shoot(self, direction: Direction = Direction.DOWN):
+        """Lets the mob shoot"""
+
+        #Add the bullet to the bullet group
+        self.bullet_grp.add(Bullet(self.sensitivity * 1.5, self.get_center()[0], self.get_y(), direction, self.game_width, self.game_height, self.debug))
 
     def get_points(self) -> int:
         """Get the number of points the mob is worth
@@ -126,11 +136,15 @@ class EnemyShip(MovingObject):
 
         #If it is at the edge
         else:
+            
+            #If switch direction is down
             if self.switch_direction == Direction.DOWN:
                 #Move down
                 self.move_down(self.get_height()//4)
 
+            #If switch direction is up
             elif self.switch_direction == Direction.UP:
+                #Move up
                 self.move_up(self.get_height()//4)
 
             #Swap direction of x movement

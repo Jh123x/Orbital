@@ -38,14 +38,14 @@ class State(enum.Enum):
     AI_VS_GAMEOVER = 15
 
     PVP = 16
-    PVP_GAMEOVER = 17
-    PVP_PAUSE = 18
+    TWO_PLAYER_GAMEOVER = 17
+    TWO_PLAYER_PAUSE = 18
+
+    COOP = 19
 
     CLASSIC = 60
 
-    
-
-class Difficulty(enum.Enum):
+class Difficulty_enum(enum.Enum):
     """Difficulty enum to hold the difficultly of the game"""
     CASUAL = 1
     EASY = 2
