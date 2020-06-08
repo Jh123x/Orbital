@@ -33,7 +33,6 @@ def main() -> None:
     #Get the number of backgrounds
     bg_limit = len(d["background_img_paths"])
     
-
     #DBPath
     db_path = form_abs_path(__file__,'data/test.db')
 

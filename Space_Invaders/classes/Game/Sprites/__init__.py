@@ -1,4 +1,4 @@
-from .Object import Object
+from .BaseObject import BaseObject
 from .ImageObject import ImageObject
 from .MovingObject import MovingObject
 from .Background import Background

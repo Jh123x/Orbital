@@ -1,6 +1,6 @@
 import pygame
 
-class Object(pygame.sprite.Sprite):
+class BaseObject(pygame.sprite.Sprite):
     def __init__(self, initial_x:int, initial_y:int, debug:bool = False):
         """Constructor for the object class in the game
             Arguments:

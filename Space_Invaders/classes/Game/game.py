@@ -19,21 +19,10 @@ pygame.mixer.init()
 def load_sprites(obj_list:list, paths:list):
     """Load the sprites for each of the items in parallel"""
 
-    #Create event loop
-    evloop = asyncio.get_event_loop()
-
-    #Create list of tasks
-    tasks = []
-
-    #Add the function to list of tasks
+    #Run functions concurrently
     for i, obj in enumerate(obj_list):
-        tasks.append(add_to_sprite(obj, paths[i]))
+        asyncio.run(add_to_sprite(obj, paths[i]))
 
-    #Run the tasks
-    evloop.run_until_complete(asyncio.gather(*tasks))
-
-    #Close the loop
-    evloop.close()
 
 async def add_to_sprite(obj, sprite_path:str) -> None:
     """Add the pygame image to the object"""
@@ -98,8 +87,6 @@ class GameWindow(object):
 
         #Check if highscore is written
         self.written = False
-
-        
 
         #Load the highscores
         self.score_board = ScoreBoard(db_path)

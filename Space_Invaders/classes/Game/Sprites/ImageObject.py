@@ -1,10 +1,7 @@
 import pygame
-try:
-    from .Object import Object
-except ImportError:
-    from Object import Object
+from . import BaseObject
 
-class ImageObject(Object):
+class ImageObject(BaseObject):
     def __init__(self, initial_x:int, initial_y:int, width:int, height:int, image = None, debug:bool = False):
         """Main class for all objects with images
             Arguments:

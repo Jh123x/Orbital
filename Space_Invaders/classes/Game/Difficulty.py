@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from . import Difficulty_enum
 
 class Difficulty(object):
@@ -7,20 +8,30 @@ class Difficulty(object):
         self.load()
 
     def load(self) -> None:
-        """Load the value and name value"""
+        """Load the value and name value for the difficulty"""
         self.value = self.difficulty.value
         self.name = self.difficulty.name
 
     def toggle(self) -> None:
-        """Get the toggle"""
+        """Toggles the difficulty"""
         if self.difficulty.value < 5:
             self.difficulty =  Difficulty_enum(self.difficulty.value + 1)
         else:
             self.difficulty = Difficulty_enum(1)
 
+        #Reload the value and name
         self.load()
 
-    def get_multiplier(self) -> float:
-        """Get multiplier"""
-        return self.value / 2
+    def get_multiplier(self, value:int) -> int:
+        """Get multiplier for the current difficulty"""
+
+        #Get multiplier
+        mul = self.value / 2
+
+        #If multiplier is above 1
+        if mul*value > 1:
+            return mul*value
+
+        #Otherwise return 1
+        return 1
         
