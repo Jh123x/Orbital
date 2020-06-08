@@ -1,14 +1,18 @@
 import pygame
 import random
 from . import LocalPVPScreen, Screen
-from .. import State, Player, Direction, EnemyShip, WHITE, Explosion
+from .. import State, Player, Direction, EnemyShip, WHITE, Explosion, Difficulty
 
 class CoopScreen(LocalPVPScreen):
-    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, fps:int, player_lives:int = 3, debug:bool = False):
+    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, fps:int, difficulty: Difficulty, player_lives:int = 3, debug:bool = False):
         """Main Coop screen"""
 
         #Call the super class
         super().__init__(screen_width, screen_height, screen, sensitivity, fps, player_lives, debug)
+
+        #Store variables
+        self.difficulty = difficulty
+        print(self.difficulty)
 
         #Set to the correct state
         self.set_state(State.COOP)
@@ -49,7 +53,7 @@ class CoopScreen(LocalPVPScreen):
         #Spawn the enemies
         for j in range(self.wave if self.wave < 5 else 5):
             self.enemies.add([EnemyShip(self.sensitivity, self.screen_width//4 + i*self.screen_width//10, 
-                                self.screen_height//10 + EnemyShip.sprites[0].get_height() * j, random.randint(1,self.wave), 
+                                self.screen_height//10 + EnemyShip.sprites[0].get_height() * j, random.randint(1,int(self.wave*self.difficulty.get_multiplier())), 
                                 self.screen_width,  self.screen_height, None, self.mob_bullet, self.debug) for i in range(6)])
 
     def draw_words(self) -> None:

@@ -45,9 +45,7 @@ class State(enum.Enum):
 
     CLASSIC = 60
 
-    
-
-class Difficulty(enum.Enum):
+class Difficulty_enum(enum.Enum):
     """Difficulty enum to hold the difficultly of the game"""
     CASUAL = 1
     EASY = 2

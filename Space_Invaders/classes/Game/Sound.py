@@ -1,12 +1,12 @@
 class Sound(object):
-    def __init__(self, sound_dict:dict, debug:bool):
+    def __init__(self, sound_dict:dict, start_state:bool, debug:bool):
         """Main class for playing sound"""
 
         #Store the values for the sound
         self.sounds = sound_dict
 
         #Store if it is enabled or not
-        self.enabled = True
+        self.enabled = start_state
 
     def get_state(self) -> bool:
         """Get the current state of the sound"""
