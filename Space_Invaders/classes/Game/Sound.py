@@ -8,6 +8,9 @@ class Sound(object):
         #Store if it is enabled or not
         self.enabled = start_state
 
+        #Set the debug
+        self.debug = debug
+
     def get_state(self) -> bool:
         """Get the current state of the sound"""
         return self.enabled
