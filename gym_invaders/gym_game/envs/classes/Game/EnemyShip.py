@@ -1,12 +1,16 @@
-from . import MovingObject
-from .. import *
+try:
+    from .MovingObject import MovingObject
+    from .Enums import Direction
+except ImportError:
+    from MovingObject import MovingObject
+    from Enums import Direction
 
 class EnemyShip(MovingObject):
 
     #Static method to store sprites
     sprites = []
 
-    def __init__(self, sensitivity:int, initial_x:int, initial_y:int, lives:int,  game_width:int, game_height:int, switch_direction:Direction, debug:bool):
+    def __init__(self, sensitivity:int, initial_x:int, initial_y:int, lives:int,  game_width:int, game_height:int, debug:bool):
         """Constructor for the enemy object
             Arguments:
                 sensitivity: Sensitivity of the enemy ship (int)
@@ -26,14 +30,13 @@ class EnemyShip(MovingObject):
                 update: Update the position of the mob
         """
 
-        #Call the superclass
-        super().__init__(sensitivity, initial_x, initial_y, game_width, game_height, EnemyShip.sprites[lives-1 if lives < len(EnemyShip.sprites) else len(EnemyShip.sprites)-1], debug)
+        #Load the correct image
+        self.image = self.sprites[lives-1 if lives < len(EnemyShip.sprites) else len(EnemyShip.sprites)-1]
 
-        if self.debug:
-            print(switch_direction)
+        #Call the superclass
+        super().__init__(sensitivity, initial_x, initial_y, game_width, game_height, debug)
 
         #Store variables
-        self.switch_direction = switch_direction
         self.lives = lives
         self.direction = Direction.RIGHT
         self.points = 10 * self.lives
@@ -103,10 +106,6 @@ class EnemyShip(MovingObject):
         else:
             assert False, "Enemy ship direction is invalid"
 
-    def touch_edge(self) -> bool:
-        """If it is touching the edge"""
-        return self.get_x() >= self.game_width - self.get_width()//2 or self.get_x() < self.get_width()//2
-
     def update(self, multiplier:int) -> None:
         """Update the movement of the enemies
             Arguments:
@@ -129,16 +128,8 @@ class EnemyShip(MovingObject):
 
         #If it is at the edge
         else:
-            
-            #If switch direction is down
-            if self.switch_direction == Direction.DOWN:
-                #Move down
-                self.move_down(self.get_height()//4)
-
-            #If switch direction is up
-            elif self.switch_direction == Direction.UP:
-                #Move up
-                self.move_up(self.get_height()//4)
+            #Move down
+            self.move_down(self.get_height()//4)
 
             #Swap direction of x movement
             self.change_direction()
