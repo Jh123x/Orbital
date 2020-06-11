@@ -1,6 +1,6 @@
 import pygame
-from .. import Network, Player, State
-from . import LocalPVPScreen
+from .. import Network, Player, State, WHITE
+from . import Screen,LocalPVPScreen
 from pygame.locals import *
 
 class OnlinePVPScreen(LocalPVPScreen):
@@ -25,6 +25,7 @@ class OnlinePVPScreen(LocalPVPScreen):
         return (self.network.get_id(), player.get_coord()[0], shoot)
 
     def generate_random_no(self):
+        """Generate a random number from the server"""
         return self.network.send(('rand',))
 
     def check_keypresses(self) -> bool:
@@ -55,14 +56,14 @@ class OnlinePVPScreen(LocalPVPScreen):
         _, player1_pos, shot = self.network.send(self.pack_player_data(self.player2, shot))
 
         #Update player 2 information
-        self.player1.set_coord((int(player1_pos*self.fps), 60))
+        self.player1.set_coord((int(player1_pos), 60))
 
         #If player 1 shot
         if shot:
             self.player1.shoot()
 
 
-    def handle(self):
+    def handle(self) -> State:
         """Handle the drawing of the screen"""
 
         #If it is not connected to the network
@@ -71,7 +72,24 @@ class OnlinePVPScreen(LocalPVPScreen):
             #Create the network
             self.create_network()
 
-        return super().handle()
+        #Check if network is loading
+        data = self.network.send('waiting')
+
+        #Draw the loading screen
+        if data:
+
+            self.write_main(Screen.end_font, WHITE, f"Loading", self.screen_width // 2, self.screen_height//2)
+
+            self.back_rect = self.write_main(Screen.end_font, WHITE, f"Back", self.screen_width // 2, self.screen_height//2 + self.screen_height//15)
+
+            if self.check_clicked(self.back_rect):
+                return State.PLAYMODE
+
+            return self.state
+
+        #Otherwise draw the game
+        else:
+            return super().handle()
 
     def __del__(self):
         """Destructor for the object"""

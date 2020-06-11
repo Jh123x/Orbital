@@ -112,7 +112,7 @@ class LocalPVPScreen(Screen):
 
     def generate_random_no(self) -> int:
         #Generate random number
-        return random.randint(0,self.fps*50)
+        return random.randint(0,50)
 
     def spawn_enemy_bullets(self) -> None:
         """Spawn bullets for mobs"""
@@ -120,7 +120,7 @@ class LocalPVPScreen(Screen):
         rand = self.generate_random_no()
 
         #If it does not hits the probability allow the mob to shoot
-        if rand > self.fps:
+        if rand > 10:
 
             #Print debug statements
             if self.debug:
@@ -335,6 +335,7 @@ class LocalPVPScreen(Screen):
 
         #Check if both players are destroyed
         if self.player1.is_destroyed() or self.player2.is_destroyed():
+            self.reset()
             return State.TWO_PLAYER_GAMEOVER
 
         return self.state

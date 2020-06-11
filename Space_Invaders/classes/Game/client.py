@@ -11,11 +11,13 @@ class Network(object):
         #Create addr obj
         self.addr = (server, port)
 
+        #Keep track of the number of tries
+        self.tries = 0
+
         #Connect to the server and get an ID
         self.id = self.connect()
 
-        #Keep track of the number of tries
-        self.tries = 0
+        
 
     def get_id(self):
         """Get current position of the client"""
@@ -55,7 +57,10 @@ class Network(object):
             self.client.send(pickle.dumps(data))
 
             #Get the data from the server
-            data = pickle.loads(self.client.recv(2048))
+            data = self.client.recv(2048)
+
+            if data:
+                data = pickle.loads(data)
 
             #Reset the tries
             self.tries = 0
