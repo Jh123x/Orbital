@@ -8,18 +8,21 @@ class OnlinePVPScreen(LocalPVPScreen):
 
         #Call the superclass
         super().__init__(screen_width, screen_height, screen, sensitivity, fps, player_lives, debug)
+
+        #Initial network is none
         self.network = None
+
+        #Set the state to the correct state
         self.set_state(State.ONLINE)
 
     def create_network(self):
+        """Create the network for the player to be hosted on"""
         #Create the network
         self.network = Network("192.168.1.215",5555)
 
-    def pack_data(self, player:Player, shoot:bool):
-        return (self.network.get_id(), player.get_coord(), shoot)
-
-    def unpack_data(self, data):
-        return data[1], data[2]
+    def pack_player_data(self, player:Player, shoot:bool):
+        """Pack the data into the correct form to be sent"""
+        return (self.network.get_id(), player.get_coord()[0], shoot)
 
     def generate_random_no(self):
         return self.network.send(('rand',))
@@ -49,37 +52,33 @@ class OnlinePVPScreen(LocalPVPScreen):
 
 
         #Send information on current player
-        _, player1_pos, shot = self.network.send(self.pack_data(self.player2, shot))
+        _, player1_pos, shot = self.network.send(self.pack_player_data(self.player2, shot))
 
         #Update player 2 information
-        self.player1.set_coord(player1_pos)
+        self.player1.set_coord((int(player1_pos*self.fps), 60))
 
-        #If player 2 shot
+        #If player 1 shot
         if shot:
             self.player1.shoot()
 
 
     def handle(self):
         """Handle the drawing of the screen"""
+
+        #If it is not connected to the network
         if not self.network:
+
             #Create the network
             self.create_network()
 
-        #Check keypresses
-        self.check_keypresses()
+        return super().handle()
 
-        #Check collisions
-        self.check_collision()
+    def __del__(self):
+        """Destructor for the object"""
 
-        #Update position of sprites
-        self.update()
+        #If the network is connected
+        if self.network:
 
-        #Draw the words
-        self.draw_words()
-
-        #Check if both players are destroyed
-        if self.player1.is_destroyed() or self.player2.is_destroyed():
-            return State.TWO_PLAYER_GAMEOVER
-
-        return self.state
+            #Close the network
+            self.network.close()
 

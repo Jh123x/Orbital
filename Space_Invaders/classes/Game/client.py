@@ -14,6 +14,9 @@ class Network(object):
         #Connect to the server and get an ID
         self.id = self.connect()
 
+        #Keep track of the number of tries
+        self.tries = 0
+
     def get_id(self):
         """Get current position of the client"""
         return self.id
@@ -21,33 +24,53 @@ class Network(object):
     def connect(self):
         """Connect to the server"""
         try:
+            #Add to number of tries
+            self.tries += 1
+
             #Connect to the server
             self.client.connect(self.addr)
 
+            #Reset the tries
+            self.tries = 0
+
             #Return the id that the server received
             return pickle.loads(self.client.recv(2048))
+        
+        #If there is an error
         except socket.error:
             print("Error network")
+
+            #Try connecting again
+            if self.tries < 10:
+                self.connect()
 
 
     def send(self, data:object) -> None:
         """Send the data to the server"""
         try:
+            #Add to tries
+            self.tries += 1
+
+            #Send the data over to the server
             self.client.send(pickle.dumps(data))
 
+            #Get the data from the server
             data = pickle.loads(self.client.recv(2048))
-            print(f"Data sent: {data}")
+
+            #Reset the tries
+            self.tries = 0
+
+            #Return the data
             return data
+
+        #If there is error print the error and try again
         except socket.error as exp:
             print(exp)
+            if self.tries < 10:
+                return self.send(data)
 
+    def close(self):
+        """Close the network port"""
+        return self.client.close()
 
-
-if __name__ == '__main__':
-    #Define variables and port
-    server = '192.168.1.215'
-    port = 5555
-    client = Network(server, port)
-    print(client.send("Hello"))
-    print(client.send("World"))
     

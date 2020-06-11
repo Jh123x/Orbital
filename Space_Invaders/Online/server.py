@@ -57,13 +57,11 @@ class Server(object):
 
                     #If data is askinf for random str
                     if data[0] == 'rand':
-                        reply = random.randint(0,60*50)
+                        reply = random.randint(0,50)
 
                     #If data is player data
                     elif len(data) == 3:
-                        reply = list([data[0], list(data[1]), data[2]])
-                        reply[1][1] = 60
-                        reply = tuple(reply)
+                        reply = data
 
                 conn.sendall(pickle.dumps(reply))
                 print(f"Sent: {reply}")
@@ -72,23 +70,22 @@ class Server(object):
                 print(exp)
                 break
 
-                #Close the connection
+        #Close the connection
         print("Lost connection")
         conn.close()
+
+        #Exit the thread
         sys.exit()
         
 
     def mainloop(self):
         #The main loop for the server
         while True:
-
             conn, addr = self.socket.accept()
 
             print(f"{addr} connected")
 
             start_new_thread(self.handle_client, (conn,))
-
-            # time.sleep(0.1)
 
 
 
