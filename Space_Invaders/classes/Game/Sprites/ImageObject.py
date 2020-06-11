@@ -60,7 +60,9 @@ class ImageObject(BaseObject):
         #Set the center of the rect
         self.rect.center = (self.x,self.y)
 
-        
+    def set_coord(self, position):
+        super().set_coord(position)
+        self.load_rect()
 
     def get_center(self) -> tuple:
         """Get the coordinate of the center of the object

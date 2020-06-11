@@ -23,16 +23,15 @@ def load_sprites(obj_list:list, paths:list):
     for i, obj in enumerate(obj_list):
         asyncio.run(add_to_sprite(obj, paths[i]))
 
-
 async def add_to_sprite(obj, sprite_path:str) -> None:
     """Add the pygame image to the object"""
     #For each object add it to the sprite path
     for path in sprite_path:
         obj.sprites.append(pygame.image.load(path))
 
-async def load_sound(sound_path) -> None:
-    """Load the sounds"""
-    return dict(map(lambda x: (x[0], pygame.mixer.Sound(x[1])), sound_path.items()))
+async def load_sound(sound_path:str, settings:int, debug:bool) -> Sound:
+    """Load the sound object"""
+    return Sound(dict(map(lambda x: (x[0], pygame.mixer.Sound(x[1])), sound_path.items())), bool(int(settings)), debug)
 
 class GameWindow(object):
     def __init__(self, sensitivity:int, maxfps:int, game_width:int, game_height:int, icon_img_path:str, player_img_paths:tuple,
@@ -91,9 +90,6 @@ class GameWindow(object):
         #Load the highscores
         self.score_board = ScoreBoard(db_path)
 
-        #Load sprites
-        load_sprites((Player, Bullet, EnemyShip, Background, Explosion), (player_img_paths, bullet_img_paths, enemy_img_paths, background_img_paths, explosion_img_paths))
-
         #Load setting menu settings
         self.settingsdb = SettingsDB(db_path)
         self.settings_data = dict(map(lambda x: x[1:], self.settingsdb.fetch_all()))
@@ -102,8 +98,11 @@ class GameWindow(object):
         difficulty = int(self.settings_data['difficulty'])
         self.difficulty = Difficulty(difficulty if difficulty < 5 else 5)
 
+        #Load sprites
+        load_sprites((Player, Bullet, EnemyShip, Background, Explosion), (player_img_paths, bullet_img_paths, enemy_img_paths, background_img_paths, explosion_img_paths))
+
         #Load sounds
-        self.sound = Sound(asyncio.run(load_sound(sound_path)), bool(int(self.settings_data['music'])), debug)
+        self.sound = asyncio.run(load_sound(sound_path,self.settings_data['music'],self.debug))
 
         #Create the background object
         self.bg = Background(int(self.settings_data['background']), game_width, game_height, bg_limit, debug)
@@ -122,6 +121,7 @@ class GameWindow(object):
         self.settings = SettingsScreen(game_width, game_height, self.main_screen, self.fps, self.sound, self.bg, self.difficulty, debug)
         self.coop = CoopScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.difficulty, 3,  debug)
         self.ai_vs = AIPVPScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, 3,  debug)
+        self.online = OnlinePVPScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, 3,  debug)
 
         #Store the variables
         self.popup = None
@@ -149,6 +149,7 @@ class GameWindow(object):
             State.CLASSIC: self.classic.handle,
             State.SETTINGS: self.settings.handle,
             State.COOP: self.coop.handle,
+            State.ONLINE: self.online.handle,
             State.QUIT:self.__del__
         }
 
@@ -262,6 +263,10 @@ class GameWindow(object):
         elif self.prev == State.AI_VS:
             prev = State.AI_VS
             scores = self.ai_vs.get_scores()
+
+        elif self.prev == State.ONLINE:
+            prev = State.ONLINE
+            scores = self.online.get_scores()
 
         else:
             assert False, f"{self.state}, cannot have gameover"

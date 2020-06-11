@@ -1,5 +1,6 @@
 import pygame
 import random
+import time
 from pygame.locals import *
 from . import Screen
 from .. import State, EnemyShips, Player, Direction, EnemyShip, WHITE, Explosion, Bullet
@@ -109,10 +110,14 @@ class LocalPVPScreen(Screen):
 
         return False
 
+    def generate_random_no(self) -> int:
+        #Generate random number
+        return random.randint(0,self.fps*50)
+
     def spawn_enemy_bullets(self) -> None:
         """Spawn bullets for mobs"""
         #Check if the enemy can shoot randomly
-        rand = random.randint(0,self.fps*50)
+        rand = self.generate_random_no()
 
         #If it does not hits the probability allow the mob to shoot
         if rand > self.fps:

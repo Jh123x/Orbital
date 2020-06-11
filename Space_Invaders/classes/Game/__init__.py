@@ -1,6 +1,9 @@
 #Import the Enums.py file
 from .Enums import *
 
+#Import network
+from .client import *
+
 #Get difficulty
 from .Difficulty import Difficulty
 
