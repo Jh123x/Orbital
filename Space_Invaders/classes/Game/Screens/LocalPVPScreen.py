@@ -112,12 +112,24 @@ class LocalPVPScreen(Screen):
 
     def generate_random_no(self) -> int:
         #Generate random number
-        return random.randint(0,50)
+        return random.random()
+
+    def get_random_direction(self) -> int:
+        return int(self.generate_random_no()*10) < 5
+
+    def wave_random(self) -> int:
+        #Generate wave random
+        num = int(self.generate_random_no()*self.wave)
+        return num if num >= 1 else 1
+
+    def get_random_enemy(self) -> EnemyShip:
+        lst = list(self.enemies)
+        return lst[int(self.generate_random_no()* (len(lst)-1))]
 
     def spawn_enemy_bullets(self) -> None:
         """Spawn bullets for mobs"""
         #Check if the enemy can shoot randomly
-        rand = self.generate_random_no()
+        rand = self.generate_random_no()*self.fps*4
 
         #If it does not hits the probability allow the mob to shoot
         if rand > 10:
@@ -131,15 +143,12 @@ class LocalPVPScreen(Screen):
 
         #Get a random bullet for the entity to shoot
         if len(self.enemies):
-            enemy = random.sample(set(self.enemies),1)
+            enemy = self.get_random_enemy()
         else:
             enemy = None
 
         #If the set is non-empty
         if enemy:
-
-            #Get the first enemy of the set
-            enemy = enemy[0]
 
             #Get direction of bullet
             direction = self.bullet_direction()
@@ -175,7 +184,7 @@ class LocalPVPScreen(Screen):
 
         #Spawn the enemies
         for j in range(2):
-            self.enemies.add([EnemyShip(self.sensitivity, self.screen_width//4 + i*self.screen_width//10, self.screen_height//2 - 50 + 50 * j, random.randint(1,self.wave), self.screen_width,  self.screen_height, None, self.mob_bullet, self.debug) for i in range(6)])
+            self.enemies.add([EnemyShip(self.sensitivity, self.screen_width//4 + i*self.screen_width//10, self.screen_height//2 - 50 + 50 * j, self.wave_random(), self.screen_width,  self.screen_height, None, self.mob_bullet, self.debug) for i in range(6)])
 
     def get_scores(self) -> tuple:
         """Get the scores of the players"""

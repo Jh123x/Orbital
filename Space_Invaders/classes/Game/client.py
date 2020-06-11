@@ -17,8 +17,6 @@ class Network(object):
         #Connect to the server and get an ID
         self.id = self.connect()
 
-        
-
     def get_id(self):
         """Get current position of the client"""
         return self.id
