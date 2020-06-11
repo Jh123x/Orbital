@@ -1,60 +1,40 @@
-#Version of the game to train the AI
-
 import pygame
-import os
+import numpy
 from classes import *
 
-def add_to_sprite(obj:object, sprite_path:tuple) -> None:
-    """Add the pygame image to the object"""
-    #For each object add it to the sprite path
-    for path in sprite_path:
-        obj.sprites.append(pygame.image.load(path))
-
-def form_abs_path(filepath):
-    """Get the absolute path of a filepath"""
-    return f"{os.path.dirname(os.path.realpath(__file__))}/{filepath}"
-
-class Pygame_2D(object):
+class PyGame_2D(object):
     def __init__(self, settings:str):
+        """Pygame_2d object for AI to be trained on"""
+
         #Read the configuration file for space invaders
-        all_cfg = read_all(settings)
+        settings = "settings.cfg"
 
-            #Main configurations
+        #Read the configuration file for space invaders
+        all_cfg = read_all(form_abs_path(__file__,settings))
+        
+        #Main configurations
         config = all_cfg['Space Invaders']
-        config['icon_img_path'] = form_abs_path(config['icon_img_path'])
+        config['icon_img_path'] = form_abs_path(__file__, config['icon_img_path'])
 
-        #Get the player sprites
-        player_img_paths = list(map(lambda x: form_abs_path(x), all_cfg["Player Sprites"].values()))
+        #Load all
+        d = load_all(("bullet_img_paths",), ("Bullet Sprites",), all_cfg, __file__)
 
-        #Get the bullet sprites Enemy Sprites
-        bullet_img_paths = list(map(lambda x: form_abs_path(x), all_cfg["Bullet Sprites"].values()))
+        #Load the other sprites 
+        d["player_img_paths"] = list_dir(form_abs_path(__file__, "images/player"))
+        d["enemy_img_paths"] = list_dir(form_abs_path(__file__, "images/enemies"))
+        d["explosion_img_paths"] = list_dir(form_abs_path(__file__, "images/explosions"))
 
-        #Get the enemy sprites
-        enemy_img_paths = list(map(lambda x: form_abs_path(x), all_cfg["Enemy Sprites"].values()))
+        #Load sprites
+        load_sprites((Player, Bullet, EnemyShip, Explosion), (d["player_img_paths"], d["bullet_img_paths"], d["enemy_img_paths"], d["explosion_img_paths"]))
 
-        #Get the background sprites
-        background_img_paths = list(map(lambda x: form_abs_path(x), all_cfg["Background"].values()))
+        #Load sounds
+        self.sound = Sound({}, False, False)
 
-        #Get the explosion image path
-        explosion_img_paths = list(map(lambda x: form_abs_path(x), all_cfg["Explosion Sprites"].values()))
+        #Load the sounds into the relavant Sprites
+        Bullet.sound = self.sound
 
-        #Get the settings
-        settings = all_cfg["Player"]
-
-        #Load player ship images into Player object 
-        add_to_sprite(Player, player_img_paths)
-
-        #Load Bullet images into Bullet Object 
-        add_to_sprite(Bullet, bullet_img_paths)
-
-        #Load enemy ships into enemy ship objects 
-        add_to_sprite(EnemyShip, enemy_img_paths)
-
-        #Load the backgrounds into Background obj
-        add_to_sprite(Background, background_img_paths)
-
-        #Load the sprites for the explosion
-        add_to_sprite(Explosion, explosion_img_paths)
+        #Add explosion sound
+        Explosion.sound = self.sound
 
         #Initialise pygame
         pygame.init()
@@ -73,11 +53,11 @@ class Pygame_2D(object):
         self.clock = pygame.time.Clock()
 
         #Init playscreen
-        self.state = PlayScreen(screen_width, screen_height, self.screen, 5, fps)
+        self.state = PlayScreen(screen_width, screen_height, self.screen, 5, fps, Difficulty(4))
 
         #Player Object
-        self.player = self.state.player 
-
+        self.player = self.state.player
+        self.nextState = -1
 
     def mainloop(self) -> None:
         """Mainloop"""
@@ -94,41 +74,74 @@ class Pygame_2D(object):
             self.screen.fill((0,0,0))
 
             #Draw the play screen
-            nextState = self.state.handle()
+            self.nextState = self.state.handle()
 
             #Print score if the game is over
-            if nextState == State.GAMEOVER:
-                print(f"Score: {state.get_score()}")
+            if self.nextState == State.GAMEOVER:
+                #Print the score and quit the game
+                print(f"Score: {self.state.get_score()}")
 
             #Update the display with the screen
             pygame.display.update()
 
             #If the state is quit or player closes the game
-            if pygame.QUIT in tuple(map(lambda x: x.type, pygame.event.get())):
-                running = False
+            for item in pygame.event.get():
+                if item.type == pygame.QUIT:
+                    running = False
 
-    def action(self, number:int):
+    def action(self, number:int) -> None:
         """Performs the action based on the number
             0: Shoot
             1: move left
             2: move_right
+            3: Do nothing
         """
-        return self.get_action()[number]()
+        self.get_action()[number]()
 
     def get_action(self) -> tuple:
         """List of actions that the player can take (tuple of functions)"""
-        return (self.player.shoot, self.player.move_left, self.player.move_right)
+        return (self.player.shoot, self.player.move_left, self.player.move_right, lambda : 1)
 
     def get_hitboxes(self) -> list:
         """Get the hitboxes of the """
         return self.state.get_hitboxes()
 
-    def get_space(self) -> list:
+    def get_space(self):
         """Returns the pixel space of the screen"""
         return pygame.surfarray.array2d(self.state.screen)
 
+    def get_space_boolean(self) -> list:
+        """Returns the pixel space of the screen in terms of boolean"""
+        f = numpy.vectorize(lambda x: 0 if x == 0 else 1)
+        return f(self.get_space())
+
+    def is_over(self) -> bool:
+        '''Returns if game state is over or quit'''
+        return self.player.is_destroyed()
+
+    def is_playing(self) -> bool:
+        """Check if the game is still playing"""
+        return self.nextState == State.PLAY
+
+    def get_score(self) -> int:
+        """Get the current score"""
+        return self.state.get_score()
+
+    def reset(self) -> None:
+        '''Wrapper method for reseting the screen'''
+        self.state.reset()
+
+    def get_player(self) -> tuple:
+        '''Get the player character position -- for Debugging Purposes'''
+        return (self.player.get_x(),self.player.get_y())
+
+    def get_enemies(self) -> tuple:
+        '''Get positions of each enemy'''
+        return tuple(map(lambda e: (e.get_x(),e.get_y()), self.state.get_enemies()))
+
+
 if __name__ == '__main__':
     settings = "settings.cfg"
-    game = Pygame_2D(form_abs_path(settings))
+    game = PyGame_2D(settings)
     game.mainloop()
     

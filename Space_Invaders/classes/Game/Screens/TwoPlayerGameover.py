@@ -4,12 +4,17 @@ from pygame.locals import *
 from . import Screen
 from .. import State, WHITE, Direction
 
-class PVPGameoverScreen(Screen):
+class TwoPlayerGameoverScreen(Screen):
+    sound = None
+    played = False
     def __init__(self, screen_width:int, screen_height:int, screen, p1_score:int, p2_score:int, debug:bool = False):
-        """Constructor for the PVP gameover class"""
+        """Constructor for the Two Player Gameover class"""
+        if not TwoPlayerGameoverScreen.played and TwoPlayerGameoverScreen.sound:
+            TwoPlayerGameoverScreen.sound.play('gameover')
+            TwoPlayerGameoverScreen.played = True
         
         #Call the superclass
-        super().__init__(screen_width, screen_height, State.PVP_GAMEOVER, screen, 0, 0, debug)
+        super().__init__(screen_width, screen_height, State.TWO_PLAYER_GAMEOVER, screen, 0, 0, debug)
 
         #Store extra vars
         self.p1_score = p1_score
@@ -41,6 +46,7 @@ class PVPGameoverScreen(Screen):
 
         #Check for y key to indicate he wants to go back to menu
         if keys[K_y]:
+            TwoPlayerGameoverScreen.played = True
             return True
 
         #Check for n key to indicate that the player wants to leave

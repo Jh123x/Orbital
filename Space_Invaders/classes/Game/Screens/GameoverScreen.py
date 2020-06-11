@@ -4,6 +4,8 @@ from . import Screen
 from .. import State, WHITE
 
 class GameoverScreen(Screen):
+    sound = None
+    played = False
     def __init__(self, screen_width:int, screen_height:int, screen, score:int, debug:bool = False):
         """Initialize the gameoverScreen class
             Arguments:
@@ -17,6 +19,12 @@ class GameoverScreen(Screen):
                 update_keypress: detects the keypress of the player
                 handle: handles the drawing of the screen onto the surface and internal state
         """
+
+        #Check if the sound has been played
+        if not GameoverScreen.played and GameoverScreen.sound:
+            GameoverScreen.sound.play('gameover')
+            GameoverScreen.played = True
+
         #Store the variables
         self.score = score
 
@@ -69,13 +77,12 @@ class GameoverScreen(Screen):
 
         #If the player wants to stay
         if stay:
-
+            GameoverScreen.played = False
             #Return next state to be menu
             return State.MENU
         
         #If the player does not want to stay
         elif stay == False:
-
             #Return the quit state
             return State.QUIT
 

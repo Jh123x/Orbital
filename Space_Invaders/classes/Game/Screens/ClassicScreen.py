@@ -2,14 +2,14 @@ import pygame
 import random
 from pygame.locals import *
 from . import PlayScreen
-from .. import BlockGroup, State
+from .. import BlockGroup, State, Difficulty
 
 
 class ClassicScreen(PlayScreen):
-    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, wave:int = 1, debug:bool = False):
+    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, difficulty:Difficulty, wave:int = 1, player_lives:int = 3,debug:bool = False):
 
         #Call the superclass
-        super().__init__(screen_width, screen_height, screen, sensitivity, max_fps, wave, debug)
+        super().__init__(screen_width, screen_height, screen, sensitivity, max_fps, difficulty, wave, player_lives, debug)
 
         #Change the state to classic
         self.state = State.CLASSIC
