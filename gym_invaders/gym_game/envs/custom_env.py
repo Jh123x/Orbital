@@ -31,10 +31,7 @@ class CustomEnv(gym.Env):
         self.time = 0
         self.max_step = 50000
         self.score = 0
-
-
-
-
+        self.display = False
 
     def reset(self):
         del self.pygame
@@ -48,7 +45,8 @@ class CustomEnv(gym.Env):
         self.pygame.screen.fill((0,0,0)) #fills the entire screen
         self.pygame.state.handle()
         self.pygame.action(action)
-        pygame.display.update()
+        if self.display:
+            pygame.display.update()
         obs = self.pygame.get_space_boolean() # observations for the next timestep
         self.time += 1
         score = self.pygame.get_score() - self.score
@@ -65,16 +63,10 @@ class CustomEnv(gym.Env):
 
         return obs, reward, done, debug
 
-    def on_screen_update(self):
-        """"""
-        print("hello from listener")
-        #print(self.pygame.get_space().shape)
-
-
     def start(self):
         #pygame.display.update = function_combine(pygame.display.update,self.on_screen_update())
         #self.pygame.mainloop()
         pass
     def render(self, mode="human", close=False):
         #self.pygame.mainloop()
-        pass
+        self.display = not self.display

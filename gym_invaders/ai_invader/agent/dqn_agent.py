@@ -95,17 +95,19 @@ class DQNAgent():
     def model_dict(self)-> dict:
         ''' To save models'''
         return {'policy_net': self.policy_net.state_dict(), 'target_net': self.target_net.state_dict(),
-                'memory': self.memory.save(), 't_step': self.t_step}
+                 't_step': self.t_step}
 
     def load_model(self, state_dict):
         '''
         Load Parameters and Model Information from prior training
         '''
-        self.policy_net.load(state_dict['policy_net'])
-        self.target_net.load(state_dict['target_net'])
-        self.memory.load(state_dict['memory'])
+        self.policy_net.load_state_dict(state_dict['policy_net'])
+        self.target_net.load_state_dict(state_dict['target_net'])
+        #Load the model
+        self.policy_net.eval()
+        self.target_net.eval()
         self.t_step = state_dict['t_step']
-        
+
     # θ'=θ×τ+θ'×(1−τ)
     def soft_update(self, policy_model, target_model, tau):
         for t_param, p_param in zip(target_model.parameters(), policy_model.parameters()):

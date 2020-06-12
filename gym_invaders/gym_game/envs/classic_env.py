@@ -10,13 +10,14 @@ class ClassicEnv(gym.Env):
     def __init__(self):
         self.settings = "settings.cfg"
         self.pygame = PyGameClassic(self.settings)
-        self.action_space = spaces.Discrete(
-            6)  # Actions are move left, move right, shoot, do nothing, mv left and shoot and move right then shoot
+        self.action_space = spaces.Discrete(6)  # Actions are move left, move right, shoot, do nothing, mv left and shoot and move right then shoot
         self.observation_space = spaces.Box(0, 1, shape=(800, 600, 1), dtype=np.bool_)
         self.time = 0
         self.max_step = 50000
         self.score = 0
-
+        self.original_screen = pygame.Surface
+        pygame.screen = self.pygame.screen
+        self.display = False
     def reset(self):
         del self.pygame
         self.pygame = PyGameClassic(self.settings)
@@ -29,7 +30,10 @@ class ClassicEnv(gym.Env):
         self.pygame.screen.fill((0, 0, 0))  # fills the entire screen
         self.pygame.state.handle()
         self.pygame.action(action)
-        pygame.display.update()
+
+        if self.display:
+            pygame.display.update()
+
         obs = self.pygame.get_space_boolean()  # observations for the next timestep
         self.time += 1
         score = self.pygame.get_score() - self.score
@@ -46,10 +50,9 @@ class ClassicEnv(gym.Env):
 
         return obs, reward, done, debug
 
-    def on_screen_update(self):
-        """"""
-        print("hello from listener")
-        # print(self.pygame.get_space().shape)
+    def close(self):
+        pygame.quit()
+
 
     def start(self):
         # pygame.display.update = function_combine(pygame.display.update,self.on_screen_update())
@@ -57,5 +60,5 @@ class ClassicEnv(gym.Env):
         pass
 
     def render(self, mode="human", close=False):
-        # self.pygame.mainloop()
-        pass
+        '''Toggle Display Mode of agent'''
+        self.display = not self.display

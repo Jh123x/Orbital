@@ -23,9 +23,6 @@ class ReplayMemory(object):
         e = self.transition(state, action, reward, next_state, done)
         self.buffer.append(e)
 
-    def save(self):
-        '''Output Saved Data'''
-        return (self.buffer, self.batch_size,self.seed)
 
     def load(self, state):
         ''' Loads Memory from Prior Training'''
@@ -50,13 +47,11 @@ class ReplayMemory(object):
         '''Return the current size of memory'''
         return len(self.buffer)
 
-def preprocess_frame(state, exclude, output):
+def preprocess_frame(state, output):
     ''' Preprocessing the frame from RGB -> Greyscale'''
-    state = cv2.cvtColor(state, cv2.COLOR_BGR2GRAY)
-    state = cv2.resize(state,(84,84))
+    state = np.float32(state)
+    state = cv2.resize(state,(output,output))
     state = np.rot90(state,3)
-    state = state.astype(np.float32)
-    state = state/(1.0*np.max(state))
     return state
 
 def stack_frame(stacked_frames, frame, is_new):
