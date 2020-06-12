@@ -113,24 +113,38 @@ class Client_handler(object):
         """Handle the clients"""
         #Game loop
         while True:
+
             #Generate first random number
             rand = random.random()
+
+            #Reroll if integer is 5
             while int(rand*10) == 5:
+                #Generate random number
                 rand = random.random()
 
+            #Receive data from both the clients
             data1 = self.c1.recv()
             data2 = self.c2.recv()
 
+            #Check if any of them disconnected
             if len(data1) == 0 or len(data2) == 0:
+
+                #Close the sockets for both of them
                 self.c1.close()
                 self.c2.close()
+
+                #Break out of the loop
                 break
             
+            #Update the data of the clients
             self.update_data(self.c1,data1)
             self.update_data(self.c2,data2)
-            self.c1.send(self.c2.get_data()+(rand,1-rand))
-            self.c2.send(self.c1.get_data()+(rand,rand))
 
+            #Send the data to the clients
+            self.c1.send(self.c2.get_data()+(rand,True))
+            self.c2.send(self.c1.get_data()+(rand,False))
+
+        #Exit the thread
         sys.exit()
             
     def mainloop(self):
@@ -157,17 +171,32 @@ class Server(object):
 
         #Create player queue
         self.players = CheckableQueue()
+
+        #Bind to the port
         self.bind()
+
+        #Variable to check if a thread is delicated to updating players
         self.update_thread = False
 
     def bind(self):
         """Binds to the current addr"""
+        #Try to bind to the socket
         try:
+
+            #Bind to that server and port
             self.socket.bind((server,port))
+
+            #Listen to the port
             self.socket.listen()
-            logging.debug(f"Server started on {(server,port)}")
+
+            #Print out the Server started
+            logging.critical(f"Server started on {(server,port)}")
+
+        #If there was an error
         except socket.error as e:
-            logging.debug(str(e))
+
+            #Log the error
+            logging.debug(f"Connection error: {str(e)}")
 
     def handle_client(self, client:Client):
         """Handle the client"""
@@ -177,8 +206,12 @@ class Server(object):
         #Game loop
         while True:
 
+            #If client is active, 
             if client.is_active():
+
+                #Check if the client is active
                 logging.debug(f"{client.get_addr()}: Active")
+
                 #Exit the thread
                 sys.exit()
 
@@ -190,7 +223,7 @@ class Server(object):
 
                 #If it is empty client disconnected
                 if client not in self.players:
-                    logging.debug(f"Client disconnected\n{client}")
+                    logging.critical(f"Client disconnected\n{client}")
                     sys.exit()
 
                 #Otherwise process the data

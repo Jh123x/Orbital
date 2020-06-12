@@ -164,13 +164,12 @@ class LocalPVPScreen(Screen):
         elif self.player2.is_destroyed():
             direction = Direction.UP
 
-        elif random.randint(0,1):
+        elif self.get_random_direction():
             direction = Direction.UP
 
         else:
             direction = Direction.DOWN
 
-        print(direction)
         return direction
 
     def spawn_mobs(self) -> None:

@@ -44,7 +44,6 @@ class Network(object):
             if self.tries < 10:
                 self.connect()
 
-
     def send(self, data:object) -> None:
         """Send the data to the server"""
         try:
@@ -57,7 +56,10 @@ class Network(object):
             #Get the data from the server
             data = self.client.recv(2048)
 
+            #If data exist
             if data:
+
+                #Load the data
                 data = pickle.loads(data)
 
             #Reset the tries

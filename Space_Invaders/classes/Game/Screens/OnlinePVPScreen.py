@@ -1,4 +1,5 @@
 import pygame
+import queue
 from . import Screen, LocalPVPScreen
 from .. import Network, Player, State, WHITE
 from pygame.locals import *
@@ -14,8 +15,14 @@ class OnlinePVPScreen(LocalPVPScreen):
         self.waiting = True
         self.disconnected = False
 
+        #Create queue for player action
+        self.queue = queue.Queue()
+
         #Set the state to the correct state
         self.set_state(State.ONLINE)
+
+    def get_data(self):
+        self.network
 
     def create_network(self):
         """Create the network for the player to be hosted on"""
@@ -31,13 +38,30 @@ class OnlinePVPScreen(LocalPVPScreen):
         return self.random
 
     def get_random_direction(self) -> int:
-        return int(self.br*10) < 5
+        """Get the random direction"""
+
+        #Generate random number
+        chksum = int(self.generate_random_no()*10)
+
+        #Get the boolean value
+        res = chksum < 5
+
+        #If it is player 2
+        if self.br:
+
+            #Invert it
+            res = not res
+
+        #Return the boolean
+        return res
 
     def check_keypresses(self) -> bool:
         """Check the keys which are pressed"""
 
         #Get all the number of keys
         keys = pygame.key.get_pressed()
+
+        #Flag to check if online player shot
         shot = False
 
         if not self.player2.is_destroyed():
@@ -59,10 +83,16 @@ class OnlinePVPScreen(LocalPVPScreen):
 
         #Send information on current player
         data = self.network.send(self.pack_player_data(self.player2, shot))
+
+        #If the data is empty
         if not data:
+
+            #Mark itself as disconnected
             self.disconnected = True
-            return False
+
         else:
+
+            #Unpack the data
             _, player1_pos, shot, self.random, self.br = data
 
             #Update player 2 information
@@ -70,9 +100,12 @@ class OnlinePVPScreen(LocalPVPScreen):
 
             #If player 1 shot
             if shot:
-                self.player1.shoot()
-        return False
 
+                #Shoot for the player
+                self.player1.shoot()
+
+        #Return to false screen 
+        return False
 
     def handle(self) -> State:
         """Handle the drawing of the screen"""
