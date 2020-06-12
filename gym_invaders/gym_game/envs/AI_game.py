@@ -1,5 +1,6 @@
 import pygame
 import numpy as np
+from scipy.special import expit
 from .classes import *
 
 class PyGame_2D(object):
@@ -123,8 +124,7 @@ class PyGame_2D(object):
 
     def get_space_boolean(self) -> list:
         """Returns the pixel space of the screen in terms of boolean"""
-        return np.bool_(self.get_space())
-
+        return expit(self.get_space())
     def is_over(self) -> bool:
         '''Returns if game state is over or quit'''
         return self.player.is_destroyed()

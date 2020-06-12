@@ -5,6 +5,7 @@ import time
 import warnings
 import math
 import random
+import sys
 from collections import deque,namedtuple
 # Numeric Computation Module
 import numpy as np
@@ -29,7 +30,7 @@ import gym_game
 from gym_invaders.ai_invader.agent import DQNAgent
 from gym_invaders.ai_invader.model import DQNCNN
 from gym_invaders.ai_invader.util import stack_frame,preprocess_frame
-
+np.set_printoptions(threshold=sys.maxsize)
 
 #create a local directory to store pickle files from training
 PATH = os.getcwd()+'/obj'
@@ -114,20 +115,22 @@ def load_obj(agent, path):
 print('begin training')
 def train(n_episodes=1000, load = None):
     """
-    Params
-    ======
-        n_episodes (int): maximum number of training episodes
+    n_episodes: maximum number of training episodes
+    Saves Model every 100 Epochs
     """
     if load:
         agent.load_model(load)
-    env.render()
+    #env.render()
     for i_episode in range(start_epoch + 1, n_episodes + 1):
         state = stack_frames(None, env.reset(), True)
         score = 0
         eps = epsilon_delta(i_episode)
+        env.render()
         while True:
             action = agent.action(state, eps)
             next_state, reward, done, info = env.step(action)
+            if not score:
+                print(preprocess_frame(next_state,84))
             score += reward
             next_state = stack_frames(state, next_state, False)
             agent.step(state, action, reward, next_state, done)
@@ -154,7 +157,7 @@ def train(n_episodes=1000, load = None):
 
     return scores
 
-#scores = train(2)
+scores = train(1)
 #load_obj(agent,path=PATH+'/model.pth')
 def trained_agent(agent):
     '''
@@ -180,3 +183,7 @@ def trained_agent(agent):
 # To resume training from a previous checkpoint to train for x number of epochs
 # model = torch.load(PATH+'/model.pth')
 # scores = train(n_episodes = 100, load = model)
+
+# Standard Training:
+# Trains Model for 1000 games
+# scores = train()
