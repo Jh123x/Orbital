@@ -64,6 +64,8 @@ class PyGame_2D(object):
 
     def mainloop(self) -> None:
         """Mainloop"""
+
+        #Main variables
         screen_width = 600
         screen_height = 800
         fps = 60
@@ -83,6 +85,7 @@ class PyGame_2D(object):
 
             #Print score if the game is over
             if self.nextState == State.GAMEOVER:
+
                 #Print the score and quit the game
                 print(f"Score: {self.state.get_score()}")
 
@@ -96,7 +99,6 @@ class PyGame_2D(object):
 
             #Draw the hitboxes
             self.state.draw_hitboxes()
-            # self.show_space()
 
     def action(self, number:int) -> None:
         """Performs the action based on the number

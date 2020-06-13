@@ -94,7 +94,7 @@ class OnlinePVPScreen(LocalPVPScreen):
             if keys[K_SPACE]:
 
                 #Let the player shoot
-                self.shot = self.player2.shoot()
+                shot = self.player2.shoot()
 
         #Send information on current player
         data = self.network.send(self.pack_player_data(self.player2, shot))
@@ -137,10 +137,6 @@ class OnlinePVPScreen(LocalPVPScreen):
             #Send query to check if player is still waiting
             data = self.network.send('waiting')
 
-            #Send print the query
-            if self.debug:
-                print(f"Wait: {data}")
-
         #Draw the loading screen
         if self.waiting and data:
 
@@ -152,10 +148,7 @@ class OnlinePVPScreen(LocalPVPScreen):
             if self.check_clicked(self.back_rect):
                 
                 #Close the network
-                self.network.close()
-
-                #Set the network to uninitialised state
-                self.network = None
+                self.close_network()
 
                 #Return to the playmode screen
                 return State.PLAYMODE
@@ -163,16 +156,40 @@ class OnlinePVPScreen(LocalPVPScreen):
             #Otherwise return current state 
             return self.state
 
+        #IF player disconnected go to gameover screen
         elif self.disconnected:
+
+            #Close the network
+            self.close_network()
+
+            #Return next state
             return State.TWO_PLAYER_GAMEOVER
 
         #Otherwise draw the game
         else:
+            #Set waiting to false
             self.waiting = False
+
+            #Call the superclass handle
             state = super().handle()
+
+            #Set if the next state is gameoveer
             if state == State.TWO_PLAYER_GAMEOVER:
-                self.network.close()
+
+                #Close the network
+                self.close_network()
+
+            #Return next state
             return state
+
+    def close_network(self):
+        """Close the network and reset variable"""
+        #If there is a socket previously
+        if self.network:
+            self.network.close()
+
+        self.network = None
+        self.waiting = True
 
     def __del__(self):
         """Destructor for the object"""

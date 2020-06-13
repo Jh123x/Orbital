@@ -7,7 +7,7 @@ import logging
 from _thread import *
 
 logging.basicConfig(level=logging.DEBUG, format = '%(asctime)s - %(levelname)s - %(message)s')
-# logging.disable(logging.CRITICAL)
+# logging.disable(logging.DEBUG)
 
 class CheckableQueue(queue.Queue): # or OrderedSetQueue
     def __contains__(self, item):
@@ -39,6 +39,12 @@ class Client(object):
     def get_conn(self):
         """Get the connection socket"""
         return self.conn
+
+    def __eq__(self, other):
+        return self.addr == self.addr
+
+    def __hash__(self):
+        return hash(self.addr)
 
     def recv(self):
         """Receive data from the socket"""
@@ -74,7 +80,7 @@ class Client(object):
         self.conn.close()
 
     def __repr__(self):
-        return f"Client:\nAddr: {self.addr}\nActive: {self.is_active()}\nID:{self.id}"
+        return f"Client:Addr: {self.addr} Active: {self.is_active()}"
 
 class Client_handler(object):
     def __init__(self, client1:Client, client2:Client):
@@ -127,7 +133,7 @@ class Client_handler(object):
             data2 = self.c2.recv()
 
             #Check if any of them disconnected
-            if len(data1) == 0 or len(data2) == 0:
+            if not data1 or not data2:
 
                 #Close the sockets for both of them
                 self.c1.close()
@@ -171,6 +177,7 @@ class Server(object):
 
         #Create player queue
         self.players = CheckableQueue()
+        self.removed = set()
 
         #Bind to the port
         self.bind()
@@ -222,8 +229,12 @@ class Server(object):
                 data = client.recv()
 
                 #If it is empty client disconnected
-                if client not in self.players:
-                    logging.critical(f"Client disconnected\n{client}")
+                if len(data) == 0 or client.is_active():
+                    if not data:
+                        client.close()
+                        if client in self.players:
+                            self.removed.add(client)
+                    logging.critical(f"Client disconnected\n{client}\nqsize: {self.players.qsize()}\ndata: {data}")
                     sys.exit()
 
                 #Otherwise process the data
@@ -234,18 +245,28 @@ class Server(object):
                     #If data is asking for random str
                     if data == 'waiting':
                         reply = True
+                    else:
+                        assert False, f"Error msg: {data}"
 
                     client.send(reply)
                     logging.debug(f"Sent: {reply}")
             
+            #If there is a connection error
             except socket.error as exp:
+
+                #Log the bug
                 logging.debug(exp)
+
+                #Break out of the loop
                 break
 
     def mainloop(self):
         #The main loop for the server
         while True:
+
+            #If the update thread has nt started
             if not self.update_thread:
+
                 #Update the list
                 start_new_thread(self.update, ())
                 self.update_thread = True
@@ -259,8 +280,14 @@ class Server(object):
             #Create player var
             player = Client(conn, self.id,addr)
 
+            #Increment the id for the next player
+            if self.id < self.max:
+                self.id += 1
+            else:
+                self.id = 0
+
             #Add the client to the list of players
-            self.players.put(player)
+            self.players.put_nowait(player)
 
             #Handle the player
             start_new_thread(self.handle_client, (player,))
@@ -268,26 +295,55 @@ class Server(object):
     def update(self):
         """Update the lists"""
         while True:
-            #Increment the id if it is greater than a large number
-            if self.id == self.max:
-                self.id = 0
+            #Get the next 2 players
+            player1 = self.get_next_player()
+            player2 = self.get_next_player()
+
+            if player1 and player2:
+                #Matchmake the players
+                self.matchmake(player1, player2)
+
+            elif player1 and player1 not in self.players:
+                self.players.add(player1)
+
+            elif player2 and player2 not in self.players:
+                self.players.add(player2)
+
             else:
-                self.id += 1
+                assert False, "Not suppose to hit here"
 
-            #Matchmake
-            self.matchmake()
+    def get_next_player(self):
+        """Get the next player in the queue"""
+
+        #Get the next player in queue
+        player = self.players.get()
+
+        #Keep getting the next player while they are in the set
+        while player in self.removed:
+
+            #Remove it from the removed set
+            logging.debug(f"Removed: {player}")
+            self.removed.remove(player)
+
+            #If player is non-empty
+            if not self.players.empty():
+                #Get the next player
+                player = self.players.get()
+
+            else:
+                #Return None as there is no players left
+                return False
+
+        #Return a player that is not in the set
+        return player
 
 
-    def matchmake(self):
+    def matchmake(self, player1, player2):
         """Matchmake the players"""
         #While there are 2 or more clients
         while self.players.qsize() >= 2:
 
-            logging.debug("Matched")
-
-            #Get the next 2 players
-            player1 = self.players.get()
-            player2 = self.players.get()
+            logging.debug(f"Matched: \n{player1}\n{player2}")
 
             #Add client handlers to handler object
             chandle = Client_handler(player1,player2)
@@ -296,10 +352,10 @@ class Server(object):
             start_new_thread(chandle.mainloop, ())
 
 
-
-
-#Define variables and port
-server = '192.168.1.215'
-port = 5555
-server=  Server(server,port)
-server.mainloop()
+#If this is run as the main function
+if __name__ == "__main__":
+    #Define variables and port
+    server = '192.168.1.215'
+    port = 5555
+    server=  Server(server,port)
+    server.mainloop()
