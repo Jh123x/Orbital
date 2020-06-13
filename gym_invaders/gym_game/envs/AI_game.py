@@ -1,6 +1,7 @@
 import pygame
 import numpy as np
-from scipy.special import expit
+import matplotlib.pyplot as plt
+#from scipy.special import expit
 from .classes import *
 
 class PyGame_2D(object):
@@ -30,6 +31,8 @@ class PyGame_2D(object):
 
         #Load sounds
         self.sound = Sound({}, False, False)
+
+        self.f = np.vectorize(lambda x: 0 if x == 0 else 100)
 
         #Load the sounds into the relavant Sprites
         Bullet.sound = self.sound
@@ -122,9 +125,16 @@ class PyGame_2D(object):
         """Returns the pixel space of the screen"""
         return pygame.surfarray.array2d(self.state.screen)
 
-    def get_space_boolean(self) -> list:
+    def show_space(self):
+        """Show the space in a matplotlib diagram"""
+        image_transp = numpy.transpose(self.get_space_boolean())
+        plt.imshow(image_transp, interpolation='none')
+        plt.show()
+
+    def get_space_boolean(self):
         """Returns the pixel space of the screen in terms of boolean"""
-        return expit(self.get_space())
+        return self.f(self.get_space())
+
     def is_over(self) -> bool:
         '''Returns if game state is over or quit'''
         return self.player.is_destroyed()
