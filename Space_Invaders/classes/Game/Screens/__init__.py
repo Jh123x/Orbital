@@ -19,3 +19,4 @@ from .TwoPlayerScreen import TwoPlayerScreen
 from .SettingsScreen import SettingsScreen
 from .CoopScreen import CoopScreen
 from .AIPVPScreen import AIPVPScreen
+from .OnlinePVPScreen import OnlinePVPScreen

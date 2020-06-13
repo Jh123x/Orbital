@@ -40,12 +40,16 @@ class Screen(BaseObject):
         self.cooldown = 20
 
         #Create a surface with a transparent background
-        self.surface = pygame.Surface((screen_width,screen_height), pygame.SRCALPHA, 32)
+        self.reset_surface()
 
     def set_background(self, bg) -> None:
         """Update the background"""
         self.bg = bg
         self.surface.fill(self.bg)
+
+    def reset_surface(self) -> None:
+        """Reset the surface to a blank surface"""
+        self.surface = pygame.Surface((self.screen_width, self.screen_height), pygame.SRCALPHA, 32)
 
     def update(self) -> None:
         """Blits the screen onto the surface

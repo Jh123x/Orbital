@@ -129,6 +129,19 @@ class PlayScreen(Screen):
             #Make the enemy shoot
             enemy.shoot()
 
+    def draw_hitboxes(self):
+        """Draw hitboxes for players and objects"""
+        for sprite in self.enemies:
+            pygame.draw.rect(self.surface, (255,0,0), sprite.rect, 0)
+
+        for sprite in self.up_bullets:
+            pygame.draw.rect(self.surface, (255,0,0), sprite.rect, 0)
+
+        for sprite in self.down_bullets:
+            pygame.draw.rect(self.surface, (255,0,0), sprite.rect, 0)
+
+        pygame.draw.rect(self.surface, (255,0,0), self.player.rect, 0)
+
 
     def update(self) -> None:
         """Update the sprites
@@ -137,6 +150,8 @@ class PlayScreen(Screen):
             Returns:
                 No returns
         """
+        #Reset the surface
+        self.reset_surface()
 
         #Update the player position
         self.player.update()
@@ -153,15 +168,15 @@ class PlayScreen(Screen):
         #Update the position of all bullets
         self.up_bullets.update()
         self.down_bullets.update()
-        self.up_bullets.draw(self.screen)
-        self.down_bullets.draw(self.screen)
+        self.up_bullets.draw(self.surface)
+        self.down_bullets.draw(self.surface)
 
         #Print debug message
         if self.debug:
             print(f"Number of player bullets: {len(self.up_bullets)}")
 
         #Draw the enemy
-        self.enemies.draw(self.screen)
+        self.enemies.draw(self.surface)
 
         #Print debug message
         if self.debug:
@@ -171,7 +186,7 @@ class PlayScreen(Screen):
         self.explosions.draw(self.screen)
 
         #Draw player object
-        self.player.draw(self.screen)
+        self.player.draw(self.surface)
 
         #Call superclass update
         super().update()

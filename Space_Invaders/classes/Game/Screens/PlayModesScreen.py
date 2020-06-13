@@ -27,6 +27,9 @@ class PlayModeScreen(Screen):
         #2 Player mode (2 player mode menu)
         self.two_player = self.write(Screen.end_font, WHITE, "2 Player Modes", self.screen_width//2, first_pixel + self.screen_height//7.5)
 
+        #Online mode (Online mode)
+        self.online = self.write(Screen.end_font, WHITE, "Online PVP", self.screen_width//2, first_pixel + self.screen_height//5)
+
         #Back button
         self.back = self.write(Screen.end_font, WHITE, "Back", self.screen_width // 2, self.screen_height//1.2)
 
@@ -55,6 +58,11 @@ class PlayModeScreen(Screen):
 
             #Go to the classic screen
             return State.CLASSIC
+
+        elif self.check_clicked(self.online):
+
+            #Go to online screen
+            return State.ONLINE
 
         #Otherwise the player has not decided
         return False

@@ -90,8 +90,8 @@ class Player(MovingObject):
     def draw(self, screen) -> None:
         """Draw the player onto the screen"""
         screen.blit(self.image, self.rect)
-    
-    def shoot(self) -> None:
+
+    def shoot(self) -> bool:
         """Lets the player shoot a bullet
             Arguments:
                 No arguments:
@@ -107,6 +107,9 @@ class Player(MovingObject):
 
             #Reset the cooldown
             self.cooldown = self.fps // (3 * 0.95)
+
+            return True
+        return False
 
     def move_up(self) -> None:
         """Do not allow the player to move up

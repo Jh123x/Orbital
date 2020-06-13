@@ -1,5 +1,6 @@
 import pygame
 import numpy
+from matplotlib import pyplot as plt
 from classes import *
 
 class PyGame_2D(object):
@@ -44,6 +45,8 @@ class PyGame_2D(object):
         screen_height = 800
         fps = 60
 
+        self.f = numpy.vectorize(lambda x: 0 if x == 0 else 100)
+
         self.written = False
 
         #Init screen
@@ -61,10 +64,14 @@ class PyGame_2D(object):
 
     def mainloop(self) -> None:
         """Mainloop"""
+
+        #Main variables
         screen_width = 600
         screen_height = 800
         fps = 60
         running = True
+
+        #Main loop for the game
         while running:
 
             #Clock the fps
@@ -78,6 +85,7 @@ class PyGame_2D(object):
 
             #Print score if the game is over
             if self.nextState == State.GAMEOVER:
+
                 #Print the score and quit the game
                 print(f"Score: {self.state.get_score()}")
 
@@ -88,6 +96,9 @@ class PyGame_2D(object):
             for item in pygame.event.get():
                 if item.type == pygame.QUIT:
                     running = False
+
+            #Draw the hitboxes
+            self.state.draw_hitboxes()
 
     def action(self, number:int) -> None:
         """Performs the action based on the number
@@ -108,12 +119,17 @@ class PyGame_2D(object):
 
     def get_space(self):
         """Returns the pixel space of the screen"""
-        return pygame.surfarray.array2d(self.state.screen)
+        return pygame.surfarray.array2d(self.state.surface)
 
-    def get_space_boolean(self) -> list:
+    def get_space_boolean(self):
         """Returns the pixel space of the screen in terms of boolean"""
-        f = numpy.vectorize(lambda x: 0 if x == 0 else 1)
-        return f(self.get_space())
+        return self.f(self.get_space())
+
+    def show_space(self):
+        """Show the space in a matplotlib diagram"""
+        image_transp = numpy.transpose(self.get_space_boolean())
+        plt.imshow(image_transp, interpolation='none')
+        plt.show()
 
     def is_over(self) -> bool:
         '''Returns if game state is over or quit'''

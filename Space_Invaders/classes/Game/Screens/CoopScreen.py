@@ -41,6 +41,11 @@ class CoopScreen(LocalPVPScreen):
         """Move the bullet down"""
         return Direction.DOWN
 
+    def get_wave_random(self) -> int:
+        #Generate wave random
+        num = int(self.generate_random_no()*self.difficulty.get_multiplier(self.wave))
+        return num if num >= 1 else 1
+
     def spawn_mobs(self) -> None:
         """Spawn enemies for the game"""
         #If there are still enemies left, Do nothing
@@ -53,7 +58,7 @@ class CoopScreen(LocalPVPScreen):
         #Spawn the enemies
         for j in range(self.wave if self.wave < 5 else 5):
             self.enemies.add([EnemyShip(self.sensitivity, self.screen_width//4 + i*self.screen_width//10, 
-                                self.screen_height//10 + EnemyShip.sprites[0].get_height() * j, random.randint(1,self.difficulty.get_multiplier(self.wave)), 
+                                self.screen_height//10 + EnemyShip.sprites[0].get_height() * j, self.get_wave_random(), 
                                 self.screen_width,  self.screen_height, None, self.mob_bullet, self.debug) for i in range(6)])
 
     def draw_words(self) -> None:
@@ -62,14 +67,14 @@ class CoopScreen(LocalPVPScreen):
         self.write_main(Screen.font, WHITE, f"Wave: {self.wave}", self.screen_width // 2, 20)
 
         #Draw the lives of player 1
-        self.write_main(Screen.font, WHITE, f"Lives: {self.player1.get_lives()}", self.screen_width - 10, 10, Direction.RIGHT)
+        self.write_main(Screen.font, WHITE, f"P1 Lives: {self.player1.get_lives()}", self.screen_width - 10, 10, Direction.RIGHT)
 
         #Draw score of player 1
-        self.write_main(Screen.font, WHITE, f"Score: {self.p1_score}", 10, 10, Direction.LEFT)
+        self.write_main(Screen.font, WHITE, f"P1 Score: {self.p1_score}", 10, 10, Direction.LEFT)
 
         #Draw the lives of player 2
-        self.write_main(Screen.font, WHITE, f"Lives: {self.player2.get_lives()}", self.screen_width - 10, 20, Direction.RIGHT)
+        self.write_main(Screen.font, WHITE, f"P2 Lives: {self.player2.get_lives()}", self.screen_width - 10, 30, Direction.RIGHT)
 
         #Draw score of player 2
-        self.write_main(Screen.font, WHITE, f"Score: {self.p2_score}", 10, 20, Direction.LEFT)
+        self.write_main(Screen.font, WHITE, f"P2 Score: {self.p2_score}", 10, 30, Direction.LEFT)
 
