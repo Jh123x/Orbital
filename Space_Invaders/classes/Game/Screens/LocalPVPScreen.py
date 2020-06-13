@@ -40,13 +40,18 @@ class LocalPVPScreen(Screen):
         self.spawn_players()
 
     def spawn_players(self) -> None:
-        #Call the players
+        """Create the players variables"""
+        #Initialise the players
         self.player1 = Player(self.sensitivity, self.screen_width, self.screen_height, self.screen_width//2, 50, self.player_lives, self.fps, self.player1_bullet, Direction.DOWN, self.debug)
         self.player2 = Player(self.sensitivity, self.screen_width, self.screen_height, self.screen_width//2, self.screen_height-50, self.player_lives, self.fps, self.player2_bullet, Direction.UP, self.debug)
         
     def reset(self) -> None:
         """Reset the environment"""
+
+        #If the environment is already resetted
         if self.resetted:
+
+            #Do nothing
             return
 
         #Reset score
@@ -67,6 +72,7 @@ class LocalPVPScreen(Screen):
         self.mob_bullet.empty()
         self.enemies.empty()
 
+        #Set resetted to True
         self.resetted = True
 
     def check_keypresses(self) -> bool:
@@ -147,6 +153,12 @@ class LocalPVPScreen(Screen):
         else:
             enemy = None
 
+
+        #Make the mob shoot the bullet a random direction
+        self.shoot_bullet(enemy)
+
+    def shoot_bullet(self, enemy):
+        """Make the mob shoot the bullet a random direction"""
         #If the set is non-empty
         if enemy:
 
@@ -192,16 +204,17 @@ class LocalPVPScreen(Screen):
     def update(self) -> None:
         """Update the movement of the sprites"""
 
-        #Set reset to false
+        #If game is resetted
         if self.resetted:
-            self.resetted = not self.resetted
+
+            #Mark it as not resetted
+            self.resetted = False
 
         #Spawn the mobs
         self.spawn_mobs()
 
-        #Update the player
+        #Update the players
         self.player1.update()
-        
         self.player2.update()
 
         #Update the enemies
@@ -229,7 +242,7 @@ class LocalPVPScreen(Screen):
         #Draw the explosions
         self.explosions.draw(self.screen)
 
-        #Draw the players
+        #Draw the players if they are not destroyed
         if not self.player1.is_destroyed():
             self.player1.draw(self.screen)
         if not self.player2.is_destroyed():
@@ -242,6 +255,7 @@ class LocalPVPScreen(Screen):
         #Check collision of mobs with player 1 bullet
         ships = list(pygame.sprite.groupcollide(player_bullet, self.enemies, True, False).values())
         pts = 0
+
         #If the list is non-empty
         if ships:
 
@@ -288,11 +302,8 @@ class LocalPVPScreen(Screen):
         #Check if bullet hit the player 1
         bullet_hit_p = len(pygame.sprite.spritecollide(self.player1, self.player2_bullet, True)) 
         bullet_hit_m = len(pygame.sprite.spritecollide(self.player1, self.mob_bullet, True))
-
-        #Check if bullet hit the player 2
         if bullet_hit_p and not self.player1.isInvincible():
             self.p2_score += 500
-
         if bullet_hit_p + bullet_hit_m > 0 and not self.player1.is_destroyed():
             self.player1.destroy()
             self.explosions.add(Explosion(self.fps//4, self.player1.get_x(), self.player1.get_y(), self.screen_width, self.screen_height, 0, self.debug))
@@ -302,8 +313,6 @@ class LocalPVPScreen(Screen):
         bullet_hit_m = len(pygame.sprite.spritecollide(self.player2, self.mob_bullet, True))
         if bullet_hit_p and not self.player2.isInvincible():
             self.p1_score += 500
-
-
         if bullet_hit_p + bullet_hit_m > 0 and not self.player2.is_destroyed():
             self.player2.destroy()
             self.explosions.add(Explosion(self.fps//4, self.player2.get_x(), self.player2.get_y(), self.screen_width, self.screen_height, 0, self.debug))
@@ -330,6 +339,8 @@ class LocalPVPScreen(Screen):
 
         #Check keypresses
         if self.check_keypresses():
+            
+            #Return the pause screen
             return State.TWO_PLAYER_PAUSE
 
         #Check collisions
@@ -343,7 +354,12 @@ class LocalPVPScreen(Screen):
 
         #Check if both players are destroyed
         if self.player1.is_destroyed() or self.player2.is_destroyed():
+
+            #Reset the game
             self.reset()
+
+            #Return the gameover state
             return State.TWO_PLAYER_GAMEOVER
 
+        #Otherwise return the current state
         return self.state

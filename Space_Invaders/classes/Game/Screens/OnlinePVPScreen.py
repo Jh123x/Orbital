@@ -1,7 +1,7 @@
 import pygame
 import queue
 from . import Screen, LocalPVPScreen
-from .. import Network, Player, State, WHITE
+from .. import Network, Player, State, WHITE, Bullet
 from pygame.locals import *
 
 class OnlinePVPScreen(LocalPVPScreen):
@@ -21,9 +21,6 @@ class OnlinePVPScreen(LocalPVPScreen):
         #Set the state to the correct state
         self.set_state(State.ONLINE)
 
-    def get_data(self):
-        self.network
-
     def create_network(self):
         """Create the network for the player to be hosted on"""
         #Create the network
@@ -36,6 +33,24 @@ class OnlinePVPScreen(LocalPVPScreen):
     def generate_random_no(self):
         """Generate a random number from the server"""
         return self.random
+
+    def shoot_bullet(self, enemy):
+        """Modified shoot bullet for online"""
+        #If the set is non-empty
+        if enemy:
+
+            #Get the x_coord of the enmy
+            x_coord = enemy.get_x()
+
+            #Get direction of bullet
+            direction = self.bullet_direction()
+
+            #Add bullet to the mob_bullets
+            self.mob_bullet.add(
+                #Create the bullet object
+                Bullet(self.sensitivity, x_coord, self.screen_height//2, direction, self.screen_width, self.screen_height, self.debug)
+                )
+            
 
     def get_random_direction(self) -> int:
         """Get the random direction"""
@@ -116,19 +131,36 @@ class OnlinePVPScreen(LocalPVPScreen):
             #Create the network
             self.create_network()
 
+        #If player is still waiting
         if self.waiting:
+
+            #Send query to check if player is still waiting
             data = self.network.send('waiting')
-            print(f"Wait: {data}")
+
+            #Send print the query
+            if self.debug:
+                print(f"Wait: {data}")
 
         #Draw the loading screen
         if self.waiting and data:
+
             #Draw loading screen
             self.write_main(Screen.end_font, WHITE, f"Loading", self.screen_width // 2, self.screen_height//2)
             self.back_rect = self.write_main(Screen.end_font, WHITE, f"Back", self.screen_width // 2, self.screen_height//2 + self.screen_height//15)
 
+            #Check if player clicked the back button
             if self.check_clicked(self.back_rect):
+                
+                #Close the network
+                self.network.close()
+
+                #Set the network to uninitialised state
+                self.network = None
+
+                #Return to the playmode screen
                 return State.PLAYMODE
 
+            #Otherwise return current state 
             return self.state
 
         elif self.disconnected:
