@@ -130,7 +130,8 @@ def train(n_episodes=1000, load = None):
             action = agent.action(state, eps)
             next_state, reward, done, info = env.step(action)
             if not score:
-                print(preprocess_frame(next_state,84))
+                plt.imshow(next_state,cmap='Greys')
+                plt.show()
             score += reward
             next_state = stack_frames(state, next_state, False)
             agent.step(state, action, reward, next_state, done)
