@@ -127,7 +127,7 @@ class PyGame_2D(object):
 
     def show_space(self):
         """Show the space in a matplotlib diagram"""
-        image_transp = numpy.transpose(self.get_space_boolean())
+        image_transp = np.transpose(self.get_space_boolean())
         plt.imshow(image_transp, interpolation='none')
         plt.show()
 

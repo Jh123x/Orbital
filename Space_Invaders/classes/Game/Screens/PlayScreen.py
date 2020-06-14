@@ -117,11 +117,6 @@ class PlayScreen(Screen):
         #Get a random bullet for the entity to shoot
         if len(self.enemies):
             enemy = random.sample(set(self.enemies),1)
-        else:
-            enemy = None
-
-        #If the set is non-empty
-        if enemy:
 
             #Get the first enemy of the set
             enemy = enemy[0]
@@ -131,15 +126,18 @@ class PlayScreen(Screen):
 
     def draw_hitboxes(self):
         """Draw hitboxes for players and objects"""
+
+        #Draw hitbox for the enemies
         for sprite in self.enemies:
             pygame.draw.rect(self.surface, (255,0,0), sprite.rect, 0)
 
+        #Draw hitbox for the bullets
         for sprite in self.up_bullets:
             pygame.draw.rect(self.surface, (255,0,0), sprite.rect, 0)
-
         for sprite in self.down_bullets:
             pygame.draw.rect(self.surface, (255,0,0), sprite.rect, 0)
 
+        #Draw the hitbox for the player
         pygame.draw.rect(self.surface, (255,0,0), self.player.rect, 0)
 
 
