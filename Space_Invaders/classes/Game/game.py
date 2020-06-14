@@ -300,8 +300,11 @@ class GameWindow(object):
 
         #Get next state
         state = self.pvp_gameover.handle()
+
+        #If the gameoverscreen is over
         if state != State.TWO_PLAYER_GAMEOVER:
             pres.reset()
+
         #Return the state
         return state
         

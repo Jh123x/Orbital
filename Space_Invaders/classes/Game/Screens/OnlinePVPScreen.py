@@ -24,7 +24,7 @@ class OnlinePVPScreen(LocalPVPScreen):
     def create_network(self):
         """Create the network for the player to be hosted on"""
         #Create the network
-        self.network = Network("192.168.1.215",5555)
+        self.network = Network("jhcraft123.ddns.net",5555)
 
     def pack_player_data(self, player:Player, shoot:bool, score:int):
         """Pack the data into the correct form to be sent"""
