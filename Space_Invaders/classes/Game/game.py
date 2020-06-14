@@ -171,12 +171,15 @@ class GameWindow(object):
         #Check based on previous state
         if self.prev == State.PVP:
             prev = State.PVP
+            prevs = self.pvp
             scores = self.pvp.get_scores()
         elif self.prev == State.COOP:
             prev = State.COOP
+            prevs = self.coop
             scores = self.coop.get_scores()
         elif self.prev == State.AI_VS:
             prev = State.AI_VS
+            pres = self.ai_vs
             scores = self.ai_vs.get_scores()
         else:
             assert False, f"{self.state}, cannot be paused"
@@ -189,8 +192,9 @@ class GameWindow(object):
 
         #If new state is menu state
         if state == State.MENU:
-            self.pvp.reset()
-            self.coop.reset()
+
+            #Reset the state
+            pres.reset()
             return state
 
         #If it goes back to the game
@@ -239,33 +243,53 @@ class GameWindow(object):
             Returns:
                 Returns the next state the game is suppose to be in (State)
         """
+
+        #Get the correct score
         if self.prev == State.PLAY:
-            #Create the pause screen
-            self.pause = PauseScreen(self.game_width,self.game_height, self.main_screen, self.play.get_score(), self.prev, self.debug)
+            score = self.play.get_score()
+            
         elif self.prev == State.CLASSIC:
-            #Create the pause screen
-            self.pause = PauseScreen(self.game_width,self.game_height, self.main_screen, self.classic.get_score(), self.prev, self.debug)
+            score = self.classic.get_score()
+        
+        else:
+            assert False, "Invalid game mode"
+
+        #Create the pause screen
+        self.pause = PauseScreen(self.game_width,self.game_height, self.main_screen, score, self.prev, self.debug)
 
         #Handle the pause screen
-        return self.pause.handle()
+        state = self.pause.handle()
+
+        if state != self.prev:
+            if self.prev == State.PLAY:
+               self.play.reset()
+                
+            elif self.prev == State.CLASSIC:
+                self.classic.reset()
+
+        return state
 
     def handle_two_player_gameover(self) -> State:
         """Handle the PVP gameover screen"""
         #Check based on previous state
         if self.prev == State.PVP:
             prev = State.PVP
+            pres = State.pvp
             scores = self.pvp.get_scores()
 
         elif self.prev == State.COOP:
             prev = State.COOP
+            pres = self.coop
             scores = self.coop.get_scores()
 
         elif self.prev == State.AI_VS:
             prev = State.AI_VS
+            pres = self.ai_vs
             scores = self.ai_vs.get_scores()
 
         elif self.prev == State.ONLINE:
             prev = State.ONLINE
+            pres = self.online
             scores = self.online.get_scores()
 
         else:
@@ -277,14 +301,9 @@ class GameWindow(object):
         #Get next state
         state = self.pvp_gameover.handle()
 
-        #If the state changes
+        #If the gameoverscreen is over
         if state != State.TWO_PLAYER_GAMEOVER:
-            if prev == State.PVP:
-                self.pvp.reset()
-            elif prev == State.COOP:
-                self.coop.reset()
-            elif prev == State.AI_VS:
-                self.ai_vs.reset()
+            pres.reset()
 
         #Return the state
         return state

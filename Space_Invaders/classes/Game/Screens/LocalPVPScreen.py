@@ -355,9 +355,6 @@ class LocalPVPScreen(Screen):
         #Check if both players are destroyed
         if self.player1.is_destroyed() or self.player2.is_destroyed():
 
-            #Reset the game
-            self.reset()
-
             #Return the gameover state
             return State.TWO_PLAYER_GAMEOVER
 

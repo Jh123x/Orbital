@@ -24,11 +24,11 @@ class OnlinePVPScreen(LocalPVPScreen):
     def create_network(self):
         """Create the network for the player to be hosted on"""
         #Create the network
-        self.network = Network("192.168.1.215",5555)
+        self.network = Network("jhcraft123.ddns.net",5555)
 
-    def pack_player_data(self, player:Player, shoot:bool):
+    def pack_player_data(self, player:Player, shoot:bool, score:int):
         """Pack the data into the correct form to be sent"""
-        return (self.network.get_id(), player.get_coord()[0], shoot)
+        return (self.network.get_id(), player.get_coord()[0], shoot, score)
 
     def generate_random_no(self):
         """Generate a random number from the server"""
@@ -51,7 +51,6 @@ class OnlinePVPScreen(LocalPVPScreen):
                 Bullet(self.sensitivity, x_coord, self.screen_height//2, direction, self.screen_width, self.screen_height, self.debug)
                 )
             
-
     def get_random_direction(self) -> int:
         """Get the random direction"""
 
@@ -97,7 +96,7 @@ class OnlinePVPScreen(LocalPVPScreen):
                 shot = self.player2.shoot()
 
         #Send information on current player
-        data = self.network.send(self.pack_player_data(self.player2, shot))
+        data = self.network.send(self.pack_player_data(self.player2, shot, self.p1_score))
 
         #If the data is empty
         if not data:
@@ -108,7 +107,7 @@ class OnlinePVPScreen(LocalPVPScreen):
         else:
 
             #Unpack the data
-            _, player1_pos, shot, self.random, self.br = data
+            _, player1_pos, shot, self.p2_score, self.random, self.br = data
 
             #Update player 2 information
             self.player1.set_coord((int(player1_pos), 60))
@@ -135,10 +134,10 @@ class OnlinePVPScreen(LocalPVPScreen):
         if self.waiting:
 
             #Send query to check if player is still waiting
-            data = self.network.send('waiting')
+            self.waiting = self.network.send('waiting')
 
         #Draw the loading screen
-        if self.waiting and data:
+        if self.waiting:
 
             #Draw loading screen
             self.write_main(Screen.end_font, WHITE, f"Loading", self.screen_width // 2, self.screen_height//2)
