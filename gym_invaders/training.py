@@ -1,35 +1,28 @@
 #Python Modules
-import pickle
 import os
-import time
-import warnings
-import math
-import random
+from math import exp
 import sys
-from collections import deque,namedtuple
+from collections import deque
+# import warnings
+
 # Numeric Computation Module
 import numpy as np
-import numpy.random as rand
+
 # Neural Network Modules
 import torch
-import torch.optim as optim
-import torch.nn as nn
-import torch.nn.functional as F
-import torchvision.transforms as T
-import torch.autograd as autograd
+
 # Image Processing
-import cv2
 import matplotlib.pyplot as plt
+
 #Gym Environment Dependencies
 import gym
-from gym import wrappers
-# Game Dependencies
-import pygame
+# from gym import wrappers
+
 # In house dependencies
 import gym_game
-from gym_invaders.ai_invader.agent import DQNAgent
-from gym_invaders.ai_invader.model import DQNCNN
-from gym_invaders.ai_invader.util import stack_frame,preprocess_frame
+from ai_invader.agent import DQNAgent
+from ai_invader.model import DQNCNN
+from ai_invader.util import stack_frame,preprocess_frame
 
 #np.set_printoptions(threshold=sys.maxsize)
 
@@ -43,10 +36,10 @@ env = gym.make("Classic-v0")
 print("The size of frame is: ", env.observation_space.shape)
 print("No. of Actions: ", env.action_space.n)
 env.reset()
-plt.figure()
-plt.imshow(env.reset())
-plt.title('Original Frame')
-plt.show()
+# plt.figure()
+# plt.imshow(env.reset())
+# plt.title('Original Frame')
+# plt.show()
 
 def random_play():
     score = 0
@@ -66,7 +59,7 @@ def random_play():
 #random_play()
 
 def frame_preprocess(frame):
-    # env.reset()
+    env.reset()
     plt.figure()
     plt.imshow(preprocess_frame(env.reset(), (0, 0, 0, 0), 84), cmap="gray")
     plt.title('Pre Processed image')
@@ -81,7 +74,7 @@ def stack_frames(frames, state, is_new=False):
     return frames
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-print('Device: ', device)
+print('Device:', device)
 
 INPUT_SHAPE = (4, 84, 84)
 ACTION_SIZE = env.action_space.n
@@ -103,18 +96,18 @@ start_epoch = 0
 scores = []
 scores_window = deque(maxlen=20)
 
-epsilon_delta = lambda frame_idx: EPS_END + (EPS_START-EPS_END) * math.exp(-1. *frame_idx/EPS_DECAY)
+epsilon_delta = lambda frame_idx: EPS_END + (EPS_START-EPS_END) * exp(-1. *frame_idx/EPS_DECAY)
 
 def save_obj(obj, name):
     '''Saves the state dictionary int obj path'''
     print('saving')
-    torch.save(obj, "/obj/"+name)
+    torch.save(obj, os.path.join(PATH,name))
 
 def load_obj(agent, path):
     '''Calls the agent to load the pytorch model'''
     agent.load_model(torch.load(path))
 
-print('begin training')
+print('Begin training')
 def train(n_episodes=1000, load = None):
     """
     n_episodes: maximum number of training episodes
@@ -124,7 +117,7 @@ def train(n_episodes=1000, load = None):
     if load:
         agent.load_model(load)
     else:
-        filename = input('please input the filename to save')
+        filename = input(f'Please input the filename to save: ')
     #env.render()
     for i_episode in range(start_epoch + 1, n_episodes + 1):
         state = stack_frames(None, env.reset(), True)
@@ -136,9 +129,9 @@ def train(n_episodes=1000, load = None):
             next_state, reward, done, info = env.step(action)
             #if not score:
                 #print(next_state)
-            if score:
-                plt.imshow(preprocess_frame(next_state,84),interpolation='none')
-                plt.show()
+            # if score:
+                # plt.imshow(preprocess_frame(next_state,84),interpolation='none')
+                # plt.show()
             score += reward
             next_state = stack_frames(state, next_state, False)
             agent.step(state, action, reward, next_state, done)
@@ -152,7 +145,7 @@ def train(n_episodes=1000, load = None):
         # if i_episode==1:
         #     # Testing code for
         #     #print(agent.model_dict())
-        #     save_obj(agent.model_dict(),'sample.pth')
+        save_obj(agent.model_dict(),'sample.pth')
         if i_episode % 100 == 0:
             print('\rEpisode {}\tAverage Score: {:.2f}'.format(i_episode, np.mean(scores_window)))
             fig = plt.figure()
@@ -184,8 +177,8 @@ def trained_agent(agent):
     env.close()
 ###
 # To view Trained Agent after a checkpoint
-#load_obj(agent, path=PATH+'/model.pth')
-#trained_agent(agent)
+load_obj(agent, path=os.path.join(PATH,'sample.pth'))
+trained_agent(agent)
 
 # To resume training from a previous checkpoint to train for x number of epochs
 # model = torch.load(PATH+'/model.pth')

@@ -1,7 +1,6 @@
 import pygame
 import numpy as np
 import matplotlib.pyplot as plt
-#from scipy.special import expit
 from .classes import *
 
 class PyGame_2D(object):
