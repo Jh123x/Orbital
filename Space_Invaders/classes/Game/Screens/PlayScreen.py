@@ -125,21 +125,19 @@ class PlayScreen(Screen):
             #Make the enemy shoot
             enemy.shoot()
 
-    def draw_hitboxes(self):
+    def draw_hitboxes(self) -> None:
         """Draw hitboxes for players and objects"""
-
         #Draw hitbox for the enemies
         for sprite in self.enemies:
-            pygame.draw.rect(self.surface, (255,0,0), sprite.rect, 0)
-
+            pygame.draw.rect(self.surface, (5,55,0), sprite.rect, 0)
         #Draw hitbox for the bullets
         for sprite in self.up_bullets:
-            pygame.draw.rect(self.surface, (255,0,0), sprite.rect, 0)
+            pygame.draw.rect(self.surface, (100,255,0), sprite.rect, 0)
         for sprite in self.down_bullets:
-            pygame.draw.rect(self.surface, (255,0,0), sprite.rect, 0)
+            pygame.draw.rect(self.surface, (25,0,255), sprite.rect, 0)
 
         #Draw the hitbox for the player
-        pygame.draw.rect(self.surface, (255,0,0), self.player.rect, 0)
+        pygame.draw.rect(self.surface, (55,255,0), self.player.rect, 0)
 
     def update(self) -> None:
         """Update the sprites
