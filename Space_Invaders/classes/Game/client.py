@@ -62,6 +62,10 @@ class Network(object):
                 #Load the data
                 data = pickle.loads(data)
 
+            #Close the socket if the data is empty
+            else:
+                self.close()
+
             #Reset the tries
             self.tries = 0
 

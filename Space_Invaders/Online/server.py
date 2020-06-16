@@ -3,13 +3,18 @@ import sys
 import pickle
 import random
 import logging
-import threading
-from _thread import *
+from multiprocessing import *
 from CheckableQueue import CheckableQueue
 
 #Setting the configuration for logging
 logging.basicConfig(level=logging.DEBUG, format = '%(asctime)s - %(levelname)s - %(message)s')
 # logging.disable(logging.DEBUG)
+
+def start_new_thread(function,args):
+    """Start a new thread"""
+    p = Process(target = function, args = args)
+    p.start()
+    
 
 class Client(object):
     def __init__(self, conn, id:int, addr:tuple):
@@ -177,7 +182,7 @@ class Client_handler(object):
             self.c2.send(c2_data)
 
         #Exit the thread
-        sys.exit()
+        exit()
 
     def is_active(self):
         """Check if the player is active"""
@@ -279,7 +284,7 @@ class Server(object):
                 #Break out of the loop
                 break
 
-        sys.exit()
+        exit()
 
     def mainloop(self):
         #The main loop for the server

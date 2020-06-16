@@ -343,6 +343,20 @@ class LocalPVPScreen(Screen):
         #Draw score of player 2
         self.write_main(Screen.font, WHITE, f"Score: {self.p2_score}", 10, self.screen_height - 20, Direction.LEFT)
 
+    def draw_hitboxes(self) -> None:
+        """Draw hitboxes for players and objects"""
+        #Draw hitbox for the enemies
+        for sprite in self.enemies:
+            pygame.draw.rect(self.surface, (5,55,0), sprite.rect, 0)
+        #Draw hitbox for the bullets
+        for sprite in self.up_bullets:
+            pygame.draw.rect(self.surface, (100,255,0), sprite.rect, 0)
+        for sprite in self.down_bullets:
+            pygame.draw.rect(self.surface, (25,0,255), sprite.rect, 0)
+
+        #Draw the hitbox for the player
+        pygame.draw.rect(self.surface, (55,255,0), self.player1.rect, 0)
+
     def handle(self) -> State:
         """Handle the drawing of the screen"""
 
