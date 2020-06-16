@@ -24,6 +24,10 @@ class ClassicScreen(PlayScreen):
 
         #Call superclass reset
         super().reset()
+    def draw_hitboxes(self):
+        for sprite in self.blocks:
+            pygame.draw.rect(self.surface, (0, 255, 0), sprite.rect, 0)
+        super().draw_hitboxes()
 
     def enemy_touched_bottom(self):
         """Check if enemy touched the bottom of the screen"""

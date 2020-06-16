@@ -4,6 +4,7 @@ import numpy as np
 import torch
 from scipy.special import expit
 import cv2
+
 class ReplayMemory(object):
 
     def __init__(self, max_size, batch_size, seed, device):
@@ -51,8 +52,7 @@ class ReplayMemory(object):
 def preprocess_frame(state, output):
     ''' Preprocessing the frame from RGB -> Greyscale'''
     state = expit(np.float32(state))
-    state = cv2.resize(state,(output,output))
-    state = np.rot90(state,3)
+    state = cv2.resize(state,(output,output)).T
     return state
 
 def stack_frame(stacked_frames, frame, is_new):

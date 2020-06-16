@@ -1,4 +1,5 @@
 import pygame
+import matplotlib.pyplot as plt
 import numpy as np
 from .classes import *
 
@@ -117,17 +118,19 @@ class PyGameClassic(object):
         return (self.player.shoot, self.player.move_left, self.player.move_right, lambda: 1, self.move_shoot(True),
                 self.move_shoot(False))
 
-    def get_hitboxes(self) -> list:
-        """Get the hitboxes of the """
-        return self.state.get_hitboxes()
-
     def get_space(self):
-        """Returns the pixel space of the screen"""
-        return pygame.surfarray.array2d(self.state.screen)
+        """
+        Returns the pixel space of the screen
+        Performs preliminary Preprocessing by making values
+        """
+        space = pygame.surfarray.array2d(self.state.surface)
+        return space *-1
 
-    def get_space_boolean(self) -> list:
-        """Returns the pixel space of the screen in terms of boolean"""
-        return np.bool_(self.get_space())
+    def show_space(self):
+        """Show the space in a matplotlib diagram"""
+        image_transp = np.transpose(self.get_space_boolean())
+        plt.imshow(image_transp, interpolation='none')
+        plt.show()
 
     def is_over(self) -> bool:
         '''Returns if game state is over or quit'''
@@ -153,6 +156,10 @@ class PyGameClassic(object):
         '''Get positions of each enemy'''
         return tuple(map(lambda e: (e.get_x(), e.get_y()), self.state.get_enemies()))
 
+    def handle(self):
+        '''Draws the hitboxes of each enemy after updating the state of the enemy'''
+        self.state.handle()
+        self.state.draw_hitboxes()
 
 if __name__ == '__main__':
     settings = "settings.cfg"

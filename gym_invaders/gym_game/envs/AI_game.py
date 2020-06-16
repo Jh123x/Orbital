@@ -32,8 +32,6 @@ class PyGame_2D(object):
         #Load sounds
         self.sound = Sound({}, False, False)
 
-        self.f = np.vectorize(lambda x: 0 if x == 0 else 100)
-
         #Load the sounds into the relavant Sprites
         Bullet.sound = self.sound
 
@@ -116,11 +114,8 @@ class PyGame_2D(object):
 
     def get_action(self) -> tuple:
         """List of actions that the player can take (tuple of functions)"""
-        return (self.player.shoot, self.player.move_left, self.player.move_right, lambda : 1,self.move_shoot(True),self.move_shoot(False))
-
-    def get_hitboxes(self) -> list:
-        """Get the hitboxes of the """
-        return self.state.get_hitboxes()
+        return (self.player.shoot, self.player.move_left, self.player.move_right, lambda : 1,self.move_shoot(True),
+                self.move_shoot(False))
 
     def get_space(self):
         """
@@ -129,7 +124,6 @@ class PyGame_2D(object):
         """
         space = pygame.surfarray.array2d(self.state.surface)
         return space *-1
-
 
     def show_space(self):
         """Show the space in a matplotlib diagram"""
@@ -158,6 +152,7 @@ class PyGame_2D(object):
         return tuple(map(lambda e: (e.get_x(),e.get_y()), self.state.get_enemies()))
 
     def handle(self):
+        '''Draws the hitboxes of each enemy after updating the state of the enemy'''
         self.state.handle()
         self.state.draw_hitboxes()
 

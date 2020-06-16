@@ -30,15 +30,16 @@ import gym_game
 from gym_invaders.ai_invader.agent import DQNAgent
 from gym_invaders.ai_invader.model import DQNCNN
 from gym_invaders.ai_invader.util import stack_frame,preprocess_frame
-np.set_printoptions(threshold=sys.maxsize)
+
+#np.set_printoptions(threshold=sys.maxsize)
 
 #create a local directory to store pickle files from training
 PATH = os.getcwd()+'/obj'
 os.makedirs('obj', exist_ok=True)
 
 #Retrieve Training Environment
-env = gym.make("Invader-v0")
-
+#env = gym.make("Invader-v0")
+env = gym.make("Classic-v0")
 print("The size of frame is: ", env.observation_space.shape)
 print("No. of Actions: ", env.action_space.n)
 env.reset()
@@ -110,6 +111,7 @@ def save_obj(obj, name):
     torch.save(obj, "/obj/"+name)
 
 def load_obj(agent, path):
+    '''Calls the agent to load the pytorch model'''
     agent.load_model(torch.load(path))
 
 print('begin training')
@@ -118,22 +120,25 @@ def train(n_episodes=1000, load = None):
     n_episodes: maximum number of training episodes
     Saves Model every 100 Epochs
     """
+    filename = load
     if load:
         agent.load_model(load)
+    else:
+        filename = input('please input the filename to save')
     #env.render()
     for i_episode in range(start_epoch + 1, n_episodes + 1):
         state = stack_frames(None, env.reset(), True)
         score = 0
         eps = epsilon_delta(i_episode)
-        env.render()
+        #env.render() # Uncomment to render the surface
         while True:
             action = agent.action(state, eps)
             next_state, reward, done, info = env.step(action)
             #if not score:
                 #print(next_state)
-            # if score:
-            #     plt.imshow(next_state,interpolation='none')
-            #     plt.show()
+            if score:
+                plt.imshow(preprocess_frame(next_state,84),interpolation='none')
+                plt.show()
             score += reward
             next_state = stack_frames(state, next_state, False)
             agent.step(state, action, reward, next_state, done)
@@ -156,8 +161,7 @@ def train(n_episodes=1000, load = None):
             plt.ylabel('Score')
             plt.xlabel('Episode #')
             plt.save(fig)
-            save_obj(agent.model_dict(), 'model.pth')
-
+            save_obj(agent.model_dict(), filename+'.pth')
     return scores
 
 scores = train(1)
@@ -188,5 +192,5 @@ def trained_agent(agent):
 # scores = train(n_episodes = 100, load = model)
 
 # Standard Training:
-# Trains Model for 1000 games
-# scores = train()
+# Trains Model for 1000 games, recommended to train ~ 5000 games +
+# scores = train(5000)
