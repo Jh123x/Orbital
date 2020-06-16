@@ -117,11 +117,6 @@ class PlayScreen(Screen):
         #Get a random bullet for the entity to shoot
         if len(self.enemies):
             enemy = random.sample(set(self.enemies),1)
-        else:
-            enemy = None
-
-        #If the set is non-empty
-        if enemy:
 
             #Get the first enemy of the set
             enemy = enemy[0]
@@ -129,6 +124,20 @@ class PlayScreen(Screen):
             #Make the enemy shoot
             enemy.shoot()
 
+    def draw_hitboxes(self):
+        """Draw hitboxes for players and objects"""
+
+        #Draw hitbox for the enemies
+        for sprite in self.enemies:
+            pygame.draw.rect(self.surface, (5,55,0), sprite.rect, 0)
+        #Draw hitbox for the bullets
+        for sprite in self.up_bullets:
+            pygame.draw.rect(self.surface, (100,255,0), sprite.rect, 0)
+        for sprite in self.down_bullets:
+            pygame.draw.rect(self.surface, (25,0,255), sprite.rect, 0)
+
+        #Draw the hitbox for the player
+        pygame.draw.rect(self.surface, (55,255,0), self.player.rect, 0)
 
     def update(self) -> None:
         """Update the sprites
@@ -137,6 +146,8 @@ class PlayScreen(Screen):
             Returns:
                 No returns
         """
+        #Reset the surface
+        self.reset_surface()
 
         #Update the player position
         self.player.update()
@@ -153,15 +164,15 @@ class PlayScreen(Screen):
         #Update the position of all bullets
         self.up_bullets.update()
         self.down_bullets.update()
-        self.up_bullets.draw(self.screen)
-        self.down_bullets.draw(self.screen)
+        self.up_bullets.draw(self.surface)
+        self.down_bullets.draw(self.surface)
 
         #Print debug message
         if self.debug:
             print(f"Number of player bullets: {len(self.up_bullets)}")
 
         #Draw the enemy
-        self.enemies.draw(self.screen)
+        self.enemies.draw(self.surface)
 
         #Print debug message
         if self.debug:
@@ -171,7 +182,7 @@ class PlayScreen(Screen):
         self.explosions.draw(self.screen)
 
         #Draw player object
-        self.player.draw(self.screen)
+        self.player.draw(self.surface)
 
         #Call superclass update
         super().update()
@@ -283,6 +294,9 @@ class PlayScreen(Screen):
             for j in range(number//6 if number // 6 < 5 else 5):
                 self.enemies.add([EnemyShip(self.sensitivity, self.screen_width//4 + i*self.screen_width//10, self.screen_height//10 + EnemyShip.sprites[0].get_height() * j, random.randint(1,self.difficulty.get_multiplier(self.wave)), self.screen_width,  self.screen_height, Direction.DOWN, self.down_bullets, self.debug) for i in range(6)])
 
+    def enemy_touched_bottom(self) -> bool:
+        """Check if any enemies have touched the bottom of the screen"""
+        return len(tuple(filter(lambda x: x.get_y() + x.get_height()//2 > self.screen_height - self.player.get_height(), self.enemies ))) > 0
         
     def handle(self) -> State:
         """Handle the drawing of the play state
@@ -296,11 +310,11 @@ class PlayScreen(Screen):
             return State.GAMEOVER
 
         #Check if any of the enemies touched the bottom of the screen
-        if [x for x in self.enemies if x.get_y() > self.screen_height - self.player.get_height()]:
+        if self.enemy_touched_bottom():
 
             #If it is debugging mode, print out what happened
             if self.debug:
-                print("Alien hit the player")
+                print("Alienship hit the player")
                 
             #If so it is gameover for the player
             return State.GAMEOVER

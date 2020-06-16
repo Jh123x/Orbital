@@ -94,7 +94,7 @@ UPDATE_EVERY = 1       # how often to update the network
 UPDATE_TARGET = 1000  # After which thershold replay to be started
 EPS_START = 0.99       # starting value of epsilon
 EPS_END = 0.01         # Ending value of epsilon
-EPS_DECAY = 100         # Rate by which epsilon to be decayed
+EPS_DECAY = 100#200 #500         # Rate by which epsilon to be decayed
 
 agent = DQNAgent(INPUT_SHAPE, ACTION_SIZE, SEED, device, BUFFER_SIZE, BATCH_SIZE, GAMMA, LR, TAU, UPDATE_EVERY, UPDATE_TARGET, DQNCNN)
 
@@ -129,10 +129,11 @@ def train(n_episodes=1000, load = None):
         while True:
             action = agent.action(state, eps)
             next_state, reward, done, info = env.step(action)
-            if not score:
-                print(next_state)
-                plt.imshow(next_state,interpolation='none')
-                plt.show()
+            #if not score:
+                #print(next_state)
+            # if score:
+            #     plt.imshow(next_state,interpolation='none')
+            #     plt.show()
             score += reward
             next_state = stack_frames(state, next_state, False)
             agent.step(state, action, reward, next_state, done)

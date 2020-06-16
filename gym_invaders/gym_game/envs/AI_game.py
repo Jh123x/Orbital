@@ -87,7 +87,8 @@ class PyGame_2D(object):
 
             #Update the display with the screen
             pygame.display.update()
-
+            #self.state.draw_hitboxes()
+            #print(self.get_space_boolean())
             #If the state is quit or player closes the game
             for item in pygame.event.get():
                 if item.type == pygame.QUIT:
@@ -122,18 +123,19 @@ class PyGame_2D(object):
         return self.state.get_hitboxes()
 
     def get_space(self):
-        """Returns the pixel space of the screen"""
-        return pygame.surfarray.array2d(self.state.screen)
+        """
+        Returns the pixel space of the screen
+        Performs preliminary Preprocessing by making values
+        """
+        space = pygame.surfarray.array2d(self.state.surface)
+        return space *-1
+
 
     def show_space(self):
         """Show the space in a matplotlib diagram"""
         image_transp = np.transpose(self.get_space_boolean())
         plt.imshow(image_transp, interpolation='none')
         plt.show()
-
-    def get_space_boolean(self):
-        """Returns the pixel space of the screen in terms of boolean"""
-        return self.f(self.get_space())
 
     def is_over(self) -> bool:
         '''Returns if game state is over or quit'''
@@ -155,6 +157,9 @@ class PyGame_2D(object):
         '''Get positions of each enemy'''
         return tuple(map(lambda e: (e.get_x(),e.get_y()), self.state.get_enemies()))
 
+    def handle(self):
+        self.state.handle()
+        self.state.draw_hitboxes()
 
 if __name__ == '__main__':
     settings = "settings.cfg"

@@ -40,7 +40,6 @@ class Screen(BaseObject):
         self.cooldown = 20
 
         #Create a surface with a transparent background
-
         self.reset_surface()
 
     def set_background(self, bg) -> None:

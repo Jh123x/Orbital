@@ -2,6 +2,7 @@ import random
 from collections import namedtuple, deque
 import numpy as np
 import torch
+from scipy.special import expit
 import cv2
 class ReplayMemory(object):
 
@@ -49,7 +50,7 @@ class ReplayMemory(object):
 
 def preprocess_frame(state, output):
     ''' Preprocessing the frame from RGB -> Greyscale'''
-    state = np.float32(state)
+    state = expit(np.float32(state))
     state = cv2.resize(state,(output,output))
     state = np.rot90(state,3)
     return state

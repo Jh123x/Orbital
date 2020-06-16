@@ -43,11 +43,13 @@ class CustomEnv(gym.Env):
 
     def step(self, action):
         self.pygame.screen.fill((0,0,0)) #fills the entire screen
-        self.pygame.state.handle()
+        self.pygame.handle()
         self.pygame.action(action)
+        #self.pygame.state.draw_hitboxes()
         if self.display:
             pygame.display.update()
-        obs = self.pygame.get_space_boolean() # observations for the next timestep
+        obs = self.pygame.get_space() # observations for the next timestep
+        #print(obs)
         self.time += 1
         score = self.pygame.get_score() - self.score
         self.score = self.pygame.get_score()

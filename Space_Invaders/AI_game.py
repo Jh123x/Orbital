@@ -73,7 +73,6 @@ class PyGame_2D(object):
 
         #Main loop for the game
         while running:
-
             #Clock the fps
             self.clock.tick(fps)
 
@@ -91,14 +90,16 @@ class PyGame_2D(object):
 
             #Update the display with the screen
             pygame.display.update()
-
+            self.state.draw_hitboxes()
+            self.get_space_boolean()
             #If the state is quit or player closes the game
             for item in pygame.event.get():
                 if item.type == pygame.QUIT:
                     running = False
 
             #Draw the hitboxes
-            self.state.draw_hitboxes()
+
+
 
     def action(self, number:int) -> None:
         """Performs the action based on the number
@@ -123,7 +124,10 @@ class PyGame_2D(object):
 
     def get_space_boolean(self):
         """Returns the pixel space of the screen in terms of boolean"""
-        return self.f(self.get_space())
+        img= self.f(self.get_space())
+        plt.imshow(img, interpolation='none')
+        plt.show()
+        return img
 
     def show_space(self):
         """Show the space in a matplotlib diagram"""
@@ -160,4 +164,5 @@ if __name__ == '__main__':
     settings = "settings.cfg"
     game = PyGame_2D(settings)
     game.mainloop()
+
     

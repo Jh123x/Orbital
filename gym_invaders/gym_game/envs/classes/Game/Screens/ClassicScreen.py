@@ -25,6 +25,10 @@ class ClassicScreen(PlayScreen):
         #Call superclass reset
         super().reset()
 
+    def enemy_touched_bottom(self):
+        """Check if enemy touched the bottom of the screen"""
+        return len(tuple(filter(lambda x: x.get_y() + x.get_height()//2 > self.screen_height - (self.player.get_height() + 10), self.enemies ))) > 0
+
     def check_collisions(self) -> int:
         """Check collisions between the sprites"""
         #Check if the player or the enemies shot the blocks
@@ -43,4 +47,3 @@ class ClassicScreen(PlayScreen):
         #Draw the block
         self.blocks.draw(self.screen)
 
-        

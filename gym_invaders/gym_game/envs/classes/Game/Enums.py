@@ -44,6 +44,7 @@ class State(enum.Enum):
     COOP = 19
 
     CLASSIC = 60
+    ONLINE = 90
 
 class Difficulty_enum(enum.Enum):
     """Difficulty enum to hold the difficultly of the game"""
