@@ -17,6 +17,7 @@ class LocalPVPScreen(Screen):
         self.fps = fps
         self.player_lives = player_lives
         self.resetted = False
+        self.over = False
 
         #Bullet groups
         self.player1_bullet = pygame.sprite.Group()
@@ -39,6 +40,10 @@ class LocalPVPScreen(Screen):
         #Spawn Players
         self.spawn_players()
 
+    def is_over(self) -> bool:
+        """Returns whether the game is over"""
+        return self.over
+
     def spawn_players(self) -> None:
         """Create the players variables"""
         #Initialise the players
@@ -47,7 +52,6 @@ class LocalPVPScreen(Screen):
         
     def reset(self) -> None:
         """Reset the environment"""
-
         #If the environment is already resetted
         if self.resetted:
 
@@ -117,18 +121,22 @@ class LocalPVPScreen(Screen):
         return False
 
     def generate_random_no(self) -> int:
+        """Generates a random float from 0 to 1"""
         #Generate random number
         return random.random()
 
     def get_random_direction(self) -> int:
-        return int(self.generate_random_no()*10) < 5
+        """Get a random direction (0 or 1)"""
+        return int(self.generate_random_no()*10 < 5)
 
     def wave_random(self) -> int:
+        """Generate a random number for the life of the enemy"""
         #Generate wave random
         num = int(self.generate_random_no()*self.wave)
         return num if num >= 1 else 1
 
     def get_random_enemy(self) -> EnemyShip:
+        """Get a random enemy"""
         lst = list(self.enemies)
         return lst[int(self.generate_random_no()* (len(lst)-1))]
 
@@ -169,6 +177,7 @@ class LocalPVPScreen(Screen):
             enemy.shoot(direction)
 
     def bullet_direction(self) -> Direction:
+        """Generate the bullet direction for the bullets"""
         #Randomly get a direction
         if self.player1.is_destroyed():
             direction = Direction.DOWN
@@ -354,6 +363,9 @@ class LocalPVPScreen(Screen):
 
         #Check if both players are destroyed
         if self.player1.is_destroyed() or self.player2.is_destroyed():
+
+            #Mark the game as over
+            self.over = True
 
             #Return the gameover state
             return State.TWO_PLAYER_GAMEOVER

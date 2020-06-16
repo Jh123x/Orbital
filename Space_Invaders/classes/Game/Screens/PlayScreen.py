@@ -36,6 +36,7 @@ class PlayScreen(Screen):
         self.sensitivity = sensitivity
         self.fps = max_fps
         self.difficulty = difficulty
+        self.over = False
 
         #Create the groups
         #Bullets shot by player
@@ -298,6 +299,10 @@ class PlayScreen(Screen):
     def enemy_touched_bottom(self) -> bool:
         """Check if any enemies have touched the bottom of the screen"""
         return len(tuple(filter(lambda x: x.get_y() + x.get_height()//2 > self.screen_height - self.player.get_height(), self.enemies ))) > 0
+
+    def is_over(self) -> bool:
+        """Checks if the game is over"""
+        return self.over
         
     def handle(self) -> State:
         """Handle the drawing of the play state
@@ -308,6 +313,10 @@ class PlayScreen(Screen):
         """
         #If player is destroyed, go to gameover state
         if self.player.is_destroyed():
+            #Set the game to be over
+            self.over = True
+
+            #Return the gameover state
             return State.GAMEOVER
 
         #Check if any of the enemies touched the bottom of the screen
@@ -316,6 +325,9 @@ class PlayScreen(Screen):
             #If it is debugging mode, print out what happened
             if self.debug:
                 print("Alienship hit the player")
+
+            #Set the game to be over
+            self.over = True
                 
             #If so it is gameover for the player
             return State.GAMEOVER
