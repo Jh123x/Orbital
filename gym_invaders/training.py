@@ -46,8 +46,9 @@ def random_play():
     score = 0
     env.reset()
     while True:
-        #env.render(RENDER)
+        env.render(RENDER)
         action = env.action_space.sample()
+        action = 1
         state, reward, done, _ = env.step(action)
         score += reward
         print(done)
@@ -57,7 +58,7 @@ def random_play():
             print("Your Score at end of game is: ", score)
             break
 
-#random_play()
+random_play()
 
 def frame_preprocess(frame):
     env.reset()
@@ -78,6 +79,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print('Device:', device)
 
 INPUT_SHAPE = (4, 84, 84)
+RENDER = True
 ACTION_SIZE = env.action_space.n
 SEED = 0
 GAMMA = 0.99           # discount factor
@@ -129,7 +131,7 @@ def train(n_episodes=1000, load = None):
         filename = input(f'Please input the filename to save: ')
 
     #Toggles the render on
-    # env.render(RENDER)
+    env.render(RENDER)
     for i_episode in range(start_epoch + RUNS + 1, n_episodes + RUNS + 1):
         RUNS += 1
         print(f"Run No: {RUNS}")

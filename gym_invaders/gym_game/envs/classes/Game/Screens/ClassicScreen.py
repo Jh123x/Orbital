@@ -29,7 +29,7 @@ class ClassicScreen(PlayScreen):
 
     def enemy_touched_bottom(self) -> bool:
         """Check if enemy touched the bottom of the screen"""
-        return len(tuple(filter(lambda x: x.get_y() + x.get_height()//2 > self.screen_height - (self.player.get_height() + 10), self.enemies))) > 0
+        return any(filter(lambda x: (x.get_y() + x.get_height()//2) > (self.screen_height - self.player.get_height() - 100), self.enemies))
 
     def check_collisions(self) -> int:
         """Check collisions between the sprites"""
