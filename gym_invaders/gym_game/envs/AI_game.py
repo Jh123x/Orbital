@@ -4,11 +4,8 @@ import matplotlib.pyplot as plt
 from .classes import *
 
 class PyGame_2D(object):
-    def __init__(self, settings:str):
+    def __init__(self, settings:str, t:str = 'Play'):
         """Pygame_2d object for AI to be trained on"""
-
-        #Read the configuration file for space invaders
-        settings = "settings.cfg"
 
         #Read the configuration file for space invaders
         all_cfg = read_all(form_abs_path(__file__,settings))
@@ -45,16 +42,21 @@ class PyGame_2D(object):
         screen_height = 800
         fps = 60
 
-        self.written = False
-
         #Init screen
         self.screen = pygame.display.set_mode((screen_width, screen_height))
+
+        #Init playscreen
+        if t.lower() == 'play':
+            self.state = PlayScreen(screen_width, screen_height, self.screen, 5, fps, Difficulty(4))
+        elif t.lower() == 'classic':
+            self.state = ClassicScreen(screen_width, screen_height, self.screen, 5, fps, Difficulty(4))
+
+        self.written = False
 
         #Set fps
         self.clock = pygame.time.Clock()
 
-        #Init playscreen
-        self.state = PlayScreen(screen_width, screen_height, self.screen, 5, fps, Difficulty(4))
+        
 
         #Player Object
         self.player = self.state.player
@@ -154,6 +156,9 @@ class PyGame_2D(object):
         '''Draws the hitboxes of each enemy after updating the state of the enemy'''
         self.state.handle()
         self.state.draw_hitboxes()
+
+    def close(self):
+        self.state.close()
 
 if __name__ == '__main__':
     settings = "settings.cfg"

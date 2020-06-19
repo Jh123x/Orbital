@@ -3,7 +3,7 @@ import os
 from math import exp
 import sys
 from collections import deque
-# import warnings
+import datetime
 
 # Numeric Computation Module
 import numpy as np
@@ -29,9 +29,10 @@ from ai_invader.util import stack_frame,preprocess_frame
 #create a local directory to store pickle files from training
 PATH = os.getcwd()+'/obj'
 os.makedirs('obj', exist_ok=True)
+RENDER = True
 
 #Retrieve Training Environment
-#env = gym.make("Invader-v0")
+# env = gym.make("Invader-v0")
 env = gym.make("Classic-v0")
 print("The size of frame is: ", env.observation_space.shape)
 print("No. of Actions: ", env.action_space.n)
@@ -45,7 +46,7 @@ def random_play():
     score = 0
     env.reset()
     while True:
-        #env.render()
+        #env.render(RENDER)
         action = env.action_space.sample()
         state, reward, done, _ = env.step(action)
         score += reward
@@ -89,6 +90,7 @@ UPDATE_TARGET = 1000  # After which thershold replay to be started
 EPS_START = 0.99       # starting value of epsilon
 EPS_END = 0.01         # Ending value of epsilon
 EPS_DECAY = 100#200 #500         # Rate by which epsilon to be decayed
+RUNS = 0
 
 agent = DQNAgent(INPUT_SHAPE, ACTION_SIZE, SEED, device, BUFFER_SIZE, BATCH_SIZE, GAMMA, LR, TAU, UPDATE_EVERY, UPDATE_TARGET, DQNCNN)
 
@@ -100,12 +102,16 @@ epsilon_delta = lambda frame_idx: EPS_END + (EPS_START-EPS_END) * exp(-1. *frame
 
 def save_obj(obj, name):
     '''Saves the state dictionary int obj path'''
-    print('saving')
+    print('Saving..')
     torch.save(obj, os.path.join(PATH,name))
+    print('Saved')
 
 def load_obj(agent, path):
     '''Calls the agent to load the pytorch model'''
-    agent.load_model(torch.load(path))
+    global RUNS
+    d = torch.load(path)
+    RUNS = d.get('epsilon', 0)
+    agent.load_model(d)
 
 print('Begin training')
 def train(n_episodes=1000, load = None):
@@ -113,17 +119,23 @@ def train(n_episodes=1000, load = None):
     n_episodes: maximum number of training episodes
     Saves Model every 100 Epochs
     """
+    global RUNS, agent
+    t = datetime.datetime.now()
     filename = load
     if load:
-        agent.load_model(load)
+        loc = os.path.join(PATH, load)
+        load_obj(agent,loc)
     else:
         filename = input(f'Please input the filename to save: ')
-    #env.render()
-    for i_episode in range(start_epoch + 1, n_episodes + 1):
+
+    #Toggles the render on
+    # env.render(RENDER)
+    for i_episode in range(start_epoch + RUNS + 1, n_episodes + RUNS + 1):
+        RUNS += 1
+        print(f"Run No: {RUNS}")
         state = stack_frames(None, env.reset(), True)
         score = 0
-        eps = epsilon_delta(i_episode)
-        #env.render() # Uncomment to render the surface
+        eps = epsilon_delta(RUNS)
         while True:
             action = agent.action(state, eps)
             next_state, reward, done, info = env.step(action)
@@ -140,12 +152,14 @@ def train(n_episodes=1000, load = None):
                 break
         scores_window.append(score)  # save most recent score
         scores.append(score)  # save most recent score
-        print(f'\rEpisode {i_episode}\tAverage Score: {np.mean(scores_window)}')
-        print(i_episode)
+        t1 = datetime.datetime.now()
+        taken = t1 - t
+        t = t1
+        print(f'\rEpisode {i_episode}\tAverage Score: {np.mean(scores_window)}\nTime:{taken}')
         # if i_episode==1:
         #     # Testing code for
-        #     #print(agent.model_dict())
-        save_obj(agent.model_dict(),'sample.pth')
+        #     #print(agent.model_dict(epsilon))
+        save_obj(agent.model_dict(RUNS),'sample.pth')
         if i_episode % 100 == 0:
             print('\rEpisode {}\tAverage Score: {:.2f}'.format(i_episode, np.mean(scores_window)))
             fig = plt.figure()
@@ -154,10 +168,10 @@ def train(n_episodes=1000, load = None):
             plt.ylabel('Score')
             plt.xlabel('Episode #')
             plt.save(fig)
-            save_obj(agent.model_dict(), filename+'.pth')
+            save_obj(agent.model_dict(RUNS), filename+'.pth')
     return scores
 
-scores = train(1)
+scores = train(5000,'sample.pth')
 #load_obj(agent,path=PATH+'/model.pth')
 def trained_agent(agent):
     '''
@@ -166,7 +180,7 @@ def trained_agent(agent):
     score = 0
     state = stack_frames(None, env.reset(), True)
     while True:
-        env.render()
+        env.render(RENDER)
         action = agent.action(state)
         next_state, reward, done, _ = env.step(action)
         score += reward

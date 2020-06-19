@@ -19,12 +19,16 @@ class ReplayMemory(object):
         self.transition = namedtuple('Transition' ,field_names=('st', 'act', 'r', 'n_s' ,'d'))
         self.seed = random.seed(seed)
         self.device = device
+        self.orderfunc = [lambda x: torch.from_numpy(np.array(x)).float().to(self.device), 
+                            lambda x: torch.from_numpy(np.array(x)).long().to(self.device), 
+                            lambda x: torch.from_numpy(np.array(x)).float().to(self.device), 
+                            lambda x: torch.from_numpy(np.array(x)).float().to(self.device), 
+                            lambda x: torch.from_numpy(np.array(x).astype(np.uint8)).float().to(self.device)]
 
     def add(self, state, action, reward, next_state, done):
         """Add a new experience to memory."""
         e = self.transition(state, action, reward, next_state, done)
         self.buffer.append(e)
-
 
     def load(self, state):
         ''' Loads Memory from Prior Training'''
@@ -33,17 +37,23 @@ class ReplayMemory(object):
         self.batch_size = bat
         self.seed = seed
 
-
     def sample(self):
         ''' Randomly sample a batch of experiences from memory'''
-        exp = random.sample(self.buffer ,k = self.batch_size)
-        states = torch.from_numpy(np.array([e.st for e in exp if e is not None])).float().to(self.device)
-        actions = torch.from_numpy(np.array([e.act for e in exp if e is not None])).long().to(self.device)
-        rewards = torch.from_numpy(np.array([e.r for e in exp if e is not None])).float().to(self.device)
-        next_states = torch.from_numpy(np.array([e.n_s for e in exp if e is not None])).float().to(self.device)
-        done = torch.from_numpy(np.array([e.d for e in exp if e is not None]).astype(np.uint8)).float().to(self.device)
 
-        return (states, actions, rewards, next_states, done)
+        #Get a sample
+        exp = random.sample(self.buffer ,k = self.batch_size)
+        
+        #Return the sample in the correct format
+        return (self.orderfunc[i](v) for i,v in enumerate(zip(*exp)))
+
+        # print(tuple(result))
+        # states = torch.from_numpy(np.array([e.st for e in exp if e is not None])).float().to(self.device)
+        # actions = torch.from_numpy(np.array([e.act for e in exp if e is not None])).long().to(self.device)
+        # rewards = torch.from_numpy(np.array([e.r for e in exp if e is not None])).float().to(self.device)
+        # next_states = torch.from_numpy(np.array([e.n_s for e in exp if e is not None])).float().to(self.device)
+        # done = torch.from_numpy(np.array([e.d for e in exp if e is not None]).astype(np.uint8)).float().to(self.device)
+        # result = (states, actions, rewards, next_states, done)
+        # print(result)
 
     def __len__(self):
         '''Return the current size of memory'''
@@ -57,7 +67,6 @@ def preprocess_frame(state, output):
 
 def stack_frame(stacked_frames, frame, is_new):
     """Stacking Frames.
-
         Params
         ======
             stacked_frames (array): Four Channel Stacked Frame
@@ -66,11 +75,16 @@ def stack_frame(stacked_frames, frame, is_new):
         """
     if is_new:
         stacked_frames = np.stack(arrays=[frame, frame, frame, frame])
-        stacked_frames = stacked_frames
     else:
-        stacked_frames[0] = stacked_frames[1]
-        stacked_frames[1] = stacked_frames[2]
-        stacked_frames[2] = stacked_frames[3]
-        stacked_frames[3] = frame
+        stacked_frames[:-1] = stacked_frames[1:]
+        stacked_frames[-1] = frame
 
     return stacked_frames
+
+
+if __name__ == '__main__':
+    mem = ReplayMemory(1000, 4, 123, 'cuda')
+
+    for _ in range(1000):
+        mem.add(1,2,3,4,5)
+    mem.sample()

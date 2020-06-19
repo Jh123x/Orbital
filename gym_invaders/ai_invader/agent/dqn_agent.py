@@ -1,8 +1,10 @@
 import numpy.random as rand
 import torch.nn.functional as F
 import torch.optim as optim
+import random
+import torch
+import numpy as np
 from ..util.memory import *
-
 
 
 class DQNAgent():
@@ -44,10 +46,13 @@ class DQNAgent():
         self.t_step = 0
 
     def step(self, state, action, reward, next_state, done):
+
         # Save experience into replay buffer
         self.memory.add(state, action, reward, next_state, done)
+
         # Learn every update % timestep
         # print(self.t_step)
+
         self.t_step = (self.t_step + 1) % self.update
 
         # print(self.t_step)
@@ -59,12 +64,21 @@ class DQNAgent():
 
     def action(self, state, eps=0.):
         ''' Returns action for given state as per current policy'''
+        #Unpack the state
         state = torch.from_numpy(state).unsqueeze(0).to(self.device)
+
+        #Evaluate the policy
         self.policy_net.eval()
+
         with torch.no_grad():
+
+            #Get action value
             action_val = self.policy_net(state)
+        
+        #Train the network
         self.policy_net.train()
-        # Eps Greedy action selections
+
+        #Eps Greedy action selections
         if rand.rand() > eps:
             return np.argmax(action_val.cpu().data.numpy())
         else:
@@ -79,6 +93,7 @@ class DQNAgent():
 
         # Get max predicted Q values for next state from target model
         Q_target_next = self.target_net(next_state).detach().max(1)[0]
+
         # Compute Q targets for current states
         Q_target = reward + (self.gamma * Q_target_next * (1 - done))
 
@@ -92,17 +107,16 @@ class DQNAgent():
 
         self.soft_update(self.policy_net, self.target_net, self.tau)
 
-    def model_dict(self)-> dict:
+    def model_dict(self, epsilon)-> dict:
         ''' To save models'''
         return {'policy_net': self.policy_net.state_dict(), 'target_net': self.target_net.state_dict(),
-                 't_step': self.t_step}
+                 't_step': self.t_step, 'epsilon': epsilon}
 
     def load_model(self, state_dict):
-        '''
-        Load Parameters and Model Information from prior training
-        '''
+        '''Load Parameters and Model Information from prior training'''
         self.policy_net.load_state_dict(state_dict['policy_net'])
         self.target_net.load_state_dict(state_dict['target_net'])
+
         #Load the model
         self.policy_net.eval()
         self.target_net.eval()

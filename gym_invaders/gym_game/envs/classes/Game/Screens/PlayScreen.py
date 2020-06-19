@@ -124,6 +124,10 @@ class PlayScreen(Screen):
             #Make the enemy shoot
             enemy.shoot()
 
+    def get_enemies(self) -> tuple:
+        """Get tuple of all the enemy sprites"""
+        return tuple(self.enemies)
+
     def draw_hitboxes(self):
         """Draw hitboxes for players and objects"""
 
