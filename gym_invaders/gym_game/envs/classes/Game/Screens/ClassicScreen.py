@@ -24,6 +24,7 @@ class ClassicScreen(PlayScreen):
 
         #Call superclass reset
         super().reset()
+
     def draw_hitboxes(self):
         for sprite in self.blocks:
             pygame.draw.rect(self.surface, (0, 255, 0), sprite.rect, 0)

@@ -63,7 +63,7 @@ def random_play():
             print("Your Score at end of game is: ", score)
             break
 
-#random_play()
+random_play()
 
 def frame_preprocess(frame):
     # env.reset()
@@ -152,7 +152,7 @@ def train(n_episodes=1000, load = None):
         # if i_episode==1:
         #     # Testing code for
         #     #print(agent.model_dict())
-        #     save_obj(agent.model_dict(),'sample.pth')
+        #     save_obj(agent.model_dict(),'sample')
         if i_episode % 100 == 0:
             print('\rEpisode {}\tAverage Score: {:.2f}'.format(i_episode, np.mean(scores_window)))
             fig = plt.figure()
@@ -173,7 +173,6 @@ def trained_agent(agent):
     score = 0
     state = stack_frames(None, env.reset(), True)
     while True:
-        env.render()
         action = agent.action(state)
         next_state, reward, done, _ = env.step(action)
         score += reward
