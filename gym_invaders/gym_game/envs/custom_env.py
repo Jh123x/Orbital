@@ -22,9 +22,10 @@ class CustomEnv(PyGame_2D,gym.Env):
         self.prev_score = 0
         
     def reset(self):
+        """Reset the environment"""
         obs = self.get_space()
         self.time = 0
-        self.score = 0
+        self.prev_score = 0
         super().reset()
         return obs
 
