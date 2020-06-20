@@ -87,10 +87,6 @@ class Player(MovingObject):
         """
         return self.cooldown > 0
 
-    def draw(self, screen) -> None:
-        """Draw the player onto the screen"""
-        screen.blit(self.image, self.rect)
-
     def shoot(self) -> bool:
         """Lets the player shoot a bullet
             Arguments:

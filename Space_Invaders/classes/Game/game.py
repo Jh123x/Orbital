@@ -70,7 +70,7 @@ class GameWindow(object):
         pygame.display.set_icon(icon)
 
         #Set the dimensions
-        self.main_screen = pygame.display.set_mode((game_width,game_height))
+        self.main_screen = pygame.display.set_mode((game_width,game_height), pygame.DOUBLEBUF | pygame.HWSURFACE, 32)
 
         #Initialise the pygame window
         self.clock = pygame.time.Clock()

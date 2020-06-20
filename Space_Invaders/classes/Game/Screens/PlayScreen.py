@@ -168,6 +168,8 @@ class PlayScreen(Screen):
         #Update the position of all bullets
         self.up_bullets.update()
         self.down_bullets.update()
+
+        #Draw bullet
         self.up_bullets.draw(self.surface)
         self.down_bullets.draw(self.surface)
 
@@ -183,7 +185,7 @@ class PlayScreen(Screen):
             print(f"Number of enemies: {len(self.enemies)}")
 
         #Draw the explosions
-        self.explosions.draw(self.screen)
+        self.explosions.draw(self.surface)
 
         #Draw player object
         self.player.draw(self.surface)
@@ -283,7 +285,6 @@ class PlayScreen(Screen):
 
         #If nothing is destroyed return 0 points
         return 0
-
 
     def spawn_enemies(self, number:int) -> None:
         """Spawn enemies into the game

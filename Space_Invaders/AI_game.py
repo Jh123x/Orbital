@@ -1,7 +1,10 @@
 import pygame
 import numpy as np
 import matplotlib.pyplot as plt
-from .classes import *
+try:
+    from .classes import *
+except:
+    from classes import *
 
 class PyGame_2D(object):
     def __init__(self, settings:str, t:str = 'Play'):
@@ -55,8 +58,6 @@ class PyGame_2D(object):
 
         #Set fps
         self.clock = pygame.time.Clock()
-
-        
 
         #Player Object
         self.player = self.state.player

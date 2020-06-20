@@ -28,9 +28,18 @@ class ImageObject(BaseObject):
 
         #Check if the image path is None
         self.image = image
+        self.rect = None
 
         #Load the rect
         self.load_rect()
+
+
+    def draw(self, screen) -> None:
+        """Draw the player onto the screen"""
+        #Get previous rect position and empty img
+
+        #Render new position
+        screen.blit(self.image, self.rect)
 
     def load_rect(self) -> None:
         """Load the rectangle for the obj
@@ -56,7 +65,7 @@ class ImageObject(BaseObject):
 
             #Inflate the model to the correct size
             self.rect.inflate(self.get_width()//2,self.get_height()//2)
-        
+
         #Set the center of the rect
         self.rect.center = (self.x,self.y)
 
