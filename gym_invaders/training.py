@@ -162,15 +162,28 @@ def train(n_episodes=1000, load = None):
         #     # Testing code for
         #     #print(agent.model_dict(epsilon))
         save_obj(agent.model_dict(RUNS),'sample.pth')
+
+        #Every 100 training
         if i_episode % 100 == 0:
-            print('\rEpisode {}\tAverage Score: {:.2f}'.format(i_episode, np.mean(scores_window)))
+
+            print(f"Creating plot")
+            #Plot a figure
             fig = plt.figure()
-            ax = fig.add_subplot(111)
+
+            #Add a subplot
+            # ax = fig.add_subplot(111)
+
+            #Plot the graph
             plt.plot(np.arange(len(scores)), scores)
-            plt.ylabel('Score')
+
+            #Add labels
             plt.xlabel('Episode #')
-            plt.save(fig)
-            save_obj(agent.model_dict(RUNS), filename+'.pth')
+            plt.ylabel('Score')
+
+            #Save the plot
+            plt.savefig(f'{i_episode} plot.png')
+
+            print(f"Plot saved")
     return scores
 
 scores = train(5000,'sample.pth')
