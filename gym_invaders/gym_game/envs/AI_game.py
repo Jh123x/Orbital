@@ -134,7 +134,7 @@ class PyGame_2D(object):
 
     def is_over(self) -> bool:
         '''Returns if game state is over or quit'''
-        return self.player.is_destroyed()
+        return self.state.is_over()
 
     def get_score(self) -> int:
         """Get the current score"""

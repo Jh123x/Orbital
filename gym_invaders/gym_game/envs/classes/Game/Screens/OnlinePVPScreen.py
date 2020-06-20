@@ -6,6 +6,7 @@ from pygame.locals import *
 
 class OnlinePVPScreen(LocalPVPScreen):
     def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, fps:int, player_lives:int = 3, debug:bool = False):
+        """The main class for the online PVP screen"""
 
         #Call the superclass
         super().__init__(screen_width, screen_height, screen, sensitivity, fps, player_lives, debug)
@@ -24,7 +25,7 @@ class OnlinePVPScreen(LocalPVPScreen):
     def create_network(self):
         """Create the network for the player to be hosted on"""
         #Create the network
-        self.network = Network("jhcraft123.ddns.net",5555)
+        self.network = Network("192.168.1.215",5555)
 
     def pack_player_data(self, player:Player, shoot:bool, score:int):
         """Pack the data into the correct form to be sent"""
@@ -167,7 +168,8 @@ class OnlinePVPScreen(LocalPVPScreen):
         #Otherwise draw the game
         else:
             #Set waiting to false
-            self.waiting = False
+            if self.waiting:
+                self.waiting = False
 
             #Call the superclass handle
             state = super().handle()
@@ -189,6 +191,7 @@ class OnlinePVPScreen(LocalPVPScreen):
 
         self.network = None
         self.waiting = True
+        self.reset()
 
     def __del__(self):
         """Destructor for the object"""

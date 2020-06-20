@@ -40,7 +40,7 @@ class Network(object):
         except socket.error:
             print("Error network")
 
-            #Try connecting again
+            #Try connecting again if the reconnected less than 10 times
             if self.tries < 10:
                 self.connect()
 
@@ -62,6 +62,10 @@ class Network(object):
                 #Load the data
                 data = pickle.loads(data)
 
+            #Close the socket if the data is empty
+            else:
+                self.close()
+
             #Reset the tries
             self.tries = 0
 
@@ -70,8 +74,14 @@ class Network(object):
 
         #If there is error print the error and try again
         except socket.error as exp:
+
+            #Get the error
             print(exp)
+
+            #If the reconnection is less than 10 times
             if self.tries < 10:
+
+                #Continue to send the data over
                 return self.send(data)
 
     def close(self):

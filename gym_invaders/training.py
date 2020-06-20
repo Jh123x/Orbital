@@ -46,18 +46,19 @@ def random_play():
     score = 0
     env.reset()
     while True:
-        #env.render(RENDER)
+        env.render(RENDER)
         action = env.action_space.sample()
+        action = 1
         state, reward, done, _ = env.step(action)
         score += reward
         print(done)
 
         if done:
-            env.close()
+            # env.close()
             print("Your Score at end of game is: ", score)
             break
 
-#random_play()
+# random_play()
 
 def frame_preprocess(frame):
     env.reset()
@@ -78,15 +79,16 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print('Device:', device)
 
 INPUT_SHAPE = (4, 84, 84)
+RENDER = False
 ACTION_SIZE = env.action_space.n
 SEED = 0
 GAMMA = 0.99           # discount factor
-BUFFER_SIZE = 10000   # replay buffer size
+BUFFER_SIZE = 10000    # replay buffer size
 BATCH_SIZE = 64        # Update batch size
 LR = 0.0001            # learning rate
 TAU = 1e-3             # for soft update of target parameters
-UPDATE_EVERY = 1       # how often to update the network
-UPDATE_TARGET = 1000  # After which thershold replay to be started
+UPDATE_EVERY = 7       # how often to update the network
+UPDATE_TARGET = 6*BATCH_SIZE   # After which thershold replay to be started
 EPS_START = 0.99       # starting value of epsilon
 EPS_END = 0.01         # Ending value of epsilon
 EPS_DECAY = 100#200 #500         # Rate by which epsilon to be decayed
@@ -129,7 +131,7 @@ def train(n_episodes=1000, load = None):
         filename = input(f'Please input the filename to save: ')
 
     #Toggles the render on
-    # env.render(RENDER)
+    env.render(RENDER)
     for i_episode in range(start_epoch + RUNS + 1, n_episodes + RUNS + 1):
         RUNS += 1
         print(f"Run No: {RUNS}")
@@ -150,8 +152,8 @@ def train(n_episodes=1000, load = None):
             state = next_state
             if done:
                 break
-        scores_window.append(score)  # save most recent score
-        scores.append(score)  # save most recent score
+        scores_window.append(score) # save most recent score
+        scores.append(score)        # save most recent score
         t1 = datetime.datetime.now()
         taken = t1 - t
         t = t1
@@ -160,15 +162,28 @@ def train(n_episodes=1000, load = None):
         #     # Testing code for
         #     #print(agent.model_dict(epsilon))
         save_obj(agent.model_dict(RUNS),'sample.pth')
+
+        #Every 100 training
         if i_episode % 100 == 0:
-            print('\rEpisode {}\tAverage Score: {:.2f}'.format(i_episode, np.mean(scores_window)))
+
+            print(f"Creating plot")
+            #Plot a figure
             fig = plt.figure()
-            ax = fig.add_subplot(111)
+
+            #Add a subplot
+            # ax = fig.add_subplot(111)
+
+            #Plot the graph
             plt.plot(np.arange(len(scores)), scores)
-            plt.ylabel('Score')
+
+            #Add labels
             plt.xlabel('Episode #')
-            plt.save(fig)
-            save_obj(agent.model_dict(RUNS), filename+'.pth')
+            plt.ylabel('Score')
+
+            #Save the plot
+            plt.savefig(f'{i_episode} plot.png')
+
+            print(f"Plot saved")
     return scores
 
 scores = train(5000,'sample.pth')
@@ -188,7 +203,7 @@ def trained_agent(agent):
         if done:
             print("You Final score is:", score)
             break
-    env.close()
+    # env.close()
 ###
 # To view Trained Agent after a checkpoint
 load_obj(agent, path=os.path.join(PATH,'sample.pth'))
