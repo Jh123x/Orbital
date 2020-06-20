@@ -43,43 +43,80 @@ env.reset()
 # plt.show()
 
 def random_play():
+    """Let the ai play randomly"""
     score = 0
-    env.reset()
-    while True:
-        env.render(RENDER)
-        action = env.action_space.sample()
-        action = 1
-        state, reward, done, _ = env.step(action)
-        score += reward
-        print(done)
 
+    #Reset environment
+    env.reset()
+
+    #Game loop
+    while True:
+
+        #Render graphics if applicable
+        env.render(RENDER)
+
+        #Sample from action space
+        action = env.action_space.sample()
+
+        #Do the action and obtain vars
+        state, reward, done, _ = env.step(action)
+
+        #Increment score
+        score += reward
+
+        #If game is done break out of loop
         if done:
-            # env.close()
             print("Your Score at end of game is: ", score)
             break
+
+    #Close the env
+    env.close()
 
 # random_play()
 
 def frame_preprocess(frame):
+    """Plot the preprocessed frame"""
     env.reset()
+
+    #Plot the figure
     plt.figure()
+
+    #Show the pre processed frame
     plt.imshow(preprocess_frame(env.reset(), (0, 0, 0, 0), 84), cmap="gray")
+
+    #Add title
     plt.title('Pre Processed image')
+
+    #Show the plot
     plt.show()
 
 def stack_frames(frames, state, is_new=False):
     '''
     Function combine of utility functions to preprocess the frames
     '''
+
+    #Preprocess the frame
     frame = preprocess_frame(state, 84)
+
+    #Stack the frame
     frames = stack_frame(frames,frame, is_new)
+
+    #Return stacked frames
     return frames
 
+#Initialise device (Uses cuda if possible)
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+#Print cuda
 print('Device:', device)
 
+#Shape of nn
 INPUT_SHAPE = (4, 84, 84)
+
+#Determine rendering of GUI
 RENDER = False
+
+#AI vars
 ACTION_SIZE = env.action_space.n
 SEED = 0
 GAMMA = 0.99           # discount factor
@@ -94,10 +131,16 @@ EPS_END = 0.01         # Ending value of epsilon
 EPS_DECAY = 100#200 #500         # Rate by which epsilon to be decayed
 RUNS = 0
 
+#Initialise the DQNagent
 agent = DQNAgent(INPUT_SHAPE, ACTION_SIZE, SEED, device, BUFFER_SIZE, BATCH_SIZE, GAMMA, LR, TAU, UPDATE_EVERY, UPDATE_TARGET, DQNCNN)
 
+#Defining vars
 start_epoch = 0
+
+#Scores to keep track of all scores
 scores = []
+
+#Deque of max size 20 (will push out left most element when adding new ones when len=maxlen)
 scores_window = deque(maxlen=20)
 
 epsilon_delta = lambda frame_idx: EPS_END + (EPS_START-EPS_END) * exp(-1. *frame_idx/EPS_DECAY)
@@ -121,7 +164,7 @@ def train(n_episodes=1000, load = None):
     n_episodes: maximum number of training episodes
     Saves Model every 100 Epochs
     """
-    global RUNS, agent
+    global RUNS, agent, scores, scores_window
     t = datetime.datetime.now()
     filename = load
     if load:
@@ -134,7 +177,6 @@ def train(n_episodes=1000, load = None):
     env.render(RENDER)
     for i_episode in range(start_epoch + RUNS + 1, n_episodes + RUNS + 1):
         RUNS += 1
-        print(f"Run No: {RUNS}")
         state = stack_frames(None, env.reset(), True)
         score = 0
         eps = epsilon_delta(RUNS)
@@ -182,8 +224,9 @@ def train(n_episodes=1000, load = None):
 
             #Save the plot
             plt.savefig(f'{i_episode} plot.png')
-
             print(f"Plot saved")
+
+    #Return the scores
     return scores
 
 scores = train(5000,'sample.pth')
