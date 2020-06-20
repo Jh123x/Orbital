@@ -20,7 +20,6 @@ class AIPlayer(Player):
                     initial_y:int, init_life:int, fps:int, bullet_grp:pygame.sprite.Group(), 
                     bullet_direction:Direction, frames_per_action:int, ai = None, debug:bool = False):
         """Constructor for the AI Player class
-        ai argument should
         """
 
         #Call the superclass
@@ -34,7 +33,7 @@ class AIPlayer(Player):
             self.ai = False
         else:
             device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-            self.ai = DQNAgent(device=device, model=DQNCNN)
+            self.ai = DQNAgent()
             #self.ai.load_model(torch.load('<file path here>'))
         self.screen = None
         self.state = None
@@ -84,6 +83,7 @@ class AIPlayer(Player):
             a = self.ai.action(self.state)
             # Performs Action with greatest expected reward
             return actions[a]
+
         elif not self.state:
             # for the first timestep where there is no stackedframes yet
             self.state = stack_frames(None, state, False)

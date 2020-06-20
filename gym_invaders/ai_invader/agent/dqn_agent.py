@@ -8,8 +8,8 @@ from ..util.memory import *
 
 
 class DQNAgent():
-    def __init__(self, input_shape = (4, 84, 84), action_size = 6, seed = 0, device = , buffer_size= 0, batch_size= 0,
-                 gamma= 0.99, alpha = 0.0001, tau = 1e-3, update = 1, replay = 1000, model):
+    def __init__(self, input_shape , action_size , seed , device, buffer_size, batch_size,
+                 gamma, alpha, tau, update, replay, model):
         '''Initialise a Agent Object
         input_shape : dimensions of each state(C, H, W)
         action size : dimension of each action

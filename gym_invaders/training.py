@@ -79,7 +79,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print('Device:', device)
 
 INPUT_SHAPE = (4, 84, 84)
-RENDER = False
+RENDER = True
 ACTION_SIZE = env.action_space.n
 SEED = 0
 GAMMA = 0.99           # discount factor
@@ -111,7 +111,7 @@ def save_obj(obj, name):
 def load_obj(agent, path):
     '''Calls the agent to load the pytorch model'''
     global RUNS
-    d = torch.load(path)
+    d = torch.load(path,map_location='cpu')
     RUNS = d.get('epsilon', 0)
     agent.load_model(d)
 
@@ -139,6 +139,7 @@ def train(n_episodes=1000, load = None):
         score = 0
         eps = epsilon_delta(RUNS)
         while True:
+            # Take an action with the current policy or an random action based on exploration-exploitation tradeoff
             action = agent.action(state, eps)
             next_state, reward, done, info = env.step(action)
             #if not score:
@@ -186,7 +187,7 @@ def train(n_episodes=1000, load = None):
             print(f"Plot saved")
     return scores
 
-scores = train(5000,'sample.pth')
+#scores = train(5000,'sample.pth')
 #load_obj(agent,path=PATH+'/model.pth')
 def trained_agent(agent):
     '''
