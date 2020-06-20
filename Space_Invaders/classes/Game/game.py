@@ -149,7 +149,7 @@ class GameWindow(object):
             State.CLASSIC: self.classic.handle,
             State.SETTINGS: self.settings.handle,
             State.COOP: self.coop.handle,
-            State.ONLINE: self.online.handle,
+            State.ONLINE: self.handle_online,
             State.QUIT:self.__del__
         }
 
@@ -164,6 +164,11 @@ class GameWindow(object):
         PauseScreen.sound = self.sound
         GameoverScreen.sound = self.sound
         TwoPlayerGameoverScreen.sound = self.sound
+    
+    def handle_online(self) -> State:
+        """Handle the online game"""
+        self.popup = Popup(320, 40, "Under Construction", self.fps, self.game_width//2 - 80, self.game_height//2, self.main_screen,font = Screen.end_font, debug = self.debug)
+        return self.prev
 
     def handle_two_player_pause(self) -> State:
         """Handle the PVP pause screen"""
@@ -179,7 +184,7 @@ class GameWindow(object):
             scores = self.coop.get_scores()
         elif self.prev == State.AI_VS:
             prev = State.AI_VS
-            pres = self.ai_vs
+            prevs = self.ai_vs
             scores = self.ai_vs.get_scores()
         else:
             assert False, f"{self.state}, cannot be paused"
@@ -194,7 +199,7 @@ class GameWindow(object):
         if state == State.MENU:
 
             #Reset the state
-            pres.reset()
+            prevs.reset()
             return state
 
         #If it goes back to the game
@@ -405,7 +410,7 @@ class GameWindow(object):
             asyncio.run(self.screenshot())
 
             #Create a 1 second popup saying screenshot is taken 
-            self.popup = Popup(20*8, 30, "Screenshot taken", self.fps, self.game_width//2, 15, self.main_screen, debug = self.debug)
+            self.popup = Popup(20*8, 30, "Screenshot taken", self.fps, self.game_width//2, 15, self.main_screen, font = Screen.font, debug = self.debug)
 
     def update(self) -> None:
         """Update the main screen"""

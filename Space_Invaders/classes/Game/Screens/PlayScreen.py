@@ -61,6 +61,10 @@ class PlayScreen(Screen):
         """Get a list of hitboxes of mobs"""
         return [(self.player.get_coord()), tuple(x.get_coord() for x in self.up_bullets), tuple(x.get_coord() for x in self.enemies), tuple(x.get_coord() for x in self.down_bullets)]
 
+    def get_enemies(self) -> tuple:
+        """Get a tuple of the enemies"""
+        return tuple(self.enemies)
+
     def update_keypresses(self) -> None:
         """Update the screen based on what the player has pressed
             Arguments:
@@ -203,6 +207,10 @@ class PlayScreen(Screen):
             Returns: 
                 No returns
         """
+
+        #Reset the over
+        self.over = False
+        
         #Zero the score and the wave
         self.score = 0
         self.wave = 0
@@ -296,7 +304,7 @@ class PlayScreen(Screen):
 
     def enemy_touched_bottom(self) -> bool:
         """Check if any enemies have touched the bottom of the screen"""
-        return len(tuple(filter(lambda x: x.get_y() + x.get_height()//2 > self.screen_height - self.player.get_height(), self.enemies ))) > 0
+        return any(filter(lambda x: x.get_y() + x.get_height()//2 > self.screen_height - self.player.get_height(), self.enemies ))
 
     def is_over(self) -> bool:
         """Checks if the game is over"""

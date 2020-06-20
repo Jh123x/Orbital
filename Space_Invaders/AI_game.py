@@ -1,14 +1,11 @@
 import pygame
-import numpy
-from matplotlib import pyplot as plt
-from classes import *
+import numpy as np
+import matplotlib.pyplot as plt
+from .classes import *
 
 class PyGame_2D(object):
-    def __init__(self, settings:str):
+    def __init__(self, settings:str, t:str = 'Play'):
         """Pygame_2d object for AI to be trained on"""
-
-        #Read the configuration file for space invaders
-        settings = "settings.cfg"
 
         #Read the configuration file for space invaders
         all_cfg = read_all(form_abs_path(__file__,settings))
@@ -45,18 +42,21 @@ class PyGame_2D(object):
         screen_height = 800
         fps = 60
 
-        self.f = numpy.vectorize(lambda x: 0 if x == 0 else 100)
-
-        self.written = False
-
         #Init screen
         self.screen = pygame.display.set_mode((screen_width, screen_height))
+
+        #Init playscreen
+        if t.lower() == 'play':
+            self.state = PlayScreen(screen_width, screen_height, self.screen, 5, fps, Difficulty(4))
+        elif t.lower() == 'classic':
+            self.state = ClassicScreen(screen_width, screen_height, self.screen, 5, fps, Difficulty(4))
+
+        self.written = False
 
         #Set fps
         self.clock = pygame.time.Clock()
 
-        #Init playscreen
-        self.state = PlayScreen(screen_width, screen_height, self.screen, 5, fps, Difficulty(4))
+        
 
         #Player Object
         self.player = self.state.player
@@ -64,14 +64,10 @@ class PyGame_2D(object):
 
     def mainloop(self) -> None:
         """Mainloop"""
-
-        #Main variables
         screen_width = 600
         screen_height = 800
         fps = 60
         running = True
-
-        #Main loop for the game
         while running:
 
             #Clock the fps
@@ -85,20 +81,17 @@ class PyGame_2D(object):
 
             #Print score if the game is over
             if self.nextState == State.GAMEOVER:
-
                 #Print the score and quit the game
                 print(f"Score: {self.state.get_score()}")
 
             #Update the display with the screen
             pygame.display.update()
-
+            #self.state.draw_hitboxes()
+            #print(self.get_space_boolean())
             #If the state is quit or player closes the game
             for item in pygame.event.get():
                 if item.type == pygame.QUIT:
                     running = False
-
-            #Draw the hitboxes
-            self.state.draw_hitboxes()
 
     def action(self, number:int) -> None:
         """Performs the action based on the number
@@ -109,35 +102,39 @@ class PyGame_2D(object):
         """
         self.get_action()[number]()
 
+    def move_shoot(self, bool):
+        '''
+        To encompass both move_left and shoot, and move_right and shoot action
+        from Original Space Invaders Gym Environment
+        '''
+        if bool:
+            self.player.move_left()
+            return self.player.shoot
+        self.player.move_right()
+        return self.player.shoot
+
     def get_action(self) -> tuple:
         """List of actions that the player can take (tuple of functions)"""
-        return (self.player.shoot, self.player.move_left, self.player.move_right, lambda : 1)
-
-    def get_hitboxes(self) -> list:
-        """Get the hitboxes of the """
-        return self.state.get_hitboxes()
+        return (self.player.shoot, self.player.move_left, self.player.move_right, lambda : 1,self.move_shoot(True),
+                self.move_shoot(False))
 
     def get_space(self):
-        """Returns the pixel space of the screen"""
-        return pygame.surfarray.array2d(self.state.surface)
-
-    def get_space_boolean(self):
-        """Returns the pixel space of the screen in terms of boolean"""
-        return self.f(self.get_space())
+        """
+        Returns the pixel space of the screen
+        Performs preliminary Preprocessing by making values
+        """
+        space = pygame.surfarray.array2d(self.state.surface)
+        return space *-1
 
     def show_space(self):
         """Show the space in a matplotlib diagram"""
-        image_transp = numpy.transpose(self.get_space_boolean())
+        image_transp = np.transpose(self.get_space_boolean())
         plt.imshow(image_transp, interpolation='none')
         plt.show()
 
     def is_over(self) -> bool:
         '''Returns if game state is over or quit'''
-        return self.player.is_destroyed()
-
-    def is_playing(self) -> bool:
-        """Check if the game is still playing"""
-        return self.nextState == State.PLAY
+        return self.state.is_over()
 
     def get_score(self) -> int:
         """Get the current score"""
@@ -155,6 +152,13 @@ class PyGame_2D(object):
         '''Get positions of each enemy'''
         return tuple(map(lambda e: (e.get_x(),e.get_y()), self.state.get_enemies()))
 
+    def handle(self):
+        '''Draws the hitboxes of each enemy after updating the state of the enemy'''
+        self.state.handle()
+        self.state.draw_hitboxes()
+
+    def close(self):
+        self.state.close()
 
 if __name__ == '__main__':
     settings = "settings.cfg"
