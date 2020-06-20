@@ -207,6 +207,10 @@ class PlayScreen(Screen):
             Returns: 
                 No returns
         """
+
+        #Reset the over
+        self.over = False
+        
         #Zero the score and the wave
         self.score = 0
         self.wave = 0

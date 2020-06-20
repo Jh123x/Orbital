@@ -54,11 +54,11 @@ def random_play():
         print(done)
 
         if done:
-            env.close()
+            # env.close()
             print("Your Score at end of game is: ", score)
             break
 
-random_play()
+# random_play()
 
 def frame_preprocess(frame):
     env.reset()
@@ -79,16 +79,16 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print('Device:', device)
 
 INPUT_SHAPE = (4, 84, 84)
-RENDER = True
+RENDER = False
 ACTION_SIZE = env.action_space.n
 SEED = 0
 GAMMA = 0.99           # discount factor
-BUFFER_SIZE = 10000   # replay buffer size
+BUFFER_SIZE = 10000    # replay buffer size
 BATCH_SIZE = 64        # Update batch size
 LR = 0.0001            # learning rate
 TAU = 1e-3             # for soft update of target parameters
-UPDATE_EVERY = 1       # how often to update the network
-UPDATE_TARGET = 1000  # After which thershold replay to be started
+UPDATE_EVERY = 7       # how often to update the network
+UPDATE_TARGET = 6*BATCH_SIZE   # After which thershold replay to be started
 EPS_START = 0.99       # starting value of epsilon
 EPS_END = 0.01         # Ending value of epsilon
 EPS_DECAY = 100#200 #500         # Rate by which epsilon to be decayed
@@ -152,8 +152,8 @@ def train(n_episodes=1000, load = None):
             state = next_state
             if done:
                 break
-        scores_window.append(score)  # save most recent score
-        scores.append(score)  # save most recent score
+        scores_window.append(score) # save most recent score
+        scores.append(score)        # save most recent score
         t1 = datetime.datetime.now()
         taken = t1 - t
         t = t1
@@ -190,7 +190,7 @@ def trained_agent(agent):
         if done:
             print("You Final score is:", score)
             break
-    env.close()
+    # env.close()
 ###
 # To view Trained Agent after a checkpoint
 load_obj(agent, path=os.path.join(PATH,'sample.pth'))

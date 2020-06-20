@@ -4,7 +4,6 @@ from pygame.locals import *
 from . import PlayScreen
 from .. import BlockGroup, State, Difficulty
 
-
 class ClassicScreen(PlayScreen):
     def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, difficulty:Difficulty, wave:int = 1, player_lives:int = 3,debug:bool = False):
         """Classic screen for the game

@@ -1,8 +1,9 @@
 import gym
 import sys
-from gym import spaces
 import numpy as np
 import logging
+import pygame
+from gym import spaces
 from .AI_game import PyGame_2D
 from .classes import *
 np.set_printoptions(threshold=sys.maxsize)
