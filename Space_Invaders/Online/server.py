@@ -18,10 +18,10 @@ class Request_Handle(socketserver.BaseRequestHandler):
 
         #Main loop to handle the client
         data = pickle.loads(self.request.recv(2048))
-        player = self.client_address
+        player = self.client_address[0]
 
         #Get id of the player
-        print(f"{self.client_address} wrote: {data}")
+        print(f"{self.client_address[0]} wrote: {data}")
 
         #If data is empty
         if not data:

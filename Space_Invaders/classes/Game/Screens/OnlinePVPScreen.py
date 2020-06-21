@@ -109,7 +109,7 @@ class OnlinePVPScreen(LocalPVPScreen):
         data = self.network.send(self.pack_player_data(self.player2, self.shot, self.p1_score))
 
         #If player is waiting
-        if not self.waiting:
+        if self.waiting:
             
             #Check if player should continue to wait
             self.waiting = data['waiting']
