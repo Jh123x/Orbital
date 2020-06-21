@@ -1,100 +1,84 @@
 import socket
 import socketserver
-import pickle
 import logging
+import pickle
 import multiprocessing as mp
+import random
 
 #Configure logging format
 logging.basicConfig(level=logging.CRITICAL, format = '%(asctime)s - %(levelname)s - %(message)s')
 
-class Player(object):
-    def __init__(self, connection):
-        """Player object"""
-        self.connection = connection
+class Request_Handle(socketserver.BaseRequestHandler):
+    player = {}
+    pair = {}
+    waiting_list = set()
+    random = random.random()
+    def handle(self):
+        """Method to handle the client"""
 
-    def recv(self):
-        """Receive data from the players"""
-        return pickle.loads(self.connection.recv(2048))
+        #Main loop to handle the client
+        data = pickle.loads(self.request.recv(2048))
+        player = self.client_address
 
-    def send(self, data):
-        """Send data to the player"""
-        return self.connection.sendall(pickle.dumps(data))
+        #Get id of the player
+        print(f"{self.client_address} wrote: {data}")
 
-class Room(object):
-    def __init__(self, player1, player2 = None):
-        """Main room object"""
+        #If data is empty
+        if not data:
 
-        #Store variables
-        self.player1 = player1
-        self.player2 = player2
+            #Remove the players
+            Request_Handle.waiting_list.remove(player)
+            del Request_Handle.player[player]
 
-        #Defining the lock 
-        self.lock = mp.Lock()
+        #If player is new player
+        if player not in Request_Handle.player:
 
-    def __getattribute__(self, name):
-        """Method to get different attributes within the Room"""
+            #Check if there is anyone waiting
+            if len(Request_Handle.waiting_list) > 0:
 
-        #Get the lock
-        self.lock.acquire()
+                #Get the first player
+                partner = Request_Handle.waiting_list.pop()
 
-        #Proxy to get attribute of object
-        def _proxy(*args, **kargs):
+                #Form the players as pairs
+                Request_Handle.pair[partner] = player
+                Request_Handle.pair[player] = partner
 
-            #Get the lock
-            self.lock.acquire()
+            #Otherwise
+            else:
 
-            #Get the attribute from the object
-            answer = getattr(self.object, name)(*args, **kargs)
+                #Add the player to the waiting list
+                Request_Handle.waiting_list.add(player)
 
-            #Release the lock
-            self.lock.release()
 
-            #Return the answer
-            return answer
+        #Place data into dict
+        Request_Handle.player[player] = data
 
-        #Return the function to acquire the attribute
-        return _proxy
+        #If player is not waiting send his partner data over
+        if player not in Request_Handle.waiting_list:
 
-    def add_player(self, player2) -> None:
-        """Add another player"""
+            #Send the partner data  
+            partner = Request_Handle.pair[player]
+            msg = {'data':Request_Handle.player[partner],
+                    'waiting':False,
+                    'random':Request_Handle.random}
 
-        #If player 2 exists
-        if self.size() == 2:
-            return False
-
-        #Otherwise add the player
-        self.player2 = player2
-        return True
-
-    def size(self) -> int:
-        """Get the size of the room
-            At most 2 at least 1
-        """
-        if self.player1 and self.player2:
-           return 2
-        elif self.player1 or self.player2:
-            return 1
+        #Otherwise
         else:
-            return 0
+            msg = {'waiting':True}
 
-    def start(self) -> None:
-        """Start the game for each of the players"""
-        pass
-    
-    def mainloop(self) -> None:
-        """Mainloop for the room to run"""
-        if player1 and player2:
-            pass
-
+        #Send the msg
+        self.request.sendall(pickle.dumps(msg))
+        
 
 class Server(socketserver.ThreadingTCPServer):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, address, request_handle):
+        super().__init__(address, request_handle)
 
 if __name__ == '__main__':
-    hostname = socket.gethostname()
-    ip = socket.gethostbyname(hostname)
-    port = 5555
-    server = Server(ip,port)
+    ip = '192.168.1.215'
+    port = 9999
+    server = Server((ip,port), Request_Handle)
     logging.critical(f"Starting server on: {ip}:{port}")
+    server.serve_forever()
+    
 

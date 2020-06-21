@@ -15,6 +15,7 @@ class OnlinePVPScreen(LocalPVPScreen):
         self.network = None
         self.waiting = True
         self.disconnected = False
+        self.shot = False
 
         #Create queue for player action
         self.queue = queue.Queue()
@@ -25,11 +26,11 @@ class OnlinePVPScreen(LocalPVPScreen):
     def create_network(self):
         """Create the network for the player to be hosted on"""
         #Create the network
-        self.network = Network("192.168.1.215",5555)
+        self.network = Network("192.168.1.215", 9999)
 
     def pack_player_data(self, player:Player, shoot:bool, score:int):
         """Pack the data into the correct form to be sent"""
-        return (self.network.get_id(), player.get_coord()[0], shoot, score)
+        return (player.get_coord()[0], shoot, score)
 
     def generate_random_no(self):
         """Generate a random number from the server"""
@@ -94,21 +95,31 @@ class OnlinePVPScreen(LocalPVPScreen):
             if keys[K_SPACE]:
 
                 #Let the player shoot
-                shot = self.player2.shoot()
+                self.shot = self.player2.shoot()
+            else:
+                self.shot = False
 
+        #Return to false screen 
+        return False
+
+
+    def communicate(self):
+        """Communicate with the server"""
         #Send information on current player
-        data = self.network.send(self.pack_player_data(self.player2, shot, self.p1_score))
+        data = self.network.send(self.pack_player_data(self.player2, self.shot, self.p1_score))
+
+        #If player is waiting
+        if not self.waiting:
+            
+            #Check if player should continue to wait
+            self.waiting = data['waiting']
 
         #If the data is empty
-        if not data:
-
-            #Mark itself as disconnected
-            self.disconnected = True
-
-        else:
+        if not self.waiting:
 
             #Unpack the data
-            _, player1_pos, shot, self.p2_score, self.random, self.br = data
+            player1_pos, shot, self.p2_score= data['data']
+            self.random = data['random']
 
             #Update player 2 information
             self.player1.set_coord((int(player1_pos), 60))
@@ -119,23 +130,19 @@ class OnlinePVPScreen(LocalPVPScreen):
                 #Shoot for the player
                 self.player1.shoot()
 
-        #Return to false screen 
-        return False
-
     def handle(self) -> State:
         """Handle the drawing of the screen"""
-
         #If it is not connected to the network
         if not self.network:
 
             #Create the network
             self.create_network()
 
-        #If player is still waiting
-        if self.waiting:
-
-            #Send query to check if player is still waiting
-            self.waiting = self.network.send('waiting')
+        #Communicate with network
+        try:
+            self.communicate()
+        except Exception as exp:
+            print(f"Error communicating: {exp}")
 
         #Draw the loading screen
         if self.waiting:

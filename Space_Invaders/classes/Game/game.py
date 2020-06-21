@@ -167,8 +167,8 @@ class GameWindow(object):
     
     def handle_online(self) -> State:
         """Handle the online game"""
-        self.popup = Popup(320, 40, "Under Construction", self.fps, self.game_width//2 - 80, self.game_height//2, self.main_screen,font = Screen.end_font, debug = self.debug)
-        return self.prev
+        # self.popup = Popup(320, 40, "Under Construction", self.fps, self.game_width//2 - 80, self.game_height//2, self.main_screen,font = Screen.end_font, debug = self.debug)
+        return self.online.handle()
 
     def handle_two_player_pause(self) -> State:
         """Handle the PVP pause screen"""
