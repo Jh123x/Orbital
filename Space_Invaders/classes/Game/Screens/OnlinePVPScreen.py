@@ -21,6 +21,7 @@ class OnlinePVPScreen(LocalPVPScreen):
 
         #Set the state to the correct state
         self.set_state(State.ONLINE)
+        self.random = None
 
     def create_network(self):
         """Create the network for the player to be hosted on"""
@@ -30,6 +31,7 @@ class OnlinePVPScreen(LocalPVPScreen):
     def pack_player_data(self):
         """Pack the data into the correct form to be sent"""
         return (self.player1_bullet,
+                self.player1.get_coord(),
                 self.mob_bullet,
                 self.explosions,
                 self.enemies,
@@ -51,7 +53,8 @@ class OnlinePVPScreen(LocalPVPScreen):
         if not self.waiting:
 
             #Unpack the data
-            self.player2_bullet, self.mob_bullet, self.explosions, self.enemies, self.p2_score = data['data']
+            self.player2_bullet, p2_coord, self.mob_bullet, self.explosions, self.enemies, self.p2_score = data['data']
+            self.player2.set_coord(p2_coord)
             self.random = data['random']
 
     def generate_random_no(self):
@@ -155,7 +158,7 @@ class OnlinePVPScreen(LocalPVPScreen):
             #Otherwise return current state 
             return self.state
 
-        #IF player disconnected go to gameover screen
+        #If player disconnected go to gameover screen
         elif self.disconnected:
 
             #Close the network
@@ -188,8 +191,11 @@ class OnlinePVPScreen(LocalPVPScreen):
         if self.network:
             self.network.close()
 
+        #Reset variables
         self.network = None
         self.waiting = True
+
+        #Reset game
         self.reset()
 
     def __del__(self):
@@ -199,5 +205,5 @@ class OnlinePVPScreen(LocalPVPScreen):
         if self.network:
 
             #Close the network
-            self.network.close()
+            self.close_network()
 
