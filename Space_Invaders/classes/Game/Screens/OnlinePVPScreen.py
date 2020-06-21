@@ -15,7 +15,6 @@ class OnlinePVPScreen(LocalPVPScreen):
         self.network = None
         self.waiting = True
         self.disconnected = False
-        self.shot = False
 
         #Create queue for player action
         self.queue = queue.Queue()
@@ -28,9 +27,32 @@ class OnlinePVPScreen(LocalPVPScreen):
         #Create the network
         self.network = Network("192.168.1.215", 9999)
 
-    def pack_player_data(self, player:Player, shoot:bool, score:int):
+    def pack_player_data(self):
         """Pack the data into the correct form to be sent"""
-        return (player.get_coord()[0], shoot, score)
+        return (self.player1_bullet,
+                self.mob_bullet,
+                self.explosions,
+                self.enemies,
+                self.p1_score)
+
+
+    def communicate(self):
+        """Communicate with the server"""
+        #Send information on current player
+        data = self.network.send(self.pack_player_data())
+
+        #If player is waiting
+        if self.waiting:
+            
+            #Check if player should continue to wait
+            self.waiting = data['waiting']
+
+        #If the data is empty
+        if not self.waiting:
+
+            #Unpack the data
+            self.player2_bullet, self.mob_bullet, self.explosions, self.enemies, self.p2_score = data['data']
+            self.random = data['random']
 
     def generate_random_no(self):
         """Generate a random number from the server"""
@@ -94,41 +116,11 @@ class OnlinePVPScreen(LocalPVPScreen):
 
             if keys[K_SPACE]:
 
-                #Let the player shoot
-                self.shot = self.player2.shoot()
-            else:
-                self.shot = False
+                #Let player 2 shoot
+                self.player2.shoot()
 
         #Return to false screen 
         return False
-
-
-    def communicate(self):
-        """Communicate with the server"""
-        #Send information on current player
-        data = self.network.send(self.pack_player_data(self.player2, self.shot, self.p1_score))
-
-        #If player is waiting
-        if self.waiting:
-            
-            #Check if player should continue to wait
-            self.waiting = data['waiting']
-
-        #If the data is empty
-        if not self.waiting:
-
-            #Unpack the data
-            player1_pos, shot, self.p2_score= data['data']
-            self.random = data['random']
-
-            #Update player 2 information
-            self.player1.set_coord((int(player1_pos), 60))
-
-            #If player 1 shot
-            if shot:
-
-                #Shoot for the player
-                self.player1.shoot()
 
     def handle(self) -> State:
         """Handle the drawing of the screen"""

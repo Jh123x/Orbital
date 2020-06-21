@@ -4,6 +4,7 @@ import logging
 import pickle
 import multiprocessing as mp
 import random
+import classes
 
 #Configure logging format
 logging.basicConfig(level=logging.CRITICAL, format = '%(asctime)s - %(levelname)s - %(message)s')
