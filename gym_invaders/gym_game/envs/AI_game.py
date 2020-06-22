@@ -86,7 +86,7 @@ class PyGame_2D(object):
 
             #Update the display with the screen
             pygame.display.update()
-            self.state.draw_hitboxes()
+            #self.state.draw_hitboxes()
             #print(self.get_space_boolean())
             #If the state is quit or player closes the game
             for item in pygame.event.get():

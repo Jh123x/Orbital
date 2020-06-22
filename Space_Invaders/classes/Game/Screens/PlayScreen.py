@@ -36,6 +36,7 @@ class PlayScreen(Screen):
         self.sensitivity = sensitivity
         self.fps = max_fps
         self.difficulty = difficulty
+        self.over = False
 
         #Create the groups
         #Bullets shot by player
@@ -59,6 +60,10 @@ class PlayScreen(Screen):
     def get_hitboxes(self) -> list:
         """Get a list of hitboxes of mobs"""
         return [(self.player.get_coord()), tuple(x.get_coord() for x in self.up_bullets), tuple(x.get_coord() for x in self.enemies), tuple(x.get_coord() for x in self.down_bullets)]
+
+    def get_enemies(self) -> tuple:
+        """Get a tuple of the enemies"""
+        return tuple(self.enemies)
 
     def update_keypresses(self) -> None:
         """Update the screen based on what the player has pressed
@@ -124,21 +129,19 @@ class PlayScreen(Screen):
             #Make the enemy shoot
             enemy.shoot()
 
-    def draw_hitboxes(self):
+    def draw_hitboxes(self) -> None:
         """Draw hitboxes for players and objects"""
-
         #Draw hitbox for the enemies
         for sprite in self.enemies:
-            pygame.draw.rect(self.surface, (255,0,0), sprite.rect, 0)
-
+            pygame.draw.rect(self.surface, (5,55,0), sprite.rect, 0)
         #Draw hitbox for the bullets
         for sprite in self.up_bullets:
-            pygame.draw.rect(self.surface, (255,0,0), sprite.rect, 0)
+            pygame.draw.rect(self.surface, (100,255,0), sprite.rect, 0)
         for sprite in self.down_bullets:
-            pygame.draw.rect(self.surface, (255,0,0), sprite.rect, 0)
+            pygame.draw.rect(self.surface, (25,0,255), sprite.rect, 0)
 
         #Draw the hitbox for the player
-        pygame.draw.rect(self.surface, (255,0,0), self.player.rect, 0)
+        pygame.draw.rect(self.surface, (55,255,0), self.player.rect, 0)
 
     def update(self) -> None:
         """Update the sprites
@@ -165,6 +168,8 @@ class PlayScreen(Screen):
         #Update the position of all bullets
         self.up_bullets.update()
         self.down_bullets.update()
+
+        #Draw bullet
         self.up_bullets.draw(self.surface)
         self.down_bullets.draw(self.surface)
 
@@ -180,7 +185,7 @@ class PlayScreen(Screen):
             print(f"Number of enemies: {len(self.enemies)}")
 
         #Draw the explosions
-        self.explosions.draw(self.screen)
+        self.explosions.draw(self.surface)
 
         #Draw player object
         self.player.draw(self.surface)
@@ -204,6 +209,10 @@ class PlayScreen(Screen):
             Returns: 
                 No returns
         """
+
+        #Reset the over
+        self.over = False
+        
         #Zero the score and the wave
         self.score = 0
         self.wave = 0
@@ -277,7 +286,6 @@ class PlayScreen(Screen):
         #If nothing is destroyed return 0 points
         return 0
 
-
     def spawn_enemies(self, number:int) -> None:
         """Spawn enemies into the game
             Arguments: 
@@ -297,7 +305,11 @@ class PlayScreen(Screen):
 
     def enemy_touched_bottom(self) -> bool:
         """Check if any enemies have touched the bottom of the screen"""
-        return len(tuple(filter(lambda x: x.get_y() + x.get_height()//2 > self.screen_height - self.player.get_height(), self.enemies ))) > 0
+        return any(filter(lambda x: x.get_y() + x.get_height()//2 > self.screen_height - self.player.get_height(), self.enemies ))
+
+    def is_over(self) -> bool:
+        """Checks if the game is over"""
+        return self.over
         
     def handle(self) -> State:
         """Handle the drawing of the play state
@@ -308,6 +320,10 @@ class PlayScreen(Screen):
         """
         #If player is destroyed, go to gameover state
         if self.player.is_destroyed():
+            #Set the game to be over
+            self.over = True
+
+            #Return the gameover state
             return State.GAMEOVER
 
         #Check if any of the enemies touched the bottom of the screen
@@ -316,6 +332,9 @@ class PlayScreen(Screen):
             #If it is debugging mode, print out what happened
             if self.debug:
                 print("Alienship hit the player")
+
+            #Set the game to be over
+            self.over = True
                 
             #If so it is gameover for the player
             return State.GAMEOVER

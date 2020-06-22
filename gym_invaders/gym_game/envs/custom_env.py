@@ -31,7 +31,6 @@ class CustomEnv(PyGame_2D,gym.Env):
 
     def step(self, action):
         self.screen.fill((0, 0, 0))  # fills the entire screen
-
         self.handle()
         self.action(action)
 
