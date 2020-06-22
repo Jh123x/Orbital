@@ -13,9 +13,21 @@ class Request_Handle(socketserver.BaseRequestHandler):
     player = {}
     pair = {}
     waiting_list = set()
+    const = False
     random = random.random()
     def handle(self):
         """Method to handle the client"""
+
+        #If const is currently True
+        if Request_Handle.const:
+
+            #Generate new random number
+            Request_Handle.random = random.random()
+        
+        #Otherwise
+        Request_Handle.const = not Request_Handle.const
+            
+            
 
         #Main loop to handle the client
         data = pickle.loads(self.request.recv(2048))

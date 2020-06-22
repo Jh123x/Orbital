@@ -36,7 +36,7 @@ async def load_sound(sound_path:str, settings:int, debug:bool) -> Sound:
 class GameWindow(object):
     def __init__(self, sensitivity:int, maxfps:int, game_width:int, game_height:int, icon_img_path:str, player_img_paths:tuple,
                  enemy_img_paths:tuple, bullet_img_paths:tuple, background_img_paths:tuple, explosion_img_paths:tuple, 
-                 db_path:str, sound_path:dict, bg_limit:int, wave:int = 1,  debug:bool = False):
+                 db_path:str, sound_path:dict, bg_limit:int, menu_music_paths:tuple, wave:int = 1,  debug:bool = False):
         """The constructor for the main window
             Arguments:
                 Sensitivity: Sensitivity of controls (int)
@@ -104,6 +104,9 @@ class GameWindow(object):
         #Load sounds
         self.sound = asyncio.run(load_sound(sound_path,self.settings_data['music'],self.debug))
 
+        #Load the sounds into the game
+        pygame.mixer.music.load(menu_music_paths[0])
+
         #Create the background object
         self.bg = Background(int(self.settings_data['background']), game_width, game_height, bg_limit, debug)
 
@@ -152,6 +155,19 @@ class GameWindow(object):
             State.ONLINE: self.handle_online,
             State.QUIT:self.__del__
         }
+
+        #Load sound state:
+        self.sound_state = self.sound.get_state()
+        
+        #Initialise the music
+        pygame.mixer.music.load(menu_music_paths[0])
+        
+
+        #Play the music if sound is enabled
+        if self.sound_state:
+
+            #Loop forever
+            pygame.mixer.music.play(-1)
 
         #Load the sounds into the relavant Sprites
         Bullet.sound = self.sound
@@ -426,6 +442,24 @@ class GameWindow(object):
 
             #Fill the background to black
             self.main_screen.fill(BLACK)
+
+
+        #Check if background music should be playing
+        if self.sound.get_state() != self.sound_state:
+
+            self.sound_state = self.sound.get_state()
+
+            #If sound is enabled
+            if self.sound_state:
+
+                #Play the music
+                pygame.mixer.music.play(-1)
+
+            #Otherwise
+            else:
+
+                #Pause the music
+                pygame.mixer.music.pause()
 
         #Save previous state
         prev = self.state
