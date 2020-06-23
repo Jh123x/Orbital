@@ -1,8 +1,6 @@
-import socket
 import socketserver
 import logging
 import pickle
-import multiprocessing as mp
 import random
 
 #Configure logging format
@@ -10,6 +8,7 @@ logging.basicConfig(level=logging.CRITICAL, format = '%(asctime)s - %(levelname)
 
 class Request_Handle(socketserver.BaseRequestHandler):
     player = {}
+    first = set()
     pair = {}
     waiting_list = set()
     random = random.random()
@@ -21,7 +20,7 @@ class Request_Handle(socketserver.BaseRequestHandler):
         player = self.client_address[0]
 
         #Get id of the player
-        print(f"{self.client_address[0]} wrote: {data}")
+        logging.critical(f"{self.client_address[0]} wrote: {data}")
 
         #If data is empty
         if not data:
@@ -48,7 +47,7 @@ class Request_Handle(socketserver.BaseRequestHandler):
 
                 #Add the player to the waiting list
                 Request_Handle.waiting_list.add(player)
-
+                first.add(player)
 
         #Place data into dict
         Request_Handle.player[player] = data
@@ -60,7 +59,8 @@ class Request_Handle(socketserver.BaseRequestHandler):
             partner = Request_Handle.pair[player]
             msg = {'data':Request_Handle.player[partner],
                     'waiting':False,
-                    'seed':Request_Handle.random}
+                    'seed':Request_Handle.random,
+                    'isfirst': player in Request_Handle.first}
 
         #Otherwise
         else:

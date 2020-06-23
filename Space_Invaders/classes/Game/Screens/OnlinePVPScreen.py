@@ -35,6 +35,9 @@ class OnlinePVPScreen(LocalPVPScreen):
         #Set player shot to none
         self.shot = False
 
+        #Get which player current player is
+        self.first = None
+
         #Call the superclass reset
         super().reset()
 
@@ -64,6 +67,9 @@ class OnlinePVPScreen(LocalPVPScreen):
             #Unpack the data
             p1_x, self.p1_score, p1_shot = data['data']
 
+            #If not sure which player he is get from network
+            self.first = data['isfirst']
+
             #Set the coordinate for player 2
             self.player1.set_coord((p1_x,self.player1.get_y()))
 
@@ -85,6 +91,20 @@ class OnlinePVPScreen(LocalPVPScreen):
     def generate_random_no(self):
         """Generate a random number from the server"""
         return random.random()
+
+    def generate_direction(self):
+
+        #If this is the first player
+        if self.first:
+            
+            #Give the direction given by the superclass
+            return super().generate_direction()
+
+        #Otherwise
+        else:
+
+            #Give the 1- direction given by the superclass
+            return 1- super().generate_direction()
 
     def shoot_bullet(self, enemy):
         """Modified shoot bullet for online"""
@@ -143,6 +163,8 @@ class OnlinePVPScreen(LocalPVPScreen):
         #Communicate with network
         try:
             self.communicate()
+        except ValueError:
+            print("Opponent disconnected")
         except Exception as exp:
             print(f"Error communicating: {exp}")
 
