@@ -23,7 +23,7 @@ class CoopScreen(LocalPVPScreen):
         self.player1 = Player(self.sensitivity, self.screen_width, self.screen_height, self.screen_width//(3/2), self.screen_height-50, self.player_lives, self.fps, self.player1_bullet, Direction.UP, self.debug)
         self.player2 = Player(self.sensitivity, self.screen_width, self.screen_height, self.screen_width//3, self.screen_height-50, self.player_lives, self.fps, self.player2_bullet, Direction.UP, self.debug)
 
-    def check_pvp_collision(self)->None:
+    def check_players_collision(self)->None:
         """Check collisions for players"""
         #Check if bullet hit player 2
         bullet_hit_m = len(pygame.sprite.spritecollide(self.player1, self.mob_bullet, True))
