@@ -45,7 +45,7 @@ class OnlinePVPScreen(LocalPVPScreen):
 
     def pack_player_data(self):
         """Pack the data into the correct form to be sent"""
-        return (self.player1.get_x(), self.p1_score, self.shot)
+        return (self.player2.get_x(), self.p2_score, self.shot)
 
     def communicate(self):
         """Communicate with the server"""
@@ -62,16 +62,16 @@ class OnlinePVPScreen(LocalPVPScreen):
         if not self.waiting:
 
             #Unpack the data
-            p2_x, self.p2_score, p2_shot = data['data']
+            p1_x, self.p1_score, p1_shot = data['data']
 
             #Set the coordinate for player 2
-            self.player2.set_coord((p2_x,self.player2.get_y()))
+            self.player1.set_coord((p1_x,self.player1.get_y()))
 
             #If player 2 shot
-            if p2_shot:
+            if p1_shot:
 
                 #Make player 2 shoot
-                self.player2.shoot()
+                self.player1.shoot()
 
             #If there is no seed get the seed
             self.set_seed(data['seed'])
