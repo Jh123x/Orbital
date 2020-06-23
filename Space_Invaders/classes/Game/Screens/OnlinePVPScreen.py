@@ -1,6 +1,5 @@
 import pygame
 import random
-import queue
 from . import Screen, LocalPVPScreen
 from .. import Network, Player, State, WHITE, Bullet
 from pygame.locals import *
@@ -11,14 +10,6 @@ class OnlinePVPScreen(LocalPVPScreen):
 
         #Call the superclass
         super().__init__(screen_width, screen_height, screen, sensitivity, fps, player_lives, debug)
-
-        #Initial network is none
-        self.network = None
-        self.waiting = True
-        self.disconnected = False
-
-        #Create queue for player action
-        self.queue = queue.Queue()
 
         #Set the state to the correct state
         self.set_state(State.ONLINE)
@@ -37,6 +28,11 @@ class OnlinePVPScreen(LocalPVPScreen):
 
         #Get which player current player is
         self.first = None
+
+        #Reset variables
+        self.network = None
+        self.waiting = True
+        self.disconnected = False
 
         #Call the superclass reset
         super().reset()
