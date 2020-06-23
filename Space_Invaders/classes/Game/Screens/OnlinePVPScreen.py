@@ -163,8 +163,20 @@ class OnlinePVPScreen(LocalPVPScreen):
         #Communicate with network
         try:
             self.communicate()
+
+        #If there is a value error
         except ValueError:
+
+            #Opponent has disconnected
             print("Opponent disconnected")
+
+            #Close the network
+            self.network.close()
+
+            #Go to next state
+            return State.TWO_PLAYER_GAMEOVER
+
+        #Otherwise there is an error in communication
         except Exception as exp:
             print(f"Error communicating: {exp}")
 

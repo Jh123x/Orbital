@@ -322,8 +322,10 @@ class GameWindow(object):
         #Get next state
         state = self.pvp_gameover.handle()
 
-        #If the gameoverscreen is over
+        #If the gameover screen is over
         if state != State.TWO_PLAYER_GAMEOVER:
+
+            #Reset the environment
             pres.reset()
 
         #Return the state
@@ -428,9 +430,8 @@ class GameWindow(object):
             #Create a 1 second popup saying screenshot is taken 
             self.popup = Popup(20*8, 30, "Screenshot taken", self.fps, self.game_width//2, 15, self.main_screen, font = Screen.font, debug = self.debug)
 
-    def update(self) -> None:
-        """Update the main screen"""
-
+    def fill_background(self) -> None:
+        """Set the background"""
         #If the background is present
         if self.bg.is_present():
 
@@ -443,6 +444,11 @@ class GameWindow(object):
             #Fill the background to black
             self.main_screen.fill(BLACK)
 
+    def update(self) -> None:
+        """Update the main screen"""
+
+        #Set the background
+        self.fill_background()
 
         #Check if background music should be playing
         if self.sound.get_state() != self.sound_state:
@@ -494,7 +500,6 @@ class GameWindow(object):
             #Reset Popups
             self.popup = None
 
-
         #Check popups
         if self.popup:
 
@@ -525,11 +530,11 @@ class GameWindow(object):
             #Update game states
             self.update()
 
-            #Update the display with the screen
-            pygame.display.update()
-
             #Check Global keypresses
             self.check_keypresses()
+
+            #Update the display with the screen
+            pygame.display.update()
 
             #If the state is quit or player closes the game
             if self.state == State.QUIT or pygame.QUIT in tuple(map(lambda x: x.type, pygame.event.get())):
