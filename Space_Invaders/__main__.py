@@ -23,11 +23,13 @@ def main() -> None:
     #Load all
     d = load_all(("bullet_img_paths",), ("Bullet Sprites",), all_cfg, __file__)
 
-    #Load the other sprites 
+    #Load the other sprites
     d["player_img_paths"] = list_dir(form_abs_path(__file__, "images/player"))
     d["enemy_img_paths"] = list_dir(form_abs_path(__file__, "images/enemies"))
     d["background_img_paths"] = list_dir(form_abs_path(__file__, "images/backgrounds"))
     d["explosion_img_paths"] = list_dir(form_abs_path(__file__, "images/explosions"))
+    d["menu_music_paths"] = list_dir(form_abs_path(__file__,"sounds/menu_music"))
+    d["powerup_img_path"] = list_dir(form_abs_path(__file__,"images/powerups"))
 
     #Get the number of backgrounds
     bg_limit = len(d["background_img_paths"])

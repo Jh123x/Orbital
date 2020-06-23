@@ -1,4 +1,5 @@
 import pygame
+import random
 import queue
 from . import Screen, LocalPVPScreen
 from .. import Network, Player, State, WHITE, Bullet
@@ -21,7 +22,24 @@ class OnlinePVPScreen(LocalPVPScreen):
 
         #Set the state to the correct state
         self.set_state(State.ONLINE)
-        self.random = None
+        
+        #Reset the screen to default
+        self.reset()
+
+    def reset(self) -> None:
+        """Reset the online screen"""
+
+        #Set the seed to none
+        self.seed = None
+
+        #Set player shot to none
+        self.shot = False
+
+        #Get which player current player is
+        self.first = None
+
+        #Call the superclass reset
+        super().reset()
 
     def create_network(self):
         """Create the network for the player to be hosted on"""
@@ -30,13 +48,7 @@ class OnlinePVPScreen(LocalPVPScreen):
 
     def pack_player_data(self):
         """Pack the data into the correct form to be sent"""
-        return (self.player1_bullet,
-                self.player1.get_coord(),
-                self.mob_bullet,
-                self.explosions,
-                self.enemies,
-                self.p1_score)
-
+        return (self.player2.get_x(), self.p2_score, self.shot)
 
     def communicate(self):
         """Communicate with the server"""
@@ -53,13 +65,46 @@ class OnlinePVPScreen(LocalPVPScreen):
         if not self.waiting:
 
             #Unpack the data
-            self.player2_bullet, p2_coord, self.mob_bullet, self.explosions, self.enemies, self.p2_score = data['data']
-            self.player2.set_coord(p2_coord)
-            self.random = data['random']
+            p1_x, self.p1_score, p1_shot = data['data']
+
+            #If not sure which player he is get from network
+            self.first = data['isfirst']
+
+            #Set the coordinate for player 2
+            self.player1.set_coord((p1_x,self.player1.get_y()))
+
+            #If player 2 shot
+            if p1_shot:
+
+                #Make player 2 shoot
+                self.player1.shoot()
+
+            #If there is no seed get the seed
+            self.set_seed(data['seed'])
+
+    def set_seed(self, seed:int):
+        """Set the seed for the random"""
+        if self.seed == None:
+            self.seed = seed
+            random.seed(seed)
 
     def generate_random_no(self):
         """Generate a random number from the server"""
-        return self.random
+        return random.random()
+
+    def generate_direction(self):
+
+        #If this is the first player
+        if self.first:
+            
+            #Give the direction given by the superclass
+            return super().generate_direction()
+
+        #Otherwise
+        else:
+
+            #Give the 1- direction given by the superclass
+            return 1- super().generate_direction()
 
     def shoot_bullet(self, enemy):
         """Modified shoot bullet for online"""
@@ -77,24 +122,6 @@ class OnlinePVPScreen(LocalPVPScreen):
                 #Create the bullet object
                 Bullet(self.sensitivity, x_coord, self.screen_height//2, direction, self.screen_width, self.screen_height, self.debug)
                 )
-            
-    def get_random_direction(self) -> int:
-        """Get the random direction"""
-
-        #Generate random number
-        chksum = int(self.generate_random_no()*10)
-
-        #Get the boolean value
-        res = chksum < 5
-
-        #If it is player 2
-        if self.br:
-
-            #Invert it
-            res = not res
-
-        #Return the boolean
-        return res
 
     def check_keypresses(self) -> bool:
         """Check the keys which are pressed"""
@@ -120,7 +147,7 @@ class OnlinePVPScreen(LocalPVPScreen):
             if keys[K_SPACE]:
 
                 #Let player 2 shoot
-                self.player2.shoot()
+                self.shot = self.player2.shoot()
 
         #Return to false screen 
         return False
@@ -136,6 +163,20 @@ class OnlinePVPScreen(LocalPVPScreen):
         #Communicate with network
         try:
             self.communicate()
+
+        #If there is a value error
+        except ValueError:
+
+            #Opponent has disconnected
+            print("Opponent disconnected")
+
+            #Close the network
+            self.network.close()
+
+            #Go to next state
+            return State.TWO_PLAYER_GAMEOVER
+
+        #Otherwise there is an error in communication
         except Exception as exp:
             print(f"Error communicating: {exp}")
 

@@ -1,19 +1,28 @@
-import socket
 import socketserver
 import logging
 import pickle
-import multiprocessing as mp
 import random
-import classes
 
 #Configure logging format
 logging.basicConfig(level=logging.CRITICAL, format = '%(asctime)s - %(levelname)s - %(message)s')
 
 class Request_Handle(socketserver.BaseRequestHandler):
     player = {}
+    first = set()
     pair = {}
     waiting_list = set()
     random = random.random()
+
+    @staticmethod
+    def remove_from_all(player):
+        """Remove player from all vars"""
+        # partner = Request_Handle.player[player]
+        del Request_Handle.player[player]
+        del Request_Handle.pair[player]
+        Request_Handle.first.remove(player)
+        Request_Handle.waiting_list.remove(player)
+        
+
     def handle(self):
         """Method to handle the client"""
 
@@ -22,14 +31,14 @@ class Request_Handle(socketserver.BaseRequestHandler):
         player = self.client_address[0]
 
         #Get id of the player
-        print(f"{self.client_address[0]} wrote: {data}")
+        logging.critical(f"{self.client_address[0]} wrote: {data}")
 
         #If data is empty
         if not data:
 
             #Remove the players
-            Request_Handle.waiting_list.remove(player)
-            del Request_Handle.player[player]
+            Request_Handle.remove_from_all(player)
+            return
 
         #If player is new player
         if player not in Request_Handle.player:
@@ -37,7 +46,7 @@ class Request_Handle(socketserver.BaseRequestHandler):
             #Check if there is anyone waiting
             if len(Request_Handle.waiting_list) > 0:
 
-                #Get the first player
+                #Get the first player and remove from the list
                 partner = Request_Handle.waiting_list.pop()
 
                 #Form the players as pairs
@@ -49,7 +58,7 @@ class Request_Handle(socketserver.BaseRequestHandler):
 
                 #Add the player to the waiting list
                 Request_Handle.waiting_list.add(player)
-
+                Request_Handle.first.add(player)
 
         #Place data into dict
         Request_Handle.player[player] = data
@@ -57,11 +66,22 @@ class Request_Handle(socketserver.BaseRequestHandler):
         #If player is not waiting send his partner data over
         if player not in Request_Handle.waiting_list:
 
-            #Send the partner data  
+            #Get the partner
             partner = Request_Handle.pair[player]
-            msg = {'data':Request_Handle.player[partner],
-                    'waiting':False,
-                    'random':Request_Handle.random}
+
+            #If the data is blank
+            if not Request_Handle.player[partner]:
+
+                #Remove player
+                msg = {'disconnected': True}
+
+            else:
+                #Send the partner data  
+                msg = {'data':Request_Handle.player[partner],
+                        'waiting':False,
+                        'seed':Request_Handle.random,
+                        'isfirst': player in Request_Handle.first,
+                        'disconnected': False}
 
         #Otherwise
         else:

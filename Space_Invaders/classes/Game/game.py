@@ -36,7 +36,7 @@ async def load_sound(sound_path:str, settings:int, debug:bool) -> Sound:
 class GameWindow(object):
     def __init__(self, sensitivity:int, maxfps:int, game_width:int, game_height:int, icon_img_path:str, player_img_paths:tuple,
                  enemy_img_paths:tuple, bullet_img_paths:tuple, background_img_paths:tuple, explosion_img_paths:tuple, 
-                 db_path:str, sound_path:dict, bg_limit:int, wave:int = 1,  debug:bool = False):
+                 db_path:str, sound_path:dict, bg_limit:int, menu_music_paths:tuple, powerup_img_path:tuple, wave:int = 1,  debug:bool = False):
         """The constructor for the main window
             Arguments:
                 Sensitivity: Sensitivity of controls (int)
@@ -99,10 +99,13 @@ class GameWindow(object):
         self.difficulty = Difficulty(difficulty if difficulty < 5 else 5)
 
         #Load sprites
-        load_sprites((Player, Bullet, EnemyShip, Background, Explosion), (player_img_paths, bullet_img_paths, enemy_img_paths, background_img_paths, explosion_img_paths))
+        load_sprites((Player, Bullet, EnemyShip, Background, Explosion, PowerUp), (player_img_paths, bullet_img_paths, enemy_img_paths, background_img_paths, explosion_img_paths, powerup_img_path))
 
         #Load sounds
         self.sound = asyncio.run(load_sound(sound_path,self.settings_data['music'],self.debug))
+
+        #Load the sounds into the game
+        pygame.mixer.music.load(menu_music_paths[0])
 
         #Create the background object
         self.bg = Background(int(self.settings_data['background']), game_width, game_height, bg_limit, debug)
@@ -152,6 +155,19 @@ class GameWindow(object):
             State.ONLINE: self.handle_online,
             State.QUIT:self.__del__
         }
+
+        #Load sound state:
+        self.sound_state = self.sound.get_state()
+        
+        #Initialise the music
+        pygame.mixer.music.load(menu_music_paths[0])
+        
+
+        #Play the music if sound is enabled
+        if self.sound_state:
+
+            #Loop forever
+            pygame.mixer.music.play(-1)
 
         #Load the sounds into the relavant Sprites
         Bullet.sound = self.sound
@@ -306,8 +322,10 @@ class GameWindow(object):
         #Get next state
         state = self.pvp_gameover.handle()
 
-        #If the gameoverscreen is over
+        #If the gameover screen is over
         if state != State.TWO_PLAYER_GAMEOVER:
+
+            #Reset the environment
             pres.reset()
 
         #Return the state
@@ -412,9 +430,8 @@ class GameWindow(object):
             #Create a 1 second popup saying screenshot is taken 
             self.popup = Popup(20*8, 30, "Screenshot taken", self.fps, self.game_width//2, 15, self.main_screen, font = Screen.font, debug = self.debug)
 
-    def update(self) -> None:
-        """Update the main screen"""
-
+    def fill_background(self) -> None:
+        """Set the background"""
         #If the background is present
         if self.bg.is_present():
 
@@ -426,6 +443,29 @@ class GameWindow(object):
 
             #Fill the background to black
             self.main_screen.fill(BLACK)
+
+    def update(self) -> None:
+        """Update the main screen"""
+
+        #Set the background
+        self.fill_background()
+
+        #Check if background music should be playing
+        if self.sound.get_state() != self.sound_state:
+
+            self.sound_state = self.sound.get_state()
+
+            #If sound is enabled
+            if self.sound_state:
+
+                #Play the music
+                pygame.mixer.music.play(-1)
+
+            #Otherwise
+            else:
+
+                #Pause the music
+                pygame.mixer.music.pause()
 
         #Save previous state
         prev = self.state
@@ -460,7 +500,6 @@ class GameWindow(object):
             #Reset Popups
             self.popup = None
 
-
         #Check popups
         if self.popup:
 
@@ -491,11 +530,11 @@ class GameWindow(object):
             #Update game states
             self.update()
 
-            #Update the display with the screen
-            pygame.display.update()
-
             #Check Global keypresses
             self.check_keypresses()
+
+            #Update the display with the screen
+            pygame.display.update()
 
             #If the state is quit or player closes the game
             if self.state == State.QUIT or pygame.QUIT in tuple(map(lambda x: x.type, pygame.event.get())):

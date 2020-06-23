@@ -68,8 +68,10 @@ class TwoPlayerGameoverScreen(Screen):
 
         #Check if player wants to stay
         if stay:
+            TwoPlayerGameoverScreen.played = False
             return State.MENU
         elif stay == False:
+            TwoPlayerGameoverScreen.played = False
             return State.QUIT
         else:
             return self.state

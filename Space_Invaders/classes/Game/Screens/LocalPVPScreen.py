@@ -287,7 +287,6 @@ class LocalPVPScreen(Screen):
 
         #Return with the points the player got
         return pts
-        
 
     def check_collision(self) -> None:
         """Check the collisions between all of the sprites"""
@@ -304,7 +303,6 @@ class LocalPVPScreen(Screen):
 
         #Check collision of mobs with player 2 bullet
         self.p2_score += self.check_player_mob_collision(self.player2_bullet)
-
 
     def check_players_collision(self):
         """Check collisions between the players"""

@@ -23,15 +23,21 @@ class Difficulty(object):
         self.load()
 
     def get_multiplier(self, value:int) -> int:
-        """Get multiplier for the current difficulty"""
+        """Get multiplier for the current difficulty
+            Minimum multiplier: 1
+        """
 
         #Get multiplier
         mul = self.value / 2
 
         #If multiplier is above 1
         if mul*value > 1:
-            return mul*value
 
-        #Otherwise return 1
-        return 1
+            #Return the multiplier with the value
+            return int(mul*value)
+
+        else:
+
+            #Otherwise return 1
+            return 1
         
