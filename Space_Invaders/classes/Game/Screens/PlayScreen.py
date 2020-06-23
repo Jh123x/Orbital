@@ -247,6 +247,7 @@ class PlayScreen(Screen):
         self.down_bullets.empty()
         self.enemies.empty()
         self.explosions.empty()
+        self.powerups.empty()
 
         #Reset the player
         self.player.reset()

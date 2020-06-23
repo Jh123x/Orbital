@@ -4,7 +4,6 @@ import logging
 import pickle
 import multiprocessing as mp
 import random
-import classes
 
 #Configure logging format
 logging.basicConfig(level=logging.CRITICAL, format = '%(asctime)s - %(levelname)s - %(message)s')
@@ -13,21 +12,9 @@ class Request_Handle(socketserver.BaseRequestHandler):
     player = {}
     pair = {}
     waiting_list = set()
-    const = False
     random = random.random()
     def handle(self):
         """Method to handle the client"""
-
-        #If const is currently True
-        if Request_Handle.const:
-
-            #Generate new random number
-            Request_Handle.random = random.random()
-        
-        #Otherwise
-        Request_Handle.const = not Request_Handle.const
-            
-            
 
         #Main loop to handle the client
         data = pickle.loads(self.request.recv(2048))
@@ -73,7 +60,7 @@ class Request_Handle(socketserver.BaseRequestHandler):
             partner = Request_Handle.pair[player]
             msg = {'data':Request_Handle.player[partner],
                     'waiting':False,
-                    'random':Request_Handle.random}
+                    'seed':Request_Handle.random}
 
         #Otherwise
         else:

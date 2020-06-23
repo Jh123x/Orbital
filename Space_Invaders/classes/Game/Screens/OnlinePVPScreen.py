@@ -1,4 +1,5 @@
 import pygame
+import random
 import queue
 from . import Screen, LocalPVPScreen
 from .. import Network, Player, State, WHITE, Bullet
@@ -21,7 +22,19 @@ class OnlinePVPScreen(LocalPVPScreen):
 
         #Set the state to the correct state
         self.set_state(State.ONLINE)
-        self.random = None
+        self.seed = None
+
+    def reset(self) -> None:
+        """Reset the online screen"""
+
+        #Set the seed to none
+        self.seed = None
+
+        #Set player shot to none
+        self.shot = False
+
+        #Call the superclass reset
+        super().reset()
 
     def create_network(self):
         """Create the network for the player to be hosted on"""
@@ -30,10 +43,7 @@ class OnlinePVPScreen(LocalPVPScreen):
 
     def pack_player_data(self):
         """Pack the data into the correct form to be sent"""
-        return (self.player1_bullet,
-                self.player1.get_coord(),
-                self.p1_score)
-
+        return (self.player1.get_coord(), self.p1_score, self.shot)
 
     def communicate(self):
         """Communicate with the server"""
@@ -50,13 +60,28 @@ class OnlinePVPScreen(LocalPVPScreen):
         if not self.waiting:
 
             #Unpack the data
-            self.player2_bullet, p2_coord, self.p2_score = data['data']
+            p2_coord, self.p2_score, p2_shot = data['data']
+
+            #Set the coordinate for player 2
             self.player2.set_coord(p2_coord)
-            self.random = data['random']
+
+            #If player 2 shot
+            if p2_shot:
+
+                #Make player 2 shoot
+                self.player2.shoot()
+
+            #If there is no seed get the seed
+            self.set_seed(data['seed'])
+
+    def set_seed(self, seed:int):
+        """Set the seed for the random"""
+        self.seed = seed
+        random.seed(seed)
 
     def generate_random_no(self):
         """Generate a random number from the server"""
-        return self.random
+        return random.random()
 
     def shoot_bullet(self, enemy):
         """Modified shoot bullet for online"""
