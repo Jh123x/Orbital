@@ -78,8 +78,9 @@ class OnlinePVPScreen(LocalPVPScreen):
 
     def set_seed(self, seed:int):
         """Set the seed for the random"""
-        self.seed = seed
-        random.seed(seed)
+        if self.seed == None:
+            self.seed = seed
+            random.seed(seed)
 
     def generate_random_no(self):
         """Generate a random number from the server"""
