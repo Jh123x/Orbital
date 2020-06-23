@@ -22,7 +22,9 @@ class OnlinePVPScreen(LocalPVPScreen):
 
         #Set the state to the correct state
         self.set_state(State.ONLINE)
-        self.seed = None
+        
+        #Reset the screen to default
+        self.reset()
 
     def reset(self) -> None:
         """Reset the online screen"""
@@ -99,24 +101,6 @@ class OnlinePVPScreen(LocalPVPScreen):
                 #Create the bullet object
                 Bullet(self.sensitivity, x_coord, self.screen_height//2, direction, self.screen_width, self.screen_height, self.debug)
                 )
-            
-    def get_random_direction(self) -> int:
-        """Get the random direction"""
-
-        #Generate random number
-        chksum = int(self.generate_random_no()*10)
-
-        #Get the boolean value
-        res = chksum < 5
-
-        #If it is player 2
-        if self.br:
-
-            #Invert it
-            res = not res
-
-        #Return the boolean
-        return res
 
     def check_keypresses(self) -> bool:
         """Check the keys which are pressed"""
