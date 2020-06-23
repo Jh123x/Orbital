@@ -32,6 +32,7 @@ def main() -> None:
     d["powerup_img_path"] = list_dir(form_abs_path(__file__,"images/powerups"))
 
     #Get the number of backgrounds
+    
     bg_limit = len(d["background_img_paths"])
     
     #DBPath

@@ -8,20 +8,18 @@ logging.basicConfig(level=logging.CRITICAL, format = '%(asctime)s - %(levelname)
 
 class Request_Handle(socketserver.BaseRequestHandler):
     player = {}
-    first = set()
     pair = {}
+    first = set()
     waiting_list = set()
     random = random.random()
 
     @staticmethod
     def remove_from_all(player):
         """Remove player from all vars"""
-        # partner = Request_Handle.player[player]
         del Request_Handle.player[player]
         del Request_Handle.pair[player]
         Request_Handle.first.remove(player)
         Request_Handle.waiting_list.remove(player)
-        
 
     def handle(self):
         """Method to handle the client"""
@@ -32,16 +30,21 @@ class Request_Handle(socketserver.BaseRequestHandler):
 
         #Get id of the player
         logging.critical(f"{self.client_address[0]} wrote: {data}")
+        logging.debug(f"Request handle data: {Request_Handle.player}")
 
         #If data is empty
         if not data:
 
             #Remove the players
             Request_Handle.remove_from_all(player)
+            self.request.close()
             return
 
         #If player is new player
         if player not in Request_Handle.player:
+
+            #Place data into dict
+            Request_Handle.player[player] = data
 
             #Check if there is anyone waiting
             if len(Request_Handle.waiting_list) > 0:
@@ -60,11 +63,13 @@ class Request_Handle(socketserver.BaseRequestHandler):
                 Request_Handle.waiting_list.add(player)
                 Request_Handle.first.add(player)
 
-        #Place data into dict
-        Request_Handle.player[player] = data
-
-        #If player is not waiting send his partner data over
-        if player not in Request_Handle.waiting_list:
+        #If player is waiting
+        if player in Request_Handle.waiting_list:
+            #Msg is waiting
+            msg = {'waiting':True}
+            
+        #If player is not waiting send his partner data over and pairing exist
+        else:
 
             #Get the partner
             partner = Request_Handle.pair[player]
@@ -72,7 +77,7 @@ class Request_Handle(socketserver.BaseRequestHandler):
             #If the data is blank
             if not Request_Handle.player[partner]:
 
-                #Remove player
+                #Disconnectd player player
                 msg = {'disconnected': True}
 
             else:
@@ -83,15 +88,11 @@ class Request_Handle(socketserver.BaseRequestHandler):
                         'isfirst': player in Request_Handle.first,
                         'disconnected': False}
 
-        #Otherwise
-        else:
-            msg = {'waiting':True}
-
         #Send the msg
         self.request.sendall(pickle.dumps(msg))
-        
+        self.request.close()
 
-class Server(socketserver.ThreadingTCPServer):
+class Server(socketserver.TCPServer):
     def __init__(self, address, request_handle):
         super().__init__(address, request_handle)
 
