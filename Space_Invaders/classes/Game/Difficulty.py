@@ -34,7 +34,7 @@ class Difficulty(object):
         if mul*value > 1:
 
             #Return the multiplier with the value
-            return mul*value
+            return int(mul*value)
 
         else:
 

@@ -32,9 +32,6 @@ class OnlinePVPScreen(LocalPVPScreen):
         """Pack the data into the correct form to be sent"""
         return (self.player1_bullet,
                 self.player1.get_coord(),
-                self.mob_bullet,
-                self.explosions,
-                self.enemies,
                 self.p1_score)
 
 
@@ -53,7 +50,7 @@ class OnlinePVPScreen(LocalPVPScreen):
         if not self.waiting:
 
             #Unpack the data
-            self.player2_bullet, p2_coord, self.mob_bullet, self.explosions, self.enemies, self.p2_score = data['data']
+            self.player2_bullet, p2_coord, self.p2_score = data['data']
             self.player2.set_coord(p2_coord)
             self.random = data['random']
 

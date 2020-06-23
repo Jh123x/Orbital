@@ -36,7 +36,7 @@ async def load_sound(sound_path:str, settings:int, debug:bool) -> Sound:
 class GameWindow(object):
     def __init__(self, sensitivity:int, maxfps:int, game_width:int, game_height:int, icon_img_path:str, player_img_paths:tuple,
                  enemy_img_paths:tuple, bullet_img_paths:tuple, background_img_paths:tuple, explosion_img_paths:tuple, 
-                 db_path:str, sound_path:dict, bg_limit:int, menu_music_paths:tuple, wave:int = 1,  debug:bool = False):
+                 db_path:str, sound_path:dict, bg_limit:int, menu_music_paths:tuple, powerup_img_path:tuple, wave:int = 1,  debug:bool = False):
         """The constructor for the main window
             Arguments:
                 Sensitivity: Sensitivity of controls (int)
@@ -99,7 +99,7 @@ class GameWindow(object):
         self.difficulty = Difficulty(difficulty if difficulty < 5 else 5)
 
         #Load sprites
-        load_sprites((Player, Bullet, EnemyShip, Background, Explosion), (player_img_paths, bullet_img_paths, enemy_img_paths, background_img_paths, explosion_img_paths))
+        load_sprites((Player, Bullet, EnemyShip, Background, Explosion, PowerUp), (player_img_paths, bullet_img_paths, enemy_img_paths, background_img_paths, explosion_img_paths, powerup_img_path))
 
         #Load sounds
         self.sound = asyncio.run(load_sound(sound_path,self.settings_data['music'],self.debug))

@@ -157,3 +157,12 @@ class ImageObject(BaseObject):
                 Return the width of the image (int)
         """
         return self.image.get_width() if self.image else self.width
+
+    def saveSelf(self):
+        """Save the object in to a state"""
+        pass
+       
+        
+    def loadSelf(self):
+        """Load the object from state"""
+        pass
