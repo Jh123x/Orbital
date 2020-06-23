@@ -45,7 +45,7 @@ class OnlinePVPScreen(LocalPVPScreen):
 
     def pack_player_data(self):
         """Pack the data into the correct form to be sent"""
-        return (self.player1.get_coord(), self.p1_score, self.shot)
+        return (self.player1.get_x(), self.p1_score, self.shot)
 
     def communicate(self):
         """Communicate with the server"""
@@ -62,10 +62,10 @@ class OnlinePVPScreen(LocalPVPScreen):
         if not self.waiting:
 
             #Unpack the data
-            p2_coord, self.p2_score, p2_shot = data['data']
+            p2_x, self.p2_score, p2_shot = data['data']
 
             #Set the coordinate for player 2
-            self.player2.set_coord(p2_coord)
+            self.player2.set_coord((p2_x,self.player2.get_y()))
 
             #If player 2 shot
             if p2_shot:
@@ -126,7 +126,7 @@ class OnlinePVPScreen(LocalPVPScreen):
             if keys[K_SPACE]:
 
                 #Let player 2 shoot
-                self.player2.shoot()
+                self.shot = self.player2.shoot()
 
         #Return to false screen 
         return False
