@@ -5,9 +5,9 @@ import random
 import torch
 import numpy as np
 from ..util.memory import *
+from .baseagent import BaseAgent
 
-
-class DQNAgent():
+class DQNAgent(BaseAgent):
     def __init__(self, input_shape , action_size , seed , device, buffer_size, batch_size,
                  gamma, alpha, tau, update, replay, model):
         '''Initialise a Agent Object
@@ -23,10 +23,7 @@ class DQNAgent():
         replay.     : after which replay to be started
         model.      : Pytorch Model
         '''
-        self.input_shape = input_shape
-        self.action_size = action_size
-        self.seed = random.seed(seed)
-        self.device = device
+        super(DQNAgent, self).__init__(input_shape,action_size,seed,device,gamma,alpha)
         self.buffer_size = buffer_size
         self.batch_size = batch_size
         self.gamma = gamma
@@ -82,7 +79,7 @@ class DQNAgent():
         if rand.rand() > eps:
             return np.argmax(action_val.cpu().data.numpy())
         else:
-            return random.choice(np.arange(self.action_size))
+            return random.choice(np.arange(self.action_space))
 
     def learn(self, exp):
         state, action, reward, next_state, done = exp
@@ -109,8 +106,10 @@ class DQNAgent():
 
     def model_dict(self, epsilon)-> dict:
         ''' To save models'''
-        return {'policy_net': self.policy_net.state_dict(), 'target_net': self.target_net.state_dict(),
-                 't_step': self.t_step, 'epsilon': epsilon}
+        return super().model_dict(  policy_net= self.policy_net.state_dict(),
+                                    target_net= self.target_net.state_dict(),
+                                    t_step=self.t_step,
+                                    epsilon= epsilon)
 
     def load_model(self, state_dict):
         '''Load Parameters and Model Information from prior training'''

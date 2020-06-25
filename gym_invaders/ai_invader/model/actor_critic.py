@@ -5,7 +5,7 @@ from .basemodel import BaseModel
 
 class Actor(BaseModel):
     def __init__(self, input_shape, num_actions):
-        super(BaseModel,self).__init__(input_shape,num_actions)
+        super(Actor,self).__init__(input_shape,num_actions)
         self.fc = nn.Sequential(
             nn.Linear(self.feature_size(),512),
             nn.LeakyReLU(),
