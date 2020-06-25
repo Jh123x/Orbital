@@ -21,11 +21,13 @@ def load_sprites(obj_list:list, paths:list):
 
     #Run functions concurrently
     for i, obj in enumerate(obj_list):
+
+        #Add image sprites to each class concurrently
         asyncio.run(add_to_sprite(obj, paths[i]))
 
 async def add_to_sprite(obj, sprite_path:str) -> None:
     """Add the pygame image to the object"""
-    #For each object add it to the sprite path
+    #For each object load the image and append it to the object
     for path in sprite_path:
         obj.sprites.append(pygame.image.load(path))
         
@@ -37,7 +39,7 @@ class GameWindow(object):
     def __init__(self, sensitivity:int, maxfps:int, game_width:int, game_height:int, icon_img_path:str, player_img_paths:tuple,
                  enemy_img_paths:tuple, bullet_img_paths:tuple, background_img_paths:tuple, explosion_img_paths:tuple, 
                  db_path:str, sound_path:dict, bg_limit:int, menu_music_paths:tuple, powerup_img_path:tuple, mothership_img_path:tuple, wave:int = 1,  debug:bool = False):
-        """The constructor for the main window
+        """The Main window
             Arguments:
                 Sensitivity: Sensitivity of controls (int)
                 maxfps: Max fps for the game to go (int)
@@ -51,6 +53,11 @@ class GameWindow(object):
                 explosion_img_paths: Path to all the explosion sprites (string)
                 p_settings: Dictionary of setting values (dictionary)
                 db_path: Path to the database file
+                sound_path: Path to the sounds
+                bg_limit: Limit to the number of backgrounds
+                menu_music_paths: Path to all the background music
+                powerup_img_path: Path to powerup sprites
+                mothership_img_path: Path to mothership sprites
                 wave: Wave of the mobs to start (int): default = 1
                 debug: Toggle whether the game is in debug mode (bool): default = False
 
@@ -266,14 +273,20 @@ class GameWindow(object):
                 Returns the next state the game is suppose to be in (State)
         """
 
-        #Get the correct score
+        #Get the correct score from the correct state
         if self.prev == State.PLAY:
+
+            #Set the score to the correct state
             score = self.play.get_score()
             
         elif self.prev == State.CLASSIC:
+
+            #Set score to score from the correct state
             score = self.classic.get_score()
         
         else:
+
+            #Assert false if the game mode is invalid
             assert False, "Invalid game mode"
 
         #Create the pause screen
@@ -282,22 +295,31 @@ class GameWindow(object):
         #Handle the pause screen
         state = self.pause.handle()
 
+        #If it is exiting out of the pause state
         if state != State.PAUSE and state != self.prev:
+
+            #If it is not going back to the play screen
             if self.prev == State.PLAY and state != State.PLAY:
-               self.play.reset()
+
+                #Reset the play screen
+                self.play.reset()
                 
+            #If it is not going back to the classic screen
             elif self.prev == State.CLASSIC and state != State.CLASSIC:
-                print("hit")
+
+                #Reset the classic screen
                 self.classic.reset()
 
+        #Return the next state
         return state
 
     def handle_two_player_gameover(self) -> State:
         """Handle the PVP gameover screen"""
-        #Check based on previous state
+
+        #Set variables based on previous state
         if self.prev == State.PVP:
             prev = State.PVP
-            pres = State.pvp
+            pres = self.pvp
             scores = self.pvp.get_scores()
 
         elif self.prev == State.COOP:
@@ -316,6 +338,8 @@ class GameWindow(object):
             scores = self.online.get_scores()
 
         else:
+
+            #Invalid state to have gameover
             assert False, f"{self.state}, cannot have gameover"
 
         #Generate gameover screen
@@ -455,6 +479,7 @@ class GameWindow(object):
         #Check if background music should be playing
         if self.sound.get_state() != self.sound_state:
 
+            #Get the state of sound
             self.sound_state = self.sound.get_state()
 
             #If sound is enabled
@@ -540,6 +565,8 @@ class GameWindow(object):
 
             #If the state is quit or player closes the game
             if self.state == State.QUIT or pygame.QUIT in tuple(map(lambda x: x.type, pygame.event.get())):
+
+                #Set running to false
                 running = False
 
         #Play the exit sound

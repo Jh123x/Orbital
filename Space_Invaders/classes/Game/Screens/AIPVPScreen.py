@@ -6,7 +6,7 @@ from .. import AIPlayer, State, Player, Direction
 class AIPVPScreen(LocalPVPScreen):
     def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, fps:int, 
                 player_lives:int = 3, debug:bool = False):
-        """Constructor for the AI PVP screen"""
+        """The AI PVP screen"""
         
         #Call the superclass
         super().__init__(screen_width, screen_height, screen, sensitivity, fps, player_lives, debug)
@@ -51,6 +51,7 @@ class AIPVPScreen(LocalPVPScreen):
                 #Let the player shoot
                 self.player1.shoot()
         
+        #Return False if they do not want to pause the game
         return False
 
     def handle(self) -> State:

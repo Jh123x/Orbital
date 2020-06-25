@@ -31,30 +31,60 @@ class ClassicScreen(PlayScreen):
 
     def randomly_spawn_mothership(self) -> bool:
         """Spawns a mothership randomly, returns if mothership is spawned"""
+
+        #If the mothership does not exist and the random roll hits
         if not self.ms_cooldown and self.generate_random_no() < 1/900:
-            print("Spawned mothership")
+            
+            #Create the mothership
             self.mothership = MotherShip(0, 50, self.screen_width, self.screen_height, 500)
+
+            #Set the cooldown for the mothership
             self.ms_cooldown = self.fps * 3
+
+            #Return True to signify that mothership spawned
             return True
 
+        #If mothership is still under cooldown
         elif self.ms_cooldown:
+
+            #Reduce cooldown by 1
             self.ms_cooldown -= 1
-        elif not self.ms_cooldown:
+
+        #If it is not on cooldown and mothership still exists
+        elif not self.ms_cooldown and self.mothership:
+
+            #Set mothership to None
             self.mothership = None
+
+        #return False if a mothership does not spawn
         return False
 
     def update(self) -> None:
         """Update class for classic"""
-        super().update()
+        
+        #Attempts to spawn the mothership
         self.randomly_spawn_mothership()
+
+        #If mothership exists
         if self.mothership:
+
+            #Update the mothership
             self.mothership.update()
+
+        #Call the superclass update
+        return super().update()
 
     def draw_sprites(self) -> None:
         """Draw the sprites for the screen"""
+
+        #If the mothership exists
         if self.mothership:
+
+            #Draw the mothership
             self.mothership.draw(self.surface)
-        super().draw_sprites()
+
+        #Draw the rest of the sprites
+        return super().draw_sprites()
 
     def draw_hitboxes(self) -> None:
         """Draw hitboxes for the sprites"""
@@ -65,6 +95,7 @@ class ClassicScreen(PlayScreen):
             #Draw the hitbox for the mothership
             pygame.draw.rect(self.surface, (5, 50, 5), self.mothership.rect, 0)
 
+        #Call the superclass to draw the hitbox
         return super().draw_hitboxes()
 
     def check_collisions(self) -> None:

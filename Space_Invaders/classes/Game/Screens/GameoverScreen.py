@@ -20,9 +20,13 @@ class GameoverScreen(Screen):
                 handle: handles the drawing of the screen onto the surface and internal state
         """
 
-        #Check if the sound has been played
+        #If sound exist and have not been played
         if not GameoverScreen.played and GameoverScreen.sound:
+
+            #Play the sound
             GameoverScreen.sound.play('gameover')
+
+            #Set sound played to true
             GameoverScreen.played = True
 
         #Store the variables
@@ -77,12 +81,16 @@ class GameoverScreen(Screen):
 
         #If the player wants to stay
         if stay:
+
+            #Reset sound played to False
             GameoverScreen.played = False
+
             #Return next state to be menu
             return State.MENU
         
         #If the player does not want to stay
         elif stay == False:
+
             #Return the quit state
             return State.QUIT
 
