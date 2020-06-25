@@ -3,22 +3,17 @@ from . import ImageObject, BlockGroup
 def hp_up(screen, player):
     """Increase the hp of the player"""
     player.add_lifes(1)
-    return
 
 def bullet_up(screen, player):
     """Increase player bullet reload speed"""
     #If the player is not firing at a higher speed
     if player.maxcooldown > 20:
         player.maxcooldown -= 5
-    else:
-        pass
-    return
 
 def shield_up(screen, player):
     """Creates a shield for the player"""
     #Spawn the blocks
     screen.blocks = BlockGroup(screen.screen_width, screen.screen_height//1.2, screen.screen, 3, screen.player.get_height() + 10)
-    return 
 
 class PowerUp(ImageObject):
     sprites = []

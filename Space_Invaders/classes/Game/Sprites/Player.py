@@ -41,6 +41,9 @@ class Player(MovingObject):
         #Call the superclass
         super().__init__(sensitivity, initial_x, initial_y, game_width, game_height, Player.sprites[-1], debug)
 
+        #Scale the image to 50x50
+        self.scale(50,50)
+
         #Invicibility when it just spawned
         self.invincible = fps
 
@@ -70,11 +73,12 @@ class Player(MovingObject):
         self.changed = True
 
     def isInvincible(self) -> bool:
+        """Check if the player is invincible"""
         return self.invincible > 0
-
 
     def add_lifes(self, no:int) -> None:
         """Adds life to the player"""
+        assert no > 0
         self.life += no
 
     def isAI(self) -> bool:
@@ -191,7 +195,7 @@ class Player(MovingObject):
         if not self.invincible:
 
             #Reduce the life of the player
-            self.life -= 1 
+            self.life -= 1
 
             #Make the player invincible for 1 second
             self.invincible = self.fps

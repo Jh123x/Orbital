@@ -14,6 +14,8 @@ class PlayScreen(Screen):
                 sensitivity: Sensitivity of the player controls (int)
                 max_fps: fps at which the game is run at (int)
                 wave: The wave which the game starts at (int): default = 1
+                player lives: Life player starts with
+                powerup_chance: Chance of spawning powerups (0 to disable)
                 debug: Boolean indicating debug mode (bool): default = False
 
             Methods:
@@ -192,6 +194,14 @@ class PlayScreen(Screen):
         #Update powerups
         self.update_powerups()
 
+        #Draw the sprites
+        self.draw_sprites()
+
+        #Call superclass update
+        super().update()
+
+    def draw_sprites(self):
+        """Draw the sprites"""
         #Draw bullet
         self.up_bullets.draw(self.surface)
         self.down_bullets.draw(self.surface)
@@ -215,9 +225,6 @@ class PlayScreen(Screen):
 
         #Draw the block
         self.blocks.draw(self.screen)
-
-        #Call superclass update
-        super().update()
 
     def get_score(self) -> int:
         """Gets the score of the player in the current state
@@ -358,21 +365,24 @@ class PlayScreen(Screen):
                 #Remove the ship from all groups
                 ship.kill()
 
-                #Roll for chance of powerup spawning
-                if self.generate_random_no() < self.powerup_chance:
+                #If powerups are not disabled
+                if self.powerup_chance > 0:
 
-                    #Spawn the powerup
-                    self.spawn_powerups(ship.get_x(), ship.get_y())
+                    #Roll for chance of powerup spawning
+                    if self.generate_random_no() < self.powerup_chance:
 
-                    #Increse the number of powerups spawned
-                    self.power_up_numbers += 1
+                        #Spawn the powerup
+                        self.spawn_powerups(ship.get_x(), ship.get_y())
 
-                elif self.power_up_numbers == 0 and len(self.enemies) == 0:
-                    #Spawn the powerup
-                    self.spawn_powerups(ship.get_x(), ship.get_y())
+                        #Increse the number of powerups spawned
+                        self.power_up_numbers += 1
 
-                    #Increse the number of powerups spawned
-                    self.power_up_numbers += 1
+                    elif self.power_up_numbers == 0 and len(self.enemies) == 0:
+                        #Spawn the powerup
+                        self.spawn_powerups(ship.get_x(), ship.get_y())
+
+                        #Increse the number of powerups spawned
+                        self.power_up_numbers += 1
 
                 #Remove sprites that collide with bullets and return the sum of all the scores
                 return ship.get_points()

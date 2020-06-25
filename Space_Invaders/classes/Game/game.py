@@ -28,7 +28,7 @@ async def add_to_sprite(obj, sprite_path:str) -> None:
     #For each object add it to the sprite path
     for path in sprite_path:
         obj.sprites.append(pygame.image.load(path))
-
+        
 async def load_sound(sound_path:str, settings:int, debug:bool) -> Sound:
     """Load the sound object"""
     return Sound(dict(map(lambda x: (x[0], pygame.mixer.Sound(x[1])), sound_path.items())), bool(int(settings)), debug)
@@ -36,7 +36,7 @@ async def load_sound(sound_path:str, settings:int, debug:bool) -> Sound:
 class GameWindow(object):
     def __init__(self, sensitivity:int, maxfps:int, game_width:int, game_height:int, icon_img_path:str, player_img_paths:tuple,
                  enemy_img_paths:tuple, bullet_img_paths:tuple, background_img_paths:tuple, explosion_img_paths:tuple, 
-                 db_path:str, sound_path:dict, bg_limit:int, menu_music_paths:tuple, powerup_img_path:tuple, wave:int = 1,  debug:bool = False):
+                 db_path:str, sound_path:dict, bg_limit:int, menu_music_paths:tuple, powerup_img_path:tuple, mothership_img_path:tuple, wave:int = 1,  debug:bool = False):
         """The constructor for the main window
             Arguments:
                 Sensitivity: Sensitivity of controls (int)
@@ -99,7 +99,8 @@ class GameWindow(object):
         self.difficulty = Difficulty(difficulty if difficulty < 5 else 5)
 
         #Load sprites
-        load_sprites((Player, Bullet, EnemyShip, Background, Explosion, PowerUp), (player_img_paths, bullet_img_paths, enemy_img_paths, background_img_paths, explosion_img_paths, powerup_img_path))
+        load_sprites((Player, Bullet, EnemyShip, Background, Explosion, PowerUp, MotherShip), 
+                    (player_img_paths, bullet_img_paths, enemy_img_paths, background_img_paths, explosion_img_paths, powerup_img_path, mothership_img_path))
 
         #Load sounds
         self.sound = asyncio.run(load_sound(sound_path,self.settings_data['music'],self.debug))
@@ -281,11 +282,12 @@ class GameWindow(object):
         #Handle the pause screen
         state = self.pause.handle()
 
-        if state != self.prev:
-            if self.prev == State.PLAY:
+        if state != State.PAUSE and state != self.prev:
+            if self.prev == State.PLAY and state != State.PLAY:
                self.play.reset()
                 
-            elif self.prev == State.CLASSIC:
+            elif self.prev == State.CLASSIC and state != State.CLASSIC:
+                print("hit")
                 self.classic.reset()
 
         return state

@@ -30,9 +30,9 @@ def main() -> None:
     d["explosion_img_paths"] = list_dir(form_abs_path(__file__, "images/explosions"))
     d["menu_music_paths"] = list_dir(form_abs_path(__file__,"sounds/menu_music"))
     d["powerup_img_path"] = list_dir(form_abs_path(__file__,"images/powerups"))
+    d["mothership_img_path"] = list_dir(form_abs_path(__file__,"images/bosses/mothership"))
 
     #Get the number of backgrounds
-    
     bg_limit = len(d["background_img_paths"])
     
     #DBPath

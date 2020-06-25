@@ -48,6 +48,7 @@ class ImageObject(BaseObject):
             Returns: 
                 No return
         """
+
         #If image exists
         if self.image:
             #Create the rectangle for the ImageObject Object
@@ -70,6 +71,7 @@ class ImageObject(BaseObject):
         self.rect.center = (self.x,self.y)
 
     def set_coord(self, position):
+        """Set the coordinate of the moving object"""
         super().set_coord(position)
         self.load_rect()
 
