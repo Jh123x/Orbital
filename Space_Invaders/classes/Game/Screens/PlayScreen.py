@@ -5,7 +5,7 @@ from . import Screen
 from .. import *
 
 class PlayScreen(Screen):
-    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, difficulty: Difficulty, wave:int = 1, player_lives:int = 3, powerup_chance:float = 0.05, debug:bool = False):
+    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, difficulty: Difficulty, wave:int = 1, player_lives:int = 3, powerup_chance:float = 0.1, debug:bool = False):
         """The Play screen
             Arguments:
                 screen_width: Width of the game in pixels (int)
@@ -38,6 +38,7 @@ class PlayScreen(Screen):
         self.difficulty = difficulty
         self.over = False
         self.powerup_chance = powerup_chance
+        self.power_up_numbers = 0
 
         #Create the groups
         #Bullets shot by player
@@ -363,6 +364,16 @@ class PlayScreen(Screen):
                     #Spawn the powerup
                     self.spawn_powerups(ship.get_x(), ship.get_y())
 
+                    #Increse the number of powerups spawned
+                    self.power_up_numbers += 1
+
+                elif self.power_up_numbers == 0 and len(self.enemies) == 0:
+                    #Spawn the powerup
+                    self.spawn_powerups(ship.get_x(), ship.get_y())
+
+                    #Increse the number of powerups spawned
+                    self.power_up_numbers += 1
+
                 #Remove sprites that collide with bullets and return the sum of all the scores
                 return ship.get_points()
 
@@ -435,6 +446,9 @@ class PlayScreen(Screen):
 
             #Increase the wave number
             self.wave += 1
+
+            #Reset wave powerup
+            self.power_up_numbers = 0
 
             #Spawn the aliens
             self.spawn_enemies(int(6 * self.wave))

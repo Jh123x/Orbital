@@ -9,7 +9,7 @@ def bullet_up(screen, player):
     """Increase player bullet reload speed"""
     #If the player is not firing at a higher speed
     if player.maxcooldown > 20:
-        player.maxcooldown -= 10
+        player.maxcooldown -= 5
     else:
         pass
     return
@@ -32,6 +32,9 @@ class PowerUp(ImageObject):
         #Store variables
         self.power_type = power_type
         self.ttl = time_to_live
+
+        #Scale the image
+        self.scale(30,30)
 
     @staticmethod
     def get_no_powerups() -> int:
