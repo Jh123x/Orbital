@@ -56,6 +56,14 @@ class ClassicScreen(PlayScreen):
             self.mothership.draw(self.surface)
         super().draw_sprites()
 
+    def draw_hitboxes(self) -> None:
+        """Draw hitboxes for the sprites"""
+
+        #Draw the hitbox for the mothership
+        pygame.draw.rect(self.surface, (5, 50, 5), self.mothership.rect, 0)
+
+        return super().draw_hitboxes()
+
     def check_collisions(self) -> None:
         """Check the collisions for the mothership"""
 

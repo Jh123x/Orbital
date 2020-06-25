@@ -146,7 +146,7 @@ class PlayScreen(Screen):
 
         #Draw hitbox for the enemies
         for sprite in self.enemies:
-            c = 20*(sprite.get_lives()-1)
+            c = (sprite.get_lives()-1)
             pygame.draw.rect(self.surface, (5*c,5*c,5*c), sprite.rect, 0)
         #Draw hitbox for the bullets
         for sprite in self.up_bullets:
