@@ -3,9 +3,9 @@ import random
 import torch
 from . import Player, Bullet
 from .. import Direction
-from gym_invaders.ai_invader.agent import DQNAgent
-from gym_invaders.ai_invader.model import DQNCNN
-from gym_invaders.ai_invader.util import preprocess_frame,stack_frame
+# from gym_invaders.ai_invader.agent import DQNAgent
+# from gym_invaders.ai_invader.model import DQNCNN
+# from gym_invaders.ai_invader.util import preprocess_frame,stack_frame
 
 def stack_frames(frames, state, is_new=False):
     '''
@@ -62,16 +62,24 @@ class AIPlayer(Player):
 
     def draw(self, screen) -> None:
         """Draw the player onto the screen and stores it if not stored before."""
+
+        #If there is no screen
         if not self.screen:
 
             #stores the screen
             self.screen = screen
+
+        #Draw hitboxes
         self.screen.draw_hitboxes()
+
+        #Draw model on the screen
         super().draw(screen)
 
     def get_action(self):
         """Get the next action taken by the AI"""
         #Add the AI to make the choice TODO
+
+        #Get current actions
         actions = self.get_action_space()
         state = self.get_space()
 
@@ -88,12 +96,8 @@ class AIPlayer(Player):
             # for the first timestep where there is no stackedframes yet
             self.state = stack_frames(None, state, False)
             return actions[0]
-        #Otherwise
+        #Otherwise Default AI
         else:
-            #Default AI
-            
-            #Get current actions
-
             #Generate a random action
             rng = random.randint(0,100)
 
@@ -111,12 +115,12 @@ class AIPlayer(Player):
                 else:
                     return actions[0]
 
-    def move_shoot(self, bool):
+    def move_shoot(self, shoot:bool) -> bool:
         '''
         To encompass both move_left and shoot, and move_right and shoot action
         from Original Space Invaders Gym Environment
         '''
-        if bool:
+        if shoot:
             self.move_left()
             return self.shoot
         self.move_right()
