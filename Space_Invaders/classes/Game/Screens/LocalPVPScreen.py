@@ -251,10 +251,16 @@ class LocalPVPScreen(Screen):
         #Draw the explosions
         self.explosions.draw(self.screen)
 
-        #Draw the players if they are not destroyed
+        #If player 1 is not destroyed
         if not self.player1.is_destroyed():
+
+            #Draw player 1
             self.player1.draw(self.screen)
+
+        #If player 2 is not destroyed
         if not self.player2.is_destroyed():
+
+            #Draw player 2
             self.player2.draw(self.screen)
 
         #Call the superclass update
