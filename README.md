@@ -12,7 +12,7 @@ Level of achievement: Artemis
   - Milestone 3: [To be updated](#)
 
 * Download Link: [Windows](https://drive.google.com/file/d/1hl9ZfLfdFUbhuicCBJrC9TU6vuIL0XSc/view?usp=sharing)
-* Download Link: [Mac] (https://drive.google.com/file/d/1iaOJq8udqXCtAyodes7kMmCAVzpx6xyb/view?usp=sharing)
+* Download Link: [Mac](https://drive.google.com/file/d/1iaOJq8udqXCtAyodes7kMmCAVzpx6xyb/view?usp=sharing)
 
 ### Objectives:
 1. Make a Space invaders game
