@@ -181,6 +181,7 @@ class PlayScreen(Screen):
         for sprite in self.enemies:
             c = (sprite.get_lives())*3
             pygame.draw.rect(self.surface, (200,5*c,5*c), sprite.rect, 0)
+
         #Draw hitbox for the bullets
         for sprite in self.up_bullets:
             pygame.draw.rect(self.surface, (100,255,0), sprite.rect, 0)
@@ -188,13 +189,17 @@ class PlayScreen(Screen):
             pygame.draw.rect(self.surface, (25,0,255), sprite.rect, 0)
 
         #Draw the hitbox for the player
-        pygame.draw.rect(self.surface, (55,255,0), self.player.rect, 0)
+        pygame.draw.rect(self.surface, (55,255,10*self.player.get_lives()), self.player.rect, 0)
 
         #If mothership exists
         if self.mothership:
             
             #Draw the hitbox for the mothership
             pygame.draw.rect(self.surface, (5, 50, 5), self.mothership.rect, 0)
+
+        #Draw for powerups
+        for p_up in self.powerups:
+            pygame.draw.rect(self.surface, (255,255,10*p_up.get_power_type()), p_up.rect, 0)
 
     def update_powerups(self) -> None:
         """Update and draw the powerups"""
@@ -279,6 +284,9 @@ class PlayScreen(Screen):
 
             #Draw the mothership
             self.mothership.draw(self.surface)
+
+        #Uncomment this to draw the hitbox instead
+        # self.draw_hitboxes()
 
     def get_score(self) -> int:
         """Gets the score of the player in the current state

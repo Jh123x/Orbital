@@ -2,7 +2,7 @@ import gym
 import gym_game
 from gym import wrappers
 import pygame
-from skimage import transform
+# from skimage import transform
 from collections import deque,namedtuple
 import matplotlib.pyplot as plt
 import time
@@ -24,17 +24,16 @@ env = gym.make("Invader-v0")
 def random_play():
     score = 0
     env.reset()
-    while True:
+    done = False
+    while not done:
         #env.render()
         action = env.action_space.sample()
         state, reward, done, _ = env.step(action)
         score += reward
         print(reward)
-        if done:
-            env.close()
-            print("Your Score at end of game is: ", score)
-            break
 
+    env.close()
+    print("Your Score at end of game is: ", score)
 
 
 if __name__ == "__main__":
