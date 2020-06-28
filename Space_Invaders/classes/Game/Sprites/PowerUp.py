@@ -46,7 +46,13 @@ class PowerUp(ImageObject):
 
     def update(self) -> None:
         """Update the sprite"""
-        print(f"Time to live: {self.ttl}")
+
+        #If debug is on
+        if self.debug:
+            
+            #Print time to live for the powerup
+            print(f"Time to live: {self.ttl}")
+        
         #If time to live is 0
         if self.ttl == 0:
 
