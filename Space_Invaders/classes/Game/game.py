@@ -132,7 +132,7 @@ class GameWindow(object):
         self.settings = SettingsScreen(game_width, game_height, self.main_screen, self.fps, self.sound, self.bg, self.difficulty, debug)
         self.coop = CoopScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.difficulty, 3,  debug)
         self.ai_vs = AIPVPScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, 3,  debug)
-        self.online = OnlinePVPScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, 3,  debug)
+        # self.online = OnlinePVPScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, 3,  debug)
 
         #Store the variables
         self.popup = None
@@ -191,8 +191,9 @@ class GameWindow(object):
     
     def handle_online(self) -> State:
         """Handle the online game"""
-        # self.popup = Popup(320, 40, "Under Construction", self.fps, self.game_width//2 - 80, self.game_height//2, self.main_screen,font = Screen.end_font, debug = self.debug)
-        return self.online.handle()
+        self.popup = Popup(320, 40, "Under Construction", self.fps, self.game_width//2 - 80, self.game_height//2, self.main_screen,font = Screen.end_font, debug = self.debug)
+        # return self.online.handle()
+        return State.PLAYMODE
 
     def handle_two_player_pause(self) -> State:
         """Handle the PVP pause screen"""
