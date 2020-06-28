@@ -33,7 +33,6 @@ async def add_to_sprite(obj, sprite_path:str) -> None:
         
 async def load_sound(sound_path:str, settings:int, debug:bool) -> Sound:
     """Load the sound object"""
-    print(sound_path)
     return Sound(dict(map(lambda x: (x[0], pygame.mixer.Sound(x[1])), sound_path.items())), bool(int(settings)), debug)
 
 class GameWindow(object):
