@@ -1,6 +1,35 @@
 #To read the configuration files
-from configparser import ConfigParser
+import configparser
 import os
+
+def list_dir(filepath):
+    """List the files in the directory"""
+    return tuple(map(lambda x: "/".join((filepath,x)),os.listdir(filepath)))
+
+def num_files(filepath):
+    """Find the number of files in the directory"""
+    return len(list_dir(filepath))
+
+def load_all(kv:tuple, keys:tuple, dic:dict, curr_path:str):
+    """Load all the sprites"""
+    #Create dict
+    d = {}
+
+    #Add the function to list of tasks
+    for i,key in enumerate(keys):
+        map_abs_path(kv[i],dic[key].values(),d,curr_path)
+
+    #Return the dictionary
+    return d
+
+def map_abs_path(key:str, paths:list, dic:dict, curr_path:str):
+    """Map absolute path"""
+    dic[key] = list(map(lambda x: form_abs_path(curr_path, x), paths))
+
+def form_abs_path(current_path:str, filepath:str):
+    """Get the absolute path of a filepath"""
+    return f"{os.path.dirname(os.path.realpath(current_path))}/{filepath}"
+
 def convertType(pair:tuple):
     """Convert items to the appropriate types
         Arguments:
@@ -33,12 +62,11 @@ def read_settings(config_path:str, key:str) -> dict:
     """
 
     #Set up the config parser
-    config = ConfigParser()
-    set = os.path.abspath("")+config_path
-
+    config = configparser.ConfigParser()
 
     #Read the configs
     config.read(config_path)
+
     #Return the dictionary after converting numbers to int
     return dict(map(lambda x: convertType(x) ,config[key].items()))
 
@@ -50,7 +78,7 @@ def read_all(config_path:str) -> dict:
             A dictionary with each of the keywords matched to the keys
     """
     #Set up the config parser
-    config = ConfigParser()
+    config = configparser.ConfigParser()
 
     #Read the configs
     config.read(config_path)
