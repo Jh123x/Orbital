@@ -40,7 +40,7 @@ class TwoPlayerScreen(Screen):
 
         #Check if the person clicked on the AI Coop rect
         if self.check_clicked(self.ai_coop):
-            self.popup = Popup(200, 20, "Still under construction", 60, self.screen_width//2, 10, self.screen, self.debug)
+            self.popup = Popup(200, 20, "Still under construction", 60, self.screen_width//2, 10, self.screen, font = Screen.font, debug = self.debug)
             #Return the AI Coop mode state
             return State.AI_COOP
 

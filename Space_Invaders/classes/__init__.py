@@ -1,11 +1,9 @@
 #Allow the folder to be imported by other Python files
-import os
-print(os.getcwd())
-#Import everything from the game file
 
+#Import everything from the game file
 from .Game import *
 
-#Import everything from settings.py
+# #Import everything from settings.py
 from .Misc import *
 
 #Import everything from the AI file

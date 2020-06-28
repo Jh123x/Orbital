@@ -32,6 +32,9 @@ class EnemyShip(MovingObject):
         if self.debug:
             print(switch_direction)
 
+        #Scale the mob to 40 x 40
+        self.scale(40,40)
+
         #Store variables
         self.switch_direction = switch_direction
         self.lives = lives
@@ -74,6 +77,9 @@ class EnemyShip(MovingObject):
 
                 #Update the image to the new image of sprite
                 self.image = self.sprites[self.lives-1 if self.lives < len(EnemyShip.sprites) else len(EnemyShip.sprites)-1]
+
+                #Scale the mob to 40 x 40
+                self.scale(40,40)
         else:
             #If it ends up here the destroy object is being destroyed somemore
             assert False, "Destroying destroyed object"

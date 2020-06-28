@@ -41,11 +41,17 @@ class Player(MovingObject):
         #Call the superclass
         super().__init__(sensitivity, initial_x, initial_y, game_width, game_height, Player.sprites[-1], debug)
 
+        #Scale the image to 50x50
+        self.scale(50,50)
+
         #Invicibility when it just spawned
         self.invincible = fps
 
         #Player bullet group
         self.bullet_grp = bullet_grp
+
+        #Set player max cooldown
+        self.maxcooldown = fps // (3 * 0.95)
 
         #Keep track of bullet cooldown
         self.cooldown = 0
@@ -67,7 +73,13 @@ class Player(MovingObject):
         self.changed = True
 
     def isInvincible(self) -> bool:
+        """Check if the player is invincible"""
         return self.invincible > 0
+
+    def add_lifes(self, no:int) -> None:
+        """Adds life to the player"""
+        assert no > 0
+        self.life += no
 
     def isAI(self) -> bool:
         """Check if it is an ai instance of the Player
@@ -87,11 +99,7 @@ class Player(MovingObject):
         """
         return self.cooldown > 0
 
-    def draw(self, screen) -> None:
-        """Draw the player onto the screen"""
-        screen.blit(self.image, self.rect)
-    
-    def shoot(self) -> None:
+    def shoot(self) -> bool:
         """Lets the player shoot a bullet
             Arguments:
                 No arguments:
@@ -106,7 +114,13 @@ class Player(MovingObject):
             self.bullet_grp.add(Bullet(self.sensitivity * 1.5, self.get_center()[0], self.get_y(), self.bullet_direction, self.game_width, self.game_height, self.debug))
 
             #Reset the cooldown
-            self.cooldown = self.fps // (3 * 0.95)
+            self.cooldown = self.maxcooldown
+
+            #Return True if the player has shot
+            return True
+
+        #Return false if player fails to shoot
+        return False
 
     def move_up(self) -> None:
         """Do not allow the player to move up
@@ -181,7 +195,7 @@ class Player(MovingObject):
         if not self.invincible:
 
             #Reduce the life of the player
-            self.life -= 1 
+            self.life -= 1
 
             #Make the player invincible for 1 second
             self.invincible = self.fps
@@ -204,6 +218,9 @@ class Player(MovingObject):
         """
         #Reset life
         self.life = self.init_life
+
+        #Reset shooting cooldown
+        self.maxcooldown = self.fps // (3 * 0.95)
 
         #Reset position
         self.x = self.initial_x
@@ -236,7 +253,7 @@ class Player(MovingObject):
             self.cooldown -= 1
 
         #Load the Image of the player based on his life
-        self.image = Player.sprites[self.get_lives()-1]
+        self.image = Player.sprites[self.get_lives()-1 if self.get_lives() < len(Player.sprites) else len(Player.sprites) - 1]
 
         #Call the super update
         return super().update()

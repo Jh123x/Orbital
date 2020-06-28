@@ -33,7 +33,7 @@ class AIPlayer(Player):
             #Perform the AI action
             self.get_action()()
 
-    def get_action(self):
+    def get_action(self,*args):
         """Get the next action taken by the AI"""
 
         #Add the AI to make the choice TODO

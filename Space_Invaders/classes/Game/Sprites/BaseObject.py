@@ -50,3 +50,7 @@ class BaseObject(pygame.sprite.Sprite):
                 Returns the y coordinate of the mob
         """
         return self.y
+
+    def set_coord(self,position):
+        self.x = position[0]
+        self.y = position[1]

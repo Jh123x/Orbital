@@ -6,7 +6,7 @@ except ImportError:
 
 class MovingObject(ImageObject):
     """Main class for all objects that move"""
-    def __init__(self, sensitivity:int, initial_x:int, initial_y:int, game_width:int, game_height:int, image_path:str, debug:bool):
+    def __init__(self, sensitivity:int, initial_x:int, initial_y:int, game_width:int, game_height:int, image, debug:bool , sprite_size:tuple = (50,50)):
         """Constructor class for the moving object
             Arguments:
                 sensitivity: Sensitivity of the moving object (int)
@@ -26,7 +26,7 @@ class MovingObject(ImageObject):
 
         """
         #Call the superclass init method (Sprites set to 50x50)
-        super().__init__(initial_x, initial_y, 50, 50, image_path, debug)
+        super().__init__(initial_x, initial_y, *sprite_size, image, debug)
 
         #Storing the variables
         self.game_width = game_width
