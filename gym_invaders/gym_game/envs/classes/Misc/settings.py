@@ -1,4 +1,5 @@
 #To read the configuration files
+<<<<<<< HEAD
 import configparser
 import os
 
@@ -30,6 +31,10 @@ def form_abs_path(current_path:str, filepath:str):
     """Get the absolute path of a filepath"""
     return f"{os.path.dirname(os.path.realpath(current_path))}/{filepath}"
 
+=======
+from configparser import ConfigParser
+import os
+>>>>>>> master
 def convertType(pair:tuple):
     """Convert items to the appropriate types
         Arguments:
@@ -62,11 +67,20 @@ def read_settings(config_path:str, key:str) -> dict:
     """
 
     #Set up the config parser
+<<<<<<< HEAD
     config = configparser.ConfigParser()
 
     #Read the configs
     config.read(config_path)
 
+=======
+    config = ConfigParser()
+    set = os.path.abspath("")+config_path
+
+
+    #Read the configs
+    config.read(config_path)
+>>>>>>> master
     #Return the dictionary after converting numbers to int
     return dict(map(lambda x: convertType(x) ,config[key].items()))
 
@@ -78,7 +92,11 @@ def read_all(config_path:str) -> dict:
             A dictionary with each of the keywords matched to the keys
     """
     #Set up the config parser
+<<<<<<< HEAD
     config = configparser.ConfigParser()
+=======
+    config = ConfigParser()
+>>>>>>> master
 
     #Read the configs
     config.read(config_path)

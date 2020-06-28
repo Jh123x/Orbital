@@ -5,7 +5,7 @@ from . import Screen
 from .. import *
 
 class PlayScreen(Screen):
-    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, difficulty: Difficulty, wave:int = 1, player_lives:int = 3, powerup_chance:float = 0.05, debug:bool = False):
+    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, difficulty: Difficulty, wave:int = 1, player_lives:int = 3, powerup_chance:float = 0.1, debug:bool = False):
         """The Play screen
             Arguments:
                 screen_width: Width of the game in pixels (int)
@@ -14,6 +14,8 @@ class PlayScreen(Screen):
                 sensitivity: Sensitivity of the player controls (int)
                 max_fps: fps at which the game is run at (int)
                 wave: The wave which the game starts at (int): default = 1
+                player lives: Life player starts with
+                powerup_chance: Chance of spawning powerups (0 to disable)
                 debug: Boolean indicating debug mode (bool): default = False
 
             Methods:
@@ -63,6 +65,40 @@ class PlayScreen(Screen):
 
         #Reset the variables
         self.reset()
+
+    def reset(self) -> None:
+        """Reset the play screen and variables
+            Arguments:
+                No arguments
+            Returns: 
+                No returns
+        """
+
+        #Reset powerup number
+        self.powerup_numbers = 0
+
+        #Reset no mothership
+        self.mothership = None
+
+        #Store mothership cooldown
+        self.ms_cooldown = 0
+
+        #Reset the over
+        self.over = False
+        
+        #Zero the score and the wave
+        self.score = 0
+        self.wave = 0
+
+        #Empty the sprite groups
+        self.up_bullets.empty()
+        self.down_bullets.empty()
+        self.enemies.empty()
+        self.explosions.empty()
+        self.powerups.empty()
+
+        #Reset the player
+        self.player.reset()
 
     def get_hitboxes(self) -> list:
         """Get a list of hitboxes of mobs"""
@@ -143,8 +179,8 @@ class PlayScreen(Screen):
 
         #Draw hitbox for the enemies
         for sprite in self.enemies:
-            pygame.draw.rect(self.surface, (5,55,0), sprite.rect, 0)
-
+            c = (sprite.get_lives())*3
+            pygame.draw.rect(self.surface, (200,5*c,5*c), sprite.rect, 0)
         #Draw hitbox for the bullets
         for sprite in self.up_bullets:
             pygame.draw.rect(self.surface, (100,255,0), sprite.rect, 0)
@@ -153,6 +189,12 @@ class PlayScreen(Screen):
 
         #Draw the hitbox for the player
         pygame.draw.rect(self.surface, (55,255,0), self.player.rect, 0)
+
+        #If mothership exists
+        if self.mothership:
+            
+            #Draw the hitbox for the mothership
+            pygame.draw.rect(self.surface, (5, 50, 5), self.mothership.rect, 0)
 
     def update_powerups(self) -> None:
         """Update and draw the powerups"""
@@ -178,6 +220,15 @@ class PlayScreen(Screen):
         #Update the enemy group
         self.enemies.update()
 
+        #Attempts to spawn the mothership
+        self.randomly_spawn_mothership()
+
+        #If mothership exists
+        if self.mothership:
+
+            #Update the mothership
+            self.mothership.update()
+
         #Update the explosions group
         self.explosions.update()
 
@@ -191,6 +242,14 @@ class PlayScreen(Screen):
         #Update powerups
         self.update_powerups()
 
+        #Draw the sprites
+        self.draw_sprites()
+
+        #Call superclass update
+        super().update()
+
+    def draw_sprites(self):
+        """Draw the sprites"""
         #Draw bullet
         self.up_bullets.draw(self.surface)
         self.down_bullets.draw(self.surface)
@@ -215,8 +274,11 @@ class PlayScreen(Screen):
         #Draw the block
         self.blocks.draw(self.screen)
 
-        #Call superclass update
-        super().update()
+        #If the mothership exists
+        if self.mothership:
+
+            #Draw the mothership
+            self.mothership.draw(self.surface)
 
     def get_score(self) -> int:
         """Gets the score of the player in the current state
@@ -226,31 +288,6 @@ class PlayScreen(Screen):
                 Return an integer as a score (int)
         """
         return self.score
-
-    def reset(self) -> None:
-        """Reset the play screen and variables
-            Arguments:
-                No arguments
-            Returns: 
-                No returns
-        """
-
-        #Reset the over
-        self.over = False
-        
-        #Zero the score and the wave
-        self.score = 0
-        self.wave = 0
-
-        #Empty the sprite groups
-        self.up_bullets.empty()
-        self.down_bullets.empty()
-        self.enemies.empty()
-        self.explosions.empty()
-        self.powerups.empty()
-
-        #Reset the player
-        self.player.reset()
 
     def generate_random_no(self) -> int:
         """Generates a random float from 0 to 1"""
@@ -336,6 +373,9 @@ class PlayScreen(Screen):
         if self.debug:
             print(ships)
 
+        #Initialise score
+        score = 0
+
         #If the list of collision is non-empty
         if ships:
 
@@ -357,25 +397,50 @@ class PlayScreen(Screen):
                 #Remove the ship from all groups
                 ship.kill()
 
-                #Roll for chance of powerup spawning
-                if self.generate_random_no() < self.powerup_chance:
+                #If powerups are not disabled
+                if self.powerup_chance > 0:
 
-                    #Spawn the powerup
-                    self.spawn_powerups(ship.get_x(), ship.get_y())
+                    #Roll for chance of powerup spawning
+                    if self.generate_random_no() < self.powerup_chance:
+
+                        #Spawn the powerup
+                        self.spawn_powerups(ship.get_x(), ship.get_y())
+
+                    #If the power has not spawned during the wave
+                    elif self.powerup_numbers == 0 and len(self.enemies) == 0:
+
+                        #Spawn the powerup
+                        self.spawn_powerups(ship.get_x(), ship.get_y())
 
                 #Remove sprites that collide with bullets and return the sum of all the scores
-                return ship.get_points()
+                score = ship.get_points()
+
+        #Check if ship has collided with bullets
+        if self.mothership and len(pygame.sprite.spritecollide(self.mothership, self.up_bullets, True)) > 0:
+
+            #Get points of mothership and add it to score
+            score += self.mothership.get_points()
+
+            #If so delete the mothership
+            self.mothership = None
 
         #If nothing is destroyed return 0 points
-        return 0
+        return score
 
     def spawn_explosion(self, x:int, y:int) -> None:
         """Spawn an explosion at specified x and y coordinate"""
+
+        #Spawn an explosion
         self.explosions.add(Explosion(self.fps//4, x, y, self.screen_width, self.screen_height, 0, self.debug))
 
     def spawn_powerups(self, x:int, y:int) -> None:
         """Spawn a powerup at specified x and y coordinate"""
+
+        #Spawn the powerup
         self.powerups.add(PowerUp(x, y, 50, 50, random.randint(0,PowerUp.get_no_powerups()-1), self.fps * 3))
+
+        #Increase the number of powerups
+        self.powerup_numbers += 1
 
     def spawn_enemies(self, number:int) -> None:
         """Spawn enemies into the game
@@ -389,10 +454,41 @@ class PlayScreen(Screen):
 
             #Spawn them in 1 row
             self.enemies.add([EnemyShip(self.sensitivity, self.screen_width//4 + i*self.screen_width//10, self.screen_height//10, self.wave_random(), self.screen_width,  self.screen_height, Direction.DOWN, self.down_bullets, self.debug) for i in range(number)])
+        #
         else:
             #Otherwise make them into rows of 6
             for j in range(number//6 if number // 6 < 5 else 5):
                 self.enemies.add([EnemyShip(self.sensitivity, self.screen_width//4 + i*self.screen_width//10, self.screen_height//10 + EnemyShip.sprites[0].get_height() * j, self.wave_random(), self.screen_width,  self.screen_height, Direction.DOWN, self.down_bullets, self.debug) for i in range(6)])
+
+    def randomly_spawn_mothership(self) -> bool:
+        """Spawns a mothership randomly, returns if mothership is spawned"""
+
+        #If the mothership does not exist and the random roll hits
+        if not self.ms_cooldown and self.generate_random_no() < 1/900:
+            
+            #Create the mothership
+            self.mothership = MotherShip(0, 50, self.screen_width, self.screen_height, 500)
+
+            #Set the cooldown for the mothership
+            self.ms_cooldown = self.fps * 3
+
+            #Return True to signify that mothership spawned
+            return True
+
+        #If mothership is still under cooldown
+        elif self.ms_cooldown:
+
+            #Reduce cooldown by 1
+            self.ms_cooldown -= 1
+
+        #If it is not on cooldown and mothership still exists
+        elif not self.ms_cooldown and self.mothership:
+
+            #Set mothership to None
+            self.mothership = None
+
+        #return False if a mothership does not spawn
+        return False
 
     def enemy_touched_bottom(self) -> bool:
         """Check if enemy touched the bottom of the screen"""
@@ -435,6 +531,9 @@ class PlayScreen(Screen):
 
             #Increase the wave number
             self.wave += 1
+
+            #Reset wave powerup
+            self.power_up_numbers = 0
 
             #Spawn the aliens
             self.spawn_enemies(int(6 * self.wave))

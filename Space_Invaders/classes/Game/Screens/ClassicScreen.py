@@ -2,7 +2,7 @@ import pygame
 import random
 from pygame.locals import *
 from . import PlayScreen
-from .. import BlockGroup, State, Difficulty
+from .. import BlockGroup, State, Difficulty, MotherShip
 
 class ClassicScreen(PlayScreen):
     def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, difficulty:Difficulty, wave:int = 1, player_lives:int = 3,debug:bool = False):
@@ -15,9 +15,6 @@ class ClassicScreen(PlayScreen):
         #Change the state to classic
         self.state = State.CLASSIC
 
-        #Override block group
-        self.blocks = BlockGroup(screen_width, screen_height//1.2, screen, 5, self.player.get_height() + 10)
-
     def reset(self) -> None:
         """Reset the classic screen"""
         #Reset the 5 blocks
@@ -25,4 +22,3 @@ class ClassicScreen(PlayScreen):
 
         #Call superclass reset
         return super().reset()
-        

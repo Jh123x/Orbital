@@ -24,5 +24,3 @@ from .Screens import *
 
 #Import the game.py
 from .game import *
-
-

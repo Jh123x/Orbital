@@ -3,22 +3,17 @@ from . import ImageObject, BlockGroup
 def hp_up(screen, player):
     """Increase the hp of the player"""
     player.add_lifes(1)
-    return
 
 def bullet_up(screen, player):
     """Increase player bullet reload speed"""
     #If the player is not firing at a higher speed
     if player.maxcooldown > 20:
-        player.maxcooldown -= 10
-    else:
-        pass
-    return
+        player.maxcooldown -= 5
 
 def shield_up(screen, player):
     """Creates a shield for the player"""
     #Spawn the blocks
     screen.blocks = BlockGroup(screen.screen_width, screen.screen_height//1.2, screen.screen, 3, screen.player.get_height() + 10)
-    return 
 
 class PowerUp(ImageObject):
     sprites = []
@@ -32,6 +27,9 @@ class PowerUp(ImageObject):
         #Store variables
         self.power_type = power_type
         self.ttl = time_to_live
+
+        #Scale the image
+        self.scale(30,30)
 
     @staticmethod
     def get_no_powerups() -> int:
@@ -48,7 +46,13 @@ class PowerUp(ImageObject):
 
     def update(self) -> None:
         """Update the sprite"""
-        print(f"Time to live: {self.ttl}")
+
+        #If debug is on
+        if self.debug:
+            
+            #Print time to live for the powerup
+            print(f"Time to live: {self.ttl}")
+        
         #If time to live is 0
         if self.ttl == 0:
 

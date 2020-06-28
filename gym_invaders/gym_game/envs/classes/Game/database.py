@@ -1,5 +1,6 @@
 #To manage the database
 import sqlite3
+<<<<<<< HEAD
 import os
 
 class Database(object):
@@ -15,10 +16,37 @@ class Database(object):
         """
         #Store the name
         self.name = name
+=======
+
+class ScoreBoard(object):
+    def __init__(self, dbpath:str, max_length:int = 5):
+        """Class for keeping track of the high score
+            Arguments:
+                dbpath: A string containing the path to the database (string)
+                max_length: An integer containing the max length to keep track of (int): default = 5
+            
+            Methods:
+                execute: Execute a particular string in sql
+                remove: Remove a name from the scoreboard
+                remove_exact: Remove the exact copy of the name and score from the scoreboard
+                add: Add the name and score to the scoreboard
+                add_all: Add all items passed into the scoreboard
+                remove_all: Remove all names,score pairs that are provided
+                fetch_all: Fetch all the data in database
+                is_cache: Check if the database data is stored in cache
+        
+        """
+>>>>>>> master
 
         #Store the database path
         self.dbpath = dbpath
 
+<<<<<<< HEAD
+=======
+        #Set the max number of highscore to be stored for the players
+        self.max_length = max_length
+
+>>>>>>> master
         #Connect to the database
         self.connection = sqlite3.connect(dbpath)
 
@@ -29,6 +57,12 @@ class Database(object):
         self.cache = []
         self.changed = True
 
+<<<<<<< HEAD
+=======
+        #Create the table if it does not exist
+        self.execute("CREATE TABLE IF NOT EXISTS highscore (id INTEGER, name TEXT, score INTEGER)")
+
+>>>>>>> master
     def execute(self, command:str, *args) -> None:
         """Execute the command in the form of a string
             Arguments:  
@@ -41,6 +75,7 @@ class Database(object):
         #Run the command
         self.cursor.execute(command, *args)
 
+<<<<<<< HEAD
     def is_cache(self) -> bool:
         """Check if there is a cached copy
             Arguments: 
@@ -184,6 +219,11 @@ class ScoreBoard(Database):
         #Create the table if it does not exist
         self.execute("CREATE TABLE IF NOT EXISTS highscore (id INTEGER, name TEXT, score INTEGER)")
 
+=======
+        #Execute the command through the connection
+        self.connection.commit()
+    
+>>>>>>> master
     def remove(self, name:str) -> None:
         """Remove the last entry from the highscore board
             Arguments:
@@ -192,7 +232,11 @@ class ScoreBoard(Database):
                 No return
         """
         #Remove from the database where the name matches the name to be removed
+<<<<<<< HEAD
         self.execute(f"DELETE FROM {self.name} WHERE name = ?", (name,))
+=======
+        self.execute("DELETE FROM highscore WHERE name = ?", (name,))
+>>>>>>> master
 
         #Mark the database as changed
         self.changed = True
@@ -223,6 +267,12 @@ class ScoreBoard(Database):
         #Insert the element into the table
         self.execute('INSERT INTO highscore VALUES(NULL, ?, ?)', (name,score))
 
+<<<<<<< HEAD
+=======
+        #Execute the command TODO(Test if this is needed)
+        self.connection.commit()
+
+>>>>>>> master
         #Mark the database as changed
         self.changed = True
 
@@ -264,26 +314,78 @@ class ScoreBoard(Database):
             #If the item is in the cache remove it
             if item in self.cache:
                 self.remove_exact(item[1], item[2])
+<<<<<<< HEAD
 
     
 def main() -> None:
     """The main function for the database class used for debuging and modifying database
+=======
+        
+    def fetch_all(self) -> tuple:
+        """Fetch all the data from the highscore table
+            Arguments:
+                No arguments
+            Returns: 
+                A tuple containing all the entries in the highscore table (tuple of tuple)
+        """
+        
+        #If there is no cache or if there are changes in the cache
+        if self.changed or not self.is_cache():
+            
+            #Fetch all the items in the table and add it to the cache
+            self.cursor.execute("SELECT * FROM highscore")
+            self.cache = self.cursor.fetchall()
+
+            #Make the changes as none
+            self.changed = False
+
+        #Return the items
+        return self.cache
+
+    def is_cache(self) -> bool:
+        """Check if there is a cached copy
+            Arguments: 
+                No arguments
+            Returns:
+                Returns a boolean to indicate if there is a cache (bool)
+        """
+        return True if self.cache else False
+
+    def __del__(self):
+        """Destructor for the Scoreboard
+            Arguments:
+                No Arguments
+            Returns:
+                Does not return
+        """
+        self.connection.close()
+
+    
+def main() -> None:
+    """The main function for the database class used for testing
+>>>>>>> master
         Arguments:
             No arguments
         Returns: 
             No returns
     """
+<<<<<<< HEAD
     dbpath = os.path.dirname(os.path.realpath(__file__)) + '/' + "../../data/test.db"
 
     #Create the scoreboard database
     db = ScoreBoard(dbpath)
     ac = Achievements(dbpath)
     s = SettingsDB(dbpath)
+=======
+    #Create the scoreboard database
+    db = ScoreBoard("../../data/test.db")
+>>>>>>> master
 
     #For debugging
     print(f"Running the main function from database file")
     print(f"Scoreboard db created")
 
+<<<<<<< HEAD
     #Create a while loop for the user to test commands as they are typed into the terminal
     while(True):
 
@@ -294,13 +396,24 @@ def main() -> None:
 
         
         #Get commands from user
+=======
+    
+
+    #Create a while loop for the user to test commands as they are typed into the terminal
+    while(True):
+        #Print entries
+        print(db.fetch_all())
+>>>>>>> master
         try:
             command = input("Type in the command: ").strip()
             if command == 'q':
                 break
             print(eval(command))
+<<<<<<< HEAD
         
         #If there is an error print the error message
+=======
+>>>>>>> master
         except Exception as exp:
             print(exp)
 

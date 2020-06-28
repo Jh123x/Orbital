@@ -10,6 +10,7 @@ class Direction(enum.Enum):
 
 class State(enum.Enum):
     """State enum to keep track of the state of the game"""
+<<<<<<< HEAD
     QUIT = -1
     NONE = None
 
@@ -47,6 +48,19 @@ class State(enum.Enum):
     ONLINE = 90
 
 class Difficulty_enum(enum.Enum):
+=======
+    MENU = 1
+    PLAY = 2
+    GAMEOVER = 3
+    PAUSE = 4
+    HIGHSCORE = 5
+    NEWHIGHSCORE = 6
+    INSTRUCTIONS = 7
+    SETTINGS = 8
+    QUIT = -1
+
+class Difficulty(enum.Enum):
+>>>>>>> master
     """Difficulty enum to hold the difficultly of the game"""
     CASUAL = 1
     EASY = 2

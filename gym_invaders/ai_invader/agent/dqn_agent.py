@@ -1,6 +1,7 @@
 import numpy.random as rand
 import torch.nn.functional as F
 import torch.optim as optim
+<<<<<<< HEAD
 import random
 import torch
 import numpy as np
@@ -9,6 +10,14 @@ from .baseagent import BaseAgent
 
 class DQNAgent(BaseAgent):
     def __init__(self, input_shape , action_size , seed , device, buffer_size, batch_size,
+=======
+from ..util.memory import *
+
+
+
+class DQNAgent():
+    def __init__(self, input_shape, action_size, seed, device, buffer_size, batch_size,
+>>>>>>> master
                  gamma, alpha, tau, update, replay, model):
         '''Initialise a Agent Object
         input_shape : dimensions of each state(C, H, W)
@@ -23,7 +32,14 @@ class DQNAgent(BaseAgent):
         replay.     : after which replay to be started
         model.      : Pytorch Model
         '''
+<<<<<<< HEAD
         super(DQNAgent, self).__init__(input_shape,action_size,seed,device,gamma,alpha)
+=======
+        self.input_shape = input_shape
+        self.action_size = action_size
+        self.seed = random.seed(seed)
+        self.device = device
+>>>>>>> master
         self.buffer_size = buffer_size
         self.batch_size = batch_size
         self.gamma = gamma
@@ -43,6 +59,7 @@ class DQNAgent(BaseAgent):
         self.t_step = 0
 
     def step(self, state, action, reward, next_state, done):
+<<<<<<< HEAD
 
         # Save experience into replay buffer
         self.memory.add(state, action, reward, next_state, done)
@@ -50,6 +67,12 @@ class DQNAgent(BaseAgent):
         # Learn every update % timestep
         # print(self.t_step)
 
+=======
+        # Save experience into replay buffer
+        self.memory.add(state, action, reward, next_state, done)
+        # Learn every update % timestep
+        # print(self.t_step)
+>>>>>>> master
         self.t_step = (self.t_step + 1) % self.update
 
         # print(self.t_step)
@@ -61,6 +84,7 @@ class DQNAgent(BaseAgent):
 
     def action(self, state, eps=0.):
         ''' Returns action for given state as per current policy'''
+<<<<<<< HEAD
         #Unpack the state
         state = torch.from_numpy(state).unsqueeze(0).to(self.device)
 
@@ -80,6 +104,18 @@ class DQNAgent(BaseAgent):
             return np.argmax(action_val.cpu().data.numpy())
         else:
             return random.choice(np.arange(self.action_space))
+=======
+        state = torch.from_numpy(state).unsqueeze(0).to(self.device)
+        self.policy_net.eval()
+        with torch.no_grad():
+            action_val = self.policy_net(state)
+        self.policy_net.train()
+        # Eps Greedy action selections
+        if rand.rand() > eps:
+            return np.argmax(action_val.cpu().data.numpy())
+        else:
+            return random.choice(np.arange(self.action_size))
+>>>>>>> master
 
     def learn(self, exp):
         state, action, reward, next_state, done = exp
@@ -90,7 +126,10 @@ class DQNAgent(BaseAgent):
 
         # Get max predicted Q values for next state from target model
         Q_target_next = self.target_net(next_state).detach().max(1)[0]
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
         # Compute Q targets for current states
         Q_target = reward + (self.gamma * Q_target_next * (1 - done))
 
@@ -104,6 +143,7 @@ class DQNAgent(BaseAgent):
 
         self.soft_update(self.policy_net, self.target_net, self.tau)
 
+<<<<<<< HEAD
     def model_dict(self, epsilon)-> dict:
         ''' To save models'''
         return super().model_dict(  policy_net= self.policy_net.state_dict(),
@@ -121,6 +161,8 @@ class DQNAgent(BaseAgent):
         self.target_net.eval()
         self.t_step = state_dict['t_step']
 
+=======
+>>>>>>> master
     # θ'=θ×τ+θ'×(1−τ)
     def soft_update(self, policy_model, target_model, tau):
         for t_param, p_param in zip(target_model.parameters(), policy_model.parameters()):
