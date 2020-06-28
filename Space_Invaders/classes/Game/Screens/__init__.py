@@ -20,3 +20,5 @@ from .SettingsScreen import SettingsScreen
 from .CoopScreen import CoopScreen
 from .AIPVPScreen import AIPVPScreen
 from .OnlinePVPScreen import OnlinePVPScreen
+from .Cutscene import Cutscene
+from .StoryModeScreen import StoryModeScreen
