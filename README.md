@@ -73,4 +73,4 @@ Level of achievement: Artemis
 
 
 ### Project Log
-* Project Log link: [Project Log](https://docs.google.com/spreadsheets/d/1-_kZFH19Hje2CUJDWniRJlIA7P6K9FkfxaT8GMf7p-U/edit?usp=sharing)
+* Project Log: [Link](https://docs.google.com/spreadsheets/d/1-_kZFH19Hje2CUJDWniRJlIA7P6K9FkfxaT8GMf7p-U/edit?usp=sharing)
