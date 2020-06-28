@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 try:
     from .classes import *
-except ImportError as exp:
+except ImportError:
     from classes import *
 
 class PyGame_2D(object):
@@ -29,7 +29,7 @@ class PyGame_2D(object):
 
         #Load sprites
         load_sprites((Player, Bullet, EnemyShip, Explosion, PowerUp, MotherShip), 
-                    (d["player_img_paths"], d["bullet_img_paths"], d["enemy_img_paths"], d["explosion_img_paths"], d["powerup_img_path"], d['mothership_img_path']))
+                    (d["player_img_paths"], d["bullet_img_paths"], d["enemy_img_paths"], d["explosion_img_paths"], d["powerup_img_path"], d["mothership_img_path"]))
 
         #Load sounds
         self.sound = Sound({}, False, False)
@@ -44,18 +44,15 @@ class PyGame_2D(object):
         pygame.init()
         pygame.font.init()
 
-        screen_width = 600
-        screen_height = 800
-        fps = 60
+        self.screen_width = 600
+        self.screen_height = 800
+        self.fps = 60
 
         #Init screen
-        self.screen = pygame.display.set_mode((screen_width, screen_height))
+        self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
 
         #Init playscreen
-        if t.lower() == 'play':
-            self.state = PlayScreen(screen_width, screen_height, self.screen, 5, fps, Difficulty(4))
-        elif t.lower() == 'classic':
-            self.state = ClassicScreen(screen_width, screen_height, self.screen, 5, fps, Difficulty(4))
+        self.state = self.create_screen()
 
         self.written = False
 
@@ -66,16 +63,17 @@ class PyGame_2D(object):
         self.player = self.state.player
         self.nextState = -1
 
+    def create_screen(self) -> Screen:
+        """Create the playscreen by default"""
+        return PlayScreen(self.screen_width, self.screen_height, self.screen, 5, self.fps, Difficulty(4))
+
     def mainloop(self) -> None:
         """Mainloop"""
-        screen_width = 600
-        screen_height = 800
-        fps = 60
         running = True
         while running:
 
             #Clock the fps
-            self.clock.tick(fps)
+            self.clock.tick(self.fps)
 
             #Fill background with black
             self.screen.fill((0,0,0))
@@ -83,14 +81,18 @@ class PyGame_2D(object):
             #Draw the play screen
             self.nextState = self.state.handle()
 
+            #Draw the hitbox
+            self.state.draw_hitboxes()
+
             #Print score if the game is over
             if self.nextState == State.GAMEOVER:
+
                 #Print the score and quit the game
                 print(f"Score: {self.state.get_score()}")
 
             #Update the display with the screen
             pygame.display.update()
-            #self.state.draw_hitboxes()
+            
             #print(self.get_space_boolean())
             #If the state is quit or player closes the game
             for item in pygame.event.get():
@@ -106,12 +108,15 @@ class PyGame_2D(object):
         """
         self.get_action()[number]()
 
-    def move_shoot(self, bool):
+    def get_wave(self):
+        return self.state.get_wave()
+
+    def move_shoot(self, b:bool) -> bool:
         '''
         To encompass both move_left and shoot, and move_right and shoot action
         from Original Space Invaders Gym Environment
         '''
-        if bool:
+        if b:
             self.player.move_left()
             return self.player.shoot
         self.player.move_right()
@@ -119,7 +124,11 @@ class PyGame_2D(object):
 
     def get_action(self) -> tuple:
         """List of actions that the player can take (tuple of functions)"""
-        return (self.player.shoot, self.player.move_left, self.player.move_right, lambda : 1,self.move_shoot(True),
+        return (self.player.shoot, 
+                self.player.move_left, 
+                self.player.move_right, 
+                lambda : 1, 
+                self.move_shoot(True),
                 self.move_shoot(False))
 
     def get_space(self):
@@ -127,12 +136,13 @@ class PyGame_2D(object):
         Returns the pixel space of the screen
         Performs preliminary Preprocessing by making values
         """
+        self.state.draw_hitboxes()
         space = pygame.surfarray.array2d(self.state.surface)
         return space *-1
 
     def show_space(self):
         """Show the space in a matplotlib diagram"""
-        image_transp = np.transpose(self.get_space_boolean())
+        image_transp = np.transpose(self.get_space())
         plt.imshow(image_transp, interpolation='none')
         plt.show()
 
@@ -151,6 +161,10 @@ class PyGame_2D(object):
     def get_player(self) -> tuple:
         '''Get the player character position -- for Debugging Purposes'''
         return (self.player.get_x(),self.player.get_y())
+
+    def get_player_lives(self):
+        """Get the number of lives of the player"""
+        return self.player.get_lives()
 
     def get_enemies(self) -> tuple:
         '''Get positions of each enemy'''

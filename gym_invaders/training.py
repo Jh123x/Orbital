@@ -114,7 +114,7 @@ print('Device:', device)
 INPUT_SHAPE = (4, 84, 84)
 
 #Determine rendering of GUI
-RENDER = False
+RENDER = True
 
 #AI vars
 ACTION_SIZE = env.action_space.n

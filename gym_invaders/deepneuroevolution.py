@@ -51,7 +51,7 @@ def stack_frames(frames, state, is_new=False):
 
 def run_env(agent):
     global env
-    # env.render(True)
+    env.render(True)
     agent.eval()
     state = stack_frames(None,env.reset(),True)
     r = 0

@@ -14,3 +14,7 @@ logging.disable(logging.DEBUG)
 class ClassicEnv(CustomEnv):
     def __init__(self, settings = "settings.cfg"):
         super().__init__(settings,'classic')
+
+    def create_screen(self):
+        """Create the classic screen"""
+        return ClassicScreen(self.screen_width, self.screen_height, self.screen, 5, self.fps, Difficulty(4))
