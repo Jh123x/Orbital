@@ -5,12 +5,18 @@ Level of achievement: Artemis
 
 ![](images/Poster.png)
 
-* Video Link: [here](https://youtu.be/UNIIZMoY21Y)
+* Video Links 
+  - LiftOff: [Liftoff Video](https://youtu.be/UNIIZMoY21Y)
+  - Milestone 1: [Milestone 1 Video](https://youtu.be/B_vnh2F5NsM)
+  - Milestone 2: [To be updated](#)
+  - Milestone 3: [To be updated](#)
+
 * Download Link: [Windows](https://drive.google.com/file/d/1hl9ZfLfdFUbhuicCBJrC9TU6vuIL0XSc/view?usp=sharing)
 
 ### Objectives:
 1. Make a Space invaders game
 2. Make use of AI to play the game decently.
+3. Combine them together for more immersive gameplay experience
 
 ### Tech Stack
 1. Gameplay and Graphics
@@ -45,19 +51,22 @@ Level of achievement: Artemis
 - [x] Add 2 player PVP
 - [x] Add 2 player Co-op mode
 - [x] Added background music
-- [x] Added 
+- [x] Try DQN for AI
+- [ ] Try Evolutionary networks (In progress)
 - [ ] Added AI to play the game
 
 ### Optional Features
 - [x] Player able to play the game with his keyboard
 - [x] Create a settings menu
 - [x] Endless mode where the player can shoot endless enemies
+- [ ] Create a story mode with bosses
 - [ ] View mode for the player to see the AI play the game
 - [ ] Compete mode where the player can compete with the AI in the game
 
 ### Useful Links
 * Orbital main webpage: [here](https://orbital.comp.nus.edu.sg/)
 * Orbital projects page: [here](https://nusskylab-dev.comp.nus.edu.sg/public_views/public_projects)
+* Our Orbital Page
 
 ### Contributors
 * Stephen: [LinkedIn](https://www.linkedin.com/in/stephen-tan-hin-khai/)
