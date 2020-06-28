@@ -20,21 +20,21 @@ Level of achievement: Artemis
 
 ### Tech Stack
 1. Gameplay and Graphics
-  - Pygame: Used for making the game and the animations
+    - Pygame: Used for making the game and the animations
 2. AI and Data Science Technologies
-  - Gym: For making the AI agent for the game
-  - Pytorch: Provides the Neural Network Infrastructure
-  -  Numpy: Fast Array Computation
-  -  Matplotlib: Visualising Data and Debugging
-  -  OpenCV 2: Image Preprocessing and playing back video
+    - Gym: For making the AI agent for the game
+    - Pytorch: Provides the Neural Network Infrastructure
+    -  Numpy: Fast Array Computation
+    -  Matplotlib: Visualising Data and Debugging
+    -  OpenCV 2: Image Preprocessing and playing back video
 3. Optimisation Technologies
-  -  Multiprocessing and Asyncio: Running stuff in parallel to make them faster
-  -  Sockets and pickle: For sending data across the network
-  -  Sqlite3: For storing items in the databases
+    -  Multiprocessing and Asyncio: Running stuff in parallel to make them faster
+    -  Sockets and pickle: For sending data across the network
+    -  Sqlite3: For storing items in the databases
 4. Software Engineering
-  -  PyUnit: For unit tests
-  -  Logging: For logging for data
-  -  cx_Freeze: Compilation of python to executable
+    -  PyUnit: For unit tests
+    -  Logging: For logging for data
+    -  cx_Freeze: Compilation of python to executable
 
 ### Development RoadMap
 ![](images/RoadMap.png)
