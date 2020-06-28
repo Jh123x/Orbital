@@ -1,11 +1,21 @@
-#!/usr/bin/env python
-
 ############################
 #-------Orbital 2020-------#
 ############################
 
 #Import functions from the class package
 from classes import GameWindow, list_dir, form_abs_path, read_all, load_all
+import sys
+import os
+
+def get_curr_path():
+    if getattr(sys, 'frozen', False):
+        # The application is frozen
+        datadir = sys.executable
+    else:
+        # The application is not frozen
+        # Change this bit to match where you store your data files:
+        datadir = __file__
+    return datadir
 
 def main() -> None:
     """The main function"""
@@ -14,32 +24,32 @@ def main() -> None:
     settings = "settings.cfg"
 
     #Read the configuration file for space invaders
-    all_cfg = read_all(form_abs_path(__file__,settings))
+    all_cfg = read_all(form_abs_path(get_curr_path(),settings))
     
     #Main configurations
     config = all_cfg['Space Invaders']
-    config['icon_img_path'] = form_abs_path(__file__, config['icon_img_path'])
+    config['icon_img_path'] = form_abs_path(get_curr_path(), config['icon_img_path'])
 
     #Load all
-    d = load_all(("bullet_img_paths",), ("Bullet Sprites",), all_cfg, __file__)
+    d = load_all(("bullet_img_paths",), ("Bullet Sprites",), all_cfg, get_curr_path())
 
     #Load the other sprites
-    d["player_img_paths"] = list_dir(form_abs_path(__file__, "images/player"))
-    d["enemy_img_paths"] = list_dir(form_abs_path(__file__, "images/enemies"))
-    d["background_img_paths"] = list_dir(form_abs_path(__file__, "images/backgrounds"))
-    d["explosion_img_paths"] = list_dir(form_abs_path(__file__, "images/explosions"))
-    d["menu_music_paths"] = list_dir(form_abs_path(__file__,"sounds/menu_music"))
-    d["powerup_img_path"] = list_dir(form_abs_path(__file__,"images/powerups"))
-    d["mothership_img_path"] = list_dir(form_abs_path(__file__,"images/bosses/mothership"))
+    d["player_img_paths"] = list_dir(form_abs_path(get_curr_path(), "images/player"))
+    d["enemy_img_paths"] = list_dir(form_abs_path(get_curr_path(), "images/enemies"))
+    d["background_img_paths"] = list_dir(form_abs_path(get_curr_path(), "images/backgrounds"))
+    d["explosion_img_paths"] = list_dir(form_abs_path(get_curr_path(), "images/explosions"))
+    d["menu_music_paths"] = list_dir(form_abs_path(get_curr_path(),"sounds/menu_music"))
+    d["powerup_img_path"] = list_dir(form_abs_path(get_curr_path(),"images/powerups"))
+    d["mothership_img_path"] = list_dir(form_abs_path(get_curr_path(),"images/bosses/mothership"))
 
     #Get the number of backgrounds
     bg_limit = len(d["background_img_paths"])
     
     #DBPath
-    db_path = form_abs_path(__file__,'data/test.db')
+    db_path = form_abs_path(get_curr_path(),'data/test.db')
 
     #Sound
-    sound_path = dict(zip(all_cfg["Sounds"].keys(),list(map(lambda x: form_abs_path(__file__, x), all_cfg["Sounds"].values()))))
+    sound_path = dict(zip(all_cfg["Sounds"].keys(),list(map(lambda x: form_abs_path(get_curr_path(), x), all_cfg["Sounds"].values()))))
 
     #Print the config data if debug is on
     if config['debug']:
