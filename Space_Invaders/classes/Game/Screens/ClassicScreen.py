@@ -17,8 +17,8 @@ class ClassicScreen(PlayScreen):
 
     def reset(self) -> None:
         """Reset the classic screen"""
+        #Call superclass reset
+        super().reset()
+
         #Reset the 5 blocks
         self.blocks = BlockGroup(self.screen_width, self.screen_height//1.2, self.screen, 5, self.player.get_height() + 10)
-
-        #Call superclass reset
-        return super().reset()
