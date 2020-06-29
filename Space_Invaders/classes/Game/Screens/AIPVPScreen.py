@@ -18,10 +18,13 @@ class AIPVPScreen(LocalPVPScreen):
     def spawn_players(self) -> None:
         """Spawn the players for the game"""
         #Spawn the first player
-        self.player1 = Player(self.sensitivity, self.screen_width, self.screen_height, self.screen_width//2, 50, self.player_lives, self.fps, self.player1_bullet, Direction.DOWN, self.debug)
+        self.player1 = Player(self.sensitivity, self.screen_width, self.screen_height, self.screen_width//2, self.screen_height-50, self.player_lives, self.fps, self.player1_bullet, Direction.UP, self.debug)
 
         #Override the 2nd player with the AI player
-        self.player2 = AIPlayer(self.sensitivity, self.screen_width, self.screen_height, self.screen_width//2, self.screen_height-50, self.player_lives, self.fps, self.player2_bullet, Direction.UP, 1, None, self.debug)
+        self.player2 = AIPlayer(self.sensitivity, self.screen_width, self.screen_height, self.screen_width//2, 50, self.player_lives, self.fps, self.player2_bullet, Direction.DOWN, 1, None, self.debug)
+
+        #Rotate the AI
+        self.player2.rotate(180)
 
     def check_keypresses(self) -> bool:
         """Check the keys which are pressed

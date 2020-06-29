@@ -96,6 +96,9 @@ class ImageObject(BaseObject):
 
             #Rotate the image
             self.image = pygame.transform.rotate(self.image, angle)
+
+            #Load the rectangle
+            self.load_rect()
         
         #Otherwise do nothing
         else:

@@ -47,8 +47,10 @@ class LocalPVPScreen(Screen):
     def spawn_players(self) -> None:
         """Create the players variables"""
         #Initialise the players
-        self.player1 = Player(self.sensitivity, self.screen_width, self.screen_height, self.screen_width//2, 50, self.player_lives, self.fps, self.player1_bullet, Direction.DOWN, self.debug)
-        self.player2 = Player(self.sensitivity, self.screen_width, self.screen_height, self.screen_width//2, self.screen_height-50, self.player_lives, self.fps, self.player2_bullet, Direction.UP, self.debug)
+        self.player1 = Player(self.sensitivity, self.screen_width, self.screen_height, self.screen_width//2, 50, self.player_lives, self.fps, self.player1_bullet, Direction.UP, self.debug)
+        self.player2 = Player(self.sensitivity, self.screen_width, self.screen_height, self.screen_width//2, self.screen_height-50, self.player_lives, self.fps, self.player2_bullet, Direction.DOWN, self.debug)
+        self.player2.rotate(180)
+
         
     def reset(self) -> None:
         """Reset the environment"""
