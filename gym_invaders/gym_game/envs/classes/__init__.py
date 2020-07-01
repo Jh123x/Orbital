@@ -3,7 +3,7 @@
 #Import everything from the game file
 from .Game import *
 
-#Import everything from settings.py
+# #Import everything from settings.py
 from .Misc import *
 
 #Import everything from the AI file
