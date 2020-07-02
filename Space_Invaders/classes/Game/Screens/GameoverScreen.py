@@ -43,6 +43,10 @@ class GameoverScreen(Screen):
 
         #Prompt player to update
         self.write(self.end_font, WHITE, "Press Y to go back and N to quit", self.screen_width//2, self.screen_height // 2 + self.screen_height//12)
+
+    def get_score(self):
+        """Return the score of the player"""
+        return self.score
         
     def update_keypresses(self) -> bool:
         """Check if player wants to stay

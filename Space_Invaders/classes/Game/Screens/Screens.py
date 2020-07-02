@@ -74,15 +74,6 @@ class Screen(BaseObject):
     def set_state(self, state:State):
         """Set the current state of the screen"""
         self.state = state
-
-    def reset(self) -> None:
-        """Resets the surface to transparent
-            Arguments:
-                No arguments
-            Returns: 
-                No returns
-        """
-        self.surface = pygame.Surface((self.screen_width, self.screen_height), pygame.SRCALPHA, 32)
     
     def handle(self) -> State:
         """Placeholder method to be overwritten

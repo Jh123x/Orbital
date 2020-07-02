@@ -40,6 +40,10 @@ class TwoPlayerPauseScreen(Screen):
 
         #Draw the instructions to quit
         self.write(Screen.end_font, WHITE, "Escape to quit", self.screen_width//4, first_pixel + self.screen_height//5, Direction.LEFT)
+
+    def get_scores(self) -> tuple:
+        """Return the score of the 2 players"""
+        return self.p1,self.p2
         
 
     def update_keypresses(self) -> State:

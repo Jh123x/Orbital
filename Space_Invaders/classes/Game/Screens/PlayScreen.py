@@ -565,9 +565,14 @@ class PlayScreen(Screen):
         #Update the moving objs
         self.update()
 
-        #Check if the player wants to pause
-        if len(list(filter(lambda x: x.type == pygame.KEYDOWN and x.key == K_p, pygame.event.get()))):
-            return State.PAUSE
+        #Check if the player wants to pause or quit
+        for event in pygame.event.get():
+
+            if event.type == pygame.KEYDOWN and event.key == K_p:
+                return State.PAUSE
+
+            elif event.type == pygame.QUIT:
+                return State.QUIT
 
         #Return play state
         return self.state

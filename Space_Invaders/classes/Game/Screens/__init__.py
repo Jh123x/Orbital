@@ -22,3 +22,6 @@ from .AIPVPScreen import AIPVPScreen
 from .OnlinePVPScreen import OnlinePVPScreen
 from .Cutscene import Cutscene
 from .StoryModeScreen import StoryModeScreen
+from .OnePlayerModesScreen import OnePlayerModeScreen
+from .TutorialScreen import TutorialScreen
+from .VictoryScreen import VictoryScreen

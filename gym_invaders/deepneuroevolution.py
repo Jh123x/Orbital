@@ -41,10 +41,10 @@ def stack_frames(frames, state, is_new=False):
     '''
 
     #Preprocess the frame
-    frame = preprocess_frame(state, 84)
+    frame = preprocess_frame(state, (160, 120))
 
     #Stack the frame
-    frames = stack_frame(frames,frame, is_new)
+    frames = stack_frame(frames, frame, is_new)
 
     #Return stacked frames
     return frames
@@ -60,8 +60,8 @@ def run_env(agent):
 
     #Plays 1 game
     while not done:
-        input = torch.from_numpy(state).unsqueeze(0).type('torch.FloatTensor').to(device)
-        output_probs = agent(input).detach().cpu().numpy()[0]
+        inp = torch.from_numpy(state).unsqueeze(0).type('torch.FloatTensor').to(device)
+        output_probs = agent(inp).detach().cpu().numpy()[0]
         action = np.random.choice(range(game_actions), 1, p = output_probs).item()
         next_state, reward, done, info = env.step(action)
         next_state = stack_frames(state, next_state, False)
@@ -183,7 +183,7 @@ def softmax(x):
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 game_actions = env.action_space.n
 num_agents = 15
-input_shape = (4, 84, 84)
+input_shape = (4, 160, 120)
 elites = 3 #Top k
 generations = 50
 

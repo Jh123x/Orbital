@@ -61,8 +61,9 @@ class ReplayMemory(object):
 
 def preprocess_frame(state, output):
     ''' Preprocessing the frame from RGB -> Greyscale'''
-    state = expit(np.float32(state))
-    state = cv2.resize(state,(output,output)).T
+    state = cv2.cvtColor(state, cv2.COLOR_RGB2GRAY)
+    state = np.ascontiguousarray(state, dtype=np.float32) / 255
+    state = cv2.resize(state,output).T
     return state
 
 def stack_frame(stacked_frames, frame, is_new):

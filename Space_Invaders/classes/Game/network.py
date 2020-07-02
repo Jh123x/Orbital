@@ -41,8 +41,9 @@ class Network(object):
 
 
 #If this is the main file
+
 if __name__ == '__main__':
-    network = Network('localhost', 9999, ())
+    network = Network('172.18.150.114', 9999)
 
     while True:
         try:
