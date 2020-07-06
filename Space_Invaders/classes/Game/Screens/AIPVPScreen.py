@@ -21,7 +21,7 @@ class AIPVPScreen(LocalPVPScreen):
         self.player1 = Player(self.sensitivity, self.screen_width, self.screen_height, self.screen_width//2, self.screen_height-50, self.player_lives, self.fps, self.player1_bullet, Direction.UP, self.debug)
 
         #Override the 2nd player with the AI player
-        self.player2 = AIPlayer(self.sensitivity, self.screen_width, self.screen_height, self.screen_width//2, 50, self.player_lives, self.fps, self.player2_bullet, Direction.DOWN, 1, None, self.debug)
+        self.player2 = AIPlayer(self.sensitivity, self.screen_width, self.screen_height, self.screen_width//2, 50, self.player_lives, self.fps, self.player2_bullet, Direction.DOWN, 1, True, self.debug)
 
         #Rotate the AI
         self.player2.rotate(180)
@@ -57,9 +57,32 @@ class AIPVPScreen(LocalPVPScreen):
         #Return False if they do not want to pause the game
         return False
 
+    def draw_hitboxes(self) -> None:
+        """Draw hitboxes for players and objects"""
+
+        # Draw hitbox for the enemies
+        for sprite in self.enemies:
+            c = (sprite.get_lives()) * 3
+            pygame.draw.rect(self.screen, (200, 5 * c, 5 * c), sprite.rect, 0)
+
+        # Draw hitbox for the bullets
+        for sprite in self.player1_bullet:
+            pygame.draw.rect(self.screen, (100, 255, 0), sprite.rect, 0)
+        for sprite in self.mob_bullet:
+            pygame.draw.rect(self.screen, (100, 255, 0), sprite.rect, 0)
+        # Different coloration for AI Player Bullets
+        for sprite in self.player2_bullet:
+            pygame.draw.rect(self.screen, (25, 0, 255), sprite.rect, 0)
+
+        # Draw the hitbox for the AI
+        pygame.draw.rect(self.screen, (55, 255, 10 * self.player2.get_lives()), self.player2.rect, 0)
+
+        # Draw for powerups
+
     def handle(self) -> State:
         """Handles the drawing of the screen"""
-
+        if self.player2.no_screen():
+            self.player2.set_screen(self)
         #Let the AI do a move
         self.player2.action()
 

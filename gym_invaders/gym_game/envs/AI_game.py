@@ -137,8 +137,8 @@ class PyGame_2D(object):
         Performs preliminary Preprocessing by making values
         """
         self.state.draw_hitboxes()
-        space = pygame.surfarray.array2d(self.state.surface)
-        return space *-1
+        space = pygame.surfarray.array3d(self.state.surface)
+        return space
 
     def show_space(self):
         """Show the space in a matplotlib diagram"""
