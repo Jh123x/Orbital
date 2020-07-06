@@ -47,8 +47,10 @@ class LocalPVPScreen(Screen):
     def spawn_players(self) -> None:
         """Create the players variables"""
         #Initialise the players
-        self.player1 = Player(self.sensitivity, self.screen_width, self.screen_height, self.screen_width//2, 50, self.player_lives, self.fps, self.player1_bullet, Direction.DOWN, self.debug)
-        self.player2 = Player(self.sensitivity, self.screen_width, self.screen_height, self.screen_width//2, self.screen_height-50, self.player_lives, self.fps, self.player2_bullet, Direction.UP, self.debug)
+        self.player1 = Player(self.sensitivity, self.screen_width, self.screen_height, self.screen_width//2, 50, self.player_lives, self.fps, self.player1_bullet, Direction.UP, self.debug)
+        self.player2 = Player(self.sensitivity, self.screen_width, self.screen_height, self.screen_width//2, self.screen_height-50, self.player_lives, self.fps, self.player2_bullet, Direction.DOWN, self.debug)
+        self.player2.rotate(180)
+
         
     def reset(self) -> None:
         """Reset the environment"""
@@ -251,10 +253,16 @@ class LocalPVPScreen(Screen):
         #Draw the explosions
         self.explosions.draw(self.screen)
 
-        #Draw the players if they are not destroyed
+        #If player 1 is not destroyed
         if not self.player1.is_destroyed():
+
+            #Draw player 1
             self.player1.draw(self.screen)
+
+        #If player 2 is not destroyed
         if not self.player2.is_destroyed():
+
+            #Draw player 2
             self.player2.draw(self.screen)
 
         #Call the superclass update
@@ -287,7 +295,6 @@ class LocalPVPScreen(Screen):
 
         #Return with the points the player got
         return pts
-        
 
     def check_collision(self) -> None:
         """Check the collisions between all of the sprites"""
@@ -304,7 +311,6 @@ class LocalPVPScreen(Screen):
 
         #Check collision of mobs with player 2 bullet
         self.p2_score += self.check_player_mob_collision(self.player2_bullet)
-
 
     def check_players_collision(self):
         """Check collisions between the players"""

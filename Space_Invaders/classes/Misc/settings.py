@@ -4,7 +4,7 @@ import os
 
 def list_dir(filepath):
     """List the files in the directory"""
-    return tuple(map(lambda x: "/".join((filepath,x)),os.listdir(filepath)))
+    return sorted(list(map(lambda x: os.path.join(filepath,x),os.listdir(filepath))))
 
 def num_files(filepath):
     """Find the number of files in the directory"""

@@ -28,9 +28,18 @@ class ImageObject(BaseObject):
 
         #Check if the image path is None
         self.image = image
+        self.rect = None
 
         #Load the rect
         self.load_rect()
+
+
+    def draw(self, screen) -> None:
+        """Draw the player onto the screen"""
+        #Get previous rect position and empty img
+
+        #Render new position
+        screen.blit(self.image, self.rect)
 
     def load_rect(self) -> None:
         """Load the rectangle for the obj
@@ -39,6 +48,7 @@ class ImageObject(BaseObject):
             Returns: 
                 No return
         """
+
         #If image exists
         if self.image:
             #Create the rectangle for the ImageObject Object
@@ -56,11 +66,12 @@ class ImageObject(BaseObject):
 
             #Inflate the model to the correct size
             self.rect.inflate(self.get_width()//2,self.get_height()//2)
-        
+
         #Set the center of the rect
         self.rect.center = (self.x,self.y)
 
     def set_coord(self, position):
+        """Set the coordinate of the moving object"""
         super().set_coord(position)
         self.load_rect()
 
@@ -85,6 +96,9 @@ class ImageObject(BaseObject):
 
             #Rotate the image
             self.image = pygame.transform.rotate(self.image, angle)
+
+            #Load the rectangle
+            self.load_rect()
         
         #Otherwise do nothing
         else:
@@ -148,3 +162,12 @@ class ImageObject(BaseObject):
                 Return the width of the image (int)
         """
         return self.image.get_width() if self.image else self.width
+
+    def saveSelf(self):
+        """Save the object in to a state"""
+        pass
+       
+        
+    def loadSelf(self):
+        """Load the object from state"""
+        pass

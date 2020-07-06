@@ -44,6 +44,7 @@ class State(enum.Enum):
     COOP = 19
 
     CLASSIC = 60
+    STORY_MENU = 70
     ONLINE = 90
 
 class Difficulty_enum(enum.Enum):

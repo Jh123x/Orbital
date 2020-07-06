@@ -6,7 +6,7 @@ from .. import State, Player, Direction, EnemyShip, WHITE, Explosion, Difficulty
 
 class CoopScreen(LocalPVPScreen):
     def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, fps:int, difficulty: Difficulty, player_lives:int = 3, debug:bool = False):
-        """Main Coop screen"""
+        """Main Coop screen for local cooperative mode"""
 
         #Call the super class
         super().__init__(screen_width, screen_height, screen, sensitivity, fps, player_lives, debug)
@@ -23,7 +23,7 @@ class CoopScreen(LocalPVPScreen):
         self.player1 = Player(self.sensitivity, self.screen_width, self.screen_height, self.screen_width//(3/2), self.screen_height-50, self.player_lives, self.fps, self.player1_bullet, Direction.UP, self.debug)
         self.player2 = Player(self.sensitivity, self.screen_width, self.screen_height, self.screen_width//3, self.screen_height-50, self.player_lives, self.fps, self.player2_bullet, Direction.UP, self.debug)
 
-    def check_pvp_collision(self)->None:
+    def check_players_collision(self)->None:
         """Check collisions for players"""
         #Check if bullet hit player 2
         bullet_hit_m = len(pygame.sprite.spritecollide(self.player1, self.mob_bullet, True))
@@ -38,19 +38,25 @@ class CoopScreen(LocalPVPScreen):
             self.explosions.add(Explosion(self.fps//4, self.player2.get_x(), self.player2.get_y(), self.screen_width, self.screen_height, 0, self.debug))
 
     def bullet_direction(self) -> Direction:
-        """Move the bullet down"""
+        """Set the bullet direction to always go down"""
         return Direction.DOWN
 
     def get_wave_random(self) -> int:
-        #Generate wave random
+        """Generate wave random"""
+
+        #Generate the wave random based on the number
         num = int(self.generate_random_no()*self.difficulty.get_multiplier(self.wave))
+
+        #Return 1 if number is lower than 1
         return num if num >= 1 else 1
 
     def spawn_mobs(self) -> None:
         """Spawn enemies for the game"""
-        #If there are still enemies left, Do nothing
+        #If there are still enemies left, 
         if len(self.enemies) > 0:
-            return None
+            
+            #Do nothing
+            return
 
         #Increment wave
         self.wave += 1

@@ -2,7 +2,7 @@
 from .Enums import *
 
 #Import network
-from .client import *
+from .network import *
 
 #Import the colors
 from .Colors import *
@@ -22,9 +22,5 @@ from .Sprites import *
 #Import Screens
 from .Screens import *
 
-
-
 #Import the game.py
 from .game import *
-
-
