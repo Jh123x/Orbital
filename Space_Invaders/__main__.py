@@ -8,6 +8,9 @@ import sys
 import os
 
 def get_curr_path():
+    """Get the path to the current file
+        Doesn't use __file__ directly as it does not work then the executable is frozen
+    """
     if getattr(sys, 'frozen', False):
         # The application is frozen
         datadir = sys.executable
@@ -18,7 +21,7 @@ def get_curr_path():
     return datadir
 
 def main() -> None:
-    """The main function"""
+    """The main function to run the game"""
 
     #The path of the configuration file
     settings = "settings.cfg"
@@ -34,13 +37,14 @@ def main() -> None:
     d = load_all(("bullet_img_paths",), ("Bullet Sprites",), all_cfg, get_curr_path())
 
     #Load the other sprites
-    d["player_img_paths"] = list_dir(form_abs_path(get_curr_path(), "images/player"))
-    d["enemy_img_paths"] = list_dir(form_abs_path(get_curr_path(), "images/enemies"))
-    d["background_img_paths"] = list_dir(form_abs_path(get_curr_path(), "images/backgrounds"))
-    d["explosion_img_paths"] = list_dir(form_abs_path(get_curr_path(), "images/explosions"))
-    d["menu_music_paths"] = list_dir(form_abs_path(get_curr_path(),"sounds/menu_music"))
-    d["powerup_img_path"] = list_dir(form_abs_path(get_curr_path(),"images/powerups"))
-    d["mothership_img_path"] = list_dir(form_abs_path(get_curr_path(),"images/bosses/mothership"))
+    d["player_img_paths"] = list_dir(form_abs_path(get_curr_path(), os.path.join("images","player")))
+    d["enemy_img_paths"] = list_dir(form_abs_path(get_curr_path(), os.path.join("images", "enemies")))
+    d["background_img_paths"] = list_dir(form_abs_path(get_curr_path(), os.path.join("images", "backgrounds")))
+    d["explosion_img_paths"] = list_dir(form_abs_path(get_curr_path(), os.path.join("images", "explosions")))
+    d["menu_music_paths"] = list_dir(form_abs_path(get_curr_path(), os.path.join("sounds", "menu_music")))
+    d["powerup_img_path"] = list_dir(form_abs_path(get_curr_path(), os.path.join("images", "powerups")))
+    d["mothership_img_path"] = list_dir(form_abs_path(get_curr_path(), os.path.join("images", "bosses", "mothership")))
+    d["trophy_img_path"] = list_dir(form_abs_path(get_curr_path(), os.path.join("images", "trophys")))
 
     #Get the number of backgrounds
     bg_limit = len(d["background_img_paths"])

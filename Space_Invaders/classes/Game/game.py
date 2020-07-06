@@ -31,14 +31,15 @@ async def add_to_sprite(obj, sprite_path:str) -> None:
     for path in sprite_path:
         obj.sprites.append(pygame.image.load(path))
         
-async def load_sound(sound_path:str, settings:int, debug:bool) -> Sound:
+async def load_sound(sound_path:str, settings:int, volume:float, debug:bool) -> Sound:
     """Load the sound object"""
-    return Sound(dict(map(lambda x: (x[0], pygame.mixer.Sound(x[1])), sound_path.items())), bool(int(settings)), debug)
+    return Sound(dict(map(lambda x: (x[0], pygame.mixer.Sound(x[1])), sound_path.items())), bool(int(settings)), volume, debug)
 
 class GameWindow(object):
     def __init__(self, sensitivity:int, maxfps:int, game_width:int, game_height:int, icon_img_path:str, player_img_paths:tuple,
                  enemy_img_paths:tuple, bullet_img_paths:tuple, background_img_paths:tuple, explosion_img_paths:tuple, 
-                 db_path:str, sound_path:dict, bg_limit:int, menu_music_paths:tuple, powerup_img_path:tuple, mothership_img_path:tuple, wave:int = 1,  debug:bool = False):
+                 db_path:str, sound_path:dict, bg_limit:int, menu_music_paths:tuple, powerup_img_path:tuple, mothership_img_path:tuple, trophy_img_path:tuple,
+                 wave:int = 1,  debug:bool = False):
         """The Main window
             Arguments:
                 Sensitivity: Sensitivity of controls (int)
@@ -106,11 +107,11 @@ class GameWindow(object):
         self.difficulty = Difficulty(difficulty if difficulty < 5 else 5)
 
         #Load sprites
-        load_sprites((Player, Bullet, EnemyShip, Background, Explosion, PowerUp, MotherShip), 
-                    (player_img_paths, bullet_img_paths, enemy_img_paths, background_img_paths, explosion_img_paths, powerup_img_path, mothership_img_path))
+        load_sprites((Player, Bullet, EnemyShip, Background, Explosion, PowerUp, MotherShip, VictoryScreen), 
+                    (player_img_paths, bullet_img_paths, enemy_img_paths, background_img_paths, explosion_img_paths, powerup_img_path, mothership_img_path, trophy_img_path))
 
         #Load sounds
-        self.sound = asyncio.run(load_sound(sound_path,self.settings_data['music'],self.debug))
+        self.sound = asyncio.run(load_sound(sound_path,self.settings_data['music'], float(self.settings_data['volume']), self.debug))
 
         #Load the sounds into the game
         pygame.mixer.music.load(menu_music_paths[0])
@@ -594,6 +595,7 @@ class GameWindow(object):
         self.score_board.add_all(*self.highscore.get_scores())
 
         #Get the settings that was saved and save it to the Database
+        self.settingsdb.update('volume',str(self.settings.get_volume()))
         self.settingsdb.update('background',str(self.settings.get_bg_no()))
         self.settingsdb.update('music',int(self.settings.get_music_enabled()))
         self.settingsdb.update('difficulty', int(self.settings.get_difficulty_no()))

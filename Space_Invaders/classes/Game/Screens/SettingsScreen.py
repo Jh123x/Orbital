@@ -2,7 +2,7 @@ from . import Screen, Popup
 from .. import State, WHITE, Direction, Sound, Background, Difficulty
 
 class SettingsScreen(Screen):
-    def __init__(self, screen_width:int, screen_height:int, screen, fps:int, sound:Sound, background:Background, difficulty: Difficulty, debug:bool = False):
+    def __init__(self, screen_width:int, screen_height:int, screen, fps:int, sound:Sound, background:Background, difficulty: Difficulty, volume:float, debug:bool = False):
         """Constructor for the settings screen"""
 
         #Call the superclass
@@ -39,42 +39,58 @@ class SettingsScreen(Screen):
         """Get the difficulty number"""
         return self.difficulty.value
 
+    def get_volume(self) -> float:
+        """Return the volume of the sound"""
+        return self.sound.get_volume()
+
     def handle_mouse_presses(self) -> State:
         """Handle the mouse presses on the settings screen"""
+
+        #Set click initially to be false
+        clicked = False
 
         #If it is not on cooldown
         if self.cooldown <= 0:
 
             #If the back button is clicked
             if self.check_clicked(self.back):
+                
+                #Go back to the screen
                 return State.MENU
 
             #If the background button is pressed
-            if self.check_clicked(self.background):
-                self.bg.cycle()
+            elif self.check_clicked(self.background):
 
-                #Reset the cooldown
-                self.cooldown = self.fps//10
+                #Cycle the background
+                self.bg.cycle()
+                clicked = True
 
             #If the music button is pressed
-            if self.check_clicked(self.music):
+            elif self.check_clicked(self.music):
 
                 #Toggle the music state
                 self.sound.toggle()
-
-                #Reset the cooldown
-                self.cooldown = self.fps//10
+                clicked = True
 
             #If the difficulty button is pressed
-            if self.check_clicked(self.difficulty_rect):
+            elif self.check_clicked(self.difficulty_rect):
 
                 #Toggle difficulty
                 self.difficulty.toggle()
+                clicked = True
 
-                #Reset the cooldown
-                self.cooldown = self.fps//10
+            #Check if the sound button is pressed
+            elif self.check_clicked(self.sound_btn):
+
+                #Toggle the sound
+                self.sound.volume_toggle()
+                clicked = True
+                
+        #If the user clicked
+        if clicked:
+            #Reset the cooldown
+            self.cooldown = self.fps//10
             
-        
         #Otherwise
         else:
             if self.debug:
@@ -96,10 +112,9 @@ class SettingsScreen(Screen):
 
         #Draw the different settings options
         self.background = self.write_main(Screen.end_font, WHITE, f"Background: {self.get_bg_no()}", self.screen_width//4, first_pixel, Direction.LEFT)
-        self.music = self.write_main(Screen.end_font, WHITE, f"Music enabled: {self.get_music_enabled()}", self.screen_width//4, first_pixel + self.screen_height//15, Direction.LEFT)
+        self.music = self.write_main(Screen.end_font, WHITE, f"Music: {'On' if self.get_music_enabled() else 'Off'}", self.screen_width//4, first_pixel + self.screen_height//15, Direction.LEFT)
         self.difficulty_rect = self.write_main(Screen.end_font, WHITE, f"Difficulty: {self.get_difficulty().title()}", self.screen_width//4, first_pixel + self.screen_height//7.5, Direction.LEFT)
+        self.sound_btn = self.write_main(Screen.end_font, WHITE, f"Sound: {int(self.get_volume()*100)}", self.screen_width//4, first_pixel + self.screen_height//5, Direction.LEFT)
 
         #Return based on what the user press
         return self.handle_mouse_presses()
-
-

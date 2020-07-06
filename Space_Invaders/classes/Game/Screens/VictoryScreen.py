@@ -1,5 +1,5 @@
 from . import Screen
-from .. import Sound, WHITE, State
+from .. import Sound, WHITE, State, ImageObject
 
 class VictoryScreen(Screen):
     sprites = []
@@ -27,6 +27,10 @@ class VictoryScreen(Screen):
         #Write the back button
         self.back = self.write(Screen.end_font, WHITE, "back", self.screen_width//2, self.screen_height // 1.2)
 
+        #Show the trophy in the middle of the screen
+        self.trophy = ImageObject(self.screen_width//2, self.screen_height//2 + 100, 50, 50, VictoryScreen.sprites[0])
+        self.trophy.scale(100,100)
+
     def get_stage_name(self) -> str:
         """Gets the stage name that is currently displayed"""
         return self.stage_name
@@ -40,13 +44,23 @@ class VictoryScreen(Screen):
             #Return menu state
             return State.MENU
 
+        #Return the current state
         return self.state
+
+    def update(self) -> None:
+        """Update the image sprite before passing to the superclass"""
+
+        #Call the superclass update
+        super().update()
+
+        #Draw trophy on the screen
+        self.trophy.draw(self.screen)
 
     def handle(self) -> State:
         """Handle the victory state"""
 
         #Call the superclass handle state
-        super().update()
+        self.update()
 
         #Check the keypresses
         return self.check_keypresses()
