@@ -18,17 +18,20 @@ class VictoryScreen(Screen):
         #Store the stage that is cleared
         self.stage_name = prev_stage
 
+        #Define central pixel
+        first_px = self.screen_height//2 + 50
+
         #Write the main part of the screen
         self.write(Screen.title_font, WHITE, "VICTORY", self.screen_width//2, self.screen_height // 5)
 
         #Write the stage that was cleared
-        self.write(Screen.end_font, WHITE, f"{prev_stage} cleared", self.screen_width//2, self.screen_height // 2)
+        self.write(Screen.end_font, WHITE, f"{prev_stage} cleared", self.screen_width//2, first_px)
 
         #Write the back button
         self.back = self.write(Screen.end_font, WHITE, "back", self.screen_width//2, self.screen_height // 1.2)
 
         #Show the trophy in the middle of the screen
-        self.trophy = ImageObject(self.screen_width//2, self.screen_height//2 + 100, 50, 50, VictoryScreen.sprites[0])
+        self.trophy = ImageObject(self.screen_width//2, first_px - 100, 50, 50, VictoryScreen.sprites[0])
         self.trophy.scale(100,100)
 
     def get_stage_name(self) -> str:

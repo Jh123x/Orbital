@@ -36,7 +36,6 @@ class ImageObject(BaseObject):
 
     def draw(self, screen) -> None:
         """Draw the player onto the screen"""
-        #Get previous rect position and empty img
 
         #Render new position
         screen.blit(self.image, self.rect)

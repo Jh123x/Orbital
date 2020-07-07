@@ -4,8 +4,11 @@ import random
 import datetime
 import asyncio
 import time
-from pygame.locals import *
+import torch
+import os
+import sys
 from . import *
+from pygame.locals import *
 
 #Initialise pygame
 pygame.init()
@@ -15,6 +18,37 @@ pygame.font.init()
 
 #Initialise the sound
 pygame.mixer.init()
+
+def get_curr_path():
+    """Get the path to the current file
+        Doesn't use __file__ directly as it does not work then the executable is frozen
+    """
+
+    #If the application is frozen
+    if getattr(sys, 'frozen', False):
+
+        #Get executable directory
+        datadir = sys.executable
+    
+    #Otherwise
+    else:
+        
+        #Use __file__ to get directory
+        datadir = __file__
+
+    #Return directory
+    return datadir
+
+async def load_AI_model(model_path, input_shape):
+    """Load the AI_model"""
+    #Load device to cuda
+    AIPlayer.device = 'cuda' if torch.cuda.is_available() else 'cpu'
+
+    #Store the input shape
+    AIPlayer.input_shape = input_shape
+
+    #Load the dictionary folder
+    AIPlayer.ai_dic = torch.load(model_path, map_location= AIPlayer.device)
 
 def load_sprites(obj_list:list, paths:list):
     """Load the sprites for each of the items in parallel"""
@@ -38,8 +72,8 @@ async def load_sound(sound_path:str, settings:int, volume:float, debug:bool) -> 
 class GameWindow(object):
     def __init__(self, sensitivity:int, maxfps:int, game_width:int, game_height:int, icon_img_path:str, player_img_paths:tuple,
                  enemy_img_paths:tuple, bullet_img_paths:tuple, background_img_paths:tuple, explosion_img_paths:tuple, 
-                 db_path:str, sound_path:dict, bg_limit:int, menu_music_paths:tuple, powerup_img_path:tuple, mothership_img_path:tuple, trophy_img_path:tuple,
-                 wave:int = 1,  debug:bool = False):
+                 db_path:str, sound_path:dict, bg_limit:int, menu_music_paths:tuple, powerup_img_path:tuple, mothership_img_path:tuple, 
+                 trophy_img_path:tuple, ai_model_path:str, ai_input_shape:tuple, wave:int = 1,  debug:bool = False):
         """The Main window
             Arguments:
                 Sensitivity: Sensitivity of controls (int)
@@ -69,6 +103,22 @@ class GameWindow(object):
                 get_state: Get the current state of the game
                 mainloop: Run the mainloop for the gamewindow
         """
+        #Load model in parallel
+        asyncio.run(load_AI_model(ai_model_path, ai_input_shape))
+
+        #Load sprites
+        load_sprites((Player, Bullet, EnemyShip, Background, Explosion, PowerUp, MotherShip, VictoryScreen), 
+                    (player_img_paths, bullet_img_paths, enemy_img_paths, background_img_paths, explosion_img_paths, powerup_img_path, mothership_img_path, trophy_img_path))
+
+        #Store debug variable
+        self.debug = debug
+
+        #Load setting menu settings
+        self.settingsdb = SettingsDB(db_path)
+        self.settings_data = dict(map(lambda x: x[1:], self.settingsdb.fetch_all()))
+
+        #Load sounds
+        self.sound = asyncio.run(load_sound(sound_path, self.settings_data['music'], float(self.settings_data['volume']), self.debug))
 
         #Set the title
         pygame.display.set_caption("Space Invaders")
@@ -80,9 +130,8 @@ class GameWindow(object):
         #Set the dimensions
         self.main_screen = pygame.display.set_mode((game_width,game_height), pygame.DOUBLEBUF | pygame.HWSURFACE, 32)
 
-        #Initialise the pygame window
+        #Initialise the pygame vars
         self.clock = pygame.time.Clock()
-        self.debug = debug
         self.score = 0
         self.fps = maxfps
         self.sensitivity = sensitivity
@@ -98,20 +147,9 @@ class GameWindow(object):
         #Load the highscores
         self.score_board = ScoreBoard(db_path)
 
-        #Load setting menu settings
-        self.settingsdb = SettingsDB(db_path)
-        self.settings_data = dict(map(lambda x: x[1:], self.settingsdb.fetch_all()))
-
         #Set difficulty
         difficulty = int(self.settings_data['difficulty'])
         self.difficulty = Difficulty(difficulty if difficulty < 5 else 5)
-
-        #Load sprites
-        load_sprites((Player, Bullet, EnemyShip, Background, Explosion, PowerUp, MotherShip, VictoryScreen), 
-                    (player_img_paths, bullet_img_paths, enemy_img_paths, background_img_paths, explosion_img_paths, powerup_img_path, mothership_img_path, trophy_img_path))
-
-        #Load sounds
-        self.sound = asyncio.run(load_sound(sound_path,self.settings_data['music'], float(self.settings_data['volume']), self.debug))
 
         #Load the sounds into the game
         pygame.mixer.music.load(menu_music_paths[0])
@@ -132,7 +170,7 @@ class GameWindow(object):
         self.classic = ClassicScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.difficulty, debug = self.debug)
         self.settings = SettingsScreen(game_width, game_height, self.main_screen, self.fps, self.sound, self.bg, self.difficulty, debug)
         self.coop = CoopScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.difficulty, 3,  debug)
-        self.ai_vs = AIPVPScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, 3,  debug)
+        self.ai_vs = AIPVPScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, 3, debug)
         self.online = OnlinePVPScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, 3,  debug)
         self.one_player_menu = OnePlayerModeScreen(game_width, game_height, self.main_screen, debug)
         self.tutorial = TutorialScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug)
@@ -158,13 +196,13 @@ class GameWindow(object):
             State.INSTRUCTIONS:self.instructions,
             State.PVP_INSTRUCTIONS: self.pvp_menu,
             State.TWO_PLAYER_MENU: self.two_player,
-            # State.AI_COOP: self.two_player.handle,
+            # State.AI_COOP: self.two_player,
             State.AI_VS: self.ai_vs,
             State.PVP: self.pvp,
             State.CLASSIC: self.classic,
             State.SETTINGS: self.settings,
             State.COOP: self.coop,
-            # State.ONLINE: self.handle_online,
+            # State.ONLINE: self.online,
             State.TUTORIAL: self.tutorial,
             State.ONE_PLAYER_MENU: self.one_player_menu,
             State.STORY_MENU: self.story_mode
@@ -204,7 +242,6 @@ class GameWindow(object):
         
         #Initialise the music
         pygame.mixer.music.load(menu_music_paths[0])
-        
 
         #Play the music if sound is enabled
         if self.sound_state:

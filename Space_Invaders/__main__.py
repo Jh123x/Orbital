@@ -20,7 +20,7 @@ def get_curr_path():
     
     #Otherwise
     else:
-        
+
         #Use __file__ to get directory
         datadir = __file__
 
@@ -53,11 +53,13 @@ def main() -> None:
     d["mothership_img_path"] = list_dir(form_abs_path(get_curr_path(), os.path.join("images", "bosses", "mothership")))
     d["trophy_img_path"] = list_dir(form_abs_path(get_curr_path(), os.path.join("images", "trophys")))
 
+    #AI Configs
+    ai_config = all_cfg['AI']
+    d['ai_model_path'] = form_abs_path(get_curr_path(), ai_config["model_path"])
+    d['ai_input_shape'] = eval(ai_config["input_shape"])
+
     #Get the number of backgrounds
     bg_limit = len(d["background_img_paths"])
-    
-    #DBPath
-    db_path = form_abs_path(get_curr_path(),os.path.join('data', 'test.db'))
 
     #Sound
     sound_path = dict(zip(all_cfg["Sounds"].keys(),list(map(lambda x: form_abs_path(get_curr_path(), x), all_cfg["Sounds"].values()))))
@@ -70,7 +72,7 @@ def main() -> None:
             print(f"{k} : {v}")
 
     #Create the new game window with the configurations
-    game = GameWindow(**d, sound_path = sound_path, **config, db_path = db_path, bg_limit = bg_limit)
+    game = GameWindow(**d, sound_path = sound_path, **config, bg_limit = bg_limit)
 
     #Run the mainloop for the GameWindow
     game.mainloop()

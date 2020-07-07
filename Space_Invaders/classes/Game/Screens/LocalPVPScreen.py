@@ -101,6 +101,24 @@ class LocalPVPScreen(PlayScreen):
         #Call the superclass update keypress
         return super().update_keypresses()
 
+    def draw_hitboxes(self, screen = None) -> None:
+        """Draw hitboxes for players and objects"""
+        #Check if screen is none
+        if screen == None:
+
+            #Set to self.surface if it is none
+            screen = self.surface
+
+        #Draw player 2 bullets
+        for sprite in self.player2_bullet:
+            pygame.draw.rect(screen, (100,255,0), sprite.rect, 0)
+
+        #Draw the player 2
+        pygame.draw.rect(screen, (55,255,10*self.player2.get_lives()), self.player2.rect, 0)
+
+        #Call the superclass draw
+        super().draw_hitboxes(screen)
+
     def get_random_direction(self) -> int:
         """Get a random direction (0 or 1)"""
         return int(self.generate_random_no()*10 < 5)
@@ -212,20 +230,6 @@ class LocalPVPScreen(PlayScreen):
 
         #Draw score of player 2
         self.write_main(Screen.font, WHITE, f"Score: {self.p2_score}", 10, self.screen_height - 20, Direction.LEFT)
-
-    def draw_hitboxes(self, screen = None) -> None:
-        """Draw hitboxes for players and objects"""
-        #Check if screen is none
-        if screen == None:
-
-            #Set to self.surface if it is none
-            screen = self.surface
-
-        #Draw the hitbox for the player
-        pygame.draw.rect(self.surface, (55,255,0), self.player2.rect, 0)
-
-        #Call the superclass for drawing hitboxes
-        super().draw_hitboxes(screen)
 
     def handle(self) -> State:
         """Handle the drawing of the screen"""

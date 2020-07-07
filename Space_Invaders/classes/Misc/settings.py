@@ -46,7 +46,11 @@ def convertType(pair:tuple):
 
     #Check if it is numbers
     elif pair[1].isdigit():
-        return pair[0],int(pair[1])
+        if pair[0].isdigit():
+            return int(pair[0]), int(pair[1])
+        else:
+            return pair[0],int(pair[1])
+
 
     #Otherwise return the original pair
     else:

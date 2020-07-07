@@ -199,7 +199,6 @@ class PlayScreen(Screen):
             #Set enemy to none
             enemy = None
 
-
         #Make the mob shoot the bullet a random direction
         self.shoot_bullet(enemy)
 
@@ -218,11 +217,14 @@ class PlayScreen(Screen):
             #Make the mob shoot
             enemy.shoot(direction)
 
-    def get_hitboxes_screen(self) -> pygame.Surface:
+    def get_hitboxes_copy(self) -> pygame.Surface:
         """Get a copy of the hitboxes surface"""
 
         #Create a surface
         surface = pygame.Surface((self.screen_width, self.screen_height))
+
+        #Fill the screen with black
+        surface.fill((0, 0, 0))
 
         #Draw on the surface
         self.draw_hitboxes(surface)
