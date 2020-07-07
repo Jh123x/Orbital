@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import pygame
 import random
-from . import LocalPVPScreen, Screen
+from . import LocalPVPScreen, Screen, PlayScreen
 from .. import State, Player, Direction, EnemyShip, WHITE, Explosion, Difficulty
 
 class CoopScreen(LocalPVPScreen):
@@ -37,37 +37,30 @@ class CoopScreen(LocalPVPScreen):
             self.player2.destroy()
             self.explosions.add(Explosion(self.fps//4, self.player2.get_x(), self.player2.get_y(), self.screen_width, self.screen_height, 0, self.debug))
 
+    def get_score(self) -> int:
+        """Return the combined score of the players"""
+        return sum(super().get_scores())
+
+    def get_gameover_state(self):
+        return State.GAMEOVER
+
     def bullet_direction(self) -> Direction:
         """Set the bullet direction to always go down"""
         return Direction.DOWN
 
-    def get_wave_random(self) -> int:
-        """Generate wave random"""
+    def spawn_enemies(self, number:int) -> None:
+        """Spawn enemies into the game
+            Arguments: 
+                number: Number of enemies to spawn (int)
+            Returns: 
+                No returns
+        """
 
-        #Generate the wave random based on the number
-        num = int(self.generate_random_no()*self.difficulty.get_multiplier(self.wave))
+        #Make the enemies into rows of 6
+        for j in range(number//6 if number // 6 < 5 else 5):
+            self.enemies.add([EnemyShip(self.sensitivity, self.screen_width//4 + i*self.screen_width//10, self.screen_height//10 + EnemyShip.sprites[0].get_height() * j, self.wave_random(), self.screen_width,  self.screen_height, Direction.DOWN, self.mob_bullet, self.debug) for i in range(6)])
 
-        #Return 1 if number is lower than 1
-        return num if num >= 1 else 1
-
-    def spawn_mobs(self) -> None:
-        """Spawn enemies for the game"""
-        #If there are still enemies left, 
-        if len(self.enemies) > 0:
-            
-            #Do nothing
-            return
-
-        #Increment wave
-        self.wave += 1
-
-        #Spawn the enemies
-        for j in range(self.wave if self.wave < 5 else 5):
-            self.enemies.add([EnemyShip(self.sensitivity, self.screen_width//4 + i*self.screen_width//10, 
-                                self.screen_height//10 + EnemyShip.sprites[0].get_height() * j, self.get_wave_random(), 
-                                self.screen_width,  self.screen_height, None, self.mob_bullet, self.debug) for i in range(6)])
-
-    def draw_words(self) -> None:
+    def draw_letters(self) -> None:
         """Draw the words on the screen"""
         #Draw the wave number
         self.write_main(Screen.font, WHITE, f"Wave: {self.wave}", self.screen_width // 2, 20)

@@ -544,6 +544,18 @@ class GameWindow(object):
             #Update popups
             self.popup.update()
 
+    def post_process(self):
+        """Do the post processing"""
+
+        #Get the screen it is using
+        screen = self.screens.get(self.state, None)
+
+        #Do post process for the screen
+        if screen:
+
+            #Call the post process method
+            screen.post_process()
+
     def mainloop(self) -> None:
         """The mainloop to load the screen of the game
             Arguments: 
@@ -573,6 +585,9 @@ class GameWindow(object):
 
             #Update the display with the screen
             pygame.display.update()
+
+            #Do post processes
+            self.post_process()
 
             #If the state is quit or player closes the game
             if self.state == State.QUIT or pygame.QUIT in tuple(map(lambda x: x.type, pygame.event.get())):

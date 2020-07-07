@@ -4,6 +4,7 @@ from . import PlayScreen, Screen
 from .. import *
 
 class TutorialScreen(PlayScreen):
+    information = [("a", "move left"), ("d", "move right"), ("spacebar", "shoot"), ("p", "to pause")]
     def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, debug:bool = False):
         """Main class for the tutorial screen"""
 
@@ -15,9 +16,6 @@ class TutorialScreen(PlayScreen):
 
         #Set powerups to 100% spawn
         self.powerups_chance = 1
-
-        #Track the buttons the player pressed
-        self.information = [("a", "move left"), ("d", "move right"), ("spacebar", "shoot"), ("p", "to pause")]
         
         #Reset the game
         self.reset()
@@ -26,7 +24,7 @@ class TutorialScreen(PlayScreen):
         """Spawn a powerup at specified x and y coordinate"""
 
         #Spawn the powerups
-        self.powerups.add(PowerUp(x, y, 50, 50, 0, self.fps * 20))
+        self.powerups.add(PowerUp(x, y, 50, 50, 2, self.fps * 20))
 
         #Increase the number of powerups
         self.powerup_numbers += 1
@@ -65,7 +63,7 @@ class TutorialScreen(PlayScreen):
         #If not on spawn cooldown
         if self.spawn_cooldown == 0 and len(self.powerups) == 0:
             #Add 1 enemy ship to the board
-            self.enemies.add(EnemyShip(self.sensitivity, self.screen_width//4 + self.screen_width//10, self.screen_height//10, self.wave_random(), self.screen_width,  self.screen_height, Direction.DOWN, self.down_bullets, self.debug))
+            self.enemies.add(EnemyShip(self.sensitivity, self.screen_width//4 + self.screen_width//10, self.screen_height//10, self.wave_random(), self.screen_width,  self.screen_height, Direction.DOWN, self.mob_bullet, self.debug))
 
     def spawn_enemy_bullets(self):
         """Spawn bullets for the enemy"""
@@ -89,13 +87,13 @@ class TutorialScreen(PlayScreen):
 
         #If the player has click 'Left' or 'a' move the player to the left
         if keys[K_a] or keys[K_LEFT]:
-            self.player.move_left()
+            self.player1.move_left()
             if not self.pressed[0]:
                 self.pressed[0] = self.fps//2
 
         #If the player has click 'right' or 'd' move the player to the right
         if keys[K_d] or keys[K_RIGHT]:
-            self.player.move_right()
+            self.player1.move_right()
             if not self.pressed[1]:
                 self.pressed[1] = self.fps//2
 
@@ -103,7 +101,7 @@ class TutorialScreen(PlayScreen):
         if keys[K_SPACE]:
 
             #Make the player shoot
-            self.player.shoot()
+            self.player1.shoot()
             if not self.pressed[2]:
                 self.pressed[2] = self.fps//2
 
@@ -120,19 +118,32 @@ class TutorialScreen(PlayScreen):
         #Return False to not pause the game
         return False
 
+    def end_game(self) -> None:
+        """Ends the game"""
+        #Set the game to be over
+        self.over = True
+
+        #Reset the game
+        self.reset()
+    
+
     def handle(self) -> State:
         """Handle the drawing of the sprites"""
 
         #If player is destroyed or enemies hit the bottom, go to gameover state
-        if self.player.is_destroyed() or self.enemy_touched_bottom():
-            #Set the game to be over
-            self.over = True
+        if self.player1.is_destroyed() or self.enemy_touched_bottom():
+
+            #Cause the game to end
+            self.end_game()
 
             #Return the gameover state
             return State.GAMEOVER
 
         #Otherwise if player wins
         elif self.wave == 3:
+
+            #Cause the game to end
+            self.end_game()
 
             #Go to victory screen
             return State.VICTORY
@@ -150,7 +161,7 @@ class TutorialScreen(PlayScreen):
         self.spawn_enemy_bullets()
 
         #Check object collisions
-        self.score += self.check_collisions()
+        self.check_collisions()
 
         #Draw the tutorial label number
         self.write_main(Screen.font, WHITE, "Tutorial", self.screen_width//2, 40)
@@ -187,10 +198,10 @@ class TutorialScreen(PlayScreen):
         self.write_main(Screen.font, WHITE, f"Wave : {self.wave}",self.screen_width//2, 15)
 
         #Draw the score
-        self.write_main(Screen.font, WHITE, f"Score : {self.score}", 10, 10, Direction.LEFT)
+        self.write_main(Screen.font, WHITE, f"Score : {self.p1_score}", 10, 10, Direction.LEFT)
 
         #Draw the live count
-        self.write_main(Screen.font, WHITE, f"Lives : {self.player.get_lives()}", self.screen_width - 10, 10, Direction.RIGHT)
+        self.write_main(Screen.font, WHITE, f"Lives : {self.player1.get_lives()}", self.screen_width - 10, 10, Direction.RIGHT)
 
         #Check the player keypress
         if self.update_keypresses():

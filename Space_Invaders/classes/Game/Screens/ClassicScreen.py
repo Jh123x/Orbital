@@ -21,4 +21,4 @@ class ClassicScreen(PlayScreen):
         super().reset()
 
         #Reset the 5 blocks
-        self.blocks = BlockGroup(self.screen_width, self.screen_height//1.2, self.screen, 5, self.player.get_height() + 10)
+        self.blocks = BlockGroup(self.screen_width, self.screen_height//1.2, self.screen, 5, self.player1.get_height() + 10)

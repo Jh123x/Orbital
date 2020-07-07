@@ -42,6 +42,13 @@ class Screen(BaseObject):
         #Create a surface with a transparent background
         self.reset_surface()
 
+    def post_process(self):
+        """Post processes after the screen updates 
+           Does nothing
+           Any process after updating the screen should be done here
+        """
+        pass
+
     def set_background(self, bg) -> None:
         """Update the background"""
         self.bg = bg

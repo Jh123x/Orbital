@@ -5,7 +5,8 @@ from . import Screen
 from .. import *
 
 class PlayScreen(Screen):
-    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, difficulty: Difficulty, wave:int = 1, player_lives:int = 3, powerup_chance:float = 0.1, debug:bool = False):
+    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, difficulty: Difficulty, wave:int = 1, player_lives:int = 3, 
+                powerup_chance:float = 0.1, debug:bool = False):
         """The Play screen
             Arguments:
                 screen_width: Width of the game in pixels (int)
@@ -33,20 +34,21 @@ class PlayScreen(Screen):
         super().__init__(screen_width, screen_height, State.PLAY, screen, 0, 0, debug)
 
         #Store the variables
-        self.score = 0
+        self.p1_score = 0
         self.wave = wave - 1 
         self.sensitivity = sensitivity
         self.fps = max_fps
         self.difficulty = difficulty
+        self.player_lives = player_lives
         self.over = False
         self.powerup_chance = powerup_chance
 
         #Create the groups
         #Bullets shot by player
-        self.up_bullets = pygame.sprite.Group()
+        self.player1_bullet = pygame.sprite.Group()
 
         #Bullet from Mobs
-        self.down_bullets = pygame.sprite.Group()
+        self.mob_bullet = pygame.sprite.Group()
 
         #Enemyships
         self.enemies = EnemyShips(self.state)
@@ -60,11 +62,19 @@ class PlayScreen(Screen):
         #Power ups
         self.powerups = pygame.sprite.Group()
 
-        #Create the player
-        self.player = Player(sensitivity, screen_width, screen_height, screen_width//2, screen_height - 50, 3, max_fps, self.up_bullets, Direction.UP, debug)
+        #Spawn the players
+        self.spawn_players()
+
+        #Set resetted to false
+        self.resetted = False
 
         #Reset the variables
         self.reset()
+
+    def spawn_players(self):
+        """Spawn the players"""
+        #Create the player
+        self.player1 = Player(self.sensitivity, self.screen_width, self.screen_height, self.screen_width//2, self.screen_height - 50, 3, self.fps, self.player1_bullet, Direction.UP, self.debug)
 
     def reset(self) -> None:
         """Reset the play screen and variables
@@ -73,6 +83,12 @@ class PlayScreen(Screen):
             Returns: 
                 No returns
         """
+
+        #If already resetted
+        if self.resetted:
+
+            #Do nothing
+            return
 
         #Reset powerup number
         self.powerup_numbers = 0
@@ -87,23 +103,26 @@ class PlayScreen(Screen):
         self.over = False
         
         #Zero the score and the wave
-        self.score = 0
+        self.p1_score = 0
         self.wave = 0
 
+        #Set resetted to True
+        self.resetted = True
+
         #Empty the sprite groups
-        self.up_bullets.empty()
-        self.down_bullets.empty()
+        self.player1_bullet.empty()
+        self.mob_bullet.empty()
         self.enemies.empty()
         self.explosions.empty()
         self.blocks.empty()
         self.powerups.empty()
 
         #Reset the player
-        self.player.reset()
+        self.player1.reset()
 
     def get_hitboxes(self) -> list:
         """Get a list of hitboxes of mobs"""
-        return [(self.player.get_coord()), tuple(x.get_coord() for x in self.up_bullets), tuple(x.get_coord() for x in self.enemies), tuple(x.get_coord() for x in self.down_bullets)]
+        return [(self.player1.get_coord()), tuple(x.get_coord() for x in self.player1_bullet), tuple(x.get_coord() for x in self.enemies), tuple(x.get_coord() for x in self.mob_bullet)]
 
     def get_enemies(self) -> tuple:
         """Get a tuple of the enemies"""
@@ -116,22 +135,29 @@ class PlayScreen(Screen):
             Returns:
                 No returns
         """
-        #Check the keys the player has pressed
+        #Get all the number of keys
         keys = pygame.key.get_pressed()
 
-        #If the player has click 'Left' or 'a' move the player to the left
-        if keys[K_a] or keys[K_LEFT]: 
-            self.player.move_left()
+        #Check if they want to pause game
+        if keys[K_p]:
+            return True
 
-        #If the player has click 'right' or 'd' move the player to the right
-        if keys[K_d] or keys[K_RIGHT]:
-            self.player.move_right()
+        if not self.player1.is_destroyed():
+            #Check player 1 keys
+            if keys[K_a]:
 
-        #Check if the player pressed spacebar to spawn a bullet
-        if keys[K_SPACE]:
+                #Move player 1 to the left
+                self.player1.move_left()
 
-            #Make the player shoot
-            self.player.shoot()
+            if keys[K_d]:
+                
+                #Move player 1 to the right
+                self.player1.move_right()
+
+            if keys[K_SPACE]:
+
+                #Let the player shoot
+                self.player1.shoot()
 
         #Check for debug keypresses
         if self.debug:
@@ -140,7 +166,7 @@ class PlayScreen(Screen):
             if keys[K_q]:
 
                 #Deduct the life of the player 
-                self.player.destroy()
+                self.player1.destroy()
 
     def spawn_enemy_bullets(self) -> None:
         """Spawns a bullet randomly for the enemy
@@ -149,12 +175,11 @@ class PlayScreen(Screen):
             Returns: 
                 No returns
         """
-
         #Check if the enemy can shoot randomly
-        rand = random.randint(0,self.fps*50)
+        rand = self.generate_random_no()*self.fps*4
 
         #If it does not hits the probability allow the mob to shoot
-        if rand > self.fps:
+        if rand > 10:
 
             #Print debug statements
             if self.debug:
@@ -169,38 +194,77 @@ class PlayScreen(Screen):
             #Get a random enemy
             enemy = self.get_random_enemy()
 
-            #Make the enemy shoot
-            enemy.shoot()
+        else:
 
-    def draw_hitboxes(self) -> None:
+            #Set enemy to none
+            enemy = None
+
+
+        #Make the mob shoot the bullet a random direction
+        self.shoot_bullet(enemy)
+
+    def bullet_direction(self) -> Direction:
+        """Generate bullet direction for the mob"""
+        return Direction.DOWN
+
+    def shoot_bullet(self, enemy):
+        """Make the mob shoot the bullet a random direction"""
+        #If the set is non-empty
+        if enemy:
+
+            #Get direction of bullet
+            direction = self.bullet_direction()
+
+            #Make the mob shoot
+            enemy.shoot(direction)
+
+    def get_hitboxes_screen(self) -> pygame.Surface:
+        """Get a copy of the hitboxes surface"""
+
+        #Create a surface
+        surface = pygame.Surface((self.screen_width, self.screen_height))
+
+        #Draw on the surface
+        self.draw_hitboxes(surface)
+
+        #Return the surface that is drawn on
+        return surface
+
+    def draw_hitboxes(self, screen = None) -> None:
         """Draw hitboxes for players and objects"""
+        #Check if screen is none
+        if screen == None:
+
+            #Set to self.surface if it is none
+            screen = self.surface
+
         #Draw the hitbox for the blocks at the bottom
         for sprite in self.blocks:
-            pygame.draw.rect(self.surface, (0, 255, 0), sprite.rect, 0)
+            pygame.draw.rect(screen, (0, 255, 0), sprite.rect, 0)
 
         #Draw hitbox for the enemies
         for sprite in self.enemies:
             c = (sprite.get_lives())*3
-            pygame.draw.rect(self.surface, (200,5*c,5*c), sprite.rect, 0)
+            pygame.draw.rect(screen, (200,5*c,5*c), sprite.rect, 0)
 
         #Draw hitbox for the bullets
-        for sprite in self.up_bullets:
-            pygame.draw.rect(self.surface, (100,255,0), sprite.rect, 0)
-        for sprite in self.down_bullets:
-            pygame.draw.rect(self.surface, (25,0,255), sprite.rect, 0)
+        for sprite in self.player1_bullet:
+            pygame.draw.rect(screen, (100,255,0), sprite.rect, 0)
+        for sprite in self.mob_bullet:
+            pygame.draw.rect(screen, (25,0,255), sprite.rect, 0)
 
         #Draw the hitbox for the player
-        pygame.draw.rect(self.surface, (55,255,10*self.player.get_lives()), self.player.rect, 0)
+        pygame.draw.rect(screen, (55,255,10*self.player1.get_lives()), self.player1.rect, 0)
 
         #If mothership exists
         if self.mothership:
             
             #Draw the hitbox for the mothership
-            pygame.draw.rect(self.surface, (5, 50, 5), self.mothership.rect, 0)
+            pygame.draw.rect(screen, (5, 50, 5), self.mothership.rect, 0)
 
         #Draw for powerups
         for p_up in self.powerups:
-            pygame.draw.rect(self.surface, (255,255,10*p_up.get_power_type()), p_up.rect, 0)
+            pygame.draw.rect(screen, (255,255,10*p_up.get_power_type()), p_up.rect, 0)
 
     def update_powerups(self) -> None:
         """Update and draw the powerups"""
@@ -217,11 +281,18 @@ class PlayScreen(Screen):
             Returns:
                 No returns
         """
+
+        #If the game was resetted
+        if self.resetted:
+
+            #set resetted as false
+            self.resetted = False
+
         #Reset the surface
         self.reset_surface()
 
         #Update the player position
-        self.player.update()
+        self.player1.update()
 
         #Update the enemy group
         self.enemies.update()
@@ -242,8 +313,8 @@ class PlayScreen(Screen):
         self.spawn_enemy_bullets()
 
         #Update the position of all bullets
-        self.up_bullets.update()
-        self.down_bullets.update()
+        self.player1_bullet.update()
+        self.mob_bullet.update()
 
         #Update powerups
         self.update_powerups()
@@ -257,12 +328,12 @@ class PlayScreen(Screen):
     def draw_sprites(self):
         """Draw the sprites"""
         #Draw bullet
-        self.up_bullets.draw(self.surface)
-        self.down_bullets.draw(self.surface)
+        self.player1_bullet.draw(self.surface)
+        self.mob_bullet.draw(self.surface)
 
         #Print debug message
         if self.debug:
-            print(f"Number of player bullets: {len(self.up_bullets)}")
+            print(f"Number of player bullets: {len(self.player1_bullet)}")
 
         #Draw the enemy
         self.enemies.draw(self.surface)
@@ -275,7 +346,7 @@ class PlayScreen(Screen):
         self.explosions.draw(self.surface)
 
         #Draw player object
-        self.player.draw(self.surface)
+        self.player1.draw(self.surface)
 
         #Draw the block
         self.blocks.draw(self.screen)
@@ -296,7 +367,7 @@ class PlayScreen(Screen):
             Returns:
                 Return an integer as a score (int)
         """
-        return self.score
+        return self.p1_score
 
     def generate_random_no(self) -> int:
         """Generates a random float from 0 to 1"""
@@ -320,7 +391,7 @@ class PlayScreen(Screen):
         if len(self.powerups):
 
             #Check if player hit the powerups
-            hit = pygame.sprite.groupcollide(self.up_bullets, self.powerups, True, True)
+            hit = pygame.sprite.groupcollide(self.player1_bullet, self.powerups, True, True)
 
             #If player hit the powerups
             if len(hit):
@@ -332,7 +403,7 @@ class PlayScreen(Screen):
                     for p in l:
 
                         #Mutate player and current screen
-                        p.get_ability()(self,self.player)
+                        p.get_ability()(self,self.player1)
 
     def check_block_collision(self):
         """Check collisions of the blocks"""
@@ -340,8 +411,8 @@ class PlayScreen(Screen):
         if len(self.blocks):
 
             #Check if the player or the enemies shot the blocks
-            pygame.sprite.groupcollide(self.up_bullets, self.blocks, True, True)
-            pygame.sprite.groupcollide(self.blocks, self.down_bullets, True, True)
+            pygame.sprite.groupcollide(self.player1_bullet, self.blocks, True, True)
+            pygame.sprite.groupcollide(self.blocks, self.mob_bullet, True, True)
 
     def check_collisions(self) -> int:
         """Check the objects which collided
@@ -357,7 +428,7 @@ class PlayScreen(Screen):
         self.check_powerup_collision()
 
         #Check if player has collided with bullets
-        bullet_collide = pygame.sprite.spritecollide(self.player, self.down_bullets, True)
+        bullet_collide = pygame.sprite.spritecollide(self.player1, self.mob_bullet, True)
         
         #If the set is not empty reduce player life
         if len(bullet_collide) > 0:
@@ -367,16 +438,16 @@ class PlayScreen(Screen):
                 print("Player hit")
 
             #Destroy 1 of the player's life
-            self.player.destroy()
+            self.player1.destroy()
             
             #Add explosion to the player's position
-            self.spawn_explosion(self.player.get_x(), self.player.get_y())
+            self.spawn_explosion(self.player1.get_x(), self.player1.get_y())
 
         #Remove bullets that collide with one another
-        pygame.sprite.groupcollide(self.up_bullets, self.down_bullets, True, True)
+        pygame.sprite.groupcollide(self.player1_bullet, self.mob_bullet, True, True)
 
         #Get list of ships destroyed
-        ships = list(pygame.sprite.groupcollide(self.up_bullets, self.enemies, True, False).values())
+        ships = list(pygame.sprite.groupcollide(self.player1_bullet, self.enemies, True, False).values())
 
         #Print debug message
         if self.debug:
@@ -425,7 +496,7 @@ class PlayScreen(Screen):
                 score = ship.get_points()
 
         #Check if ship has collided with bullets
-        if self.mothership and len(pygame.sprite.spritecollide(self.mothership, self.up_bullets, True)) > 0:
+        if self.mothership and len(pygame.sprite.spritecollide(self.mothership, self.player1_bullet, True)) > 0:
 
             #Get points of mothership and add it to score
             score += self.mothership.get_points()
@@ -434,7 +505,7 @@ class PlayScreen(Screen):
             self.mothership = None
 
         #If nothing is destroyed return 0 points
-        return score
+        self.p1_score += score
 
     def spawn_explosion(self, x:int, y:int) -> None:
         """Spawn an explosion at specified x and y coordinate"""
@@ -446,7 +517,7 @@ class PlayScreen(Screen):
         """Spawn a powerup at specified x and y coordinate"""
 
         #Spawn the powerup
-        self.powerups.add(PowerUp(x, y, 50, 50, random.randint(0,PowerUp.get_no_powerups()-1), self.fps * 3))
+        self.powerups.add(PowerUp(x, y, 50, 50, random.randint(0,PowerUp.get_no_powerups()-1), self.fps * 3.5))
 
         #Increase the number of powerups
         self.powerup_numbers += 1
@@ -458,16 +529,10 @@ class PlayScreen(Screen):
             Returns: 
                 No returns
         """
-        #If number <= 6
-        if number <= 6:
 
-            #Spawn them in 1 row
-            self.enemies.add([EnemyShip(self.sensitivity, self.screen_width//4 + i*self.screen_width//10, self.screen_height//10, self.wave_random(), self.screen_width,  self.screen_height, Direction.DOWN, self.down_bullets, self.debug) for i in range(number)])
-        #
-        else:
-            #Otherwise make them into rows of 6
-            for j in range(number//6 if number // 6 < 5 else 5):
-                self.enemies.add([EnemyShip(self.sensitivity, self.screen_width//4 + i*self.screen_width//10, self.screen_height//10 + EnemyShip.sprites[0].get_height() * j, self.wave_random(), self.screen_width,  self.screen_height, Direction.DOWN, self.down_bullets, self.debug) for i in range(6)])
+        #Make the enemies into rows of 6
+        for j in range(number//6 if number // 6 < 5 else 5):
+            self.enemies.add([EnemyShip(self.sensitivity, self.screen_width//4 + i*self.screen_width//10, self.screen_height//10 + EnemyShip.sprites[0].get_height() * j, self.wave_random(), self.screen_width,  self.screen_height, Direction.DOWN, self.mob_bullet, self.debug) for i in range(6)])
 
     def randomly_spawn_mothership(self) -> bool:
         """Spawns a mothership randomly, returns if mothership is spawned"""
@@ -501,11 +566,34 @@ class PlayScreen(Screen):
 
     def enemy_touched_bottom(self) -> bool:
         """Check if enemy touched the bottom of the screen"""
-        return any(filter(lambda x: (x.get_y() + x.get_height()//2) > (self.screen_height - self.player.get_height() - 100), self.enemies))
+        return any(filter(lambda x: (x.get_y() + x.get_height()//2) > (self.screen_height - self.player1.get_height() - 100), self.enemies))
 
     def is_over(self) -> bool:
         """Checks if the game is over"""
         return self.over
+
+    def draw_letters(self) -> None:
+        """Draw the letters on the screen"""
+        #Draw the score
+        self.write_main(Screen.font, WHITE, f"Score : {self.p1_score}", 10, 10, Direction.LEFT)
+
+        #Draw the live count
+        self.write_main(Screen.font, WHITE, f"Lives : {self.player1.get_lives()}", self.screen_width - 10, 10, Direction.RIGHT)
+
+        #Draw the wave number
+        self.write_main(Screen.font, WHITE, f"Wave : {self.wave}",self.screen_width//2, 15)
+
+    def get_pause_state(self) -> State:
+        """Get the pause state for the game"""
+        return State.PAUSE
+
+    def get_gameover_state(self) -> State:
+        """Get the gameover state for the game"""
+        return State.GAMEOVER
+
+    def end_game(self) -> None:
+        """Ends the game"""
+        self.over = True
         
     def handle(self) -> State:
         """Handle the drawing of the play state
@@ -514,13 +602,21 @@ class PlayScreen(Screen):
             Returns:
                 No returns
         """
+        
+        #If it was initially resetted
+        if self.resetted:
+
+            #Set resetted to False
+            self.resetted = False
+
         #If player is destroyed, go to gameover state
-        if self.player.is_destroyed():
+        if self.player1.is_destroyed():
+
             #Set the game to be over
-            self.over = True
+            self.end_game()
 
             #Return the gameover state
-            return State.GAMEOVER
+            return self.get_gameover_state()
 
         #Check if any of the enemies touched the bottom of the screen
         if self.enemy_touched_bottom():
@@ -530,10 +626,10 @@ class PlayScreen(Screen):
                 print("Alienship hit the player")
 
             #Set the game to be over
-            self.over = True
+            self.end_game()
                 
             #If so it is gameover for the player
-            return State.GAMEOVER
+            return self.get_gameover_state()
 
         #Spawn if there are no enemies 
         if not len(self.enemies):
@@ -548,30 +644,21 @@ class PlayScreen(Screen):
             self.spawn_enemies(int(6 * self.wave))
 
         #Check object collisions
-        self.score += self.check_collisions()
+        self.check_collisions()
 
-        #Draw the score
-        self.write_main(Screen.font, WHITE, f"Score : {self.score}", 10, 10, Direction.LEFT)
-
-        #Draw the live count
-        self.write_main(Screen.font, WHITE, f"Lives : {self.player.get_lives()}", self.screen_width - 10, 10, Direction.RIGHT)
-
-        #Draw the wave number
-        self.write_main(Screen.font, WHITE, f"Wave : {self.wave}",self.screen_width//2, 15)
+        #Draw the letters on the screen
+        self.draw_letters()
 
         #Check the player keypress
-        self.update_keypresses()
+        if self.update_keypresses():
+            return self.get_pause_state()
 
         #Update the moving objs
         self.update()
 
         #Check if the player wants to pause or quit
         for event in pygame.event.get():
-
-            if event.type == pygame.KEYDOWN and event.key == K_p:
-                return State.PAUSE
-
-            elif event.type == pygame.QUIT:
+            if event.type == pygame.QUIT:
                 return State.QUIT
 
         #Return play state

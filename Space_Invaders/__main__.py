@@ -11,13 +11,20 @@ def get_curr_path():
     """Get the path to the current file
         Doesn't use __file__ directly as it does not work then the executable is frozen
     """
+
+    #If the application is frozen
     if getattr(sys, 'frozen', False):
-        # The application is frozen
+
+        #Get executable directory
         datadir = sys.executable
+    
+    #Otherwise
     else:
-        # The application is not frozen
-        # Change this bit to match where you store your data files:
+        
+        #Use __file__ to get directory
         datadir = __file__
+
+    #Return directory
     return datadir
 
 def main() -> None:
@@ -50,7 +57,7 @@ def main() -> None:
     bg_limit = len(d["background_img_paths"])
     
     #DBPath
-    db_path = form_abs_path(get_curr_path(),'data/test.db')
+    db_path = form_abs_path(get_curr_path(),os.path.join('data', 'test.db'))
 
     #Sound
     sound_path = dict(zip(all_cfg["Sounds"].keys(),list(map(lambda x: form_abs_path(get_curr_path(), x), all_cfg["Sounds"].values()))))

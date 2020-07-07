@@ -65,7 +65,6 @@ class Sound(object):
             if self.debug:
                 print("Invalid key")
 
-
     def toggle(self) -> None:
         """Toggle the enabled status of sound"""
         self.enabled = not self.enabled

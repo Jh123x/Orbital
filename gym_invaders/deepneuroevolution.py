@@ -185,7 +185,7 @@ game_actions = env.action_space.n
 num_agents = 15
 input_shape = (4, 160, 120)
 elites = 3 #Top k
-generations = 50
+generations = 20
 
 def survival_of_fittest(action_space, num_agents, input_dim, top_k, generations):
     elite_index = None
@@ -212,4 +212,12 @@ def survival_of_fittest(action_space, num_agents, input_dim, top_k, generations)
 
 #Start evolution
 ag = survival_of_fittest(game_actions,num_agents,input_shape,elites,generations)
+
+#If the directory is not found
+if not os.path.isdir(os.path.join("obj","gene_algo")):
+
+    #Make the directory
+    os.mkdir(os.path.join("obj","gene_algo"))
+
+#Save the pytorch file
 torch.save(ag, os.path.join("obj","gene_algo","survival.pth"))
