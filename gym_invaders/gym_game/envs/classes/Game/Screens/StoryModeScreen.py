@@ -36,6 +36,7 @@ class StoryModeScreen(Screen):
             self.video_buttons.append(self.write(Screen.end_font, Color.WHITE, f"Stage {i}", self.screen_width /2, self.screen_height /2 + 20*i))
 
     def handle(self) -> None:
+        """Call the superclass handle"""
         return super().handle()
 
 

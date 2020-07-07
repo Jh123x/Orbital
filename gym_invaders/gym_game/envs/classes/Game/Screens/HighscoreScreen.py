@@ -32,6 +32,10 @@ class HighscoreScreen(Screen):
         #Draw the sprite
         self.draw()
 
+    def get_score(self) -> tuple:
+        """Get the scores on the leaderboard"""
+        return self.scores
+
     def update_score(self, name:str, score:int) -> None:
         """Update the new player's name and score into the score board
             Arguments:

@@ -56,7 +56,7 @@ def main() -> None:
     #AI Configs
     ai_config = all_cfg['AI']
     d['ai_model_path'] = form_abs_path(get_curr_path(), ai_config["model_path"])
-    d['ai_input_shape'] = eval(ai_config["input_shape"])
+    d['ai_input_shape'] = tuple(map(int, ai_config["input_shape"].split(',')))
 
     #Get the number of backgrounds
     bg_limit = len(d["background_img_paths"])

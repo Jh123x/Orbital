@@ -19,26 +19,6 @@ pygame.font.init()
 #Initialise the sound
 pygame.mixer.init()
 
-def get_curr_path():
-    """Get the path to the current file
-        Doesn't use __file__ directly as it does not work then the executable is frozen
-    """
-
-    #If the application is frozen
-    if getattr(sys, 'frozen', False):
-
-        #Get executable directory
-        datadir = sys.executable
-    
-    #Otherwise
-    else:
-        
-        #Use __file__ to get directory
-        datadir = __file__
-
-    #Return directory
-    return datadir
-
 async def load_AI_model(model_path, input_shape):
     """Load the AI_model"""
     #Load device to cuda
