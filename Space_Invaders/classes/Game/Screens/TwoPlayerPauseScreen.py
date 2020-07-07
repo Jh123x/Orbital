@@ -36,7 +36,7 @@ class TwoPlayerPauseScreen(Screen):
         self.write(Screen.end_font, WHITE, f"Player 2: {p2_score}", screen_width//4, first_pixel + self.screen_height//15, Direction.LEFT)
 
         #Draw the instructions to unpause
-        self.write(Screen.end_font, WHITE, "Press O to unpause", self.screen_width//4, first_pixel + self.screen_height//7.5, Direction.LEFT)
+        self.write(Screen.end_font, WHITE, "Press P to unpause", self.screen_width//4, first_pixel + self.screen_height//7.5, Direction.LEFT)
 
         #Draw the instructions to quit
         self.write(Screen.end_font, WHITE, "Escape to quit", self.screen_width//4, first_pixel + self.screen_height//5, Direction.LEFT)
@@ -57,7 +57,7 @@ class TwoPlayerPauseScreen(Screen):
         keys = pygame.key.get_pressed()
 
         #Return the play state if the player unpause his game
-        if keys[K_o]:
+        if keys[K_p]:
             TwoPlayerPauseScreen.played = False
             return self.prev
 

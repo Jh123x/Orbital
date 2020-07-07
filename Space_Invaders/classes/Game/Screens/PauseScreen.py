@@ -40,7 +40,7 @@ class PauseScreen(Screen):
         self.write(Screen.subtitle_font, WHITE, f"Score: {score}", self.screen_width//2, self.screen_height//2)
 
         #Draw the instructions to unpause
-        self.write(Screen.end_font, WHITE, "Press O to unpause", self.screen_width//2, self.screen_height//15 + self.screen_height//2)
+        self.write(Screen.end_font, WHITE, "Press P to unpause", self.screen_width//2, self.screen_height//15 + self.screen_height//2)
 
         #Draw the instructions to quit
         self.write(Screen.end_font, WHITE, "Escape to quit, score will not be saved", self.screen_width//2, self.screen_height//7.5 + self.screen_height//2)
@@ -61,7 +61,7 @@ class PauseScreen(Screen):
         keys = pygame.key.get_pressed()
 
         #Return the play state if the player unpause his game
-        if keys[K_o]:
+        if keys[K_p]:
             PauseScreen.played = False
             return self.previous_state
 

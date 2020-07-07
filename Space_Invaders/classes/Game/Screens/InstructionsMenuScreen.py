@@ -15,10 +15,10 @@ class InstructionsMenuScreen(Screen):
         first_px = self.screen_height//2
 
         #Draw the endless mode button
-        self.endless_instructions = self.write(Screen.end_font, WHITE, "Endless", self.screen_width//2, first_px)
+        self.endless_instructions = self.write(Screen.end_font, WHITE, "Singke Player Modes", self.screen_width//2, first_px)
 
         #Draw the PVP mode Instructions
-        self.pvp_instructions = self.write(Screen.end_font, WHITE, "Local PVP", self.screen_width//2, first_px + self.screen_height//15)
+        self.pvp_instructions = self.write(Screen.end_font, WHITE, "2 Player Modes", self.screen_width//2, first_px + self.screen_height//15)
 
         #Draw the back button
         self.back = self.write(Screen.end_font, WHITE, "Back", screen_width//2, screen_height//1.2)
