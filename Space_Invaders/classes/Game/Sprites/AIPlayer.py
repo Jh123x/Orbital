@@ -9,13 +9,12 @@ from ..ai_invader.agent import DQNAgent
 from ..ai_invader.model import DQNCNN
 from ..ai_invader.util import stack_frame,preprocess_frame
 
-def stack_frames(frames, state, is_new=False):
+def stack_frames(frames, state, input_shape:tuple, is_new=False):
     '''
     Function combine of utility functions to preprocess the frames
     '''
-    # print()
-    #Preprocess the frame
-    frame = preprocess_frame(state, (84,84))
+    #Preprocess the frame (Input shape needs to be processed to 1x2 tuple from 1x3)
+    frame = preprocess_frame(state, input_shape[1:])
 
     #Stack the frame
     frames = stack_frame(frames, frame, is_new)
@@ -27,7 +26,7 @@ class AIPlayer(Player):
     def __init__(self, sensitivity:int, game_width:int, game_height:int, initial_x:int, 
                     initial_y:int, init_life:int, fps:int, bullet_grp:pygame.sprite.Group(), 
                     bullet_direction:Direction, frames_per_action:int, 
-                    ai = True, debug:bool = False):
+                    ai_avail = True, debug:bool = False):
         """Constructor for the AI Player class"""
 
         #Call the superclass
@@ -39,23 +38,23 @@ class AIPlayer(Player):
         self.state = None
         self.screen = None
         self.cd = self.frames_per_action
-        self.ai = ai
-        INPUT_SHAPE = AIPlayer.input_shape
-        ACTION_SIZE = 6
-        SEED = 0
-        GAMMA = 0.99  # discount factor
-        BUFFER_SIZE = 10000  # replay buffer size
-        BATCH_SIZE = 64  # Update batch size
-        LR = 0.0001  # learning rate
-        TAU = 1e-3  # for soft update of target parameters
-        UPDATE_EVERY = 7  # how often to update the network
-        UPDATE_TARGET = 6 * BATCH_SIZE  # After which thershold replay to be started
-
+        
         #If ai is available
-        if ai:
+        if ai_avail:
+
+            #AI variables
+            ACTION_SIZE = 6
+            SEED = 0
+            GAMMA = 0.99  # discount factor
+            BUFFER_SIZE = 10000  # replay buffer size
+            BATCH_SIZE = 64  # Update batch size
+            LR = 0.0001  # learning rate
+            TAU = 1e-3  # for soft update of target parameters
+            UPDATE_EVERY = 7  # how often to update the network
+            UPDATE_TARGET = 6 * BATCH_SIZE  # After which thershold replay to be started
 
             #Load the Deep Q learning Agent
-            self.ai = DQNAgent(INPUT_SHAPE, ACTION_SIZE, SEED,  AIPlayer.device, BUFFER_SIZE, BATCH_SIZE, GAMMA, LR, TAU, UPDATE_EVERY, UPDATE_TARGET, DQNCNN)
+            self.ai = DQNAgent(AIPlayer.input_shape, ACTION_SIZE, SEED,  AIPlayer.device, BUFFER_SIZE, BATCH_SIZE, GAMMA, LR, TAU, UPDATE_EVERY, UPDATE_TARGET, DQNCNN)
 
             #Load the model
             self.ai.load_model(AIPlayer.ai_dic)
@@ -92,10 +91,10 @@ class AIPlayer(Player):
         if self.state is None:
 
             #Stack the first frame
-            self.state = stack_frames(None, self.get_space(screen), True)
+            self.state = stack_frames(None, self.get_space(screen), AIPlayer.input_shape, True)
 
         # updates the state of the game for the model
-        self.state = stack_frames(self.state,self.get_space(screen), False)
+        self.state = stack_frames(self.state,self.get_space(screen), AIPlayer.input_shape, False)
 
         #If the AI is still under cooldown
         if self.cd:

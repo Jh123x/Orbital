@@ -15,14 +15,6 @@ class AIPVPScreen(LocalPVPScreen):
         #Set the state to the correct state
         self.set_state(State.AI_VS)
 
-    def show_space(self):
-        """Show the space in a matplotlib diagram"""
-        screen = self.get_hitboxes_copy()
-        image_transp = pygame.surfarray.array3d(screen)
-        print(image_transp.shape)
-        plt.imshow(image_transp, interpolation='none')
-        plt.show()
-
     def spawn_players(self) -> None:
         """Spawn the players for the game"""
         #Spawn the first player
@@ -34,6 +26,14 @@ class AIPVPScreen(LocalPVPScreen):
 
         #Rotate the AI
         self.player2.rotate(180)
+
+    def update(self) -> None:
+        """Update the AI before calling superclass update"""
+        #Let the AI do a move
+        self.player2.action(self.get_hitboxes_copy())
+
+        #Call the superclass update
+        return super().update()
 
     def check_keypresses(self) -> bool:
         """Check the keys which are pressed
@@ -65,12 +65,3 @@ class AIPVPScreen(LocalPVPScreen):
         
         #Return False if they do not want to pause the game
         return False
-
-    def handle(self) -> State:
-        """Handles the drawing of the screen"""
-
-        #Let the AI do a move
-        self.player2.action(self.get_hitboxes_copy())
-
-        #Call the superclass handle
-        return super().handle()

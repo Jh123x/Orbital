@@ -16,6 +16,9 @@ class CoopScreen(LocalPVPScreen):
 
         #Set to the correct state
         self.set_state(State.COOP)
+
+        #Set the state of the enemy ship
+        self.enemies.set_state(self.state)
     
     def spawn_players(self) -> None:
         """Spawn the players"""

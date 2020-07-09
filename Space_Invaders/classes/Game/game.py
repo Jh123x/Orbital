@@ -155,6 +155,7 @@ class GameWindow(object):
         self.one_player_menu = OnePlayerModeScreen(game_width, game_height, self.main_screen, debug)
         self.tutorial = TutorialScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug)
         self.story_mode = StoryModeScreen(game_width, game_height, self.main_screen, debug)
+        self.ai_coop = AICoopScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.difficulty, 3, debug)
         self.victory = None
         self.newhighscore = None
         self.pause = None
@@ -176,7 +177,7 @@ class GameWindow(object):
             State.INSTRUCTIONS:self.instructions,
             State.PVP_INSTRUCTIONS: self.pvp_menu,
             State.TWO_PLAYER_MENU: self.two_player,
-            # State.AI_COOP: self.two_player,
+            State.AI_COOP: self.ai_coop,
             State.AI_VS: self.ai_vs,
             State.PVP: self.pvp,
             State.CLASSIC: self.classic,
@@ -201,7 +202,7 @@ class GameWindow(object):
             State.PVP_INSTRUCTIONS: self.pvp_menu.handle,
             State.PAUSE:self.handle_pause,
             State.TWO_PLAYER_MENU: self.two_player.handle,
-            State.AI_COOP: self.two_player.handle,
+            State.AI_COOP: self.ai_coop.handle,
             State.AI_VS: self.ai_vs.handle,
             State.PVP: self.pvp.handle,
             State.TWO_PLAYER_GAMEOVER:self.handle_two_player_gameover,
