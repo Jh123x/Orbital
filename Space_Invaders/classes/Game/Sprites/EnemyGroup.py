@@ -12,6 +12,10 @@ class EnemyShips(pygame.sprite.Group):
 
         self.state = state
 
+    def set_state(self, state:State) -> None:
+        """Set the state for the enemy ship"""
+        self.state = state
+
     def update(self) -> None:
         """Update all the mobs within the group
             Arguments:
@@ -21,7 +25,7 @@ class EnemyShips(pygame.sprite.Group):
         """
         if len(tuple(filter(lambda x: x.touch_edge(), self.sprites()))):
             for i in self.sprites():
-                if self.state != State.PVP:
+                if self.state not in [State.PVP, State.AI_VS]:
                     i.move_down(i.get_height()//4)
                 i.change_direction()
             

@@ -98,7 +98,7 @@ class HighscoreScreen(Screen):
                 No returns
         """
         #Reset the screen
-        super().reset()
+        super().reset_surface()
 
         #Start pixel to print the score
         start_px = 200

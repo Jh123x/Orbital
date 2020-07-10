@@ -8,17 +8,31 @@ import sys
 import os
 
 def get_curr_path():
+    """Get the path to the current file
+        Doesn't use __file__ directly as it does not work then the executable is frozen
+    """
+
+    #If the application is frozen
     if getattr(sys, 'frozen', False):
-        # The application is frozen
+
+        #Get executable directory
         datadir = sys.executable
+    
+    #Otherwise
     else:
-        # The application is not frozen
-        # Change this bit to match where you store your data files:
+
+        #Use __file__ to get directory
         datadir = __file__
+
+    #Return directory
     return datadir
 
+def map_dir(*args):
+    """Map the abs paths"""
+    return list_dir(form_abs_path(get_curr_path(), os.path.join(*args)))
+
 def main() -> None:
-    """The main function"""
+    """The main function to run the game"""
 
     #The path of the configuration file
     settings = "settings.cfg"
@@ -34,19 +48,23 @@ def main() -> None:
     d = load_all(("bullet_img_paths",), ("Bullet Sprites",), all_cfg, get_curr_path())
 
     #Load the other sprites
-    d["player_img_paths"] = list_dir(form_abs_path(get_curr_path(), "images/player"))
-    d["enemy_img_paths"] = list_dir(form_abs_path(get_curr_path(), "images/enemies"))
-    d["background_img_paths"] = list_dir(form_abs_path(get_curr_path(), "images/backgrounds"))
-    d["explosion_img_paths"] = list_dir(form_abs_path(get_curr_path(), "images/explosions"))
-    d["menu_music_paths"] = list_dir(form_abs_path(get_curr_path(),"sounds/menu_music"))
-    d["powerup_img_path"] = list_dir(form_abs_path(get_curr_path(),"images/powerups"))
-    d["mothership_img_path"] = list_dir(form_abs_path(get_curr_path(),"images/bosses/mothership"))
+    d["player_img_paths"] = map_dir("images","player")
+    d["enemy_img_paths"] = map_dir("images", "enemies")
+    d["background_img_paths"] = map_dir("images", "backgrounds")
+    d["explosion_img_paths"] = map_dir("images", "explosions")
+    d["menu_music_paths"] = map_dir("sounds", "menu_music")
+    d["powerup_img_path"] = map_dir("images", "powerups")
+    d["mothership_img_path"] = map_dir("images", "bosses", "mothership")
+    d["trophy_img_path"] = map_dir("images", "trophys")
+    d["scout_img_path"] = map_dir("images", "bosses", "scout")
+
+    #AI Configs
+    ai_config = all_cfg['AI']
+    d['ai_model_path'] = form_abs_path(get_curr_path(), ai_config["model_path"])
+    d['ai_input_shape'] = tuple(map(int, ai_config["input_shape"].split(',')))
 
     #Get the number of backgrounds
     bg_limit = len(d["background_img_paths"])
-    
-    #DBPath
-    db_path = form_abs_path(get_curr_path(),'data/test.db')
 
     #Sound
     sound_path = dict(zip(all_cfg["Sounds"].keys(),list(map(lambda x: form_abs_path(get_curr_path(), x), all_cfg["Sounds"].values()))))
@@ -59,7 +77,7 @@ def main() -> None:
             print(f"{k} : {v}")
 
     #Create the new game window with the configurations
-    game = GameWindow(**d, sound_path = sound_path, **config, db_path = db_path, bg_limit = bg_limit)
+    game = GameWindow(**d, sound_path = sound_path, **config, bg_limit = bg_limit)
 
     #Run the mainloop for the GameWindow
     game.mainloop()

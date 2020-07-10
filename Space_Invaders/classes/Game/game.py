@@ -4,8 +4,11 @@ import random
 import datetime
 import asyncio
 import time
-from pygame.locals import *
+import torch
+import os
+import sys
 from . import *
+from pygame.locals import *
 
 #Initialise pygame
 pygame.init()
@@ -15,6 +18,17 @@ pygame.font.init()
 
 #Initialise the sound
 pygame.mixer.init()
+
+async def load_AI_model(model_path, input_shape):
+    """Load the AI_model"""
+    #Load device to cuda
+    AIPlayer.device = 'cuda' if torch.cuda.is_available() else 'cpu'
+
+    #Store the input shape
+    AIPlayer.input_shape = input_shape
+
+    #Load the dictionary folder
+    AIPlayer.ai_dic = torch.load(model_path, map_location= AIPlayer.device)
 
 def load_sprites(obj_list:list, paths:list):
     """Load the sprites for each of the items in parallel"""
@@ -31,14 +45,15 @@ async def add_to_sprite(obj, sprite_path:str) -> None:
     for path in sprite_path:
         obj.sprites.append(pygame.image.load(path))
         
-async def load_sound(sound_path:str, settings:int, debug:bool) -> Sound:
+async def load_sound(sound_path:str, settings:int, volume:float, debug:bool) -> Sound:
     """Load the sound object"""
-    return Sound(dict(map(lambda x: (x[0], pygame.mixer.Sound(x[1])), sound_path.items())), bool(int(settings)), debug)
+    return Sound(dict(map(lambda x: (x[0], pygame.mixer.Sound(x[1])), sound_path.items())), bool(int(settings)), volume, debug)
 
 class GameWindow(object):
     def __init__(self, sensitivity:int, maxfps:int, game_width:int, game_height:int, icon_img_path:str, player_img_paths:tuple,
                  enemy_img_paths:tuple, bullet_img_paths:tuple, background_img_paths:tuple, explosion_img_paths:tuple, 
-                 db_path:str, sound_path:dict, bg_limit:int, menu_music_paths:tuple, powerup_img_path:tuple, mothership_img_path:tuple, wave:int = 1,  debug:bool = False):
+                 db_path:str, sound_path:dict, bg_limit:int, menu_music_paths:tuple, powerup_img_path:tuple, mothership_img_path:tuple, 
+                 trophy_img_path:tuple, ai_model_path:str, ai_input_shape:tuple, scout_img_path:tuple, wave:int = 1,  debug:bool = False):
         """The Main window
             Arguments:
                 Sensitivity: Sensitivity of controls (int)
@@ -68,6 +83,22 @@ class GameWindow(object):
                 get_state: Get the current state of the game
                 mainloop: Run the mainloop for the gamewindow
         """
+        #Load model in parallel
+        asyncio.run(load_AI_model(ai_model_path, ai_input_shape))
+
+        #Load sprites
+        load_sprites((Player, Bullet, EnemyShip, Background, Explosion, PowerUp, MotherShip, VictoryScreen, Scout), 
+                    (player_img_paths, bullet_img_paths, enemy_img_paths, background_img_paths, explosion_img_paths, powerup_img_path, mothership_img_path, trophy_img_path, scout_img_path))
+
+        #Store debug variable
+        self.debug = debug
+
+        #Load setting menu settings
+        self.settingsdb = SettingsDB(db_path)
+        self.settings_data = dict(map(lambda x: x[1:], self.settingsdb.fetch_all()))
+
+        #Load sounds
+        self.sound = asyncio.run(load_sound(sound_path, self.settings_data['music'], float(self.settings_data['volume']), self.debug))
 
         #Set the title
         pygame.display.set_caption("Space Invaders")
@@ -79,9 +110,8 @@ class GameWindow(object):
         #Set the dimensions
         self.main_screen = pygame.display.set_mode((game_width,game_height), pygame.DOUBLEBUF | pygame.HWSURFACE, 32)
 
-        #Initialise the pygame window
+        #Initialise the pygame vars
         self.clock = pygame.time.Clock()
-        self.debug = debug
         self.score = 0
         self.fps = maxfps
         self.sensitivity = sensitivity
@@ -97,20 +127,9 @@ class GameWindow(object):
         #Load the highscores
         self.score_board = ScoreBoard(db_path)
 
-        #Load setting menu settings
-        self.settingsdb = SettingsDB(db_path)
-        self.settings_data = dict(map(lambda x: x[1:], self.settingsdb.fetch_all()))
-
         #Set difficulty
         difficulty = int(self.settings_data['difficulty'])
         self.difficulty = Difficulty(difficulty if difficulty < 5 else 5)
-
-        #Load sprites
-        load_sprites((Player, Bullet, EnemyShip, Background, Explosion, PowerUp, MotherShip), 
-                    (player_img_paths, bullet_img_paths, enemy_img_paths, background_img_paths, explosion_img_paths, powerup_img_path, mothership_img_path))
-
-        #Load sounds
-        self.sound = asyncio.run(load_sound(sound_path,self.settings_data['music'],self.debug))
 
         #Load the sounds into the game
         pygame.mixer.music.load(menu_music_paths[0])
@@ -131,13 +150,44 @@ class GameWindow(object):
         self.classic = ClassicScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.difficulty, debug = self.debug)
         self.settings = SettingsScreen(game_width, game_height, self.main_screen, self.fps, self.sound, self.bg, self.difficulty, debug)
         self.coop = CoopScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.difficulty, 3,  debug)
-        self.ai_vs = AIPVPScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, 3,  debug)
-        # self.online = OnlinePVPScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, 3,  debug)
+        self.ai_vs = AIPVPScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, 3, debug)
+        self.online = OnlinePVPScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, 3,  debug)
+        self.one_player_menu = OnePlayerModeScreen(game_width, game_height, self.main_screen, debug)
+        self.tutorial = TutorialScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug)
+        self.story_mode = StoryModeScreen(game_width, game_height, self.main_screen, debug)
+        self.ai_coop = AICoopScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.difficulty, 3, debug)
+        self.victory = None
+        self.newhighscore = None
+        self.pause = None
+        self.pvp_gameover = None
+        self.game_over = None
 
         #Store the variables
         self.popup = None
         self.prev = State.NONE
         self.cooldown = self.fps/5
+
+        #Store the different screens in state
+        self.screens = {
+            State.MENU:self.menu,
+            State.PLAYMODE:self.play_menu,
+            State.PLAY:self.play,
+            State.HIGHSCORE:self.highscore,
+            State.INSTRUCTIONS_MENU: self.inst_menu,
+            State.INSTRUCTIONS:self.instructions,
+            State.PVP_INSTRUCTIONS: self.pvp_menu,
+            State.TWO_PLAYER_MENU: self.two_player,
+            State.AI_COOP: self.ai_coop,
+            State.AI_VS: self.ai_vs,
+            State.PVP: self.pvp,
+            State.CLASSIC: self.classic,
+            State.SETTINGS: self.settings,
+            State.COOP: self.coop,
+            # State.ONLINE: self.online,
+            State.TUTORIAL: self.tutorial,
+            State.ONE_PLAYER_MENU: self.one_player_menu,
+            State.STORY_MENU: self.story_mode
+        }
         
         #Store the different states the menu has
         self.states = {
@@ -152,7 +202,7 @@ class GameWindow(object):
             State.PVP_INSTRUCTIONS: self.pvp_menu.handle,
             State.PAUSE:self.handle_pause,
             State.TWO_PLAYER_MENU: self.two_player.handle,
-            State.AI_COOP: self.two_player.handle,
+            State.AI_COOP: self.ai_coop.handle,
             State.AI_VS: self.ai_vs.handle,
             State.PVP: self.pvp.handle,
             State.TWO_PLAYER_GAMEOVER:self.handle_two_player_gameover,
@@ -161,7 +211,11 @@ class GameWindow(object):
             State.SETTINGS: self.settings.handle,
             State.COOP: self.coop.handle,
             State.ONLINE: self.handle_online,
-            State.QUIT:self.__del__
+            State.QUIT:self.__del__,
+            State.TUTORIAL: self.tutorial.handle,
+            State.ONE_PLAYER_MENU: self.one_player_menu.handle,
+            State.VICTORY: self.handle_victory,
+            State.STORY_MENU: self.story_mode.handle
         }
 
         #Load sound state:
@@ -169,7 +223,6 @@ class GameWindow(object):
         
         #Initialise the music
         pygame.mixer.music.load(menu_music_paths[0])
-        
 
         #Play the music if sound is enabled
         if self.sound_state:
@@ -188,31 +241,38 @@ class GameWindow(object):
         PauseScreen.sound = self.sound
         GameoverScreen.sound = self.sound
         TwoPlayerGameoverScreen.sound = self.sound
+
+    def handle_victory(self) -> State:
+        """Handle the drawing of the victory screen"""
+        #Get the cleared stage
+        stage = self.screens[self.prev]
+
+        #Get the name of the stage cleared
+        cleared_stage = stage.get_stage_name()
+
+        #Reset the cleared stage
+        stage.reset()
+
+        #If there is no victory screen or it is a different victory screen
+        if not self.victory or self.victory.get_stage_name() != cleared_stage:
+            self.victory = VictoryScreen(self.game_width, self.game_height, self.main_screen, cleared_stage, self.sound)
+
+        #Handle the victory screen
+        return self.victory.handle()
+            
     
     def handle_online(self) -> State:
         """Handle the online game"""
-        self.popup = Popup(320, 40, "Under Construction", self.fps, self.game_width//2 - 80, self.game_height//2, self.main_screen,font = Screen.end_font, debug = self.debug)
-        # return self.online.handle()
-        return State.PLAYMODE
+        # self.popup = Popup(320, 40, "Under Construction", self.fps, self.game_width//2 - 80, self.game_height//2, self.main_screen,font = Screen.end_font, debug = self.debug)
+        #return State.PLAYMODE
+        return self.online.handle()
 
     def handle_two_player_pause(self) -> State:
         """Handle the PVP pause screen"""
 
         #Check based on previous state
-        if self.prev == State.PVP:
-            prev = State.PVP
-            prevs = self.pvp
-            scores = self.pvp.get_scores()
-        elif self.prev == State.COOP:
-            prev = State.COOP
-            prevs = self.coop
-            scores = self.coop.get_scores()
-        elif self.prev == State.AI_VS:
-            prev = State.AI_VS
-            prevs = self.ai_vs
-            scores = self.ai_vs.get_scores()
-        else:
-            assert False, f"{self.state}, cannot be paused"
+        prev_screen = self.screens[self.prev]
+        scores = self.screens[self.prev].get_scores()
 
         #Create the pause screen
         self.two_player_pause = TwoPlayerPauseScreen(self.game_width, self.game_height, self.main_screen, *scores, self.prev, self.debug)
@@ -224,12 +284,16 @@ class GameWindow(object):
         if state == State.MENU:
 
             #Reset the state
-            prevs.reset()
+            prev_screen.reset()
+
+            #Return menu state
             return state
 
         #If it goes back to the game
         elif state != State.TWO_PLAYER_PAUSE:
-            return prev
+
+            #Return previous state
+            return self.prev
 
         #Otherwise return the state
         return state
@@ -241,8 +305,10 @@ class GameWindow(object):
             Returns:
                 Returns the state the game is suppose to be in next (State)
         """
-        #Create the new highscore screen
-        self.newhighscore = NewhighscoreScreen(self.game_width, self.game_height, self.main_screen, self.play.get_score())
+
+        if not self.newhighscore or self.newhighscore.get_score() != self.play.get_score():
+            #Create the new highscore screen
+            self.newhighscore = NewhighscoreScreen(self.game_width, self.game_height, self.main_screen, self.play.get_score())
 
         #Get the next state
         state = self.newhighscore.handle()
@@ -263,6 +329,9 @@ class GameWindow(object):
             #Mark as highscore written
             self.written = True
 
+            #Reset play mode
+            self.play.reset()
+
         #Return the next state
         return state
 
@@ -275,41 +344,20 @@ class GameWindow(object):
         """
 
         #Get the correct score from the correct state
-        if self.prev == State.PLAY:
+        score = self.screens[self.prev].get_score()
 
-            #Set the score to the correct state
-            score = self.play.get_score()
-            
-        elif self.prev == State.CLASSIC:
-
-            #Set score to score from the correct state
-            score = self.classic.get_score()
-        
-        else:
-
-            #Assert false if the game mode is invalid
-            assert False, "Invalid game mode"
-
-        #Create the pause screen
-        self.pause = PauseScreen(self.game_width,self.game_height, self.main_screen, score, self.prev, self.debug)
+        #Create the pause screen if it is not already created
+        if not self.pause or self.pause.get_score() != score:
+            self.pause = PauseScreen(self.game_width,self.game_height, self.main_screen, score, self.prev, self.debug)
 
         #Handle the pause screen
         state = self.pause.handle()
 
         #If it is exiting out of the pause state
         if state != State.PAUSE and state != self.prev:
-
-            #If it is not going back to the play screen
-            if self.prev == State.PLAY and state != State.PLAY:
-
-                #Reset the play screen
-                self.play.reset()
-                
-            #If it is not going back to the classic screen
-            elif self.prev == State.CLASSIC and state != State.CLASSIC:
-
-                #Reset the classic screen
-                self.classic.reset()
+            
+            #Reset the screen
+            self.screens[self.prev].reset()
 
         #Return the next state
         return state
@@ -318,33 +366,12 @@ class GameWindow(object):
         """Handle the PVP gameover screen"""
 
         #Set variables based on previous state
-        if self.prev == State.PVP:
-            prev = State.PVP
-            pres = self.pvp
-            scores = self.pvp.get_scores()
+        prev_screen = self.screens[self.prev]
+        scores = prev_screen.get_scores()
 
-        elif self.prev == State.COOP:
-            prev = State.COOP
-            pres = self.coop
-            scores = self.coop.get_scores()
-
-        elif self.prev == State.AI_VS:
-            prev = State.AI_VS
-            pres = self.ai_vs
-            scores = self.ai_vs.get_scores()
-
-        elif self.prev == State.ONLINE:
-            prev = State.ONLINE
-            pres = self.online
-            scores = self.online.get_scores()
-
-        else:
-
-            #Invalid state to have gameover
-            assert False, f"{self.state}, cannot have gameover"
-
-        #Generate gameover screen
-        self.pvp_gameover = TwoPlayerGameoverScreen(self.game_width, self.game_height, self.main_screen, *scores)
+        #Generate gameover screen if it is not found
+        if not self.pvp_gameover or self.pvp_gameover.get_scores() != scores:
+            self.pvp_gameover = TwoPlayerGameoverScreen(self.game_width, self.game_height, self.main_screen, *scores)
 
         #Get next state
         state = self.pvp_gameover.handle()
@@ -353,7 +380,7 @@ class GameWindow(object):
         if state != State.TWO_PLAYER_GAMEOVER:
 
             #Reset the environment
-            pres.reset()
+            prev_screen.reset()
 
         #Return the state
         return state
@@ -391,10 +418,11 @@ class GameWindow(object):
                 self.play.reset()
 
         #If it is classic mode
-        elif self.prev == State.CLASSIC:
-
+        else:
+            score = self.screens[self.prev].get_score()
             #Create the gameover screen
-            self.game_over = GameoverScreen(self.game_width,self.game_height, self.main_screen, self.classic.get_score(), self.debug)
+            if not self.game_over or self.game_over.get_score() != score:
+                self.game_over = GameoverScreen(self.game_width,self.game_height, self.main_screen, score, self.debug)
 
             #Check the state given by gameover
             state = self.game_over.handle()
@@ -406,7 +434,7 @@ class GameWindow(object):
                 self.written = False
 
                 #Reset the play screen
-                self.classic.reset()
+                self.screens[self.prev].reset()
 
         #Return the state
         return state
@@ -534,6 +562,18 @@ class GameWindow(object):
             #Update popups
             self.popup.update()
 
+    def post_process(self):
+        """Do the post processing"""
+
+        #Get the screen it is using
+        screen = self.screens.get(self.state, None)
+
+        #Do post process for the screen
+        if screen:
+
+            #Call the post process method
+            screen.post_process()
+
     def mainloop(self) -> None:
         """The mainloop to load the screen of the game
             Arguments: 
@@ -564,6 +604,9 @@ class GameWindow(object):
             #Update the display with the screen
             pygame.display.update()
 
+            #Do post processes
+            self.post_process()
+
             #If the state is quit or player closes the game
             if self.state == State.QUIT or pygame.QUIT in tuple(map(lambda x: x.type, pygame.event.get())):
 
@@ -584,13 +627,14 @@ class GameWindow(object):
         #Add the new highscores into DB
         self.score_board.add_all(*self.highscore.get_scores())
 
-        #Remove all entries beyond 5
-        self.score_board.remove_all(*self.highscore.get_removed())
-
-        #Get the settings that was saved and save it to the DB
+        #Get the settings that was saved and save it to the Database
+        self.settingsdb.update('volume',str(self.settings.get_volume()))
         self.settingsdb.update('background',str(self.settings.get_bg_no()))
         self.settingsdb.update('music',int(self.settings.get_music_enabled()))
         self.settingsdb.update('difficulty', int(self.settings.get_difficulty_no()))
+
+        #Remove all entries beyond 5
+        self.score_board.remove_all(*self.highscore.get_removed())
 
         #Quit the game
         pygame.display.quit()

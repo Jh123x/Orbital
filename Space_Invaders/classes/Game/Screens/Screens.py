@@ -42,6 +42,13 @@ class Screen(BaseObject):
         #Create a surface with a transparent background
         self.reset_surface()
 
+    def post_process(self):
+        """Post processes after the screen updates 
+           Does nothing
+           Any process after updating the screen should be done here
+        """
+        pass
+
     def set_background(self, bg) -> None:
         """Update the background"""
         self.bg = bg
@@ -74,15 +81,6 @@ class Screen(BaseObject):
     def set_state(self, state:State):
         """Set the current state of the screen"""
         self.state = state
-
-    def reset(self) -> None:
-        """Resets the surface to transparent
-            Arguments:
-                No arguments
-            Returns: 
-                No returns
-        """
-        self.surface = pygame.Surface((self.screen_width, self.screen_height), pygame.SRCALPHA, 32)
     
     def handle(self) -> State:
         """Placeholder method to be overwritten

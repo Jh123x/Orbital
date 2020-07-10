@@ -136,9 +136,12 @@ class PyGame_2D(object):
         Returns the pixel space of the screen
         Performs preliminary Preprocessing by making values
         """
+
+        #load the hitbox
         self.state.draw_hitboxes()
-        space = pygame.surfarray.array3d(self.state.surface)
-        return space
+
+        #Returns the array
+        return pygame.surfarray.array3d(self.state.surface) 
 
     def show_space(self):
         """Show the space in a matplotlib diagram"""

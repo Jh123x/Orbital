@@ -27,7 +27,7 @@ class EnemyShip(MovingObject):
         """
 
         #Call the superclass
-        super().__init__(sensitivity, initial_x, initial_y, game_width, game_height, EnemyShip.sprites[lives-1 if lives < len(EnemyShip.sprites) else len(EnemyShip.sprites)-1], debug)
+        super().__init__(sensitivity, initial_x, initial_y, game_width, game_height, self.sprites[lives-1 if lives < len(EnemyShip.sprites) else len(EnemyShip.sprites)-1], debug)
 
         if self.debug:
             print(switch_direction)
@@ -41,6 +41,10 @@ class EnemyShip(MovingObject):
         self.direction = Direction.RIGHT
         self.points = 10 * self.lives
         self.bullet_grp = bullet_grp
+
+    def set_points(self, points:int) -> None:
+        """Set the points for the mob""" 
+        self.points = points
 
     def shoot(self, direction: Direction = Direction.DOWN):
         """Lets the mob shoot"""

@@ -18,57 +18,54 @@ class PlayModeScreen(Screen):
         self.header = self.write(Screen.title_font, WHITE, "Modes", self.screen_width//2, self.screen_height//5)
 
         #Draw the rectangles for the different game modes
-        #Rect for the classic mode
-        self.classic = self.write(Screen.end_font, WHITE, "Classic Mode", self.screen_width//2, first_pixel)
 
-        #Rectangle for the endless mode (Default)
-        self.play = self.write(Screen.end_font, WHITE, "Endless Mode", self.screen_width//2, first_pixel + self.screen_height//15)
+        #Rect for tutorial
+        tutorial = self.write(Screen.end_font, WHITE, "Tutorial", self.screen_width//2, first_pixel)
+
+        #Rect for the single player mode
+        one_player = self.write(Screen.end_font, WHITE, "1 Player modes", self.screen_width //2, first_pixel + self.screen_height//15)
 
         #2 Player mode (2 player mode menu)
-        self.two_player = self.write(Screen.end_font, WHITE, "2 Player Modes", self.screen_width//2, first_pixel + self.screen_height//7.5)
-
-        #Online mode (Online mode)
-        self.online = self.write(Screen.end_font, WHITE, "Online PVP", self.screen_width//2, first_pixel + self.screen_height//5)
+        two_player = self.write(Screen.end_font, WHITE, "2 Player Modes", self.screen_width//2, first_pixel + self.screen_height//7.5)
 
         #Back button
-        self.back = self.write(Screen.end_font, WHITE, "Back", self.screen_width // 2, self.screen_height//1.2)
+        back = self.write(Screen.end_font, WHITE, "Back", self.screen_width // 2, self.screen_height//1.2)
+
+        #Store all the buttons
+        self.buttons = [tutorial, one_player, two_player, back]
+        self.modes = [State.TUTORIAL, State.ONE_PLAYER_MENU, State.TWO_PLAYER_MENU, State.MENU]
 
     def check_mouse_clicks(self) -> State:
         """Check the button that the player pressed"""
 
-        #If the endless mode play button is pressed
-        if self.check_clicked(self.play):
+        #Check if any buttons were clicked
+        result = tuple(map(lambda x: self.check_clicked(x), self.buttons))
 
-            #Go to the play state
-            return State.PLAY
+        #Iterate through the clicks
+        for index, click in enumerate(result):
 
-        #If the two player mode is pressed, go to the 2 player mode
-        elif self.check_clicked(self.two_player):
+            #If anything was clicked
+            if click:
 
-            #Go to the two player mode menu
-            return State.TWO_PLAYER_MENU
-
-        #If the player press the back button
-        elif self.check_clicked(self.back):
-
-            #Go to the main menu after that
-            return State.MENU
-
-        elif self.check_clicked(self.classic):
-
-            #Go to the classic screen
-            return State.CLASSIC
-
-        elif self.check_clicked(self.online):
-
-            #Go to online screen
-            return State.ONLINE
+                #Return the corresponding mode
+                return self.modes[index]
 
         #Otherwise the player has not decided
         return False
 
     def check_keypresses(self) -> State:
         """Check the keyboard inputsof the user"""
+        #Check if any buttons were clicked
+        result = tuple(map(lambda x: self.check_clicked(x), self.buttons))
+
+        #Iterate through the clicks
+        for index, click in enumerate(result):
+
+            #If anything was clicked
+            if click:
+
+                #Return the corresponding mode
+                return self.modes[index]
 
         #Get the keypresses that the user pressed
         keys = pygame.key.get_pressed()
