@@ -51,6 +51,7 @@ class PlayScreen(Screen):
         self.mob_bullet = pygame.sprite.Group()
 
         #Enemyships
+        self.other_enemies = pygame.sprite.Group()
         self.enemies = EnemyShips(self.state)
 
         #Blocks
@@ -93,9 +94,6 @@ class PlayScreen(Screen):
         #Reset powerup number
         self.powerup_numbers = 0
 
-        #Reset no mothership
-        self.mothership = None
-
         #Store mothership cooldown
         self.ms_cooldown = 0
 
@@ -113,6 +111,7 @@ class PlayScreen(Screen):
         self.player1_bullet.empty()
         self.mob_bullet.empty()
         self.enemies.empty()
+        self.other_enemies.empty()
         self.explosions.empty()
         self.blocks.empty()
         self.powerups.empty()
@@ -249,6 +248,10 @@ class PlayScreen(Screen):
             c = (sprite.get_lives())*3
             pygame.draw.rect(screen, (200,5*c,5*c), sprite.rect, 0)
 
+        #Draw the hitbox for the bosses
+        for sprite in self.other_enemies:
+            pygame.draw.rect(screen, (150,150,150), sprite.rect, 0)
+
         #Draw hitbox for the bullets
         for sprite in self.player1_bullet:
             pygame.draw.rect(screen, (100,255,0), sprite.rect, 0)
@@ -257,12 +260,6 @@ class PlayScreen(Screen):
 
         #Draw the hitbox for the player
         pygame.draw.rect(screen, (55,255,10*self.player1.get_lives()), self.player1.rect, 0)
-
-        #If mothership exists
-        if self.mothership:
-            
-            #Draw the hitbox for the mothership
-            pygame.draw.rect(screen, (5, 50, 5), self.mothership.rect, 0)
 
         #Draw for powerups
         for p_up in self.powerups:
@@ -299,14 +296,11 @@ class PlayScreen(Screen):
         #Update the enemy group
         self.enemies.update()
 
+        #Update the other sprites group
+        self.other_enemies.update()
+
         #Attempts to spawn the mothership
         self.randomly_spawn_mothership()
-
-        #If mothership exists
-        if self.mothership:
-
-            #Update the mothership
-            self.mothership.update()
 
         #Update the explosions group
         self.explosions.update()
@@ -340,9 +334,8 @@ class PlayScreen(Screen):
         #Draw the enemy
         self.enemies.draw(self.surface)
 
-        #Print debug message
-        if self.debug:
-            print(f"Number of enemies: {len(self.enemies)}")
+        #Draw the other_mobs
+        self.other_enemies.draw(self.surface)
 
         #Draw the explosions
         self.explosions.draw(self.surface)
@@ -352,12 +345,6 @@ class PlayScreen(Screen):
 
         #Draw the block
         self.blocks.draw(self.screen)
-
-        #If the mothership exists
-        if self.mothership:
-
-            #Draw the mothership
-            self.mothership.draw(self.surface)
 
         #Uncomment this to draw the hitbox instead
         # self.draw_hitboxes()
@@ -416,6 +403,36 @@ class PlayScreen(Screen):
             pygame.sprite.groupcollide(self.player1_bullet, self.blocks, True, True)
             pygame.sprite.groupcollide(self.blocks, self.mob_bullet, True, True)
 
+    def check_other_mob_collision(self) -> int:
+        """Check collisions for special mobs"""
+        
+        #Get list of ships collided
+        sprites = list(pygame.sprite.groupcollide(self.player1_bullet, self.other_enemies, True, False).values())
+
+        #If there are ships
+        if sprites:
+
+            #Get the first ship
+            ship = sprites[0][0]
+
+            #Destroy the ship 1 time
+            ship.destroy()
+
+            #Remove the ship from groupp if it has 0 lives
+            if ship.is_destroyed():
+
+                #Spawn an explosion in its place
+                self.spawn_explosion(ship.get_x(), ship.get_y())
+
+                #Remove ship from all groups
+                ship.kill()
+
+                #Return the points of the ship
+                return ship.get_points()
+
+        #return 0 score
+        return 0
+
     def check_collisions(self) -> int:
         """Check the objects which collided
             Arguments:
@@ -451,12 +468,8 @@ class PlayScreen(Screen):
         #Get list of ships destroyed
         ships = list(pygame.sprite.groupcollide(self.player1_bullet, self.enemies, True, False).values())
 
-        #Print debug message
-        if self.debug:
-            print(ships)
-
         #Initialise score
-        score = 0
+        score = self.check_other_mob_collision()
 
         #If the list of collision is non-empty
         if ships:
@@ -497,16 +510,7 @@ class PlayScreen(Screen):
                 #Remove sprites that collide with bullets and return the sum of all the scores
                 score = ship.get_points()
 
-        #Check if ship has collided with bullets
-        if self.mothership and len(pygame.sprite.spritecollide(self.mothership, self.player1_bullet, True)) > 0:
-
-            #Get points of mothership and add it to score
-            score += self.mothership.get_points()
-
-            #If so delete the mothership
-            self.mothership = None
-
-        #If nothing is destroyed return 0 points
+        #Add score to player score
         self.p1_score += score
 
     def spawn_explosion(self, x:int, y:int) -> None:
@@ -524,7 +528,11 @@ class PlayScreen(Screen):
         #Increase the number of powerups
         self.powerup_numbers += 1
 
-    def spawn_enemies(self, number:int) -> None:
+    def spawn_scout(self) -> None:
+        """Spawn the scout unit"""
+        self.other_enemies.add(Scout(self.sensitivity, self.screen_width//4 + self.screen_width//10, self.screen_height//10, 1,  self.screen_width, self.screen_height, self.mob_bullet, self.debug))
+
+    def spawn_enemies(self, number:int, has_Scout = False) -> None:
         """Spawn enemies into the game
             Arguments: 
                 number: Number of enemies to spawn (int)
@@ -532,6 +540,10 @@ class PlayScreen(Screen):
                 No returns
         """
 
+        #Spawn the scout if condition is met
+        if has_Scout:
+            self.spawn_scout()
+        
         #Make the enemies into rows of 6
         for j in range(number//6 if number // 6 < 5 else 5):
             self.enemies.add([EnemyShip(self.sensitivity, self.screen_width//4 + i*self.screen_width//10, self.screen_height//10 + EnemyShip.sprites[0].get_height() * j, self.wave_random(), self.screen_width,  self.screen_height, Direction.DOWN, self.mob_bullet, self.debug) for i in range(6)])
@@ -543,7 +555,7 @@ class PlayScreen(Screen):
         if not self.ms_cooldown and self.generate_random_no() < 1/900:
             
             #Create the mothership
-            self.mothership = MotherShip(0, 50, self.screen_width, self.screen_height, 500)
+            self.other_enemies.add(MotherShip(0, 50, self.screen_width, self.screen_height, 500))
 
             #Set the cooldown for the mothership
             self.ms_cooldown = self.fps * 3
@@ -557,18 +569,13 @@ class PlayScreen(Screen):
             #Reduce cooldown by 1
             self.ms_cooldown -= 1
 
-        #If it is not on cooldown and mothership still exists
-        elif not self.ms_cooldown and self.mothership:
-
-            #Set mothership to None
-            self.mothership = None
-
         #return False if a mothership does not spawn
         return False
 
     def enemy_touched_bottom(self) -> bool:
         """Check if enemy touched the bottom of the screen"""
-        return any(filter(lambda x: (x.get_y() + x.get_height()//2) > (self.screen_height - self.player1.get_height() - 100), self.enemies))
+        return any(filter(lambda x: (x.get_y() + x.get_height()//2) > (self.screen_height - self.player1.get_height() - 100), self.enemies)) or \
+                any(filter(lambda x: (x.get_y() + x.get_height()//2) > (self.screen_height - self.player1.get_height() - 100), self.other_enemies))
 
     def is_over(self) -> bool:
         """Checks if the game is over"""
@@ -643,7 +650,7 @@ class PlayScreen(Screen):
             self.power_up_numbers = 0
 
             #Spawn the aliens
-            self.spawn_enemies(int(6 * self.wave))
+            self.spawn_enemies(int(6 * self.wave), self.wave % 10 == 0)
 
         #Check object collisions
         self.check_collisions()

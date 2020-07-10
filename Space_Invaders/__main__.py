@@ -27,6 +27,10 @@ def get_curr_path():
     #Return directory
     return datadir
 
+def map_dir(*args):
+    """Map the abs paths"""
+    return list_dir(form_abs_path(get_curr_path(), os.path.join(*args)))
+
 def main() -> None:
     """The main function to run the game"""
 
@@ -44,14 +48,15 @@ def main() -> None:
     d = load_all(("bullet_img_paths",), ("Bullet Sprites",), all_cfg, get_curr_path())
 
     #Load the other sprites
-    d["player_img_paths"] = list_dir(form_abs_path(get_curr_path(), os.path.join("images","player")))
-    d["enemy_img_paths"] = list_dir(form_abs_path(get_curr_path(), os.path.join("images", "enemies")))
-    d["background_img_paths"] = list_dir(form_abs_path(get_curr_path(), os.path.join("images", "backgrounds")))
-    d["explosion_img_paths"] = list_dir(form_abs_path(get_curr_path(), os.path.join("images", "explosions")))
-    d["menu_music_paths"] = list_dir(form_abs_path(get_curr_path(), os.path.join("sounds", "menu_music")))
-    d["powerup_img_path"] = list_dir(form_abs_path(get_curr_path(), os.path.join("images", "powerups")))
-    d["mothership_img_path"] = list_dir(form_abs_path(get_curr_path(), os.path.join("images", "bosses", "mothership")))
-    d["trophy_img_path"] = list_dir(form_abs_path(get_curr_path(), os.path.join("images", "trophys")))
+    d["player_img_paths"] = map_dir("images","player")
+    d["enemy_img_paths"] = map_dir("images", "enemies")
+    d["background_img_paths"] = map_dir("images", "backgrounds")
+    d["explosion_img_paths"] = map_dir("images", "explosions")
+    d["menu_music_paths"] = map_dir("sounds", "menu_music")
+    d["powerup_img_path"] = map_dir("images", "powerups")
+    d["mothership_img_path"] = map_dir("images", "bosses", "mothership")
+    d["trophy_img_path"] = map_dir("images", "trophys")
+    d["scout_img_path"] = map_dir("images", "bosses", "scout")
 
     #AI Configs
     ai_config = all_cfg['AI']

@@ -15,6 +15,10 @@ class ClassicScreen(PlayScreen):
         #Change the state to classic
         self.state = State.CLASSIC
 
+    def spawn_scout(self, *args):
+        """Overridden spawn scout class"""
+        return
+
     def reset(self) -> None:
         """Reset the classic screen"""
         #Call superclass reset

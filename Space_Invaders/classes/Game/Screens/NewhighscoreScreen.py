@@ -29,6 +29,18 @@ class NewhighscoreScreen(Screen):
 
         #Define new variables
         self.score = score
+
+        #Start pixel to start drawing
+        start_px = 100
+
+        #Tell the user he has a new high score
+        self.write(self.title_font, WHITE, f"NEW HIGH SCORE", self.screen_width//2, start_px)
+
+        #Write the score the user got
+        self.write(self.end_font, WHITE, f"Score: {self.score}", self.screen_width//2, start_px + self.screen_height // 10)
+
+        #Tell the user to key in his name
+        self.write(self.font, WHITE, f"Please enter your name and press enter", self.screen_width//2, start_px + self.screen_height//5)
         
         #Draw the sprites
         self.draw()
@@ -54,15 +66,6 @@ class NewhighscoreScreen(Screen):
             Return: 
                 No return
         """
-
-        #Start pixel to start drawing
-        start_px = 100
-
-        #Tell the user he has a new high score
-        self.write(self.title_font, WHITE, f"NEW HIGH SCORE {self.score}", self.screen_width//2, start_px)
-
-        #Tell the user to key in his name
-        self.write(self.font, WHITE, f"Please enter your name and press enter", self.screen_width//2, start_px + self.screen_height//10)
 
         #Draw the inputbox
         NewhighscoreScreen.inputbox.blit(self.screen)

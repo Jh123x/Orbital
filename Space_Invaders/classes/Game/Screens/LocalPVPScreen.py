@@ -29,7 +29,11 @@ class LocalPVPScreen(PlayScreen):
 
     def randomly_spawn_mothership(self) -> None:
         """Do not spawn any motherships for 2 players"""
-        pass
+        return
+
+    def spawn_scout(self, *args):
+        """Do not spawn scout class"""
+        return
 
     def spawn_players(self) -> None:
         """Create the players variables"""
