@@ -212,4 +212,4 @@ def survival_of_fittest(action_space, num_agents, input_dim, top_k, generations)
 
 #Start evolution
 ag = survival_of_fittest(game_actions,num_agents,input_shape,elites,generations)
-torch.save(ag, os.path.join("obj","gene_algo","survival.pth"))
+

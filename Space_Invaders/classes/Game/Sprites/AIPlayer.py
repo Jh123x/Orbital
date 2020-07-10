@@ -90,7 +90,6 @@ class AIPlayer(Player):
         # updates the state of the game for the model
 
         self.state = stack_frames(self.state,self.get_space(), False)
-        #print('hi')
         #If the AI is still under cooldown
         if self.cd:
 
