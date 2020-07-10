@@ -2,10 +2,10 @@ import pygame
 import random
 import time
 from pygame.locals import *
-from . import Screen, PlayScreen
+from . import Screen, ClassicScreen
 from .. import *
 
-class LocalPVPScreen(PlayScreen):
+class LocalPVPScreen(ClassicScreen):
     def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, fps:int, player_lives:int = 3, debug:bool = False):
         """Constructor for local PVP class"""
 
@@ -13,7 +13,7 @@ class LocalPVPScreen(PlayScreen):
         self.player2_bullet = pygame.sprite.Group()
 
         #Call the super class Screen object
-        super().__init__(screen_width, screen_height, screen, sensitivity, fps, Difficulty(3), 1, player_lives, 0, debug)
+        super().__init__(screen_width, screen_height, screen, sensitivity, fps, Difficulty(3), 1, player_lives, debug)
 
         #Set current state
         self.set_state(State.PVP)
@@ -63,6 +63,9 @@ class LocalPVPScreen(PlayScreen):
 
         #Call the superclass
         super().reset()
+
+        #Empty block grp
+        self.blocks.empty()
 
     def spawn_enemies(self, number:int = None) -> None:
         """Spawn enemies into the game, Ignore numbers
@@ -153,6 +156,10 @@ class LocalPVPScreen(PlayScreen):
 
         #Call the superclass update
         super().update()
+
+    def randomly_spawn_mothership(self):
+        """Do not spawn mothership"""
+        pass
 
     def check_player_mob_collision(self, player_bullet):
         #Check collision of mobs with player 1 bullet
