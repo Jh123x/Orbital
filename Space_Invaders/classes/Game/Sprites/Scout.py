@@ -13,7 +13,7 @@ class Scout(EnemyShip):
         self.delta_y = self.sensitivity//2
 
         #Set the score for the scout
-        self.set_points(1000)
+        self.set_points(500)
 
     def update(self) -> None:
         """Overridden update class for the scout boss"""
@@ -23,6 +23,17 @@ class Scout(EnemyShip):
             
             #Change x direction
             self.delta_x = -self.delta_x
+
+            #Check if it is time to switch direction
+            if self.delta_x > 0:
+
+                #Change the image to face the right
+                self.image = Scout.sprites[0]
+
+            else:
+
+                #Change the image to face the left
+                self.image = Scout.sprites[1]
 
         #Update the position of the ship
         self.move(self.delta_x, self.delta_y)
