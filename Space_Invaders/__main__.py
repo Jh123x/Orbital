@@ -59,6 +59,7 @@ def main() -> None:
     d["mothership_img_path"] = map_dir("images", "bosses", "mothership")
     d["trophy_img_path"] = map_dir("images", "trophys")
     d["scout_img_path"] = map_dir("images", "bosses", "scout")
+    d["brute_img_path"] = map_dir("images", "bosses", "brute")
 
     #AI Configs
     ai_config = all_cfg['AI']
