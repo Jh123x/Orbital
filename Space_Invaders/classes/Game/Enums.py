@@ -2,11 +2,15 @@ import enum
 
 class Direction(enum.Enum):
     """Direction enum to store where objects are moving"""
-    UP = 1
-    DOWN = -1
-    LEFT = -2
-    RIGHT = 2
-    CENTER = 0
+    UP = (0, -1)
+    DOWN = (0, 1)
+    LEFT = (-1, 0)
+    RIGHT = (1, 0)
+    CENTER = (0, 0)
+    TOP_RIGHT = (1, -1)
+    TOP_LEFT = (-1, -1)
+    BOTTOM_LEFT = (-1, 1)
+    BOTTOM_RIGHT = (1, 1)
 
 class State(enum.Enum):
     """State enum to keep track of the state of the game"""
