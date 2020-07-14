@@ -17,6 +17,9 @@ Windows version is more updated
 * Download Link: [Mac](https://drive.google.com/file/d/1iaOJq8udqXCtAyodes7kMmCAVzpx6xyb/view?usp=sharing)
 Link for Mac require you to turn of security for unknown developers
 
+* Feedback Link: [here](https://forms.gle/kibPWXRtb1x3JJvT9)
+Click here to provide any feedback you want to share
+
 ### Objectives:
 1. Make a Space invaders game
 2. Make use of AI to play the game decently.
