@@ -23,23 +23,22 @@ Link for Mac require you to turn of security for unknown developers
 3. Combine them together for more immersive gameplay experience
 
 ### Tech Stack
-Technical stack:
-  1. Gameplay and Graphics
-    - Pygame: Used for making the game and the animations
-  2. AI and Data Science Technologies
-    - Gym: For making the AI agent for the game
-    - Pytorch: Provides the Neural Network Infrastructure
-    - Numpy: Fast Array Computation
-    - Matplotlib: Visualising Data and Debugging
-    - OpenCV 2: Image Preprocessing and video playback
-  3. Optimisation Technologies
-    - Multiprocessing and Asyncio: Running stuff in parallel to make them faster
-    - Sockets and pickle: For sending data across the network
-    - Sqlite3: For storing items in the databases
-  4. Software Engineering
-    - PyUnit: For unit tests
-    - Logging: For logging for data
-    - cx_Freeze: Compilation of python to executable
+1. Gameplay and Graphics
+  - Pygame: Used for making the game and the animations
+2. AI and Data Science Technologies
+  - Gym: For making the AI agent for the game
+  - Pytorch: Provides the Neural Network Infrastructure
+  - Numpy: Fast Array Computation
+  - Matplotlib: Visualising Data and Debugging
+  - OpenCV 2: Image Preprocessing and video playback
+3. Optimisation Technologies
+  - Multiprocessing and Asyncio: Running stuff in parallel to make them faster
+  - Sockets and pickle: For sending data across the network
+  - Sqlite3: For storing items in the databases
+4. Software Engineering
+  - PyUnit: For unit tests
+  - Logging: For logging for data
+  - cx_Freeze: Compilation of python to executable
 
 
 ### Development RoadMap
