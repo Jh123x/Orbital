@@ -107,5 +107,10 @@ class NewhighscoreScreen(Screen):
         #Update the surface
         self.update()
 
+        #Check if the player wants to pause or quit
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return State.QUIT
+
         #Return the Current game state
         return State.NEWHIGHSCORE

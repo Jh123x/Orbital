@@ -27,7 +27,7 @@ class EnemyShip(MovingObject):
         """
 
         #Call the superclass
-        super().__init__(sensitivity, initial_x, initial_y, game_width, game_height, self.sprites[lives-1 if lives < len(EnemyShip.sprites) else len(EnemyShip.sprites)-1], debug)
+        super().__init__(sensitivity, initial_x, initial_y, game_width, game_height, self.sprites[lives-1 if lives <= len(self.sprites) else len(self.sprites)-1], debug)
 
         if self.debug:
             print(switch_direction)
@@ -118,7 +118,7 @@ class EnemyShip(MovingObject):
         elif self.direction == Direction.LEFT:
             self.direction = Direction.RIGHT
         else:
-            assert False, "Enemy ship direction is invalid"
+            return
 
     def touch_edge(self) -> bool:
         """If it is touching the edge"""

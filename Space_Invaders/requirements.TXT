@@ -1,5 +1,6 @@
-pygame==2.0.0.dev6
 numpy==1.18.5
-opencv_python==4.2.0.34
+torch==1.5.0
 matplotlib==3.2.1
-main==0.1
+pygame==2.0.0.dev6
+opencv_python==4.2.0.34
+scipy==1.4.1

@@ -93,7 +93,7 @@ class SettingsDB(Database):
         #Create the table if it does not exist
         self.execute("CREATE TABLE IF NOT EXISTS settings (id INTEGER, name TEXT, settings TEXT)")
 
-        #get the count of tables with the name
+        #Get the count of tables with the name
         self.execute(''' SELECT count(name) FROM sqlite_master WHERE type='table' AND name='settings' ''')
         bo = self.cursor.fetchone()[0]
         if bo == 0:

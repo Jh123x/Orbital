@@ -62,17 +62,65 @@ class PlayScreen(ClassicScreen):
         #Draw the powerups
         self.powerups.draw(self.screen)
 
+    def get_random_boss(self) -> EnemyShip or None:
+        """Get a random enemy"""
+
+        #Generate list of enemies other than mothership
+        lst = tuple(filter(lambda x: type(x) != MotherShip, self.other_enemies))
+        if lst:
+            return lst[int(self.generate_random_no()* (len(lst)-1))]
+        else:
+            return None
+
+    def spawn_enemy_bullets(self) -> None:
+        """Endless mode spawn bullets
+            To account for the brute and scout bullets
+        """
+
+        #Get a random boss
+        boss = self.get_random_boss()
+
+        #If there are other enemies
+        if boss:
+
+            #Scale random according to fps
+            rand = self.generate_random_no()*self.fps*4
+
+            #If rand <= 5
+            if rand <= 3:
+
+                #Let the boss shoot
+                boss.shoot()
+
+        return super().spawn_enemy_bullets()
+
     def spawn_enemies(self, number):
         #Spawn the scout if condition is met
         self.spawn_scout()
 
+        #Spawn brute if the conditions are met
+        self.spawn_brute()
+
         #Call the superclass to spawn enemies
         super().spawn_enemies(number)
+
+    def spawn_brute(self):
+        """Spawn a brute if the conditions are met"""
+
+        #Spawn the brute every wave
+        if self.wave % 10 == 0:
+
+            #Add the brute to the other enemies group
+            self.other_enemies.add(Brute(self.sensitivity, self.generate_random_no() * self.screen_width, self.screen_height//10, self.screen_width, self.screen_height, self.mob_bullet, self.debug))
+            
 
     def spawn_scout(self) -> None:
         """Spawn the scout unit"""
 
-        if self.wave % 2 == 0:
+        #Spawn the scout ever 5 waves
+        if self.wave % 5 == 0:
+
+            #Add the scout to the other enemies grp
             self.other_enemies.add(Scout(self.sensitivity, self.screen_width//4 + self.screen_width//10, self.screen_height//10, 1,  self.screen_width, self.screen_height, self.mob_bullet, self.debug))
 
     def spawn_powerups(self, x:int, y:int) -> None:
@@ -139,8 +187,11 @@ class PlayScreen(ClassicScreen):
 
     def draw_sprites(self) -> None:
         """Draw sprites for the play screen"""
+
+        #Draw the powerup on the screen
         self.powerups.draw(self.screen)
 
+        #Draw the other sprites using the superclass
         return super().draw_sprites()
 
     def reset(self) -> None:
@@ -154,5 +205,5 @@ class PlayScreen(ClassicScreen):
         #Empty powerup group
         self.powerups.empty()
 
-        #Reset the blocks
+        #Reset the blocks from classic mode
         self.blocks.empty()

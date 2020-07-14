@@ -23,7 +23,6 @@ def get_curr_path():
 
         #Use __file__ to get directory
         datadir = __file__
-
     #Return directory
     return datadir
 
@@ -47,6 +46,9 @@ def main() -> None:
     #Load all
     d = load_all(("bullet_img_paths",), ("Bullet Sprites",), all_cfg, get_curr_path())
 
+    #load soundpath
+    config['db_path'] = form_abs_path(get_curr_path(), config['db_path'])
+
     #Load the other sprites
     d["player_img_paths"] = map_dir("images","player")
     d["enemy_img_paths"] = map_dir("images", "enemies")
@@ -57,6 +59,7 @@ def main() -> None:
     d["mothership_img_path"] = map_dir("images", "bosses", "mothership")
     d["trophy_img_path"] = map_dir("images", "trophys")
     d["scout_img_path"] = map_dir("images", "bosses", "scout")
+    d["brute_img_path"] = map_dir("images", "bosses", "brute")
 
     #AI Configs
     ai_config = all_cfg['AI']

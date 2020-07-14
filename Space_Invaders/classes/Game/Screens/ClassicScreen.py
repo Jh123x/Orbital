@@ -311,7 +311,7 @@ class ClassicScreen(Screen):
 
     def get_random_enemy(self) -> EnemyShip:
         """Get a random enemy"""
-        lst = list(self.enemies)
+        lst = tuple(self.enemies)
         return lst[int(self.generate_random_no()* (len(lst)-1))]
 
     def check_block_collision(self):
