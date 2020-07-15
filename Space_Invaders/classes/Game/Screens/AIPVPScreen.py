@@ -1,6 +1,6 @@
 import pygame
-from pygame.locals import *
 import matplotlib.pyplot as plt
+from pygame.locals import *
 from . import LocalPVPScreen
 from .. import AIPlayer, State, Player, Direction
 

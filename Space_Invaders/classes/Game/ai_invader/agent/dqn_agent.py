@@ -1,10 +1,8 @@
-import numpy.random as rand
-import torch.nn.functional as F
-import torch.optim as optim
 import random
 import torch
 import numpy as np
-from ..util.memory import *
+import numpy.random as rand
+from .. import ReplayMemory
 
 class DQNAgent():
     def __init__(self, input_shape, action_size, seed, device, buffer_size, batch_size,
@@ -38,7 +36,7 @@ class DQNAgent():
         # Q-Network
         self.policy_net = self.DQN(input_shape, action_size).to(self.device)
         self.target_net = self.DQN(input_shape, action_size).to(self.device)
-        self.optimiser = optim.RMSprop(self.policy_net.parameters(), lr=self.alpha)
+        self.optimiser = torch.optim.RMSprop(self.policy_net.parameters(), lr=self.alpha)
         # Replay Memory
         self.memory = ReplayMemory(self.buffer_size, self.batch_size, self.seed, self.device)
         # Timestep
@@ -97,7 +95,7 @@ class DQNAgent():
         Q_target = reward + (self.gamma * Q_target_next * (1 - done))
 
         # Compute Loss
-        loss = F.mse_loss(Q_expt, Q_target)
+        loss = torch.nn.functional.mse_loss(Q_expt, Q_target)
 
         # Minimize loss
         self.optimiser.zero_grad()

@@ -170,6 +170,13 @@ class CoopScreen(PlayScreen):
 
         #Return with the points the player got
         return pts
+    
+    def check_block_collision(self) -> None:
+        """Check collisions with blocks"""
+        #Check if the players or the enemies shot the blocks
+        pygame.sprite.groupcollide(self.player1_bullet, self.blocks, True, True)
+        pygame.sprite.groupcollide(self.blocks, self.mob_bullet, True, True)
+        pygame.sprite.groupcollide(self.player2_bullet, self.blocks, True, True)
 
     def check_collisions(self) -> None:
         """Check collisions method for Coop"""
@@ -190,6 +197,9 @@ class CoopScreen(PlayScreen):
 
         #Check collision of mobs with player 2 bullet
         self.p2_score += self.check_player_mob_collision(self.player2_bullet)
+
+        #Check block collisions
+        self.check_block_collision()
 
     def check_powerup_collision(self):
         """Check the collisions of the powerups"""

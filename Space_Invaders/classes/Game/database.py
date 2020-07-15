@@ -104,7 +104,7 @@ class SettingsDB(Database):
     def add(self, name:str, setting:str) -> None:
         """Add the settings to the table"""
         #Insert the element into the table
-        print(self.execute('INSERT INTO settings VALUES(?, ?, ?)', (None, name, setting)))
+        self.execute('INSERT INTO settings VALUES(?, ?, ?)', (None, name, setting))
 
         #Mark the database as changed
         self.changed = True

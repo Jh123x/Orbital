@@ -2,25 +2,8 @@ import os
 import random
 import pygame
 import numpy as np
-import matplotlib.pyplot as plt
 from . import Player, Bullet
-from .. import Direction
-from ..ai_invader.agent import DQNAgent
-from ..ai_invader.model import DQNCNN
-from ..ai_invader.util import stack_frame,preprocess_frame
-
-def stack_frames(frames, state, input_shape:tuple, is_new=False):
-    '''
-    Function combine of utility functions to preprocess the frames
-    '''
-    #Preprocess the frame (Input shape needs to be processed to 1x2 tuple from 1x3)
-    frame = preprocess_frame(state, input_shape[1:])
-
-    #Stack the frame
-    frames = stack_frame(frames, frame, is_new)
-
-    #Return stacked frames
-    return frames
+from .. import Direction, DQNAgent, DQNCNN, stack_frame, preprocess_frame
 
 class AIPlayer(Player):
     def __init__(self, sensitivity:int, game_width:int, game_height:int, initial_x:int, 
@@ -71,30 +54,28 @@ class AIPlayer(Player):
         #Return the matrix of rgb
         return img
 
-    def show_space(self, screen):
-        """Show the space in a matplotlib diagram"""
-        image_transp = self.get_space(screen)
-        print(image_transp.shape)
-        plt.imshow(image_transp, interpolation='none')
-        plt.show()
+    def stack_frames(self, screen):
+        '''
+        Function combine of utility functions to preprocess the frames
+        '''
+        #Preprocess the frame (Input shape needs to be processed to 1x2 tuple from 1x3)
+        frame = preprocess_frame(self.get_space(screen), AIPlayer.input_shape[1:])
+
+        #Stack the frame
+        frames = stack_frame(self.state, frame, self.state is None)
+
+        #Return stacked frames
+        return frames
 
     def action(self, screen) -> None:
         """Does the action taken by the AI every frames"""
 
-        #If there is no screen
+        #If there is no screen do nothing
         if not self.has_screen():
-
-            #Do nothing
             return 
-        
-        # first pass
-        if self.state is None:
 
-            #Stack the first frame
-            self.state = stack_frames(None, self.get_space(screen), AIPlayer.input_shape, True)
-
-        # updates the state of the game for the model
-        self.state = stack_frames(self.state,self.get_space(screen), AIPlayer.input_shape, False)
+        # Updates the state of the game for the model
+        self.state = self.stack_frames(screen)
 
         #If the AI is still under cooldown
         if self.cd:
