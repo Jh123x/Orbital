@@ -3,7 +3,7 @@ from . import Difficulty_enum
 
 class Difficulty(object):
     def __init__(self,difficulty:int):
-        """Initialize the class"""
+        """Constructor for the difficulty class"""
 
         #Load the enum
         self.difficulty = Difficulty_enum(difficulty)

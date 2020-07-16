@@ -41,8 +41,13 @@ def decrease_bullet_power(screen, player):
         player.increase_bullet_power(-1)
 
 class PowerUp(ImageObject):
+
+    #To store the images of the sprites
     sprites = []
+
+    #To store the powerup functions
     powers = [bullet_up, hp_up, shield_up]
+
     def __init__(self, initial_x:int, initial_y:int, width:int, height:int, power_type:int, time_to_live:int, debug:bool = False):
         """Constructor for the powerup class"""
 
@@ -72,12 +77,6 @@ class PowerUp(ImageObject):
 
     def update(self) -> None:
         """Update the sprite"""
-
-        #If debug is on
-        if self.debug:
-            
-            #Print time to live for the powerup
-            print(f"Time to live: {self.ttl}")
         
         #If time to live is 0
         if self.ttl == 0:

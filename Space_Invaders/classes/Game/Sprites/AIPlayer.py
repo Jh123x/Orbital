@@ -43,10 +43,8 @@ class AIPlayer(Player):
             self.ai.load_model(AIPlayer.ai_dic)
 
     def get_space(self, screen):
-        """
-        Returns the pixel space of the screen
-        Performs preliminary Preprocessing by making values
-        """
+        """Returns the pixel space of the screen
+        Performs preliminary Preprocessing by making values"""
 
         #Convert the surface to matrix of rgb
         img = pygame.surfarray.array3d(screen)
@@ -55,9 +53,8 @@ class AIPlayer(Player):
         return img
 
     def stack_frames(self, screen):
-        '''
-        Function combine of utility functions to preprocess the frames
-        '''
+        '''Function combine of utility functions to preprocess the frames'''
+
         #Preprocess the frame (Input shape needs to be processed to 1x2 tuple from 1x3)
         frame = preprocess_frame(self.get_space(screen), AIPlayer.input_shape[1:])
 
@@ -93,7 +90,7 @@ class AIPlayer(Player):
             self.cd = self.frames_per_action
 
     def no_ai(self):
-        """No ai = random ai"""
+        """Random AI to be executed when there is no AI"""
         #Get current actions
         actions = self.get_action_space()
 
@@ -116,7 +113,6 @@ class AIPlayer(Player):
 
     def get_action(self,*args):
         """Get the next action taken by the AI"""
-        #Add the AI to make the choice TODO
 
         #If an ai exists
         if self.ai:
@@ -126,6 +122,7 @@ class AIPlayer(Player):
 
         #Otherwise
         else:
+
             #Default AI
             return self.no_ai()
             
@@ -171,5 +168,5 @@ class AIPlayer(Player):
         super().draw(screen)
     
     def has_screen(self):
-        ''' Detect if screen does not exist'''
+        """Detect if screen does not exist"""
         return self.screen != None

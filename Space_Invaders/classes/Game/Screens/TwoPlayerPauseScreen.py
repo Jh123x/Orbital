@@ -4,8 +4,11 @@ from . import Screen
 from .. import WHITE, State, Direction
 
 class TwoPlayerPauseScreen(Screen):
+
+    #Check if the paused sound is played
     sound = None
     played = False
+
     def __init__(self, screen_width:int, screen_height:int, screen, p1_score:int, p2_score:int, prev_state:State, debug:bool = False):
         """Main class for PVP pause screen"""
         
@@ -44,7 +47,6 @@ class TwoPlayerPauseScreen(Screen):
     def get_scores(self) -> tuple:
         """Return the score of the 2 players"""
         return self.p1,self.p2
-        
 
     def update_keypresses(self) -> State:
         """Check for the keypresses within the pause screen
@@ -66,7 +68,9 @@ class TwoPlayerPauseScreen(Screen):
             TwoPlayerPauseScreen.played = False
             return State.MENU
         
+        #Otherwise
         else:
+            
             #Return the current state if the player has not unpaused
             return State.TWO_PLAYER_PAUSE
 

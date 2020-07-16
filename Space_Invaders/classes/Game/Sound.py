@@ -1,6 +1,6 @@
 class Sound(object):
     def __init__(self, sound_dict:dict, start_state:bool, volume:float, debug:bool):
-        """Main class for playing sound"""
+        """Main class for playing sounds"""
 
         #Store the values for the sound
         self.sounds = sound_dict

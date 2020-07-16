@@ -15,13 +15,8 @@ pygame.font.init()
 #Initialise the sound
 pygame.mixer.init()
 
-async def load_AI_model(model_path, input_shape):
+async def load_AI_model(model_path:str):
     """Load the AI_model"""
-    #Load device to cuda
-    AIPlayer.device = 'cuda' if torch.cuda.is_available() else 'cpu'
-
-    #Store the input shape
-    AIPlayer.input_shape = input_shape
 
     #Load the dictionary folder
     AIPlayer.ai_dic = torch.load(model_path, map_location= AIPlayer.device)
@@ -50,37 +45,16 @@ class GameWindow(object):
                  enemy_img_paths:tuple, bullet_img_paths:tuple, background_img_paths:tuple, explosion_img_paths:tuple, 
                  db_path:str, sound_path:dict, bg_limit:int, menu_music_paths:tuple, powerup_img_path:tuple, mothership_img_path:tuple, 
                  trophy_img_path:tuple, ai_model_path:str, ai_input_shape:tuple, scout_img_path:tuple, brute_img_path:tuple, wave:int = 1,  debug:bool = False):
-        """The Main window
-            Arguments:
-                Sensitivity: Sensitivity of controls (int)
-                maxfps: Max fps for the game to go (int)
-                game_width: Width of the game window (int)
-                game_height: Height of the game window (int)
-                icon_img_path: Path to icon image (string)
-                player_img_paths: Paths to all player images (tuple of string)
-                enemy_img_paths: Paths to all enemy sprites (tuple of string)
-                bullet_img_paths: Paths to all the bullet sprites (tuple of string)
-                background_img_path: Path to the background (string)
-                explosion_img_paths: Path to all the explosion sprites (string)
-                p_settings: Dictionary of setting values (dictionary)
-                db_path: Path to the database file
-                sound_path: Path to the sounds
-                bg_limit: Limit to the number of backgrounds
-                menu_music_paths: Path to all the background music
-                powerup_img_path: Path to powerup sprites
-                mothership_img_path: Path to mothership sprites
-                wave: Wave of the mobs to start (int): default = 1
-                debug: Toggle whether the game is in debug mode (bool): default = False
+        """The Main window for the Space defenders game"""
+        
+        #Load device to cuda
+        AIPlayer.device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-            Methods:
-                handle_newhighscore: Handles the display of new highscores
-                handle_pause: Handles the display of the pause screen
-                handle_gameover: Handles the state of the gameover screen
-                get_state: Get the current state of the game
-                mainloop: Run the mainloop for the gamewindow
-        """
+        #Store the input shape
+        AIPlayer.input_shape = ai_input_shape
+
         #Load model in parallel
-        asyncio.run(load_AI_model(ai_model_path, ai_input_shape))
+        asyncio.run(load_AI_model(ai_model_path))
 
         #Load sprites
         load_sprites((Player, Bullet, EnemyShip, Background, Explosion, PowerUp, MotherShip, VictoryScreen, Scout, Brute), 

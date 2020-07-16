@@ -7,28 +7,7 @@ from .. import *
 class PlayScreen(ClassicScreen):
     def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, difficulty: Difficulty, wave:int = 1, player_lives:int = 3, 
                 powerup_chance:float = 0.1, debug:bool = False):
-        """The Play screen
-            Arguments:
-                screen_width: Width of the game in pixels (int)
-                screen_height: Height of the game in pixels (int)
-                screen: Surface where the play screen is blited to (pygame.Surface)
-                sensitivity: Sensitivity of the player controls (int)
-                max_fps: fps at which the game is run at (int)
-                wave: The wave which the game starts at (int): default = 1
-                player lives: Life player starts with
-                powerup_chance: Chance of spawning powerups (0 to disable)
-                debug: Boolean indicating debug mode (bool): default = False
-
-            Methods:
-                update_keypresses: Update the player's keypress to update the screen
-                spawn_enemy_bullets: Make the enemies shoot randomly
-                update: Update the movement of the sprites
-                get_score: Get the current score of the player
-                reset: Reset the play state
-                check_collisions: Check for collisions between the entities and the bullets
-                spawn_enemies: Spawn enemy mobs
-                handle: handles the drawing of the play screen onto the surface
-        """
+        """The Endless mode screen"""
 
         #Power ups group
         self.powerups = pygame.sprite.Group()
@@ -67,10 +46,12 @@ class PlayScreen(ClassicScreen):
 
         #Generate list of enemies other than mothership
         lst = tuple(filter(lambda x: type(x) != MotherShip, self.other_enemies))
+
+        #If the list is not empty
         if lst:
+
+            #Return a random boss
             return lst[int(self.generate_random_no()* (len(lst)-1))]
-        else:
-            return None
 
     def spawn_enemy_bullets(self) -> None:
         """Endless mode spawn bullets
@@ -94,7 +75,8 @@ class PlayScreen(ClassicScreen):
 
         return super().spawn_enemy_bullets()
 
-    def spawn_enemies(self, number):
+    def spawn_enemies(self, number:int) -> None:
+        """Spawn enemies if the conditions are met"""
         #Spawn the scout if condition is met
         self.spawn_scout()
 
@@ -104,7 +86,7 @@ class PlayScreen(ClassicScreen):
         #Call the superclass to spawn enemies
         super().spawn_enemies(number)
 
-    def spawn_brute(self):
+    def spawn_brute(self) -> None:
         """Spawn a brute if the conditions are met"""
 
         #Spawn the brute every wave
@@ -115,7 +97,7 @@ class PlayScreen(ClassicScreen):
             
 
     def spawn_scout(self) -> None:
-        """Spawn the scout unit"""
+        """Spawn the scout unit if the condition is met"""
 
         #Spawn the scout ever 5 waves
         if self.wave % 5 == 0:
@@ -133,6 +115,8 @@ class PlayScreen(ClassicScreen):
         self.powerup_numbers += 1
 
     def check_collisions(self):
+        """Check collision of the various sprites"""
+
         #Check collisions of powerups
         self.check_powerup_collision()
 
@@ -156,9 +140,11 @@ class PlayScreen(ClassicScreen):
 
                     #Spawn the powerup
                     self.spawn_powerups(ship.get_x(), ship.get_y())
+
+        #Return the destroyed ship
         return ship
 
-    def check_powerup_collision(self):
+    def check_powerup_collision(self) -> None:
         """Check the collisions of the powerups"""
         #If there are powerups
         if len(self.powerups):
@@ -203,11 +189,11 @@ class PlayScreen(ClassicScreen):
         #Call the super class reset
         super().reset()
 
+        #Reset the blocks from classic mode
+        self.blocks.empty()
+
         #Reset powerup number
         self.powerup_numbers = 0
 
         #Empty powerup group
         self.powerups.empty()
-
-        #Reset the blocks from classic mode
-        self.blocks.empty()

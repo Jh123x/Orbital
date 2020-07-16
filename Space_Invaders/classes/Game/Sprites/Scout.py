@@ -1,7 +1,10 @@
 from . import EnemyShip
 
 class Scout(EnemyShip):
+
+    #Store the sprites for the Scout
     sprites = []
+    
     def __init__(self, sensitivity:int, initial_x:int, initial_y:int, lives:int,  game_width:int, game_height:int, bullet_grp, debug:bool):
         """Main class for the scout ship"""
 

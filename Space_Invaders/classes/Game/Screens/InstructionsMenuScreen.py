@@ -3,7 +3,7 @@ from .. import State, WHITE
 
 class InstructionsMenuScreen(Screen):
     def __init__(self, screen_width:int, screen_height:int, screen, debug:bool = False):
-        """Main Instructions menu"""
+        """Main Instructions menu screen"""
 
         #Call the superclass
         super().__init__(screen_width, screen_height, State.INSTRUCTIONS_MENU, screen, 0, 0, debug)

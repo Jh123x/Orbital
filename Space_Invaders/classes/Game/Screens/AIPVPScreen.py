@@ -1,5 +1,4 @@
 import pygame
-import matplotlib.pyplot as plt
 from pygame.locals import *
 from . import LocalPVPScreen
 from .. import AIPlayer, State, Player, Direction
@@ -7,7 +6,7 @@ from .. import AIPlayer, State, Player, Direction
 class AIPVPScreen(LocalPVPScreen):
     def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, fps:int,
                  player_lives:int = 3, debug:bool = False):
-        """The AI PVP screen"""
+        """The constructor for the AI PVP screen"""
         
         #Call the superclass
         super().__init__(screen_width, screen_height, screen, sensitivity, fps, player_lives, debug)

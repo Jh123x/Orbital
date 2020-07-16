@@ -5,7 +5,7 @@ from . import Screen
 
 class Cutscene(Screen):
     def __init__(self, screen_width:int, screen_height:int, state:State, screen, prev_state:State, video_path:str = None, next_scene = None):
-        """Base constructor for the cutscene class"""
+        """Base constructor for the Cutscene class"""
 
         #Call the superclass (With top left corner at 0, 0)
         super().__init__(self, screen_width, screen_height, state, screen, 0, 0)

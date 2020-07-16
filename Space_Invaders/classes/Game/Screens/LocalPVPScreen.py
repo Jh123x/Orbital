@@ -31,10 +31,6 @@ class LocalPVPScreen(ClassicScreen):
         """Do not spawn any motherships for 2 players"""
         return
 
-    def spawn_scout(self, *args):
-        """Do not spawn scout class"""
-        return
-
     def spawn_players(self) -> None:
         """Create the players variables"""
         #Initialise the players
@@ -156,10 +152,6 @@ class LocalPVPScreen(ClassicScreen):
 
         #Call the superclass update
         super().update()
-
-    def randomly_spawn_mothership(self):
-        """Do not spawn mothership"""
-        pass
 
     def check_player_mob_collision(self, player_bullet):
         #Check collision of mobs with player 1 bullet

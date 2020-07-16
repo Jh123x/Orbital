@@ -4,21 +4,13 @@ from . import Screen
 from .. import State, WHITE
 
 class PauseScreen(Screen):
+
+    #Check if the pause sound has been played
     sound = None
     played = False
-    def __init__(self, screen_width:int, screen_height:int, screen, score:int, previous_state: State, debug:bool = False):
-        """Main class for the pause screen
-            Arguments:
-                screen_width: The width of the game in terms of pixels (int)
-                screen_height: The height of the game in terms of pixels (int)
-                screen: The Surface that the screen is drawn onto (pygame.Surface)
-                score: Score that the player has currently (int)
-                debug: Toggles debug mode (bool)
 
-            Methods:
-                update_keypresses: Update the state based on keypress of user
-                handle: handles the drawing of the pause state
-        """
+    def __init__(self, screen_width:int, screen_height:int, screen, score:int, previous_state: State, debug:bool = False):
+        """Main class for the pause screen"""
         #Store the score
         self.score = score
 
@@ -50,12 +42,7 @@ class PauseScreen(Screen):
         return self.score
 
     def update_keypresses(self) -> State:
-        """Check for the keypresses within the pause screen
-            Arguments:
-                No arguments:
-            Returns: 
-                No return
-        """
+        """Check for the keypresses within the pause screen"""
 
         #Getting the keys which are pressed
         keys = pygame.key.get_pressed()
@@ -74,12 +61,7 @@ class PauseScreen(Screen):
         return State.PAUSE
 
     def handle(self) -> State:
-        """Handles the drawing of the pause screen
-            Arguments:
-                No arguments:
-            Returns: 
-                Returns the next state the game is suppose to be in
-        """
+        """Handles the drawing of the pause screen"""
         #Update the screen itself
         self.update()
 

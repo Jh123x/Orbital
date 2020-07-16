@@ -6,17 +6,7 @@ class Background(ImageObject):
     sprites = []
 
     def __init__(self, bg_no:int, game_width:int, game_height:int, limit:int, debug:bool = False):
-        """Constructor for the background class
-            Arguments:
-                bg_no: Background number to be used (int)
-                game_width: Width of the game in pixels (int)
-                game_height: Height of the game in pixels (int)
-
-            Methods:
-                is_present: Checks if any backgrounds are present
-                update: Update the background
-            
-        """
+        """Constructor for the background class"""
 
         #Gets the background image if any
         self.rect = None
@@ -50,6 +40,7 @@ class Background(ImageObject):
 
     def cycle(self) -> None:
         """Cycle to the next background"""
+
         #Check if the bg is under the limit
         if self.check_valid_bgno(self.bg_no + 1):
             
@@ -64,12 +55,7 @@ class Background(ImageObject):
         self.choose(self.bg_no)
         
     def is_present(self) -> bool:
-        """Check if there is a valid background
-            Arguments:
-                No arguments
-            Returns: 
-                Returns a boolean showing if an image is available
-        """
+        """Check if there is a valid background"""
         return True if self.image else False
 
     def check_valid_bgno(self, num:int) -> bool:
@@ -113,10 +99,5 @@ class Background(ImageObject):
         self.generate_rect()
 
     def update(self, screen) -> None:
-        """Blit the background to the screen
-            Arguments:
-                screen: Screen to draw the background onto (pygame.Surface)
-            Returns: 
-                No return
-        """
+        """Blit the background to the screen"""
         screen.blit(self.image, self.rect)

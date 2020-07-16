@@ -3,23 +3,8 @@ from .. import State, WHITE, Direction
 
 class HighscoreScreen(Screen):
     def __init__(self, screen_width:int, screen_height:int, screen, scores:tuple, debug:bool = False):
-        """Constructor for the Highscore screen
-            Arguments:
-                screen_width: Width of the game window (int)
-                screen_height: Height of the game window (int)
-                screen: Surface for the screen to blit to (pygame.Surface)
-                scores: List of 5 top scores recorded (tuple of tuple)
-                debug: Toggle whether the screen is in debug mode (bool): default = False
+        """Constructor for the Highscore screen"""
 
-            Methods:
-                update_score: Update the player and the score into the highscore screen
-                sort_scores: Sort the scores recorded
-                beat_highscore: Check if the score has made it into the highscore
-                get_scores: Get a list of the highscore
-                get_removed: Get a list of entries that dropped out of the highscore screen
-                draw: Draw the highscore screen onto a surface
-                handle: Handles the drawing and processes of the highscore screen
-        """
         #Keep track of the scores added
         self.scores = sorted(scores, key = lambda x: x[-1], reverse = True)
 
@@ -33,13 +18,7 @@ class HighscoreScreen(Screen):
         self.draw()
 
     def update_score(self, name:str, score:int) -> None:
-        """Update the new player's name and score into the score board
-            Arguments:
-                name: Name of the player (str)
-                score: Score of the player (int)
-            Returns:
-                No return
-        """
+        """Update the new player's name and score into the score board"""
 
         #Add the score to the score board
         self.scores.append((None, name, score))
@@ -51,12 +30,7 @@ class HighscoreScreen(Screen):
         self.draw()
         
     def sort_scores(self) -> None:
-        """Sort the scores stored internally
-            Arguments:
-                No arguments
-            Returns:
-                No returns
-        """
+        """Sort the scores stored internally"""
 
         #Sort the score
         self.scores.sort(key = lambda x: x[-1], reverse = True)
@@ -66,39 +40,19 @@ class HighscoreScreen(Screen):
             self.removed.append(self.scores.pop())
 
     def beat_highscore(self, score:int) -> bool:
-        """Check if the highscore was beaten
-            Arguments:
-                Score: Score to compare (int)
-            Returns:
-                A boolean indicating if it is a new highscore (bool)
-        """
+        """Check if the highscore was beaten"""
         return len(self.scores) < 5 or score > self.scores[-1][-1]
 
     def get_scores(self) -> tuple:
-        """Get the high score list
-            Arguments:
-                No arguments
-            Returns: 
-                Returns a list of the highscore (list)
-        """
+        """Get the high score list"""
         return tuple(self.scores)
 
     def get_removed(self) -> tuple:
-        """Get a list of people removed from the database
-            Arguments:
-                No arguments
-            Returns:
-                Returns a list of players removed from the highscore (list)
-        """
+        """Get a list of people removed from the database"""
         return tuple(self.removed)
 
     def draw(self) -> None:
-        """Draws the highscore screen onto the predefined surface
-            Arguments:
-                No arguments
-            Returns:
-                No returns
-        """
+        """Draws the highscore screen onto the predefined surface"""
         #Reset the screen
         super().reset_surface()
 
@@ -121,12 +75,7 @@ class HighscoreScreen(Screen):
             self.write(Screen.end_font, WHITE, f"{item[2]:<5}",self.screen_width//1.6, start_px + self.screen_height//(15/(index+1)),Direction.LEFT)
 
     def handle(self) -> State:
-        """Handles the drawing of the highscore screen
-            Arguments:
-                No arguments
-            Returns: 
-                The next state the game is suppose to be in (State)
-        """
+        """Handles the drawing of the highscore screen"""
 
         #Update itself
         self.update()

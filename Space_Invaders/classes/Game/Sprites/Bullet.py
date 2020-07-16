@@ -7,31 +7,23 @@ class Bullet(MovingObject):
     sprites = []
 
     def __init__(self, sensitivity:int, initial_x:int, initial_y:int, direction:Direction, game_width:int, game_height:int, debug:bool = False):
-        """The constructor for the bullet class
-            Arguments:
-                sensitivity: Sensitivity of the bullets (int)
-                initial_x: Initial x position of the bullet (int)
-                initial_y: Initial y position of the bullet (int)
-                direction: Direction of bullet (Direction)
-                game_width: Width of the game in pixels (int)
-                game_height: Height of the game in pixels (int)
-                debug: Toggles debug mode (bool): default = False
+        """The constructor for the bullet class"""
 
-            Methods:
-                update: Update the position of the bullet
-            
-        """
         #Play the shoot sound
         self.sound.play('shooting')
 
         #Call the superclass
         super().__init__(sensitivity, initial_x, initial_y, game_width, game_height,self.sprites[0], debug)
 
-        #Store the direction, move up it the enum is move up, else move it down
+        #If the bullet is suppose to move up
         if direction == Direction.UP:
+
+            #Store the direction as up
             self.direction = self.move_up
 
+        #If it is suppose to move down
         elif direction == Direction.DOWN:
+            
             #If there is another sprite, use that sprite for down instead
             if len(Bullet.sprites) >= 2:
                 self.image = self.sprites[1]
@@ -39,19 +31,10 @@ class Bullet(MovingObject):
             #Set the direction to down
             self.direction = self.move_down
 
-        else:
-
-            #Otherwise it is invalid
-            assert False, f"Direction of bullet is invalid: {direction}"
 
        
     def update(self) -> None:
-        """Update the path of the bullet
-            Arguments:
-                No arguments
-            Returns: 
-                No return
-        """
+        """Update the path of the bullet"""
         #Move the bullet
         self.direction()
 

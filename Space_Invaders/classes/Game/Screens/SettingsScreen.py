@@ -88,6 +88,7 @@ class SettingsScreen(Screen):
                 
         #If the user clicked
         if clicked:
+
             #Reset the cooldown
             self.cooldown = self.fps//10
             
@@ -115,9 +116,16 @@ class SettingsScreen(Screen):
         self.music = self.write_main(Screen.end_font, WHITE, f"Music: {'On' if self.get_music_enabled() else 'Off'}", self.screen_width//4, first_pixel + self.screen_height//15, Direction.LEFT)
         self.difficulty_rect = self.write_main(Screen.end_font, WHITE, f"Difficulty: {self.get_difficulty().title()}", self.screen_width//4, first_pixel + self.screen_height//7.5, Direction.LEFT)
 
+        #If sound is enabled
         if self.get_music_enabled():
+
+            #Write to the screen that the music is enabled
             self.sound_btn = self.write_main(Screen.end_font, WHITE, f"Sound: {int(self.get_volume()*100)}", self.screen_width//4, first_pixel + self.screen_height//5, Direction.LEFT)
+
+        #Otherwise
         else:
+
+            #Write that the music is disabled
             self.sound_btn = self.write_main(Screen.end_font, GREY, f"Sound: {int(self.get_volume()*100)}", self.screen_width//4, first_pixel + self.screen_height//5, Direction.LEFT)
 
         #Return based on what the user press

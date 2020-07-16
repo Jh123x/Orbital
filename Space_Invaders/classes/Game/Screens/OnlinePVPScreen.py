@@ -89,7 +89,7 @@ class OnlinePVPScreen(LocalPVPScreen):
         return random.random()
 
     def generate_direction(self):
-
+        """Generate the direction the bullet was suppose to go"""
         #If this is the first player
         if self.first:
             

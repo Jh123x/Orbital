@@ -13,7 +13,7 @@ def get_curr_path():
     return sys.executable if getattr(sys, 'frozen', False) else __file__
 
 def map_dir(*args):
-    """Map the abs paths"""
+    """Map the abs path for the files in the folder"""
     return list_dir(form_abs_path(get_curr_path(), os.path.join(*args)))
 
 def main() -> None:
