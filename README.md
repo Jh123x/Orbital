@@ -11,7 +11,7 @@ Level of achievement: Artemis
   - Milestone 2: [Milestone 2 Video](https://www.youtube.com/watch?v=oTaomwA8UFw)
   - Milestone 3: [To be updated](#)
 
-* Download Link: [Windows](https://drive.google.com/file/d/13iS9hcEm1gFP_cBeAe8T3aq5I16ex-G5/view?usp=sharing)
+* Download Link: [Windows](https://drive.google.com/file/d/1ZaUwZXzSFXmiM8MbwyXTNk6w-1p3njZh/view?usp=sharing)
 Windows version is more updated
 
 * Download Link: [Mac](https://drive.google.com/file/d/1iaOJq8udqXCtAyodes7kMmCAVzpx6xyb/view?usp=sharing)
