@@ -13,8 +13,10 @@ build_options = {
 
 setup(
     name = "Space Defenders",
-    version = "0.1",
-    description = "Space Defenders game",
+    version = "0.2",
+    description = "Space Defenders game by group Space Defenders: More information at https://github.com/Jh123x/Orbital/",
+    author="Space Defenders",
     options = {'build_exe': build_options},
     executables = [exe]
     )
+
