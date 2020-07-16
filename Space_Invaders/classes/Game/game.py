@@ -235,6 +235,9 @@ class GameWindow(object):
         #Add explosion sound
         Explosion.sound = self.sound
 
+        #Add Powerup sound
+        PowerUp.sound = self.sound
+
         #Add pause sound
         TwoPlayerPauseScreen.sound = self.sound
         PauseScreen.sound = self.sound

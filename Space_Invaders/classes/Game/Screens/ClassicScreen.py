@@ -333,7 +333,7 @@ class ClassicScreen(Screen):
             ship = sprites[0][0]
 
             #Destroy the ship 1 time
-            ship.destroy()
+            ship.destroy(self.player1.get_bullet_power())
 
             #Remove the ship from groupp if it has 0 lives
             if ship.is_destroyed():
@@ -395,7 +395,7 @@ class ClassicScreen(Screen):
             ship = ships[0][0]
 
             #Destroy the first ship in the list (Ensures 1 bullet kill 1 ship only)
-            ship.destroy()
+            ship.destroy(self.player1.get_bullet_power())
 
             if self.debug:
                 print(f"Ship destroyed")

@@ -70,8 +70,8 @@ class EnemyShip(MovingObject):
         """
         return self.get_lives() == 0
 
-    def destroy(self) -> None:
-        """Destroy 1 life of the ship
+    def destroy(self, lives:int = 1) -> None:
+        """Destroy n life of the ship
             Arguments:
                 No arguments:
             Returns: 
@@ -81,7 +81,10 @@ class EnemyShip(MovingObject):
         if self.lives:
 
             #Reduce the life of the ship
-            self.lives -= 1
+            if self.lives < lives:
+                self.lives = 0
+            else:
+                self.lives -= lives
 
             #If the ship still has lives
             if not self.is_destroyed():

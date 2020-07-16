@@ -7,13 +7,38 @@ def hp_up(screen, player):
 def bullet_up(screen, player):
     """Increase player bullet reload speed"""
     #If the player is not firing at a higher speed
-    if player.maxcooldown > 20:
-        player.maxcooldown -= 5
+    if player.maxcooldown > 10:
+        player.maxcooldown -= 2
 
 def shield_up(screen, player):
     """Creates a shield for the player"""
     #Spawn the blocks
     screen.blocks = BlockGroup(screen.screen_width, screen.screen_height//1.2, screen.screen, 3, screen.player1.get_height() + 10)
+
+def emp_bomb(screen, player):
+    """Destroy lives of all normal enemies by 1"""
+    for sprite in screen.enemies:
+        sprite.destroy()
+
+def deflector(screen, player):
+    """Move all the enemies on screen back"""
+    for sprite in screen.enemies:
+        sprite.move(0, 10)
+
+def extra_bullet_power(screen, player):
+    """Increase the bullet power of the player"""
+    #Increase the bullet power of the player
+    if player.get_bullet_power() < 5:
+        player.increase_bullet_power(1)
+
+def decrease_bullet_power(screen, player):
+    """Decrease the bullet power of the player"""
+
+    #If the player bullet power is greater than 1
+    if player.get_bullet_power() > 1:
+
+        #Decrease the player bullet power
+        player.increase_bullet_power(-1)
 
 class PowerUp(ImageObject):
     sprites = []
@@ -38,6 +63,7 @@ class PowerUp(ImageObject):
 
     def get_ability(self):
         """Ability of the power up"""
+        self.sound.play('powerup')
         return PowerUp.powers[self.power_type]
 
     def get_power_type(self) -> str:

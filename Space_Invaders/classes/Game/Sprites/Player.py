@@ -51,7 +51,7 @@ class Player(MovingObject):
         self.bullet_grp = bullet_grp
 
         #If the life is not valid set it to 3 by default
-        if init_life >= 0:
+        if init_life <= 0:
             init_life = 3
 
         #Initial amount of life
@@ -77,7 +77,7 @@ class Player(MovingObject):
         self.life = self.init_life
 
         #Reset shooting cooldown
-        self.maxcooldown = self.fps // (3 * 0.95)
+        self.maxcooldown = self.fps // 2.5
 
         #Keep track of bullet cooldown
         self.cooldown = 0
@@ -85,6 +85,9 @@ class Player(MovingObject):
         #Reset position
         self.x = self.initial_x
         self.y = self.initial_y
+
+        #Reset the bullet power
+        self.bullet_power = 1
 
         #Rerender rect
         self.changed = True
@@ -95,6 +98,14 @@ class Player(MovingObject):
     def isInvincible(self) -> bool:
         """Check if the player is invincible"""
         return self.invincible > 0
+
+    def increase_bullet_power(self, inc:int):
+        """Increase the player bullet power by inc"""
+        self.bullet_power += inc
+
+    def get_bullet_power(self) -> int:
+        """Return the bullet power of the player"""
+        return self.bullet_power
 
     def add_lifes(self, no:int) -> None:
         """Adds life to the player"""

@@ -132,15 +132,15 @@ class PlayScreen(ClassicScreen):
         #Increase the number of powerups
         self.powerup_numbers += 1
 
-    def check_collisions(self) -> None:
+    def check_collisions(self):
         #Check collisions of powerups
         self.check_powerup_collision()
 
         #Get destroyed ship
         ship = super().check_collisions()
 
-        #If the ship exists
-        if ship:
+        #If the ship exists and is destroyed
+        if ship and ship.is_destroyed():
 
             #If powerups are not disabled
             if self.powerup_chance > 0:
@@ -156,6 +156,7 @@ class PlayScreen(ClassicScreen):
 
                     #Spawn the powerup
                     self.spawn_powerups(ship.get_x(), ship.get_y())
+        return ship
 
     def check_powerup_collision(self):
         """Check the collisions of the powerups"""
