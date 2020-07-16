@@ -8,23 +8,9 @@ import sys
 import os
 
 def get_curr_path():
-    """Get the path to the current file
-        Doesn't use __file__ directly as it does not work then the executable is frozen
-    """
-
-    #If the application is frozen
-    if getattr(sys, 'frozen', False):
-
-        #Get executable directory
-        datadir = sys.executable
-    
-    #Otherwise
-    else:
-
-        #Use __file__ to get directory
-        datadir = __file__
-    #Return directory
-    return datadir
+    """Get the path to the current file depending on state of application"""
+    #Return correct directory
+    return sys.executable if getattr(sys, 'frozen', False) else __file__
 
 def map_dir(*args):
     """Map the abs paths"""

@@ -42,14 +42,10 @@ class HighscoreScreen(Screen):
         """
 
         #Add the score to the score board
-        self.scores.append((None, name,score))
+        self.scores.append((None, name, score))
 
         #Sort the scores
         self.sort_scores()
-
-        #Remove the other scores while there are more than 5 of them
-        while len(self.scores) > 5:
-            self.removed.append(self.scores.pop())
 
         #Redraw the sprites
         self.draw()
@@ -61,7 +57,13 @@ class HighscoreScreen(Screen):
             Returns:
                 No returns
         """
+
+        #Sort the score
         self.scores.sort(key = lambda x: x[-1], reverse = True)
+
+        #Remove the other scores while there are more than 5 of them
+        while len(self.scores) > 5:
+            self.removed.append(self.scores.pop())
 
     def beat_highscore(self, score:int) -> bool:
         """Check if the highscore was beaten
@@ -72,23 +74,23 @@ class HighscoreScreen(Screen):
         """
         return len(self.scores) < 5 or score > self.scores[-1][-1]
 
-    def get_scores(self) -> list:
+    def get_scores(self) -> tuple:
         """Get the high score list
             Arguments:
                 No arguments
             Returns: 
                 Returns a list of the highscore (list)
         """
-        return self.scores
+        return tuple(self.scores)
 
-    def get_removed(self) -> list:
+    def get_removed(self) -> tuple:
         """Get a list of people removed from the database
             Arguments:
                 No arguments
             Returns:
                 Returns a list of players removed from the highscore (list)
         """
-        return self.removed
+        return tuple(self.removed)
 
     def draw(self) -> None:
         """Draws the highscore screen onto the predefined surface

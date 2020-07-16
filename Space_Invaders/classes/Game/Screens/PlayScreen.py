@@ -177,6 +177,9 @@ class PlayScreen(ClassicScreen):
                         #Mutate player and current screen
                         p.get_ability()(self,self.player1)
 
+                        #Spawn explosion in the place of the powerup
+                        self.spawn_explosion(p.get_x(), p.get_y())
+
     def update(self) -> None:
         """Update for the play screen"""
         #Update powerups

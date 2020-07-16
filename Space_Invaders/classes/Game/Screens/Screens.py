@@ -42,12 +42,16 @@ class Screen(BaseObject):
         #Create a surface with a transparent background
         self.reset_surface()
 
-    def post_process(self):
-        """Post processes after the screen updates 
-           Does nothing
-           Any process after updating the screen should be done here
-        """
+    def post_process(self) -> None:
+        """Post process after the screen has drawn"""
         pass
+    
+    def check_quit(self) -> bool:
+        #Check if the player wants to quit
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return True
+        return False
 
     def set_background(self, bg) -> None:
         """Update the background"""
@@ -89,7 +93,7 @@ class Screen(BaseObject):
             Returns: 
                 Returns the next state the game is suppose to be in
         """
-        return self.state
+        assert NotImplementedError("Please override this method in screen")
 
     def write_main(self,font_type, color: Color, words:str, xpos:int, ypos:int, direction:Direction = Direction.CENTER):
         """Write to main surface directly"""
@@ -138,7 +142,7 @@ class Screen(BaseObject):
         else:
 
             #Assert an Error
-            assert False, f"Invalid write justification {direction}"
+            assert False, f"Invalid write direction:{direction}"
 
         #Draw the words onto the screen
         screen.blit(sentence,rect)

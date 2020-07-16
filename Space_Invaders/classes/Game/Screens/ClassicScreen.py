@@ -316,12 +316,9 @@ class ClassicScreen(Screen):
 
     def check_block_collision(self):
         """Check collisions of the blocks"""
-        #If block exists
-        if len(self.blocks):
-
-            #Check if the player or the enemies shot the blocks
-            pygame.sprite.groupcollide(self.player1_bullet, self.blocks, True, True)
-            pygame.sprite.groupcollide(self.blocks, self.mob_bullet, True, True)
+        #Check if the player or the enemies shot the blocks
+        pygame.sprite.groupcollide(self.player1_bullet, self.blocks, True, True)
+        pygame.sprite.groupcollide(self.blocks, self.mob_bullet, True, True)
 
     def check_other_mob_collision(self) -> int:
         """Check collisions for special mobs"""
@@ -557,10 +554,9 @@ class ClassicScreen(Screen):
         #Update the moving objs
         self.update()
 
-        #Check if the player wants to pause or quit
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                return State.QUIT
+        #Check if player wants to quit
+        if self.check_quit():
+            return State.QUIT
 
         #Return play state
         return self.state

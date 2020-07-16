@@ -1,12 +1,8 @@
 #!/usr/bin/env python
 import pygame
-import random
 import datetime
 import asyncio
-import time
 import torch
-import os
-import sys
 from . import *
 from pygame.locals import *
 
@@ -162,6 +158,9 @@ class GameWindow(object):
         self.pvp_gameover = None
         self.game_over = None
 
+        #Sort the highscore
+        self.highscore.sort_scores()
+
         #Store the variables
         self.popup = None
         self.prev = State.NONE
@@ -263,9 +262,9 @@ class GameWindow(object):
     
     def handle_online(self) -> State:
         """Handle the online game"""
-        # self.popup = Popup(320, 40, "Under Construction", self.fps, self.game_width//2 - 80, self.game_height//2, self.main_screen,font = Screen.end_font, debug = self.debug)
-        #return State.PLAYMODE
-        return self.online.handle()
+        self.popup = Popup(320, 40, "Under Construction", self.fps, self.game_width//2 - 80, self.game_height//2, self.main_screen,font = Screen.end_font, debug = self.debug)
+        return State.PLAYMODE
+        # return self.online.handle()
 
     def handle_two_player_pause(self) -> State:
         """Handle the PVP pause screen"""
@@ -328,9 +327,6 @@ class GameWindow(object):
             
             #Mark as highscore written
             self.written = True
-
-            #Reset play mode
-            self.play.reset()
 
         #Return the next state
         return state
@@ -627,14 +623,20 @@ class GameWindow(object):
         #Add the new highscores into DB
         self.score_board.add_all(*self.highscore.get_scores())
 
+        #Remove all entries beyond 5
+        self.score_board.remove_all(*self.highscore.get_removed())
+
+        #Close the score board
+        self.score_board.__del__()
+
         #Get the settings that was saved and save it to the Database
         self.settingsdb.update('volume',str(self.settings.get_volume()))
         self.settingsdb.update('background',str(self.settings.get_bg_no()))
         self.settingsdb.update('music',int(self.settings.get_music_enabled()))
         self.settingsdb.update('difficulty', int(self.settings.get_difficulty_no()))
 
-        #Remove all entries beyond 5
-        self.score_board.remove_all(*self.highscore.get_removed())
+        #Close the settingsdb
+        self.settingsdb.__del__()
 
         #Quit the game
         pygame.display.quit()

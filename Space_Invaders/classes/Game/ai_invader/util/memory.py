@@ -1,9 +1,10 @@
+# import torch
 import random
-from collections import namedtuple, deque
-import numpy as np
-import torch
-from scipy.special import expit
 import cv2
+import numpy as np
+from collections import namedtuple, deque
+from scipy.special import expit
+
 
 class ReplayMemory(object):
 

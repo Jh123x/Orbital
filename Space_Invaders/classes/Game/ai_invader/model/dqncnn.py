@@ -1,5 +1,5 @@
-from .basemodel import BaseModel
-import torch.nn as nn
+import torch
+from . import BaseModel
 
 class DQNCNN(BaseModel):
     '''
@@ -8,8 +8,8 @@ class DQNCNN(BaseModel):
     def __init__(self, input_shape, num_actions):
         """Base DQN class"""
         super().__init__(input_shape, num_actions)
-        self.fc = nn.Sequential(
-            nn.Linear(self.feature_size(), 512),
-            nn.ReLU(),
-            nn.Linear(512, self.num_actions)
+        self.fc = torch.nn.Sequential(
+            torch.nn.Linear(self.feature_size(), 512),
+            torch.nn.ReLU(),
+            torch.nn.Linear(512, self.num_actions)
         )

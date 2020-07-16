@@ -20,7 +20,7 @@ class Database(object):
         self.dbpath = dbpath
 
         #Connect to the database
-        self.connection = sqlite3.connect(dbpath)
+        self.connection = sqlite3.connect(dbpath, timeout=10)
 
         #Get the cursor of the database
         self.cursor = self.connection.cursor()
@@ -81,8 +81,8 @@ class Database(object):
         #Save all changes
         self.connection.commit()
 
-        #Close the connection to the database
-        self.connection.close()
+        #Close the connection
+        # self.connection.close()
 
 class SettingsDB(Database):
     def __init__(self, dbpath:str):
@@ -104,7 +104,7 @@ class SettingsDB(Database):
     def add(self, name:str, setting:str) -> None:
         """Add the settings to the table"""
         #Insert the element into the table
-        print(self.execute('INSERT INTO settings VALUES(?, ?, ?)', (None, name, setting)))
+        self.execute('INSERT INTO settings VALUES(?, ?, ?)', (None, name, setting))
 
         #Mark the database as changed
         self.changed = True
@@ -273,7 +273,7 @@ def main() -> None:
         Returns: 
             No returns
     """
-    dbpath = os.path.dirname(os.path.realpath(__file__)) + '/' + "../../data/test.db"
+    dbpath = os.path.join(os.path.dirname(os.path.realpath(__file__)),'..', '..', 'data', 'test.db')
 
     #Create the scoreboard database
     db = ScoreBoard(dbpath)
