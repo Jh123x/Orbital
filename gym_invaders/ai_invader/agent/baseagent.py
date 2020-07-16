@@ -1,43 +1,15 @@
 import random
 import numpy as np
-class BaseAgent():
-    def __init__(self, input, action_space, seed, device,gamma,alpha):
-        '''
-        Base Agent Interface:
-        '''
-        self.input_shape = input
-        self.action_space = action_space
-        self.seed = random.seed(seed)
-        self.device= device
-        self.gamma = gamma
-        self.alpha = alpha
-
-    def step(self, *args):
-        raise NotImplementedError
-
-    def action(self,*args):
-        return random.sample(range(self.action_space))
-
-    def learn(self, state):
-        raise NotImplementedError
-
-    def model_dict(self,**kwargs):
-        diction = {}
-        for k,v in kwargs.items():
-            diction[k] = v
-        return diction
-
-    def load_model(self, dict):
-        raise NotImplementedError
 
 class BaseAgent():
-    def __init__(self, input_shape,action_space, seed, device, gamma, alpha ):
+    def __init__(self, input_shape,action_space, seed, device, gamma, alpha ,batch_size):
         self.input_shape = input_shape
         self.action_space = action_space
         self.seed = seed
         self.device = device
         self.gamma = gamma
         self.alpha = alpha
+        self.batch_size = batch_size
         self.n_steps = 0
         self.max_steps = 50000
         self.tau = 0.01
@@ -75,7 +47,11 @@ class BaseAgent():
 
     def discounted_reward(self, rewards, final_value):
         discounted_r = np.zeros_like(rewards)
-        running_add = final
+        running_add = final_value
+        for t in reversed(range(0,len(rewards))):
+            running_add = running_add * self.gamma + rewards[t]
+            discounted_r[t] = running_add
+        return discounted_r
 
     def soft_update_tgt(self, tgt, src):
         '''

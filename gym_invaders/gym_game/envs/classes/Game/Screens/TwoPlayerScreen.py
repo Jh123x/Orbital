@@ -40,7 +40,7 @@ class TwoPlayerScreen(Screen):
 
         #Check if the person clicked on the AI Coop rect
         if self.check_clicked(self.ai_coop):
-            self.popup = Popup(200, 20, "Still under construction", 60, self.screen_width//2, 10, self.screen, font = Screen.font, debug = self.debug)
+
             #Return the AI Coop mode state
             return State.AI_COOP
 
@@ -52,7 +52,7 @@ class TwoPlayerScreen(Screen):
         
         #Check if the pereson clicked on the 
         elif self.check_clicked(self.local_vs):
-            self.popup = Popup(200, 20, "Still under construction", 60, self.screen_width//2, 10, self.screen)
+
             #Return the local PVP state
             return State.PVP
 
@@ -70,7 +70,6 @@ class TwoPlayerScreen(Screen):
 
         #Otherwise
         return State.TWO_PLAYER_MENU
-
 
     def handle(self) -> State:
         """Handle the drawing of the 2 players screen"""

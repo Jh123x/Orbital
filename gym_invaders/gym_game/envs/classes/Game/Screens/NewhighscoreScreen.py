@@ -29,9 +29,25 @@ class NewhighscoreScreen(Screen):
 
         #Define new variables
         self.score = score
+
+        #Start pixel to start drawing
+        start_px = 100
+
+        #Tell the user he has a new high score
+        self.write(self.title_font, WHITE, f"NEW HIGH SCORE", self.screen_width//2, start_px)
+
+        #Write the score the user got
+        self.write(self.end_font, WHITE, f"Score: {self.score}", self.screen_width//2, start_px + self.screen_height // 10)
+
+        #Tell the user to key in his name
+        self.write(self.font, WHITE, f"Please enter your name and press enter", self.screen_width//2, start_px + self.screen_height//5)
         
         #Draw the sprites
         self.draw()
+
+    def get_score(self) -> int:
+        """Get the score of the player"""
+        return self.score
 
     @staticmethod
     def get_name() -> str:
@@ -50,15 +66,6 @@ class NewhighscoreScreen(Screen):
             Return: 
                 No return
         """
-
-        #Start pixel to start drawing
-        start_px = 100
-
-        #Tell the user he has a new high score
-        self.write(self.title_font, WHITE, f"NEW HIGH SCORE", self.screen_width//2, start_px)
-
-        #Tell the user to key in his name
-        self.write(self.font, WHITE, f"Please enter your name and press enter", self.screen_width//2, start_px + self.screen_height//10)
 
         #Draw the inputbox
         NewhighscoreScreen.inputbox.blit(self.screen)
@@ -99,6 +106,11 @@ class NewhighscoreScreen(Screen):
         
         #Update the surface
         self.update()
+
+        #Check if the player wants to pause or quit
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return State.QUIT
 
         #Return the Current game state
         return State.NEWHIGHSCORE

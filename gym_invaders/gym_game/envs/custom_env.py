@@ -1,24 +1,33 @@
 import gym
 import sys
 import numpy as np
+import cv2
 import logging
 import pygame
 from gym import spaces
 from .AI_game import PyGame_2D
 from .classes import *
+
 np.set_printoptions(threshold=sys.maxsize)
 logging.basicConfig(level=logging.DEBUG, format = '%(asctime)s - %(levelname)s - %(message)s')
 logging.disable(logging.DEBUG)
+
+def preprocess_frame(state, output):
+    ''' Preprocessing the frame from RGB -> Greyscale'''
+    state = cv2.cvtColor(state, cv2.COLOR_RGB2GRAY)
+    state = np.ascontiguousarray(state, dtype=np.float32) / 255
+    state = np.expand_dims(cv2.resize(state,output).T, axis=2)
+    return state
 
 class CustomEnv(PyGame_2D,gym.Env):
     def __init__(self, settings = 'settings.cfg', mode:str = 'play'):
         super(gym.Env,self).__init__()
         super().__init__(settings,mode)
         self.action_space = spaces.Discrete(6)  # Actions are move left, move right, shoot, do nothing, mv left and shoot and move right then shoot
-        self.observation_space = spaces.Box(0, 1, shape=(800, 600, 1), dtype=np.bool_)
+        self.observation_space = spaces.Box(low=0,high=255, shape=(160, 120, 1), dtype=np.uint8)
         self.max_step = 50000
         self.time = 0
-        self.display = False
+        self.display = True
         self.prev_score = 0
         self.prev_life = self.get_player_lives()
         self.prev_enemy = len(self.get_enemies())
@@ -31,7 +40,7 @@ class CustomEnv(PyGame_2D,gym.Env):
         super().reset()
         self.prev_life = self.get_player_lives()
         self.prev_enemy = len(self.get_enemies())
-        obs = self.get_space()
+        obs = preprocess_frame(self.get_space(),(160, 120))
         return obs
     
     def calculate_reward(self):
@@ -48,7 +57,7 @@ class CustomEnv(PyGame_2D,gym.Env):
         if self.display:
             pygame.display.update()
 
-        obs = self.get_space()  # observations for the next timestep
+        obs = preprocess_frame(self.get_space(),(160, 120))  # observations for the next timestep
         self.time += 1
         
         #Get reward
