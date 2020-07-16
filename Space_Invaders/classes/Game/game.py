@@ -626,11 +626,17 @@ class GameWindow(object):
         #Remove all entries beyond 5
         self.score_board.remove_all(*self.highscore.get_removed())
 
+        #Close the score board
+        self.score_board.__del__()
+
         #Get the settings that was saved and save it to the Database
         self.settingsdb.update('volume',str(self.settings.get_volume()))
         self.settingsdb.update('background',str(self.settings.get_bg_no()))
         self.settingsdb.update('music',int(self.settings.get_music_enabled()))
         self.settingsdb.update('difficulty', int(self.settings.get_difficulty_no()))
+
+        #Close the settingsdb
+        self.settingsdb.__del__()
 
         #Quit the game
         pygame.display.quit()
