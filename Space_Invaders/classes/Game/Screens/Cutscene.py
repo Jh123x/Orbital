@@ -3,12 +3,12 @@ import cv2
 from .. import State
 from . import Screen
 
-class Cutscene(Screen):
-    def __init__(self, screen_width:int, screen_height:int, state:State, screen, prev_state:State, video_path:str = None, next_scene = None):
+class VideoCutscene(Screen):
+    def __init__(self, screen_width:int, screen_height:int, screen, prev_state:State, video_path:str, next_scene = None):
         """Base constructor for the Cutscene class"""
 
         #Call the superclass (With top left corner at 0, 0)
-        super().__init__(self, screen_width, screen_height, state, screen, 0, 0)
+        super().__init__(screen_width, screen_height, State.VID_CUTSCENE, screen, 0, 0)
 
         #Store the video path
         self.video_path = video_path
@@ -23,36 +23,41 @@ class Cutscene(Screen):
         """Load and play the video"""
 
         #Store the player
-        self.player = cv2.VideoCapture(self.video_path)
-
-        #Check the first frame
-        frame,ret = self.player.read()
-
-        #Ret
-        if not ret:
-
-            #Assert an error
-            assert False, f"Problem with {self.video_path}"
+        self.player = cv2.VideoCapture(f"{self.video_path}")
 
         #Running loop
-        while True:
+        while self.player.isOpened():
 
             #Check if the user wants to quit
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
+            if self.check_quit():
+                running = False
             
             #Read from the video input
             ret, img = self.player.read()
 
+            #If there is no image break out of the loop
+            if type(img) == type(None):
+                break
+
+            #Resize image to fit frame
+            height, width = img.shape[:2]
+            res = cv2.resize(img, (self.screen_width, self.screen_height), interpolation = cv2.INTER_AREA)
+
             #Transpose the image
-            img = cv2.transpose(img)
+            img = cv2.transpose(res)
             
             #Blit directly on screen         
             pygame.surfarray.blit_array(self.screen, img)
+            pygame.display.update()
 
-        return
+        #Close the player
+        self.player.release()
 
+        #Close all cv2 windows
+        cv2.destroyAllWindows()
+
+        #Return the prev state
+        return self.get_prev_state()
 
     def get_prev_state(self) -> State:
         """Get the previous state"""
