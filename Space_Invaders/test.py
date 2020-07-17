@@ -14,4 +14,5 @@ screen = pygame.display.set_mode((width,height))
 #Create video cutscene obj
 cutscene = VideoCutscene(width, height, screen, None, os.path.join(os.path.dirname(__file__), "videos", "test.mp4"))
 
+#Play the cutscene
 cutscene.play()
