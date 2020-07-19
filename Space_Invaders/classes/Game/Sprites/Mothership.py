@@ -1,24 +1,35 @@
-from . import MovingObject
+from . import EnemyShip
 
-class MotherShip(MovingObject):
+class MotherShip(EnemyShip):
+
+    #Store the sprites for the mothership
     sprites = []
+    
     def __init__(self, initial_x:int, initial_y:int, game_width:int, game_height:int, points:int, debug:bool = False):
         """Main constructor for the mothership"""
         #Call the superclass
-        super().__init__(5, initial_x, initial_y, 100, 50, MotherShip.sprites[0], debug, (100,50))
+        super().__init__(5, initial_x, initial_y, 1, game_width, game_height, None, None, debug)
+
+        #Scale the mothership
+        self.scale(100,50)
 
         #Store the points
-        self.points = points
+        self.set_points(points)
 
-    def update(self, *args) -> None:
+    def update(self) -> None:
         """Update movement of the mothership"""
 
         #Move the mothership to the right
         self.move_right()
 
-        #Call the superclass update
-        return super().update()
+        #Check if mothership touched the edge
+        if self.get_x() > self.game_width:
 
-    def get_points(self) -> int:
-        """Get the points for the mothership"""
-        return self.points
+            #If so remove the mothership
+            self.kill()
+
+            #Do nothing afther that
+            return
+
+        #Call the superclass update
+        return super().update(1)

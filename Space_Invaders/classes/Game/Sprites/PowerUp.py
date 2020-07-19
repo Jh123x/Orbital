@@ -7,17 +7,47 @@ def hp_up(screen, player):
 def bullet_up(screen, player):
     """Increase player bullet reload speed"""
     #If the player is not firing at a higher speed
-    if player.maxcooldown > 20:
-        player.maxcooldown -= 5
+    if player.maxcooldown > 10:
+        player.maxcooldown -= 2
 
 def shield_up(screen, player):
     """Creates a shield for the player"""
     #Spawn the blocks
-    screen.blocks = BlockGroup(screen.screen_width, screen.screen_height//1.2, screen.screen, 3, screen.player.get_height() + 10)
+    screen.blocks = BlockGroup(screen.screen_width, screen.screen_height//1.2, screen.screen, 3, screen.player1.get_height() + 10)
+
+def emp_bomb(screen, player):
+    """Destroy lives of all normal enemies by 1"""
+    for sprite in screen.enemies:
+        sprite.destroy()
+
+def deflector(screen, player):
+    """Move all the enemies on screen back"""
+    for sprite in screen.enemies:
+        sprite.move(0, 10)
+
+def extra_bullet_power(screen, player):
+    """Increase the bullet power of the player"""
+    #Increase the bullet power of the player
+    if player.get_bullet_power() < 5:
+        player.increase_bullet_power(1)
+
+def decrease_bullet_power(screen, player):
+    """Decrease the bullet power of the player"""
+
+    #If the player bullet power is greater than 1
+    if player.get_bullet_power() > 1:
+
+        #Decrease the player bullet power
+        player.increase_bullet_power(-1)
 
 class PowerUp(ImageObject):
+
+    #To store the images of the sprites
     sprites = []
+
+    #To store the powerup functions
     powers = [bullet_up, hp_up, shield_up]
+
     def __init__(self, initial_x:int, initial_y:int, width:int, height:int, power_type:int, time_to_live:int, debug:bool = False):
         """Constructor for the powerup class"""
 
@@ -38,6 +68,7 @@ class PowerUp(ImageObject):
 
     def get_ability(self):
         """Ability of the power up"""
+        self.sound.play('powerup')
         return PowerUp.powers[self.power_type]
 
     def get_power_type(self) -> str:
@@ -46,12 +77,6 @@ class PowerUp(ImageObject):
 
     def update(self) -> None:
         """Update the sprite"""
-
-        #If debug is on
-        if self.debug:
-            
-            #Print time to live for the powerup
-            print(f"Time to live: {self.ttl}")
         
         #If time to live is 0
         if self.ttl == 0:

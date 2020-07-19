@@ -45,7 +45,7 @@ class CoopScreen(LocalPVPScreen):
         """Generate wave random"""
 
         #Generate the wave random based on the number
-        num = int(self.generate_random_no()*self.difficulty.get_multiplier(self.wave))
+        num = int(self.generate_random_no() * self.difficulty.get_multiplier(self.wave))
 
         #Return 1 if number is lower than 1
         return num if num >= 1 else 1

@@ -5,18 +5,8 @@ from .. import State, WHITE
 
 class MenuScreen(Screen):
     def __init__(self, screen_width:int, screen_height:int, screen, debug:bool = False):
-        """Constructor for the menu screen
-            Arguments:
-                screen_width: the width of the game in pixels (int)
-                screen_height: the height of the game in pixels (int)
-                screen: The screen that it is blited to (pygame.Surface)
-                debug: Toggles debug mode (bool)
+        """Constructor for the Main Menu screen"""
 
-            Methods:
-                update_keypress: Checks for the keypress of the player and mutate relavant states
-                check_mouse: Check for the user's click on the screen
-                handle: Handles the drawing and updating of the objects on the screen
-        """
         #Call the superclass
         super().__init__(screen_width, screen_height, State.MENU, screen, 0, 0, debug)
 
@@ -40,14 +30,7 @@ class MenuScreen(Screen):
 
 
     def update_keypresses(self) -> State:
-        """Track the keypress for the menu
-            Arguments:
-                No arguments
-            Returns: 
-                Returns the State of the next game (State)
-                or 
-                None if there are no relavant keys which are pressed
-        """
+        """Track the keypress for the menu"""
 
         #Get the keypresses of the user
         keys = pygame.key.get_pressed()
@@ -57,10 +40,6 @@ class MenuScreen(Screen):
 
             #Start the game
             return State.PLAYMODE
-
-        else:
-            #Otherwise return none
-            return None
 
     def check_mouse(self, rects:list, states:list):
         """Check the position of the mouse on the menu to see what the player clicked

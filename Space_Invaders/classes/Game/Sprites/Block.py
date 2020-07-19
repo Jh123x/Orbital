@@ -1,10 +1,10 @@
 import pygame
-from ..Colors import *
-from . import *
+from . import BaseObject
+from .. import YELLOW
 
 class Block(BaseObject):
     def __init__(self, initial_x:int, initial_y:int, screen, color:tuple = YELLOW, debug:bool = False):
-        """Blocks"""
+        """Class for individual blocks in block group"""
 
         #Call the superclass
         super().__init__(initial_x, initial_y, debug)
@@ -16,8 +16,14 @@ class Block(BaseObject):
 
         #Create the rect for the block
         self.rect = pygame.Rect(initial_x - self.width//2, initial_y - self.height//2, self.width, self.height)
+
+        #Store color of the block
         self.color = color
+
+        #Draw the image of the block
         self.image = pygame.Surface((self.rect.w, self.rect.h))
+
+        #Set the block to be yellow color
         self.image.fill(YELLOW)
 
     def get_rect(self) -> pygame.Rect:

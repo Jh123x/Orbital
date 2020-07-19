@@ -40,7 +40,7 @@ class OnlinePVPScreen(LocalPVPScreen):
     def create_network(self):
         """Create the network for the player to be hosted on"""
         #Create the network
-        self.network = Network("192.168.1.215", 9999)
+        self.network = Network("50.19.23.117", 8080)
 
     def pack_player_data(self):
         """Pack the data into the correct form to be sent"""
@@ -89,7 +89,7 @@ class OnlinePVPScreen(LocalPVPScreen):
         return random.random()
 
     def generate_direction(self):
-
+        """Generate the direction the bullet was suppose to go"""
         #If this is the first player
         if self.first:
             

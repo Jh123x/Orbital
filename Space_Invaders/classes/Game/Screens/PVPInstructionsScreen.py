@@ -19,13 +19,14 @@ class PVPInstructionsScreen(Screen):
         self.write(Screen.end_font, WHITE, "AD to move Space to shoot", screen_width//2, first_px + self.screen_height // 15)
         self.write(Screen.end_font, WHITE, "Player 2:", screen_width//2, first_px + self.screen_height // 7.5)
         self.write(Screen.end_font, WHITE, "Arrowkeys to move 0 to shoot", screen_width//2, first_px + self.screen_height//5)
-        self.write(Screen.end_font, WHITE, "P to pause", screen_width//2, first_px + self.screen_height//5 + self.screen_height // 15)
+        self.write(Screen.end_font, WHITE, "P to pause and unpause", screen_width//2, first_px + self.screen_height//5 + self.screen_height // 15)
         
         #Draw the back button
         self.back = self.write(Screen.end_font, WHITE, "Back", screen_width//2, screen_height//1.2)
 
     def check_keypresses(self) -> State:
         """Check the keypresses on the PVP instructions screen"""
+        
         #If the player clicks on back
         if self.check_clicked(self.back):
             return State.INSTRUCTIONS_MENU

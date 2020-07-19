@@ -42,8 +42,11 @@ class Network(object):
 
 #If this is the main file
 if __name__ == '__main__':
-    network = Network('localhost', 9999, ())
 
+    #Test connection to the ip address
+    network = Network('172.18.150.114', 9999)
+
+    #While loop to test the network packets which are sent
     while True:
         try:
             #Get the input for the data
@@ -53,6 +56,8 @@ if __name__ == '__main__':
             data = network.send(data)
             print(f'Message sent: {data}')
         except KeyboardInterrupt:
+            
+            #Close the network
             network.close()
             break
             

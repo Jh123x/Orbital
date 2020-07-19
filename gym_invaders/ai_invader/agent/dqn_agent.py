@@ -7,7 +7,7 @@ import numpy as np
 from ..util.memory import *
 
 
-class DQNAgent():
+class DQNAgent(object):
     def __init__(self, input_shape, action_size, seed, device, buffer_size, batch_size,
                  gamma, alpha, tau, update, replay, model):
         '''Initialise a Agent Object
@@ -57,6 +57,7 @@ class DQNAgent():
 
         # print(self.t_step)
         if self.t_step == 0:
+            
             # if there are enough samples in the memory, get a random subset and learn
             if len(self.memory) > self.replay:
                 experience = self.memory.sample()

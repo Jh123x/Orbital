@@ -88,7 +88,9 @@ class PyGame_2D(object):
             #Update the display with the screen
             pygame.display.update()
             #self.state.draw_hitboxes()
-            #print(self.get_space_boolean())
+            # print(self.get_space_boolean())
+
+            print(self.get_space()[:10])
             #If the state is quit or player closes the game
             for item in pygame.event.get():
                 if item.type == pygame.QUIT:
@@ -124,7 +126,8 @@ class PyGame_2D(object):
         Returns the pixel space of the screen
         Performs preliminary Preprocessing by making values
         """
-        space = pygame.surfarray.array2d(self.state.surface)
+        space = pygame.surfarray.array3d(self.state.surface)
+        # print(space)
         return space *-1
 
     def show_space(self):
