@@ -2,6 +2,7 @@
 import unittest
 import os
 import sys
+
 #Change directory to that of the main path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from classes import *
@@ -16,11 +17,14 @@ class SettingsTester(unittest.TestCase):
         super().setUp()
 
         #Read the config file from the settings
-        self.config = read_settings(form_abs_path(__file__,"../settings.cfg"),"Space Invaders")
+        self.config = read_settings(form_abs_path(__file__,"../settings.cfg"), "Space Invaders")
 
     def tearDown(self):
         """Tear down for the main class"""
+
+        #Remove the config
         del self.config
+
         #Nothing to Teardown
         return super().tearDown()
     
@@ -72,8 +76,8 @@ class AbsPathTest(unittest.TestCase):
         """
         Test case 1: "C:\\hello1\\hello2" and "hello3\\hello4"
         """
-        path1 = "C:\\hello1\\hello2"
-        path2 = "hello3\\hello4"
+        path1 = os.path.join("C:", "hello1", "hello2")
+        path2 = os.path.join("hello3", "hello4")
         test1 = os.path.join(os.path.dirname(path1),path2)
         test2 = form_abs_path(path1,path2)
         assert test1 == test2, f"{test1} and {test2} is different"
@@ -101,7 +105,6 @@ class ConvertTypeTest(unittest.TestCase):
         result = convertType(("Hello", "world"))
         assert type(result[0]) == str and type(result[1]) == str, '''("Hello", "world") is not converterd correctly'''
 
-
     def testConfig3(self) -> None:
         """
         Test case 3: Converting (3, "$")
@@ -125,10 +128,11 @@ class ConvertTypeTest(unittest.TestCase):
 
     def testConfig6(self) -> None:
         """
-        Test case 6: Converting (True, "12346")
+        Test case 6: Converting ("True", "12346")
         """
-        result = convertType((True, "12346"))
-        assert type(result[0]) == bool and type(result[1]) == int, '''(True, "12346") is not converterd correctly'''
+        result = convertType(("True", "12346"))
+        assert type(result[0]) == str, """True is not converted correctly"""
+        assert type(result[1]) == int, """'12346' is not converterd correctly"""
 
     def testConfig7(self) -> None:
         """
@@ -144,9 +148,9 @@ class ConvertTypeTest(unittest.TestCase):
         result = convertType((1,2,3,4))
         assert result == (1,2,3,4), '''(1,2,3,4) is not converterd correctly'''
 
-    def 
 
 #Main function
 if __name__ == "__main__":
+    
     #Runs all of the tests defined above
     unittest.main()
