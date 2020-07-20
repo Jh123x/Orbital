@@ -2,8 +2,8 @@ import os
 import random
 import pygame
 import numpy as np
-from . import Player, Bullet
-from .. import Direction, DQNAgent, DQNCNN, stack_frame, preprocess_frame
+from . import Player, Bullet, StateMachine
+# from .. import Direction, DQNAgent, DQNCNN, stack_frame, preprocess_frame
 
 class AIPlayer(Player):
     def __init__(self, sensitivity:int, game_width:int, game_height:int, initial_x:int, 
@@ -21,30 +21,35 @@ class AIPlayer(Player):
         self.state = None
         self.screen = None
         self.cd = self.frames_per_action
-        
-        #If ai is available
-        if ai_avail:
-
-            #AI variables
-            ACTION_SIZE = 6
-            SEED = 0
-            GAMMA = 0.99  # discount factor
-            BUFFER_SIZE = 10000  # replay buffer size
-            BATCH_SIZE = 64  # Update batch size
-            LR = 0.0001  # learning rate
-            TAU = 1e-3  # for soft update of target parameters
-            UPDATE_EVERY = 7  # how often to update the network
-            UPDATE_TARGET = 6 * BATCH_SIZE  # After which thershold replay to be started
-
-            #Load the Deep Q learning Agent
-            self.ai = DQNAgent(AIPlayer.input_shape, ACTION_SIZE, SEED,  AIPlayer.device, BUFFER_SIZE, BATCH_SIZE, GAMMA, LR, TAU, UPDATE_EVERY, UPDATE_TARGET, DQNCNN)
-
-            #Load the model
-            self.ai.load_model(AIPlayer.ai_dic)
+        self.entities = None
+        # #If ai is available
+        if ai_avail==True:
+            self.ai = StateMachine(30)
+        elif ai_avail == 'torch':
+            pass
+            #
+            # #AI variables
+            # ACTION_SIZE = 6
+            # SEED = 0
+            # GAMMA = 0.99  # discount factor
+            # BUFFER_SIZE = 10000  # replay buffer size
+            # BATCH_SIZE = 64  # Update batch size
+            # LR = 0.0001  # learning rate
+            # TAU = 1e-3  # for soft update of target parameters
+            # UPDATE_EVERY = 7  # how often to update the network
+            # UPDATE_TARGET = 6 * BATCH_SIZE  # After which thershold replay to be started
+            #
+            # #Load the Deep Q learning Agent
+            # self.ai = DQNAgent(AIPlayer.input_shape, ACTION_SIZE, SEED,  AIPlayer.device, BUFFER_SIZE, BATCH_SIZE, GAMMA, LR, TAU, UPDATE_EVERY, UPDATE_TARGET, DQNCNN)
+            #
+            # #Load the model
+            # self.ai.load_model(AIPlayer.ai_dic)
 
     def get_space(self, screen):
-        """Returns the pixel space of the screen
-        Performs preliminary Preprocessing by making values"""
+        """
+        Returns the pixel space of the screen
+        Performs preliminary Preprocessing by making values
+        """
 
         #Convert the surface to matrix of rgb
         img = pygame.surfarray.array3d(screen)
@@ -52,17 +57,7 @@ class AIPlayer(Player):
         #Return the matrix of rgb
         return img
 
-    def stack_frames(self, screen):
-        '''Function combine of utility functions to preprocess the frames'''
 
-        #Preprocess the frame (Input shape needs to be processed to 1x2 tuple from 1x3)
-        frame = preprocess_frame(self.get_space(screen), AIPlayer.input_shape[1:])
-
-        #Stack the frame
-        frames = stack_frame(self.state, frame, self.state is None)
-
-        #Return stacked frames
-        return frames
 
     def action(self, screen) -> None:
         """Does the action taken by the AI every frames"""
@@ -73,6 +68,9 @@ class AIPlayer(Player):
 
         # Updates the state of the game for the model
         self.state = self.stack_frames(screen)
+
+        # TODO update entity list for StateMachine here
+
 
         #If the AI is still under cooldown
         if self.cd:
@@ -90,7 +88,7 @@ class AIPlayer(Player):
             self.cd = self.frames_per_action
 
     def no_ai(self):
-        """Random AI to be executed when there is no AI"""
+        """No ai = random ai"""
         #Get current actions
         actions = self.get_action_space()
 
@@ -113,16 +111,18 @@ class AIPlayer(Player):
 
     def get_action(self,*args):
         """Get the next action taken by the AI"""
+        #Add the AI to make the choice TODO
 
         #If an ai exists
-        if self.ai:
+        if self.ai=='torch':
             # Get possible actions
             actions = self.get_action_space()
             return actions[self.ai.action(self.state)]
-
+        elif self.ai == True:
+            action = self.get_action_space()
+            return action[self.ai.action(self.entities)]
         #Otherwise
         else:
-
             #Default AI
             return self.no_ai()
             
@@ -166,7 +166,18 @@ class AIPlayer(Player):
 
         #Call the superclass draw
         super().draw(screen)
-    
+
+    def get_entities(self,enemies1, enemies2, enemy_bullets, enemy_player= -1):
+        ''' Relevent Information for AI decision making'''
+        curr_x = self.get_x()
+        curr_y = self.get_y()
+        enemy1 = list(map(lambda y: (y.get_x(),y.get_y()),filter(lambda x: (np.abs(x.get_x()-curr_x)<=50),enemies1)))
+        enemy2 = list(map(lambda y: (y.get_x(),y.get_y()),filter(lambda x: (np.abs(x.get_x() - curr_x) <= 50, enemies2))))
+        eb = list(map(lambda y: (y.get_x(),y.get_y()),filter(lambda x: (np.abs(x.get_x() - curr_x) <= 50), enemy_bullets)))
+        ep = 'None' if enemy_player == -1 else enemy_player.get_x()
+
+        environment_status = {'mobs':enemy1, 'bosses':enemy2,'bullets':eb,'enemy_player':ep,'player': (curr_x,curr_y, self.life)}
+        return environment_status
     def has_screen(self):
-        """Detect if screen does not exist"""
+        ''' Detect if screen does not exist'''
         return self.screen != None
