@@ -5,7 +5,6 @@ import numpy as np
 from collections import namedtuple, deque
 from scipy.special import expit
 
-
 class ReplayMemory(object):
 
     def __init__(self, max_size, batch_size, seed, device):

@@ -5,8 +5,11 @@ from . import Screen
 from .. import State, WHITE, Direction
 
 class TwoPlayerGameoverScreen(Screen):
+
+    #Check if the sound is played
     sound = None
     played = False
+
     def __init__(self, screen_width:int, screen_height:int, screen, p1_score:int, p2_score:int, debug:bool = False):
         """Constructor for the Two Player Gameover class"""
         if not TwoPlayerGameoverScreen.played and TwoPlayerGameoverScreen.sound:
@@ -61,7 +64,6 @@ class TwoPlayerGameoverScreen(Screen):
         else:
             return None
 
-
     def handle(self) -> State:
         """Handle the drawing of the multiplayer gameover screen"""
         #Update the sprites
@@ -72,10 +74,19 @@ class TwoPlayerGameoverScreen(Screen):
 
         #Check if player wants to stay
         if stay:
+
+            #Reset sound played
             TwoPlayerGameoverScreen.played = False
+
+            #Return to Main menu
             return State.MENU
+
         elif stay == False:
+
+            #Reset sound played
             TwoPlayerGameoverScreen.played = False
+            
+            #Return Quit state
             return State.QUIT
         else:
             return self.state

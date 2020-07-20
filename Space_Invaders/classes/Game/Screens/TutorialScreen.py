@@ -4,7 +4,9 @@ from . import PlayScreen, Screen
 from .. import *
 
 class TutorialScreen(PlayScreen):
+    #Store the information for the tutorial screen
     information = [("a", "move left"), ("d", "move right"), ("spacebar", "shoot"), ("p", "to pause")]
+
     def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, debug:bool = False):
         """Main class for the tutorial screen"""
 
@@ -62,6 +64,7 @@ class TutorialScreen(PlayScreen):
 
         #If not on spawn cooldown
         if self.spawn_cooldown == 0 and len(self.powerups) == 0:
+
             #Add 1 enemy ship to the board
             self.enemies.add(EnemyShip(self.sensitivity, self.screen_width//4 + self.screen_width//10, self.screen_height//10, self.wave_random(), self.screen_width,  self.screen_height, Direction.DOWN, self.mob_bullet, self.debug))
 
@@ -70,7 +73,11 @@ class TutorialScreen(PlayScreen):
 
         #Let the first enemy shoot if there are any enemies
         if len(self.enemies.sprites()) > 0 and self.cooldown_mob == 0:
+
+            #Let the enemy shoot
             self.enemies.sprites()[0].shoot()
+
+            #Set the cooldown for the mob
             self.cooldown_mob = self.fps
         
         #Get the lower cooldown for the mob
@@ -125,7 +132,6 @@ class TutorialScreen(PlayScreen):
 
         #Reset the game
         self.reset()
-    
 
     def handle(self) -> State:
         """Handle the drawing of the sprites"""

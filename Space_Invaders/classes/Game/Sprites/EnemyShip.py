@@ -7,24 +7,7 @@ class EnemyShip(MovingObject):
     sprites = []
 
     def __init__(self, sensitivity:int, initial_x:int, initial_y:int, lives:int,  game_width:int, game_height:int, switch_direction:Direction, bullet_grp, debug:bool):
-        """Constructor for the enemy object
-            Arguments:
-                sensitivity: Sensitivity of the enemy ship (int)
-                initial_x: Get the initial x coordinate for the ship (int)
-                initial_y: Get the initial y coordinate for the ship (int)
-                lives: get the number of lives that the ship has left (int)
-                game_width: Width of the game in pixels (int)
-                game_height: Height of the game in pixels (int)
-                debug: Toggles debug mode (bool)
-
-            Methods:
-                get_points: Returns the points of that the mob is worth
-                is_destroyed: Returns whether the ship is destroyed
-                destroy: Kill the mob 1 time
-                get_lives: Get the number of lives that the mob has left
-                change_direction: Change the direction that the mob is moving
-                update: Update the position of the mob
-        """
+        """Constructor for the enemy ship"""
 
         #Call the superclass
         super().__init__(sensitivity, initial_x, initial_y, game_width, game_height, self.sprites[lives-1 if lives <= len(self.sprites) else len(self.sprites)-1], debug)
@@ -53,35 +36,23 @@ class EnemyShip(MovingObject):
         self.bullet_grp.add(Bullet(self.sensitivity * 1.5, self.get_center()[0], self.get_y(), direction, self.game_width, self.game_height, self.debug))
 
     def get_points(self) -> int:
-        """Get the number of points the mob is worth
-            Arguments:
-                No arguments:
-            Returns: 
-                Returns the number of points the mob is worth (int)
-        """
+        """Get the number of points the enemy is worth"""
         return self.points
 
     def is_destroyed(self) -> bool:
-        """Returns whether the ship is destroyed
-            Arguments:
-                No arguments:
-            Returns: 
-                Returns if the mob is destroyed
-        """
+        """Returns whether the enemy is destroyed"""
         return self.get_lives() == 0
 
-    def destroy(self) -> None:
-        """Destroy 1 life of the ship
-            Arguments:
-                No arguments:
-            Returns: 
-                No return
-        """
+    def destroy(self, lives:int = 1) -> None:
+        """Destroy n life of the ship"""
         #If the ship is still alive
         if self.lives:
 
             #Reduce the life of the ship
-            self.lives -= 1
+            if self.lives < lives:
+                self.lives = 0
+            else:
+                self.lives -= lives
 
             #If the ship still has lives
             if not self.is_destroyed():
@@ -91,26 +62,18 @@ class EnemyShip(MovingObject):
 
                 #Scale the mob to 40 x 40
                 self.scale(40,40)
+
         else:
+
             #If it ends up here the destroy object is being destroyed somemore
             assert False, "Destroying destroyed object"
 
     def get_lives(self) -> int: 
-        """Gets the number of lives the ship has left
-            Arguments:
-                No arguments:
-            Returns: 
-                Returns the number of lives the mob have left (int)
-        """
+        """Gets the number of lives the ship has left"""
         return self.lives
 
     def change_direction(self) -> None:
-        """Change the x direction the enemy is moving
-            Arguments:
-                No arguments:
-            Returns: 
-                No return
-        """
+        """Change the x direction the enemy is moving"""
 
         #Swap the Right and the left position
         if self.direction == Direction.RIGHT:
@@ -121,16 +84,11 @@ class EnemyShip(MovingObject):
             return
 
     def touch_edge(self) -> bool:
-        """If it is touching the edge"""
+        """Check if the enemy is touching the edge"""
         return self.get_x() >= self.game_width - self.get_width()//2 or self.get_x() < self.get_width()//2
 
     def update(self, multiplier:int) -> None:
-        """Update the movement of the enemies
-            Arguments:
-                No arguments:
-            Returns: 
-                No return
-        """
+        """Update the movement of the enemies"""
 
         #If enemyship is moving to the right and is not at the edge
         if self.direction == Direction.RIGHT and self.get_x() < self.game_width:
@@ -149,11 +107,13 @@ class EnemyShip(MovingObject):
             
             #If switch direction is down
             if self.switch_direction == Direction.DOWN:
+                
                 #Move down
                 self.move_down(self.get_height()//4)
 
             #If switch direction is up
             elif self.switch_direction == Direction.UP:
+
                 #Move up
                 self.move_up(self.get_height()//4)
 

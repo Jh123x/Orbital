@@ -6,9 +6,7 @@ from .. import *
 
 class ClassicScreen(Screen):
     def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, difficulty:Difficulty, wave:int = 1, player_lives:int = 3,debug:bool = False):
-        """Classic screen for the game
-            Main class to draw the classic screen for the game
-        """
+        """Constructor for Classic screen for the game"""
 
         #Call the superclass init
         super().__init__(screen_width, screen_height, State.CLASSIC, screen, 0, 0, debug)
@@ -86,6 +84,8 @@ class ClassicScreen(Screen):
         self.enemies.empty()
         self.other_enemies.empty()
         self.explosions.empty()
+
+        #Reset the blocks to original block group
         self.blocks = BlockGroup(self.screen_width, self.screen_height//1.2, self.screen, 5, self.player1.get_height() + 10)
 
         #Reset the player
@@ -100,12 +100,8 @@ class ClassicScreen(Screen):
         return tuple(self.enemies)
 
     def update_keypresses(self) -> None:
-        """Update the screen based on what the player has pressed
-            Arguments:
-                No arguments
-            Returns:
-                No returns
-        """
+        """Update the screen based on what the player has pressed"""
+
         #Get all the number of keys
         keys = pygame.key.get_pressed()
 
@@ -131,12 +127,8 @@ class ClassicScreen(Screen):
                 self.player1.shoot()
 
     def spawn_enemy_bullets(self) -> None:
-        """Spawns a bullet randomly for the enemy
-            Arguments: 
-                No arguments
-            Returns: 
-                No returns
-        """
+        """Spawns a bullet randomly for the enemy"""
+
         #Check if the enemy can shoot randomly
         rand = self.generate_random_no()*self.fps*4
 
@@ -221,12 +213,7 @@ class ClassicScreen(Screen):
         pygame.draw.rect(screen, (55,255,10*self.player1.get_lives()), self.player1.rect, 0)
 
     def update(self) -> None:
-        """Update the sprites
-            Arguments: 
-                No arguments
-            Returns:
-                No returns
-        """
+        """Update the player and the sprites"""
 
         #If the game was resetted
         if self.resetted:
@@ -290,12 +277,7 @@ class ClassicScreen(Screen):
         # self.draw_hitboxes()
 
     def get_score(self) -> int:
-        """Gets the score of the player in the current state
-            Arguments:
-                No arguments
-            Returns:
-                Return an integer as a score (int)
-        """
+        """Gets the score of the player in the current state"""
         return self.p1_score
 
     def generate_random_no(self) -> int:
@@ -311,7 +293,11 @@ class ClassicScreen(Screen):
 
     def get_random_enemy(self) -> EnemyShip:
         """Get a random enemy"""
+
+        #Get a list of enemies
         lst = tuple(self.enemies)
+
+        #Randomly choose 1 of them
         return lst[int(self.generate_random_no()* (len(lst)-1))]
 
     def check_block_collision(self):
@@ -333,7 +319,7 @@ class ClassicScreen(Screen):
             ship = sprites[0][0]
 
             #Destroy the ship 1 time
-            ship.destroy()
+            ship.destroy(self.player1.get_bullet_power())
 
             #Remove the ship from groupp if it has 0 lives
             if ship.is_destroyed():
@@ -351,12 +337,8 @@ class ClassicScreen(Screen):
         return 0
 
     def check_collisions(self):
-        """Check the objects which collided
-            Arguments:
-                No arguments
-            Returns:
-                No returns
-        """
+        """Check the objects which collided"""
+
         #Check block collisions
         self.check_block_collision()
 
@@ -395,7 +377,7 @@ class ClassicScreen(Screen):
             ship = ships[0][0]
 
             #Destroy the first ship in the list (Ensures 1 bullet kill 1 ship only)
-            ship.destroy()
+            ship.destroy(self.player1.get_bullet_power())
 
             if self.debug:
                 print(f"Ship destroyed")
@@ -426,12 +408,7 @@ class ClassicScreen(Screen):
         self.explosions.add(Explosion(self.fps//4, x, y, self.screen_width, self.screen_height, 0, self.debug))
 
     def spawn_enemies(self, number:int) -> None:
-        """Spawn enemies into the game
-            Arguments: 
-                number: Number of enemies to spawn (int)
-            Returns: 
-                No returns
-        """
+        """Spawn n enemies into the game"""
         
         #Make the enemies into rows of 6
         for j in range(number//6 if number // 6 < 5 else 5):
@@ -494,12 +471,7 @@ class ClassicScreen(Screen):
         self.over = True
         
     def handle(self) -> State:
-        """Handle the drawing of the play state
-            Arguments:
-                No arguments
-            Returns:
-                No returns
-        """
+        """Handle the drawing of the classic screen"""
         
         #If it was initially resetted
         if self.resetted:

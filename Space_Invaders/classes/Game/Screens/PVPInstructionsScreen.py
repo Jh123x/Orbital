@@ -26,6 +26,7 @@ class PVPInstructionsScreen(Screen):
 
     def check_keypresses(self) -> State:
         """Check the keypresses on the PVP instructions screen"""
+        
         #If the player clicks on back
         if self.check_clicked(self.back):
             return State.INSTRUCTIONS_MENU

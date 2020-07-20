@@ -26,6 +26,7 @@ class State(enum.Enum):
     TUTORIAL = 4
     VICTORY = 5
     ONE_PLAYER_MENU = 6
+    VID_CUTSCENE = 9999
 
     #Highscore states
     HIGHSCORE = 8

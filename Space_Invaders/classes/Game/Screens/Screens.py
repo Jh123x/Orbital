@@ -2,6 +2,7 @@ import pygame
 from pygame.locals import *
 from .. import BaseObject, State, Direction
 
+
 pygame.font.init()
 
 class Screen(BaseObject):
@@ -12,21 +13,8 @@ class Screen(BaseObject):
     title_font = pygame.font.Font(pygame.font.get_default_font(), 60)
 
     def __init__(self, screen_width:int, screen_height:int, state:State, screen, initial_x:int, initial_y:int, debug:bool = False):
-        """Base Screen object
-            Arguments:
-                screen_width: Width of the game in pixels (int)
-                screen_height: Height of the game in pixels (int)
-                state: State that the game is in (State)
-                screen: Surface that the game will be blited to (pygame.Surface)
-                debug: toggles debug mode (bool): default = False
+        """Base Screen object"""
 
-            Methods:
-                update: Blit the Screen onto the surface
-                reset: Reset the Screen
-                handle: Placeholder method to be overwritten
-                write: Write Words onto the screen
-                check_clicked: Checks of the rect is clicked on by user
-        """
         #Call superclass
         super().__init__(initial_x, initial_y, debug)
 
@@ -47,15 +35,22 @@ class Screen(BaseObject):
         pass
     
     def check_quit(self) -> bool:
-        #Check if the player wants to quit
+        """Check if the player wants to quit"""
+        #Return True if there is a quit event
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return True
+
+        #Otherwise return False
         return False
 
     def set_background(self, bg) -> None:
         """Update the background"""
+
+        #Set the background
         self.bg = bg
+
+        #Fill the background
         self.surface.fill(self.bg)
 
     def reset_surface(self) -> None:
@@ -63,12 +58,7 @@ class Screen(BaseObject):
         self.surface = pygame.Surface((self.screen_width, self.screen_height), pygame.SRCALPHA, 32)
 
     def update(self) -> None:
-        """Blits the screen onto the surface
-            Arguments:
-                No arguments
-            Returns: 
-                No returns
-        """
+        """Blits the screen onto the surface"""
         
         #If the screen has a background
         if self.bg:
@@ -87,12 +77,9 @@ class Screen(BaseObject):
         self.state = state
     
     def handle(self) -> State:
-        """Placeholder method to be overwritten
-            Arguments:
-                No arguments
-            Returns: 
-                Returns the next state the game is suppose to be in
-        """
+        """Placeholder method to be overwritten"""
+
+        #Assert that it is implemented
         assert NotImplementedError("Please override this method in screen")
 
     def write_main(self,font_type, color: Color, words:str, xpos:int, ypos:int, direction:Direction = Direction.CENTER):
@@ -100,17 +87,8 @@ class Screen(BaseObject):
         return self.write(font_type, color, words, xpos, ypos, direction, self.screen)
 
     def write(self, font_type, color: Color, words:str, xpos:int, ypos:int, direction:Direction = Direction.CENTER, screen = None) -> pygame.Rect:
-        """Write words onto the screen
-            Arguments:
-                font_type: The type of font to be used (pygame.font)
-                color: Color of the words (Color)
-                words: Words to be printed (string)
-                xpos: X coordinate of direction defined(int)
-                ypos: Y coordinate of direction defined(int)
+        """Write words onto the screen"""
 
-            Return:
-                Rect containing the words created (pygame.Rect)
-        """
         #If no screen is specified
         if screen == None:
 
@@ -151,12 +129,7 @@ class Screen(BaseObject):
         return rect
 
     def check_clicked(self, rect) -> bool:
-        """Check if the player clicked on the rect
-            Arguments:
-                rect: The rectangle to be checked if the player clicked on it (pygame.Rect)
-            Return: 
-                returns a boolean indicating if the player clicked on the rect (bool)
-        """
+        """Check if the player clicked on the rect"""
 
         #Get the position of the mouse
         mouse_pos = pygame.mouse.get_pos()

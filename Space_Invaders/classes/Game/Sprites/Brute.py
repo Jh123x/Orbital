@@ -1,9 +1,15 @@
 from . import EnemyShip
 
 class Brute(EnemyShip):
+
+    #Store the sprite for the Brute
     sprites = []
+
+    #Store the number of times the brute spawned
     spawn_count = 0
+
     def __init__(self, sensitivity:int, initial_x:int, initial_y:int,  game_width:int, game_height:int, bullet_grp, debug:bool):
+        """Constructor class for the Brute boss"""
 
         #Increment spawn count
         self.spawn_count += 1

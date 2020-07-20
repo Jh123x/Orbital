@@ -20,7 +20,7 @@ from .SettingsScreen import SettingsScreen
 from .CoopScreen import CoopScreen
 from .AIPVPScreen import AIPVPScreen
 from .OnlinePVPScreen import OnlinePVPScreen
-from .Cutscene import Cutscene
+from .Cutscene import VideoCutscene
 from .StoryModeScreen import StoryModeScreen
 from .OnePlayerModesScreen import OnePlayerModeScreen
 from .TutorialScreen import TutorialScreen

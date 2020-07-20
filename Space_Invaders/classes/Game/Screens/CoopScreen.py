@@ -95,7 +95,8 @@ class CoopScreen(PlayScreen):
         """Return the combined score of the players"""
         return super().get_score() + self.p2_score
 
-    def get_gameover_state(self):
+    def get_gameover_state(self) -> State:
+        """Returns the gameover mode for this state"""
         return State.GAMEOVER
 
     def bullet_direction(self) -> Direction:
@@ -124,6 +125,7 @@ class CoopScreen(PlayScreen):
         return super().update_keypresses()
 
     def check_powerups(self, ship) -> None:
+        """Check if the powerups should be spawned"""
         #If powerups are not disabled
         if self.powerup_chance > 0:
 
@@ -140,8 +142,12 @@ class CoopScreen(PlayScreen):
                 super().spawn_powerups(ship.get_x(), ship.get_y())
 
     def check_player_mob_collision(self, player_bullet):
+        """Check the collision between the enemies and the players"""
+
         #Check collision of mobs with player 1 bullet
         ships = list(pygame.sprite.groupcollide(player_bullet, self.enemies, True, False).values()) + list(pygame.sprite.groupcollide(player_bullet, self.other_enemies, True, False).values())
+
+        #Initialise the points the player got so far
         pts = 0
 
         #If the list is non-empty
@@ -245,6 +251,7 @@ class CoopScreen(PlayScreen):
 
     def handle(self) -> State:
         """Handle the drawing of the screen"""
+        
         #Check if both players are destroyed
         if self.player2.is_destroyed():
 

@@ -2,9 +2,12 @@ from . import Screen
 from .. import Sound, WHITE, State, ImageObject
 
 class VictoryScreen(Screen):
+
+    #Store the sprites used for the victory screen
     sprites = []
+
     def __init__(self,screen_width:int, screen_height:int, screen, prev_stage:str, sound:Sound = None, debug:bool = False):
-        """The Victory Screen"""
+        """The constructor for Victory Screen"""
 
         #Initialise the superclass
         super().__init__(screen_width, screen_height, State.VICTORY, screen, 0, 0, debug)

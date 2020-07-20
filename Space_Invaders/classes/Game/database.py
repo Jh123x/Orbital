@@ -4,15 +4,7 @@ import os
 
 class Database(object):
     def __init__(self, dbpath:str, name:str):
-        """Base database object
-            Arguments:
-                dbpath: Path to the database file
-                name: Name of the table
-            Methods:
-                execute: Execute a particular string in sql
-                fetch_all: Fetch all the data in database
-                is_cache: Check if the database data is stored in cache
-        """
+        """Base database object"""
         #Store the name
         self.name = name
 
@@ -30,33 +22,17 @@ class Database(object):
         self.changed = True
 
     def execute(self, command:str, *args) -> None:
-        """Execute the command in the form of a string
-            Arguments:  
-                command: a string containing the sql command (string)
-                *args: The arguments to the placed within the command wildcards if any (tuple)
-            Returns:
-                No return
-        """
+        """Execute the SQL command in the form of a string"""
 
         #Run the command
         self.cursor.execute(command, *args)
 
     def is_cache(self) -> bool:
-        """Check if there is a cached copy
-            Arguments: 
-                No arguments
-            Returns:
-                Returns a boolean to indicate if there is a cache (bool)
-        """
+        """Check if there is a cached copy of the database"""
         return True if self.cache else False
 
     def fetch_all(self) -> tuple:
-        """Fetch all the data from the highscore table
-            Arguments:
-                No arguments
-            Returns: 
-                A tuple containing all the entries in the highscore table (tuple of tuple)
-        """
+        """Fetch all the data from the table"""
         
         #If there is no cache or if there are changes in the cache
         if self.changed or not self.is_cache():
@@ -73,16 +49,10 @@ class Database(object):
 
     def __del__(self):
         """Destructor for the Scoreboard
-            Arguments:
-                No Arguments
-            Returns:
-                Does not return
+            Commits all the changes that is done
         """
         #Save all changes
         self.connection.commit()
-
-        #Close the connection
-        # self.connection.close()
 
 class SettingsDB(Database):
     def __init__(self, dbpath:str):
@@ -118,12 +88,7 @@ class SettingsDB(Database):
         self.changed = True
 
     def remove(self, name:str) -> None:
-        """Remove the last entry from the highscore board
-            Arguments:
-                name: Name of the entry to be removed (string)
-            Returns:
-                No return
-        """
+        """Remove the last entry from the highscore board"""
         #Remove from the database where the name matches the name to be removed
         self.execute(f"DELETE FROM {self.name} WHERE name = ?", (name,))
 
@@ -148,12 +113,7 @@ class Achievements(Database):
         self.changed = True
 
     def remove(self, name:str) -> None:
-        """Remove the last entry from the highscore board
-            Arguments:
-                name: Name of the entry to be removed (string)
-            Returns:
-                No return
-        """
+        """Remove the last entry from the highscore board"""
         #Remove from the database where the name matches the name to be removed
         self.execute(f"DELETE FROM {self.name} WHERE name = ?", (name,))
 
@@ -162,18 +122,7 @@ class Achievements(Database):
 
 class ScoreBoard(Database):
     def __init__(self, dbpath:str, max_length:int = 5):
-        """Class for keeping track of the high score
-            Arguments:
-                dbpath: A string containing the path to the database (string)
-                max_length: An integer containing the max length to keep track of (int): default = 5
-            
-            Methods:
-                remove: Remove a name from the scoreboard
-                remove_exact: Remove the exact copy of the name and score from the scoreboard
-                add: Add the name and score to the scoreboard
-                add_all: Add all items passed into the scoreboard
-                remove_all: Remove all names,score pairs that are provided
-        """
+        """Class for keeping track of the high score"""
 
         #Call the superclass
         super().__init__(dbpath, 'highscore')
@@ -185,12 +134,7 @@ class ScoreBoard(Database):
         self.execute("CREATE TABLE IF NOT EXISTS highscore (id INTEGER, name TEXT, score INTEGER)")
 
     def remove(self, name:str) -> None:
-        """Remove the last entry from the highscore board
-            Arguments:
-                name: Name of the entry to be removed (string)
-            Returns:
-                No return
-        """
+        """Remove the last entry from the highscore board"""
         #Remove from the database where the name matches the name to be removed
         self.execute(f"DELETE FROM {self.name} WHERE name = ?", (name,))
 
@@ -198,13 +142,7 @@ class ScoreBoard(Database):
         self.changed = True
 
     def remove_exact(self, name:str, score:int) -> None:
-        """Removes the entry that matches both the name and the highscore
-            Arguments:
-                name: Name of the entry to be removed (string)
-                score: Score of the entry to be removed (int)
-            Returns:
-                There is no return
-        """
+        """Removes the entry that matches both the name and the highscore"""
 
         #Remove the entry from the database
         self.execute("DELETE FROM highscore WHERE name = ? AND score = ?", (name, score))
@@ -213,13 +151,7 @@ class ScoreBoard(Database):
         self.changed = True
 
     def add(self, name:str, score:int) -> None:
-        """Add a name and a score to the scoreboard
-            Arguments:
-                name: Name of the person to be inserted (string)
-                score: Score of the person to be inserted (int)
-            Returns: 
-                Does not return 
-        """
+        """Add a name and a score to the scoreboard"""
         #Insert the element into the table
         self.execute('INSERT INTO highscore VALUES(NULL, ?, ?)', (name,score))
 
@@ -227,12 +159,7 @@ class ScoreBoard(Database):
         self.changed = True
 
     def add_all(self, *args) -> None:
-        """Add all the items into the database
-            Arguments: 
-                *args: list of items to be added to the database (List of tuples)
-            Returns: 
-                No return
-        """
+        """Add all the items into the database"""
         #If there is no cache update the cache
         if not self.is_cache():
             self.fetch_all()
@@ -248,12 +175,7 @@ class ScoreBoard(Database):
                 self.cache.append(item)
 
     def remove_all(self, *args):
-        """Remove all the items from the table
-            Arguments:
-                *args: list of items to be removed from the database (list of tuples)
-            Returns:
-                No return
-        """
+        """Remove all the items from the table"""
         #Call the cache
         if not self.is_cache():
             self.fetch_all()
@@ -267,12 +189,9 @@ class ScoreBoard(Database):
 
     
 def main() -> None:
-    """The main function for the database class used for debuging and modifying database
-        Arguments:
-            No arguments
-        Returns: 
-            No returns
-    """
+    """The main function for the database class used for debuging and modifying database"""
+
+    #Load the path of the database
     dbpath = os.path.join(os.path.dirname(os.path.realpath(__file__)),'..', '..', 'data', 'test.db')
 
     #Create the scoreboard database
