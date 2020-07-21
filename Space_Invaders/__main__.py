@@ -36,6 +36,9 @@ def main() -> None:
     #load soundpath
     config['db_path'] = form_abs_path(get_curr_path(), config['db_path'])
 
+    #load screenshot path
+    config['screenshot_path'] = form_abs_path(get_curr_path(), config['screenshot_path'])
+
     #Load the other sprites
     d["player_img_paths"] = map_dir("images","player")
     d["enemy_img_paths"] = map_dir("images", "enemies")

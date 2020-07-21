@@ -38,7 +38,7 @@ class GameWindow(object):
     def __init__(self, sensitivity:int, maxfps:int, game_width:int, game_height:int, icon_img_path:str, player_img_paths:tuple,
                  enemy_img_paths:tuple, bullet_img_paths:tuple, background_img_paths:tuple, explosion_img_paths:tuple, 
                  db_path:str, sound_path:dict, bg_limit:int, menu_music_paths:tuple, powerup_img_path:tuple, mothership_img_path:tuple, 
-                 trophy_img_path:tuple, scout_img_path:tuple, brute_img_path:tuple, wave:int = 1,  debug:bool = False):
+                 trophy_img_path:tuple, scout_img_path:tuple, brute_img_path:tuple, screenshot_path:str, wave:int = 1,  debug:bool = False):
         """The Main window for the Space defenders game"""
         
         #Load sprites
@@ -47,6 +47,9 @@ class GameWindow(object):
 
         #Store debug variable
         self.debug = debug
+
+        #Storing the path for screenshots
+        self.screenshot_dir = screenshot_path
 
         #Load setting menu settings
         self.settingsdb = SettingsDB(db_path)
@@ -411,7 +414,8 @@ class GameWindow(object):
             Runs in parallel to the game to reduce lag while screenshotting in game
         """
         #Save a screenshot named based on date and time
-        name = f'screenshots/{datetime.datetime.now().strftime("%d_%m_%Y_%H_%M_%S")}.png'
+
+        name = os.path.join(self.screenshot_dir, f'{datetime.datetime.now().strftime("%d_%m_%Y_%H_%M_%S")}.png')
 
         #Play the screenshot sound
         self.sound.play('screenshot')
