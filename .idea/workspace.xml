@@ -241,7 +241,7 @@
       <workItem from="1594369412653" duration="858000" />
       <workItem from="1594475192923" duration="1950000" />
       <workItem from="1594478958958" duration="21388000" />
-      <workItem from="1594872415492" duration="62140000" />
+      <workItem from="1594872415492" duration="62395000" />
     </task>
     <task id="LOCAL-00001" summary="Commit Bugfixes from training problems">
       <created>1592625374788</created>
@@ -306,7 +306,14 @@
       <option name="project" value="LOCAL" />
       <updated>1595241024995</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="stuff">
+      <created>1595337697228</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1595337697229</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -335,7 +342,8 @@
     <MESSAGE value="Merge Changes to Game:" />
     <MESSAGE value="Merge Additions of Scout" />
     <MESSAGE value="add statemachine.py for ai functionality" />
-    <option name="LAST_COMMIT_MESSAGE" value="add statemachine.py for ai functionality" />
+    <MESSAGE value="stuff" />
+    <option name="LAST_COMMIT_MESSAGE" value="stuff" />
   </component>
   <component name="WindowStateProjectService">
     <state x="72" y="117" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1595257230960">

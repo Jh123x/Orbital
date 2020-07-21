@@ -1,1 +1,1 @@
-python3 setup_mac.py build_exe
+python3 setup_mac.py build
