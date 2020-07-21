@@ -14,4 +14,4 @@ setup(name = "Space Defenders",
     version = "0.3",
     description = "Space Defenders Game",
     options = {"build_exe": build_exe_options},
-    executables = [Executable("__main__.py", base='Win32GUI')])
+    executables = [Executable("__main__.py", base='Win32GUI' if sys.platform == 'win32' else None)])
