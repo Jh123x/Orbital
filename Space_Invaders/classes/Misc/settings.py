@@ -28,7 +28,7 @@ def map_abs_path(key:str, paths:list, dic:dict, curr_path:str):
 
 def form_abs_path(current_path:str, filepath:str):
     """Get the absolute path of a filepath"""
-    return os.path.join(os.path.dirname(os.path.realpath(current_path)),filepath)
+    return os.path.join(os.path.dirname(current_path),filepath)
 
 def convertType(pair:tuple):
     """Convert items to the appropriate types
@@ -38,10 +38,16 @@ def convertType(pair:tuple):
             pair: A tuple containing 2 items where the second item is converted to the appropriate types
     """
 
+    #If it is not a pair
+    if len(pair) != 2:
+
+        #Return the pair
+        return pair
+
     #Check if it is boolean
-    if pair[1] == "True" or pair[1] == "true":
+    if pair[1].lower() == "true":
         return pair[0],True
-    elif pair[1] == "False" or pair[1] == "false":
+    elif pair[1].lower() == "false":
         return pair[0],False
 
     #Check if it is numbers

@@ -41,7 +41,7 @@ class Sound(object):
         """Get the dictionary of the sounds"""
         return self.sounds
 
-    def play(self, key:str) -> None:
+    def play(self, key:str) -> bool:
         """Play the sound based on the key that is given"""
         #Get the sound from the dictionary
         sound = self.sounds.get(key, False)
@@ -58,12 +58,16 @@ class Sound(object):
                 #Play it
                 sound.play()
 
+                return True
+
         #Otherwise
         else:
 
             #It is an invalid key
             if self.debug:
                 print("Invalid key")
+
+        return False
 
     def toggle(self) -> None:
         """Toggle the enabled status of sound"""
