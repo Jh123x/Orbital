@@ -40,8 +40,8 @@ class TwoPlayerGameoverScreen(Screen):
         self.write(self.end_font, WHITE, "Press Y to go back and N to quit", self.screen_width//2, self.screen_height // 2 + self.screen_height//6)
 
     def get_scores(self) -> tuple:
-        """Get the scores of the player"""
-        return self.p1_score, self.p2_score
+        """Return the scores of the players"""
+        return self.p1_score,self.p2_score
 
     def update_keypresses(self) -> bool:
         """Check if the player wants to play"""

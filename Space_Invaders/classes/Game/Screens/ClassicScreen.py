@@ -182,6 +182,10 @@ class ClassicScreen(Screen):
         #Return the surface that is drawn on
         return surface
 
+    def get_entities(self):
+
+        return self.enemies,self.other_enemies,self.mob_bullet
+
     def draw_hitboxes(self, screen = None):
         """Draw hitboxes for players and objects"""
         #Check if screen is none

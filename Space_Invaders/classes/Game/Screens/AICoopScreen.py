@@ -70,7 +70,7 @@ class AICoopScreen(CoopScreen):
         """Update method for the AICoopScreen"""
 
         #Update the action of the AI
-        self.player2.action(self.get_hitboxes_copy())
+        self.player2.action(self.get_entities())
 
         #Call the superclass update
         return super().update()

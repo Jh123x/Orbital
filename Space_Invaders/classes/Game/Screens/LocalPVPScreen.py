@@ -39,6 +39,10 @@ class LocalPVPScreen(ClassicScreen):
 
         #Rotate the image of the player at the top
         self.player1.rotate(180)
+
+    def get_entities(self):
+        ent = super().get_entities() + (self.player1,)
+        return ent
         
     def reset(self) -> None:
         """Reset the environment"""

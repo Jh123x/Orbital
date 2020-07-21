@@ -36,7 +36,6 @@ class ImageObject(BaseObject):
 
     def draw(self, screen) -> None:
         """Draw the player onto the screen"""
-        #Get previous rect position and empty img
 
         #Render new position
         screen.blit(self.image, self.rect)
@@ -96,6 +95,9 @@ class ImageObject(BaseObject):
 
             #Rotate the image
             self.image = pygame.transform.rotate(self.image, angle)
+
+            #Load the rectangle
+            self.load_rect()
         
         #Otherwise do nothing
         else:

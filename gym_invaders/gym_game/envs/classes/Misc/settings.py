@@ -4,7 +4,7 @@ import os
 
 def list_dir(filepath):
     """List the files in the directory"""
-    return tuple(map(lambda x: "/".join((filepath,x)),os.listdir(filepath)))
+    return sorted(list(map(lambda x: os.path.join(filepath,x),os.listdir(filepath))))
 
 def num_files(filepath):
     """Find the number of files in the directory"""
@@ -28,7 +28,7 @@ def map_abs_path(key:str, paths:list, dic:dict, curr_path:str):
 
 def form_abs_path(current_path:str, filepath:str):
     """Get the absolute path of a filepath"""
-    return f"{os.path.dirname(os.path.realpath(current_path))}/{filepath}"
+    return os.path.join(os.path.dirname(os.path.realpath(current_path)),filepath)
 
 def convertType(pair:tuple):
     """Convert items to the appropriate types
@@ -46,7 +46,11 @@ def convertType(pair:tuple):
 
     #Check if it is numbers
     elif pair[1].isdigit():
-        return pair[0],int(pair[1])
+        if pair[0].isdigit():
+            return int(pair[0]), int(pair[1])
+        else:
+            return pair[0],int(pair[1])
+
 
     #Otherwise return the original pair
     else:

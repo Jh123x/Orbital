@@ -29,7 +29,8 @@ class AIPVPScreen(LocalPVPScreen):
     def update(self) -> None:
         """Update the AI before calling superclass update"""
         #Let the AI do a move
-        self.player2.action(self.get_hitboxes_copy())
+
+        self.player2.action(self.get_entities())
 
         #Call the superclass update
         return super().update()
