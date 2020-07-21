@@ -1,6 +1,6 @@
 import pygame
 from pygame.locals import *
-from .. import *
+from .. import WHITE
 
 class InputBox(object):
     def __init__(self, initial_x:int, initial_y:int, height:int, font, max_length:int = 10):

@@ -1,9 +1,6 @@
 #Import the Enums.py file
 from .Enums import *
 
-#Import AI
-from .ai_invader import *
-
 #Import network
 from .network import *
 

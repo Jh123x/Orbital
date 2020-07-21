@@ -1,6 +1,5 @@
 from .. import WHITE, State
-from . import Screen, Cutscene
-
+from . import Screen
 
 class StoryModeScreen(Screen):
     videos = []

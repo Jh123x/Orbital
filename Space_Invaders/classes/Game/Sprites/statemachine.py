@@ -1,7 +1,6 @@
 import math
 import numpy as np
 
-
 def calc_dist(p1, p2):
     '''
     Calculate distance between point 1 and point 2
@@ -181,12 +180,6 @@ class StateMachine:
             return np.random.choice([0, 3, 4, 5], p=[0.2, 0.1, 0.35, 0.35])
         else:
             return np.random.choice([0, 1, 2, 3, 4, 5], p=[0.2, 0.1, 0.15, 0.05, 0.25, 0.25])
-
-
-
-
-
-
 
 # if __name__ == '__main__':
 #     machine = StateMachine(3)

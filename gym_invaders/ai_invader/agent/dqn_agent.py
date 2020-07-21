@@ -1,17 +1,10 @@
-import numpy.random as rand
-import torch.nn.functional as F
-import torch.optim as optim
-
 import random
 import torch
 import numpy as np
-from ..util.memory import *
-from .baseagent import BaseAgent
+import numpy.random as rand
+from .. import ReplayMemory
 
-
-
-
-class DQNAgent(BaseAgent):
+class DQNAgent():
     def __init__(self, input_shape, action_size, seed, device, buffer_size, batch_size,
                  gamma, alpha, tau, update, replay, model):
         '''Initialise a Agent Object
@@ -27,8 +20,10 @@ class DQNAgent(BaseAgent):
         replay.     : after which replay to be started
         model.      : Pytorch Model
         '''
-
-        super(DQNAgent, self).__init__(input_shape,action_size,seed,device,gamma,alpha)
+        self.input_shape = input_shape
+        self.action_size = action_size
+        self.seed = random.seed(seed)
+        self.device = device
         self.buffer_size = buffer_size
         self.batch_size = batch_size
         self.gamma = gamma
@@ -41,7 +36,7 @@ class DQNAgent(BaseAgent):
         # Q-Network
         self.policy_net = self.DQN(input_shape, action_size).to(self.device)
         self.target_net = self.DQN(input_shape, action_size).to(self.device)
-        self.optimiser = optim.RMSprop(self.policy_net.parameters(), lr=self.alpha)
+        self.optimiser = torch.optim.RMSprop(self.policy_net.parameters(), lr=self.alpha)
         # Replay Memory
         self.memory = ReplayMemory(self.buffer_size, self.batch_size, self.seed, self.device)
         # Timestep
@@ -49,18 +44,12 @@ class DQNAgent(BaseAgent):
 
     def step(self, state, action, reward, next_state, done):
 
-
         # Save experience into replay buffer
         self.memory.add(state, action, reward, next_state, done)
 
         # Learn every update % timestep
         # print(self.t_step)
 
-
-        # Save experience into replay buffer
-        self.memory.add(state, action, reward, next_state, done)
-        # Learn every update % timestep
-        # print(self.t_step)
         self.t_step = (self.t_step + 1) % self.update
 
         # print(self.t_step)
@@ -72,7 +61,6 @@ class DQNAgent(BaseAgent):
 
     def action(self, state, eps=0.):
         ''' Returns action for given state as per current policy'''
-
         #Unpack the state
         state = torch.from_numpy(state).unsqueeze(0).to(self.device)
 
@@ -91,19 +79,7 @@ class DQNAgent(BaseAgent):
         if rand.rand() > eps:
             return np.argmax(action_val.cpu().data.numpy())
         else:
-            return random.choice(np.arange(self.action_space))
-
-        state = torch.from_numpy(state).unsqueeze(0).to(self.device)
-        self.policy_net.eval()
-        with torch.no_grad():
-            action_val = self.policy_net(state)
-        self.policy_net.train()
-        # Eps Greedy action selections
-        if rand.rand() > eps:
-            return np.argmax(action_val.cpu().data.numpy())
-        else:
             return random.choice(np.arange(self.action_size))
-
 
     def learn(self, exp):
         state, action, reward, next_state, done = exp
@@ -119,7 +95,7 @@ class DQNAgent(BaseAgent):
         Q_target = reward + (self.gamma * Q_target_next * (1 - done))
 
         # Compute Loss
-        loss = F.mse_loss(Q_expt, Q_target)
+        loss = torch.nn.functional.mse_loss(Q_expt, Q_target)
 
         # Minimize loss
         self.optimiser.zero_grad()
@@ -128,13 +104,10 @@ class DQNAgent(BaseAgent):
 
         self.soft_update(self.policy_net, self.target_net, self.tau)
 
-
     def model_dict(self, epsilon)-> dict:
         ''' To save models'''
-        return super().model_dict(  policy_net= self.policy_net.state_dict(),
-                                    target_net= self.target_net.state_dict(),
-                                    t_step=self.t_step,
-                                    epsilon= epsilon)
+        return {'policy_net': self.policy_net.state_dict(), 'target_net': self.target_net.state_dict(),
+                 't_step': self.t_step, 'epsilon': epsilon}
 
     def load_model(self, state_dict):
         '''Load Parameters and Model Information from prior training'''

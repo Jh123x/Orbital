@@ -1,10 +1,9 @@
+# import torch
 import random
-from collections import namedtuple, deque
-import numpy as np
-import torch
-from torch.autograd import Variable
-from scipy.special import expit
 import cv2
+import numpy as np
+from collections import namedtuple, deque
+from scipy.special import expit
 
 class ReplayMemory(object):
 
@@ -82,21 +81,6 @@ def stack_frame(stacked_frames, frame, is_new):
         stacked_frames[-1] = frame
 
     return stacked_frames
-
-# def to_tensor_var(x , cuda = True, dtype = 'float'):
-#     FloatTensor = torch.cuda.FloatTensor if cuda else torch.FloatTensor
-#     LongTensor = torch.cuda.LongTensor if cuda else torch.LongTensor
-#     ByteTensor = torch.cuda.ByteTensor if cuda else torch.ByteTensor
-#     if dtype == 'float':
-#         x = np.array(x,dtype=np.float64).tolist()
-#         return Variable(FloatTensor(x))
-#     elif dtype == 'long':
-#         x = np.array(x, dtype=np.long).tolist()
-#         return Variable(FloatTensor(x))
-#     else:
-#         x = np.array(x, dtype=np.float64).tolist()
-#         return Variable(FloatTensor(x))
-
 
 
 if __name__ == '__main__':

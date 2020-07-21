@@ -1,5 +1,5 @@
 from . import MovingObject
-from .. import *
+from .. import Direction
 
 class Bullet(MovingObject):
 
@@ -30,8 +30,6 @@ class Bullet(MovingObject):
             
             #Set the direction to down
             self.direction = self.move_down
-
-
        
     def update(self) -> None:
         """Update the path of the bullet"""

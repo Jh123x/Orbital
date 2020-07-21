@@ -1,8 +1,5 @@
 import pygame
-try:
-    from .ImageObject import ImageObject
-except ImportError:
-    from ImageObject import ImageObject
+from . import ImageObject
 
 class Explosion(ImageObject):
 
@@ -29,7 +26,6 @@ class Explosion(ImageObject):
 
         #Set the time to live for the explosion
         self.tts = tick_life
-
 
     def update(self):
         """Update the explosion"""
