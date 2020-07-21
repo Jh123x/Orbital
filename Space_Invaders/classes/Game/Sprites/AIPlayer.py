@@ -3,7 +3,7 @@ import random
 import pygame
 import numpy as np
 from . import Player, Bullet, StateMachine
-# from .. import Direction, DQNAgent, DQNCNN, stack_frame, preprocess_frame
+from .. import Direction
 
 class AIPlayer(Player):
     def __init__(self, sensitivity:int, game_width:int, game_height:int, initial_x:int, 
@@ -21,10 +21,9 @@ class AIPlayer(Player):
         self.state = None
         self.screen = None
         self.cd = self.frames_per_action
-        self.entities = None
         # #If ai is available
         if ai_avail==True:
-            self.ai = StateMachine(30)
+            self.ai = StateMachine(40)
         elif ai_avail == 'torch':
             pass
             #
@@ -59,7 +58,7 @@ class AIPlayer(Player):
 
 
 
-    def action(self, screen) -> None:
+    def action(self, gamestate) -> None:
         """Does the action taken by the AI every frames"""
 
         #If there is no screen do nothing
@@ -67,10 +66,10 @@ class AIPlayer(Player):
             return 
 
         # Updates the state of the game for the model
-        self.state = self.stack_frames(screen)
+        #self.state = self.stack_frames(screen)
 
         # TODO update entity list for StateMachine here
-
+        self.get_entities(*gamestate)
 
         #If the AI is still under cooldown
         if self.cd:
@@ -118,9 +117,9 @@ class AIPlayer(Player):
             # Get possible actions
             actions = self.get_action_space()
             return actions[self.ai.action(self.state)]
-        elif self.ai == True:
+        elif self.ai:
             action = self.get_action_space()
-            return action[self.ai.action(self.entities)]
+            return action[self.ai.state_check(self.state)]
         #Otherwise
         else:
             #Default AI
@@ -172,12 +171,17 @@ class AIPlayer(Player):
         curr_x = self.get_x()
         curr_y = self.get_y()
         enemy1 = list(map(lambda y: (y.get_x(),y.get_y()),filter(lambda x: (np.abs(x.get_x()-curr_x)<=50),enemies1)))
-        enemy2 = list(map(lambda y: (y.get_x(),y.get_y()),filter(lambda x: (np.abs(x.get_x() - curr_x) <= 50, enemies2))))
-        eb = list(map(lambda y: (y.get_x(),y.get_y()),filter(lambda x: (np.abs(x.get_x() - curr_x) <= 50), enemy_bullets)))
-        ep = 'None' if enemy_player == -1 else enemy_player.get_x()
-
+        enemy2 = list(map(lambda y: (y.get_x(),y.get_y()),filter(lambda x: np.abs(x.get_x() - curr_x)<= 50, enemies2)))
+        eb = list(map(lambda y: (y.get_x(),y.get_y()),filter(lambda x: np.abs(x.get_x() - curr_x) <= 50, enemy_bullets)))
+        if enemy_player == -1:
+            ep = 'None'
+        elif np.abs(enemy_player.get_x() - curr_x) > 50:
+            ep = 'None'
+        else:
+            ep = (enemy_player.get_x(),enemy_player.get_y())
         environment_status = {'mobs':enemy1, 'bosses':enemy2,'bullets':eb,'enemy_player':ep,'player': (curr_x,curr_y, self.life)}
-        return environment_status
+        # Set state stored in AI for
+        self.state = environment_status
     def has_screen(self):
         ''' Detect if screen does not exist'''
         return self.screen != None
