@@ -34,6 +34,8 @@ class TwoPlayerScreen(Screen):
 
         #Popup to show that it is still under construction
         self.popup = None
+
+
     
     def check_mouse_press(self) -> State:
         """Check the mouse press of the user"""
