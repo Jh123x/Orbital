@@ -25,3 +25,5 @@ from .OnePlayerModesScreen import OnePlayerModeScreen
 from .TutorialScreen import TutorialScreen
 from .VictoryScreen import VictoryScreen
 from .AICoopScreen import AICoopScreen
+from .StoryTemplate import StoryTemplate
+from .Stage1Screen import Stage1Screen

@@ -13,7 +13,10 @@ class StoryModeScreen(Screen):
         self.write(Screen.title_font, WHITE, "Story modes", self.screen_width /2, self.screen_height /5)
 
         #Store the current number of stages
-        self.stages = 2
+        self.stages = 1
+
+        #Create list to store the buttons
+        self.video_buttons = []
 
         #Put a video for the StoryMode:
         self.create_videos()
@@ -28,14 +31,11 @@ class StoryModeScreen(Screen):
     def create_videos(self) -> None:
         """Create videos buttons for the videos"""
 
-        #Create list to store the buttons
-        self.video_buttons = []
-
         #Iterate through all the stage videos
         for i in range(1,self.get_stages()+1):
 
             #Append the button to the buttons list for checking later
-            self.video_buttons.append(self.write(Screen.end_font, WHITE, f"Stage {i}", self.screen_width /2, self.screen_height /2 + 30*i))
+            self.video_buttons.append(self.write(Screen.end_font, WHITE, f"Stage {i}", self.screen_width // 2, self.screen_height //2 + (40*i)))
 
     def check_mousepress(self) -> State:
         """Check the mouse press of the user"""
@@ -44,6 +44,11 @@ class StoryModeScreen(Screen):
 
             #Return menu state
             return State.ONE_PLAYER_MENU
+
+        #Loop through the the video buttons
+        for index,rect in enumerate(self.video_buttons):
+            if self.check_clicked(rect):
+                return State(100 + index)
 
         return self.state
 

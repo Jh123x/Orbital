@@ -38,12 +38,12 @@ class GameWindow(object):
     def __init__(self, sensitivity:int, maxfps:int, game_width:int, game_height:int, icon_img_path:str, player_img_paths:tuple,
                  enemy_img_paths:tuple, bullet_img_paths:tuple, background_img_paths:tuple, explosion_img_paths:tuple, 
                  db_path:str, sound_path:dict, bg_limit:int, menu_music_paths:tuple, powerup_img_path:tuple, mothership_img_path:tuple, 
-                 trophy_img_path:tuple, scout_img_path:tuple, brute_img_path:tuple, screenshot_path:str, wave:int = 1,  debug:bool = False):
+                 trophy_img_path:tuple, scout_img_path:tuple, brute_img_path:tuple, screenshot_path:str, story_img_path:str, wave:int = 1,  debug:bool = False):
         """The Main window for the Space defenders game"""
         
         #Load sprites
-        load_sprites((Player, Bullet, EnemyShip, Background, Explosion, PowerUp, MotherShip, VictoryScreen, Scout, Brute), 
-                    (player_img_paths, bullet_img_paths, enemy_img_paths, background_img_paths, explosion_img_paths, powerup_img_path, mothership_img_path, trophy_img_path, scout_img_path, brute_img_path))
+        load_sprites((Player, Bullet, EnemyShip, Background, Explosion, PowerUp, MotherShip, VictoryScreen, Scout, Brute, StoryTemplate), 
+                    (player_img_paths, bullet_img_paths, enemy_img_paths, background_img_paths, explosion_img_paths, powerup_img_path, mothership_img_path, trophy_img_path, scout_img_path, brute_img_path, story_img_path))
 
         #Store debug variable
         self.debug = debug
@@ -114,6 +114,7 @@ class GameWindow(object):
         self.tutorial = TutorialScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug)
         self.story_mode = StoryModeScreen(game_width, game_height, self.main_screen, debug)
         self.ai_coop = AICoopScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.difficulty, 3, debug)
+        self.stage1 = Stage1Screen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug)
         self.victory = None
         self.newhighscore = None
         self.pause = None
@@ -147,7 +148,8 @@ class GameWindow(object):
             # State.ONLINE: self.online,
             State.TUTORIAL: self.tutorial,
             State.ONE_PLAYER_MENU: self.one_player_menu,
-            State.STORY_MENU: self.story_mode
+            State.STORY_MENU: self.story_mode,
+            State.STAGE1:self.stage1
         }
         
         #Store the different states the menu has
@@ -176,7 +178,8 @@ class GameWindow(object):
             State.TUTORIAL: self.tutorial.handle,
             State.ONE_PLAYER_MENU: self.one_player_menu.handle,
             State.VICTORY: self.handle_victory,
-            State.STORY_MENU: self.story_mode.handle
+            State.STORY_MENU: self.story_mode.handle,
+            State.STAGE1: self.stage1.handle
         }
 
         #Load sound state:
@@ -263,12 +266,7 @@ class GameWindow(object):
         return state
 
     def handle_newhighscore(self) -> State:
-        """Handle the displaying of the highscore screen
-            Arguments: 
-                No arguments
-            Returns:
-                Returns the state the game is suppose to be in next (State)
-        """
+        """Handle the displaying of the highscore screen"""
 
         if not self.newhighscore or self.newhighscore.get_score() != self.play.get_score():
             #Create the new highscore screen
@@ -297,12 +295,7 @@ class GameWindow(object):
         return state
 
     def handle_pause(self) -> State:
-        """Handle the displaying of the pause screen
-            Arguments:
-                No arguments
-            Returns:
-                Returns the next state the game is suppose to be in (State)
-        """
+        """Handle the displaying of the pause screen"""
 
         #Get the correct score from the correct state
         score = self.screens[self.prev].get_score()
@@ -347,12 +340,7 @@ class GameWindow(object):
         return state
         
     def handle_gameover(self) -> State:
-        """Handle the displaying of the gameover screen
-            Arguments: 
-                No arguments
-            Returns: 
-                Returns the next state the game is suppose to be in (State)
-        """
+        """Handle the displaying of the gameover screen"""
 
         #Check previous state
         if self.prev == State.PLAY or self.prev == State.NEWHIGHSCORE:
@@ -380,7 +368,10 @@ class GameWindow(object):
 
         #If it is classic mode
         else:
+            
+            #Get the score of the previous screen
             score = self.screens[self.prev].get_score()
+
             #Create the gameover screen
             if not self.game_over or self.game_over.get_score() != score:
                 self.game_over = GameoverScreen(self.game_width,self.game_height, self.main_screen, score, self.debug)
@@ -401,12 +392,7 @@ class GameWindow(object):
         return state
 
     def get_state(self) -> State:
-        """Return the state the game is in
-            Arguments:
-                No arguments
-            Returns: 
-                Returns the current state of the game (State)
-        """
+        """Return the state the game is in"""
         return self.state
 
     async def screenshot(self) -> None:
@@ -428,12 +414,7 @@ class GameWindow(object):
         pygame.image.save(self.main_screen, name)
 
     def check_keypresses(self) -> None:
-        """Check global keypresses within the game
-            Arguments:
-                No arguments
-            Returns:
-                No return
-        """
+        """Check global keypresses within the game"""
 
         #Get the keys which are pressed
         keys = pygame.key.get_pressed()
