@@ -41,7 +41,7 @@ class LocalPVPScreen(ClassicScreen):
         self.player1.rotate(180)
 
     def get_entities(self):
-        ent = super().get_entities() + (self.player1,)
+        ent = super().get_entities() + (self.player1,self.player1_bullet)
         return ent
         
     def reset(self) -> None:

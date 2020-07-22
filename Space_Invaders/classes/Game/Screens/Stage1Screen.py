@@ -13,8 +13,8 @@ class Stage1Screen(StoryTemplate):
         self.bg = ImageObject(300, 285, 600, 570, StoryTemplate.sprites[0], debug)
 
         #Image of figure head
-        self.alon_dusk = ImageObject(300, 200, 320, 320, StoryTemplate.sprites[2], debug)
-        self.alon_dusk.scale(200,200)
+        self.alon_dusk = ImageObject(300, 228, 320, 320, StoryTemplate.sprites[2], debug)
+        self.alon_dusk.scale(217,217)
 
         #Textbox
         self.tb = ImageObject(300, 685, 600, 230, StoryTemplate.sprites[3], debug)

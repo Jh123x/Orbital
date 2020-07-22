@@ -181,10 +181,10 @@ class StateMachine:
         else:
             return np.random.choice([0, 1, 2, 3, 4, 5], p=[0.2, 0.1, 0.15, 0.05, 0.25, 0.25])
 
-# if __name__ == '__main__':
-#     machine = StateMachine(3)
-#     e1 = {'mobs': [(400,300)], 'bosses': [(400,300)], 'bullets': [(350,200)], 'enemy_player': 'None', 'player': (400, 200 , 1)}
-#
-#     for i in range(18):
-#         print(machine.state_check(e1))
-#         print('state',machine.state)
+if __name__ == '__main__':
+    machine = StateMachine(3)
+    e1 = {'mobs': [(400,300)], 'bosses': [(400,300)], 'bullets': [(350,200)], 'enemy_player': 'None', 'player': (400, 200 , 1)}
+
+    for i in range(18):
+        print(machine.state_check(e1))
+        print('state',machine.state)

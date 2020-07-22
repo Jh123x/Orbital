@@ -45,7 +45,7 @@ class AIPlayer(Player):
         if not self.has_screen():
             return 
 
-        # TODO update entity list for StateMachine here
+
         self.get_entities(*gamestate)
 
         #If the AI is still under cooldown
@@ -143,7 +143,7 @@ class AIPlayer(Player):
         #Call the superclass draw
         super().draw(screen)
 
-    def get_entities(self,enemies1, enemies2, enemy_bullets, enemy_player= -1):
+    def get_entities(self,enemies1, enemies2, enemy_bullets, enemy_player= -1, player_bullets = -1):
         ''' Relevent Information for AI decision making'''
         curr_x = self.get_x()
         curr_y = self.get_y()
@@ -153,10 +153,17 @@ class AIPlayer(Player):
         
         if enemy_player == -1:
             ep = 'None'
+
         elif np.abs(enemy_player.get_x() - curr_x) > 50:
             ep = 'None'
+            player_b = list(map(lambda y: (y.get_x(), y.get_y()),
+                                filter(lambda x: np.abs(x.get_x() - curr_x) <= 50, player_bullets)))
+            eb.extend(player_b)
         else:
             ep = (enemy_player.get_x(),enemy_player.get_y())
+            player_b = list(map(lambda y: (y.get_x(), y.get_y()),
+                          filter(lambda x: np.abs(x.get_x() - curr_x) <= 50, player_bullets)))
+            eb.extend(player_b)
 
         environment_status = {'mobs':enemy1, 'bosses':enemy2,'bullets':eb,'enemy_player':ep,'player': (curr_x,curr_y, self.life)}
 
