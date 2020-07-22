@@ -93,7 +93,46 @@ class Stage1Screen(StoryTemplate):
 
     def post_cutscene(self):
         """The post cutscene for stage 1"""
-        self.next_scene()
+        #Insert the Icon for the char speaking
+        self.alon_dusk.draw(self.screen)
+
+        #Draw the background
+        self.draw_bg()
+
+        #Draw the next button
+        self.next_btn = self.write_main(Screen.end_font, WHITE, "Next", 580, self.tb.rect.top - 30, Direction.RIGHT)
+
+        #Lower cd of click if it is still on cooldown
+        if self.click_cd:
+            self.click_cd -= 1
+
+        #Check if the next button is clicked
+        if self.check_clicked(self.next_btn) and not self.click_cd:
+            if self.debug:
+                print("Pressed next")
+            self.clicks += 1
+            self.click_cd = self.fps//5
+
+        #Write the character name text
+        self.write_main(Screen.end_font, WHITE, "Alon Dusk", 33, self.tb.rect.top + 15, Direction.LEFT)
+
+        first_px = self.tb.rect.top + 75
+        left_px = 40
+
+        if self.clicks == 0:
+
+            #Write the character speech text
+            self.write_main(Screen.font, WHITE, "Good job clearing the way. Now we can", left_px, first_px, Direction.LEFT)
+            self.write_main(Screen.font, WHITE, "focus on taking back our next base", left_px, first_px + 15, Direction.LEFT)
+
+        else:
+            #Reset the clicks
+            self.clicks = 0
+
+            #Move to the next scene
+            return self.get_victory_state()
+
+        #Return the current state
         return self.state
 
     def play(self):
@@ -102,5 +141,5 @@ class Stage1Screen(StoryTemplate):
 
     def win_condition(self):
         """The win condition of the player"""
-        return self.wave == 5
+        return self.wave == 2
         

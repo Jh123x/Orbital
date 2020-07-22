@@ -70,8 +70,8 @@ class StoryTemplate(PlayScreen):
         #Otherwise if player wins
         elif self.win_condition():
 
-            #Go to victory screen
-            return self.get_victory_state()
+            #Go to next state
+            self.next_scene()
 
         #If it is the pre_cutscene stage
         if self.curr == 0:
