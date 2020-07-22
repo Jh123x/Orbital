@@ -18,7 +18,7 @@ class StoryTemplate(PlayScreen):
         #Reset the game
         self.reset()
 
-    def reset(self):
+    def reset(self) -> None:
         """Reset the state of the game"""
 
         #Reset the flag to play the cutscenes
@@ -37,7 +37,7 @@ class StoryTemplate(PlayScreen):
 
     def get_stage_name(self):
         """Get the name of the stage"""
-        return f"Stage {self.state.value - 100}"
+        return f"Stage {self.state.value - 99}"
 
     def pre_cutscene(self):
         """Plays the precutscene for the story"""
