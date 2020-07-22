@@ -6,11 +6,11 @@ class StoryTemplate(PlayScreen):
     #Store the sprites to be used for stories
     sprites = []
 
-    def __init__(self, screen_width:int, screen_height:int, screen, state:State, sensitivity:int, max_fps:int, debug:bool):
+    def __init__(self, screen_width:int, screen_height:int, screen, state:State, sensitivity:int, max_fps:int, powerup_chance:float, debug:bool):
         """The template for the stage to be built on"""
 
         #Call the superclass
-        super().__init__(screen_width, screen_height, screen, sensitivity, max_fps, Difficulty(3), 1, 1, 1, debug)
+        super().__init__(screen_width, screen_height, screen, sensitivity, max_fps, Difficulty(3), 1, 1, powerup_chance, debug)
 
         #Set the state
         self.set_state(state)

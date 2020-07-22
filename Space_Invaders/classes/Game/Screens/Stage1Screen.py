@@ -7,7 +7,7 @@ class Stage1Screen(StoryTemplate):
         """The constructor for the Stage 1 screen"""
 
         #Call the superclass init method
-        super().__init__(screen_width, screen_height, screen, State(100), sensitivity, max_fps, debug)
+        super().__init__(screen_width, screen_height, screen, State(100), sensitivity, max_fps, 0, debug)
 
         #Commander brief image
         self.bg = ImageObject(300, 285, 600, 570, StoryTemplate.sprites[0], debug)
@@ -51,7 +51,7 @@ class Stage1Screen(StoryTemplate):
         #Draw the next button
         self.next_btn = self.write_main(Screen.end_font, WHITE, "Next", 580, self.tb.rect.top - 30, Direction.RIGHT)
 
-        #Lower cd of click
+        #Lower cd of click if it is still on cooldown
         if self.click_cd:
             self.click_cd -= 1
 

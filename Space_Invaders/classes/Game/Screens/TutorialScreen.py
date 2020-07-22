@@ -18,7 +18,7 @@ class TutorialScreen(PlayScreen):
         self.set_state(State.TUTORIAL)
 
         #Set powerups to 100% spawn
-        self.powerups_chance = 1
+        self.set_powerup_chance(1)
         
         #Reset the game
         self.reset()
