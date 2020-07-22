@@ -16,31 +16,12 @@ import matplotlib.pyplot as plt
 
 #Gym Environment Dependencies
 import gym
-# from gym import wrappers
 
 # In house dependencies
 import gym_game
 from ai_invader.agent import DQNAgent
 from ai_invader.model import DQNCNN
 from ai_invader.util import stack_frame,preprocess_frame
-
-#np.set_printoptions(threshold=sys.maxsize)
-
-#create a local directory to store pickle files from training
-PATH = os.getcwd()+'/obj'
-os.makedirs('obj', exist_ok=True)
-RENDER = True
-
-#Retrieve Training Environment
-# env = gym.make("Invader-v0")
-env = gym.make("Classic-v0")
-print("The size of frame is: ", env.observation_space.shape)
-print("No. of Actions: ", env.action_space.n)
-env.reset()
-# plt.figure()
-# plt.imshow(env.reset())
-# plt.title('Original Frame')
-# plt.show()
 
 def random_play():
     """Let the ai play randomly"""
@@ -72,8 +53,6 @@ def random_play():
     #Close the env
     env.close()
 
-# random_play()
-
 def frame_preprocess(frame):
     """Plot the preprocessed frame"""
     env.reset()
@@ -104,47 +83,6 @@ def stack_frames(frames, state, is_new=False):
     #Return stacked frames
     return frames
 
-#Initialise device (Uses cuda if possible)
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
-#Print cuda
-print('Device:', device)
-
-#Shape of nn
-INPUT_SHAPE = (4, 84, 84)
-
-#Determine rendering of GUI
-RENDER = True
-
-#AI vars
-ACTION_SIZE = env.action_space.n
-SEED = 0
-GAMMA = 0.99           # discount factor
-BUFFER_SIZE = 10000    # replay buffer size
-BATCH_SIZE = 64        # Update batch size
-LR = 0.0001            # learning rate
-TAU = 1e-3             # for soft update of target parameters
-UPDATE_EVERY = 7       # how often to update the network
-UPDATE_TARGET = 6*BATCH_SIZE   # After which thershold replay to be started
-EPS_START = 0.99       # starting value of epsilon
-EPS_END = 0.01         # Ending value of epsilon
-EPS_DECAY = 200        #200 #500         # Rate by which epsilon to be decayed
-RUNS = 0
-
-#Initialise the DQNagent
-agent = DQNAgent(INPUT_SHAPE, ACTION_SIZE, SEED, device, BUFFER_SIZE, BATCH_SIZE, GAMMA, LR, TAU, UPDATE_EVERY, UPDATE_TARGET, DQNCNN)
-
-#Defining vars
-start_epoch = 0
-
-#Scores to keep track of all scores
-scores = []
-
-#Deque of max size 20 (will push out left most element when adding new ones when len=maxlen)
-scores_window = deque(maxlen=20)
-
-epsilon_delta = lambda frame_idx: EPS_END + (EPS_START-EPS_END) * exp(-1. *frame_idx/EPS_DECAY)
-
 def save_obj(obj, name):
     '''Saves the state dictionary int obj path'''
     print('Saving..')
@@ -167,8 +105,6 @@ def get_filename() -> str:
         filename += '.pth'
     return filename
         
-
-print('Begin training')
 def train(n_episodes=1000, filename = None):
     """
     n_episodes: maximum number of training episodes
@@ -245,8 +181,6 @@ def train(n_episodes=1000, filename = None):
     #Return the scores
     return scores
 
-scores = train(5000,'sample.pth')
-#load_obj(agent,path=PATH+'/model.pth')
 def trained_agent(agent):
     '''
     Takes a trained agent and plays a game using the trained agent
@@ -262,8 +196,66 @@ def trained_agent(agent):
         if done:
             print("You Final score is:", score)
             break
-    # env.close()
-###
+
+
+#create a local directory to store pickle files from training
+PATH = os.getcwd()+'/obj'
+os.makedirs('obj', exist_ok=True)
+RENDER = True
+
+#Retrieve Training Environment
+# env = gym.make("Invader-v0")
+env = gym.make("Classic-v0")
+print("The size of frame is: ", env.observation_space.shape)
+print("No. of Actions: ", env.action_space.n)
+env.reset()
+
+#Initialise device (Uses cuda if possible to speed up training)
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+#Print cuda
+print('Device:', device)
+
+#Shape of nn
+INPUT_SHAPE = (4, 84, 84)
+
+#Determine rendering of GUI
+RENDER = True
+
+#AI vars
+ACTION_SIZE = env.action_space.n
+SEED = 0
+GAMMA = 0.99           # discount factor
+BUFFER_SIZE = 10000    # replay buffer size
+BATCH_SIZE = 64        # Update batch size
+LR = 0.0001            # learning rate
+TAU = 1e-3             # for soft update of target parameters
+UPDATE_EVERY = 7       # how often to update the network
+UPDATE_TARGET = 6*BATCH_SIZE   # After which thershold replay to be started
+EPS_START = 0.99       # starting value of epsilon
+EPS_END = 0.01         # Ending value of epsilon
+EPS_DECAY = 200        #200 #500         # Rate by which epsilon to be decayed
+RUNS = 0
+
+#Initialise the DQNagent
+agent = DQNAgent(INPUT_SHAPE, ACTION_SIZE, SEED, device, BUFFER_SIZE, BATCH_SIZE, GAMMA, LR, TAU, UPDATE_EVERY, UPDATE_TARGET, DQNCNN)
+
+#Defining vars
+start_epoch = 0
+
+#Scores to keep track of all scores
+scores = []
+
+#Deque of max size 20 (will push out left most element when adding new ones when len=maxlen)
+scores_window = deque(maxlen=20)
+
+epsilon_delta = lambda frame_idx: EPS_END + (EPS_START-EPS_END) * exp(-1. *frame_idx/EPS_DECAY)
+
+print('Begin training')
+
+scores = train(5000,'sample.pth')
+#load_obj(agent,path=PATH+'/model.pth')
+
 # To view Trained Agent after a checkpoint
 load_obj(agent, path=os.path.join(PATH,'sample.pth'))
 trained_agent(agent)

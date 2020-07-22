@@ -10,7 +10,6 @@ import copy
 import gym
 import multiprocessing as mp
 from joblib import Parallel, delayed, parallel_backend
-# from gym import wrappers
 
 # In house dependencies
 import gym_game
@@ -76,25 +75,6 @@ def run_agents(agents):
         reward_agents.append(r)
     return reward_agents
 
-    # for i_episode in range(start_epoch + RUNS + 1, n_episodes + RUNS + 1):
-    #     RUNS += 1
-    #     state = stack_frames(None, env.reset(), True)
-    #     score = 0
-    #     eps = epsilon_delta(RUNS)
-    #     while True:
-    #         action = agent.action(state, eps)
-    #         next_state, reward, done, info = env.step(action)
-    #         #if not score:
-    #             #print(next_state)
-    #         # if score:
-    #             # plt.imshow(preprocess_frame(next_state,84),interpolation='none')
-    #             # plt.show()
-    #         score += reward
-    #         next_state = stack_frames(state, next_state, False)
-    #         agent.step(state, action, reward, next_state, done)
-    #         state = next_state
-    #         if done:
-    #             break
 def return_avg_score(agent, runs):
     score = 0.
     for _ in range(runs):
@@ -134,18 +114,6 @@ def mutation(agent):
 
 def return_children(agents, sorted_parent_index, elite_index):
 
-    # child_agents = list(
-    #                 map(
-    #                     mutation(
-    #                     agents[
-    #                         sorted_parent_index[
-    #                             np.random.randint(
-    #                                 len(sorted_parent_index))
-    #                             ]
-    #                         ]
-    #                     ), 
-    #                     range(len(agents)-1)))
-
     child_agents = []
     for i in range(len(agents)-1):
         selected_agent_index = sorted_parent_index[np.random.randint(len(sorted_parent_index))]
@@ -180,13 +148,6 @@ def softmax(x):
     '''Compute softmax values for each set of scores in x'''
     return np.exp(x)/np.sum(np.exp(x), axis=0)
 
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
-game_actions = env.action_space.n
-num_agents = 15
-input_shape = (4, 160, 120)
-elites = 3 #Top k
-generations = 20
-
 def survival_of_fittest(action_space, num_agents, input_dim, top_k, generations):
     elite_index = None
     torch.set_grad_enabled(False)
@@ -209,6 +170,25 @@ def survival_of_fittest(action_space, num_agents, input_dim, top_k, generations)
 
     #Return last agent
     return agents[-1]
+
+#Select device to be used
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
+
+#Get the game_actions from the env
+game_actions = env.action_space.n
+
+#Get the number of agents per generation
+num_agents = 15
+
+#Get the input shape (No of frames, x pixels, y pixels)
+#No of frames is to let AI to perceive motion
+input_shape = (4, 160, 120)
+
+#Get the Top k scores
+elites = 3 
+
+#Number of generations to train the AI
+generations = 20
 
 #Start evolution
 ag = survival_of_fittest(game_actions,num_agents,input_shape,elites,generations)

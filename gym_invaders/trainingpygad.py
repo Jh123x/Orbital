@@ -6,8 +6,6 @@ from ai_invader.util import stack_frame,preprocess_frame
 from ai_invader.model import PyGADModel
 import gym_game
 
-input_shape = (4, 160, 120)
-num_actions = 6
 def stack_frames(frames, state, is_new=False):
     '''
     Function combine of utility functions to preprocess the frames
@@ -26,6 +24,7 @@ def forward(model, stacked_frames):
     x = model.feed_sample(stacked_frames)
     x = np.exp(x) / sum(np.exp(x))
     return x
+    
 def environment_solver(env, model):
     '''
     Returns a certain reward value/score that determines the fitness score/function of the neural network
@@ -66,9 +65,17 @@ def callback_generation(ga_instance):
 
     print("Generation = {generation}".format(generation=ga_instance.generations_completed))
 
+
+#Input shape of the nn
+input_shape = (4, 160, 120)
+
+#Total number of actions available
+num_actions = 6
+
+#Make the Classic screen env
 env = gym.make("Classic-v0")
 
-
+#Use the pyGADModel
 model = PyGADModel(input_shape, num_actions).model
 GACNN_instance = g.GACNN(model=model, num_solutions=5)
 pop_vectors = g.population_as_vectors(population_networks=GACNN_instance.population_networks)
