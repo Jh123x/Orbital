@@ -3,7 +3,6 @@
 ############################
 
 #Import functions from the class package
-
 from classes import GameWindow, list_dir, form_abs_path, read_all, load_all
 import sys
 import os
@@ -50,12 +49,13 @@ def main() -> None:
     d["trophy_img_path"] = map_dir("images", "trophys")
     d["scout_img_path"] = map_dir("images", "bosses", "scout")
     d["brute_img_path"] = map_dir("images", "bosses", "brute")
+    d["story_img_path"] = map_dir("images", "story assets")
 
     #Get the number of backgrounds
     bg_limit = len(d["background_img_paths"])
 
     #Sound
-    sound_path = dict(zip(all_cfg["Sounds"].keys(),list(map(lambda x: form_abs_path(get_curr_path(), x), all_cfg["Sounds"].values()))))
+    sound_path = dict(zip(all_cfg["Sounds"].keys(), list(map(lambda x: form_abs_path(get_curr_path(), x), all_cfg["Sounds"].values()))))
 
     #Print the config data if debug is on
     if config['debug']:
@@ -69,6 +69,7 @@ def main() -> None:
 
     #Run the mainloop for the GameWindow
     game.mainloop()
+
 
 #Run the following if the file is run as main
 if __name__ =="__main__":

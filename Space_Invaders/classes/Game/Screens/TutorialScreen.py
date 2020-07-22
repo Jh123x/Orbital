@@ -4,6 +4,7 @@ from . import PlayScreen, Screen
 from .. import *
 
 class TutorialScreen(PlayScreen):
+    
     #Store the information for the tutorial screen
     information = [("a", "move left"), ("d", "move right"), ("spacebar", "shoot"), ("p", "to pause")]
 
