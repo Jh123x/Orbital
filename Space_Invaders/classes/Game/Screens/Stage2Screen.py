@@ -1,23 +1,24 @@
 from . import StoryTemplate, Screen
 from .. import State, ImageObject, Direction, WHITE
 
-class Stage1Screen(StoryTemplate):
+class Stage2Screen(StoryTemplate):
 
     def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, debug:bool):
         """The constructor for the Stage 1 screen"""
 
         #Call the superclass init method
-        super().__init__(screen_width, screen_height, screen, State(100), sensitivity, max_fps, 0, debug)
+        super().__init__(screen_width, screen_height, screen, State(101), sensitivity, max_fps, 0.1, debug)
 
         #Commander brief image
         self.bg = ImageObject(300, 285, 600, 570, StoryTemplate.sprites[0], debug)
 
         #Image of figure head
-        self.dill_bates = ImageObject(300, 210, 217, 217, StoryTemplate.sprites[3], debug)
-        self.dill_bates.scale(217,217)
+        self.tonald_drump = ImageObject(300, 215, 217, 217, StoryTemplate.sprites[6], debug)
+        self.tonald_drump.scale(217,217)
 
         #Textbox
         self.tb = ImageObject(300, 685, 600, 230, StoryTemplate.sprites[5], debug)
+
 
     def draw_bg(self):
         """Draw the background"""
@@ -31,7 +32,7 @@ class Stage1Screen(StoryTemplate):
         """The pre_cutscene for the class"""
 
         #Insert the Icon for the char speaking
-        self.dill_bates.draw(self.screen)
+        self.tonald_drump.draw(self.screen)
 
         #Draw the background
         self.draw_bg()
@@ -53,7 +54,7 @@ class Stage1Screen(StoryTemplate):
             self.click_cd = self.fps//5
 
         #Write the character name text
-        self.write_main(Screen.end_font, WHITE, "Dill Bates", 33, self.tb.rect.top + 15, Direction.LEFT)
+        self.write_main(Screen.end_font, WHITE, "Tonald Drump", 33, self.tb.rect.top + 15, Direction.LEFT)
 
         #Pixel vars for alignment
         first_px = self.tb.rect.top + 75
@@ -62,18 +63,20 @@ class Stage1Screen(StoryTemplate):
         if self.clicks == 0:
 
             #Write the character speech text
-            self.render_speech(first_px, left_px, ("Commander, the enemy is at our doorstep, and we are in dire straits,", 
-                                "the enemy has surrounded Earth and is threatening our very survival",
-                                "The enemies here are the cannon fodder of their invasion.", 
-                                "However we cannot underestimate their strength."))
+            self.render_speech(first_px, left_px, ["Our Moon Base, Elysium is under siege and in dire need of relief.",
+                                                "The moon base is humanity’s first step to launch the counter",
+                                                "offensive against the alien forces. ",
+                                                "",
+                                                ""])
 
         elif self.clicks == 1:
 
             #Write part 2 of the speech 
-            self.render_speech(first_px, left_px, ("The enemies here are the cannon fodder of their invasion. ",
-                                "However we cannot underestimate their strength.",
-                                "As we are unable to access our main weapon caches ", 
-                                "on our Moon Base either..."))
+            self.render_speech(first_px, left_px, ["Elysium is behind you with our full support to bomb them out of ",
+                                                "our skies.",
+                                                "They will be met with fire and fury and power the likes of which",
+                                                "has not been seen before.",
+                                                "And we will make humanity great again !"])
 
         else:
             #Reset the clicks
@@ -88,7 +91,7 @@ class Stage1Screen(StoryTemplate):
     def post_cutscene(self):
         """The post cutscene for stage 1"""
         #Insert the Icon for the char speaking
-        self.dill_bates.draw(self.screen)
+        self.tonald_drump.draw(self.screen)
 
         #Draw the background
         self.draw_bg()
@@ -110,33 +113,31 @@ class Stage1Screen(StoryTemplate):
             self.click_cd = self.fps//5
 
         #Write the character name text
-        self.write_main(Screen.end_font, WHITE, "Dill Bates", 33, self.tb.rect.top + 15, Direction.LEFT)
+        self.write_main(Screen.end_font, WHITE, "Tonald Drump", 33, self.tb.rect.top + 15, Direction.LEFT)
 
         #Pixels for alignment
         first_px = self.tb.rect.top + 75
         left_px = 40
 
+        #Drawing of the speech
         if self.clicks == 0:
 
             #Write the character speech text
-            self.render_speech(first_px, left_px, ("Good job clearing the way. Now we can prepare to", 
-                                                "take our Moon Base. "))
+            self.render_speech(first_px, left_px, ["With Elysium relieved we can now strike back at the invaders",
+                                                "much more effectively than before."])
 
         elif self.clicks == 1:
 
-            #Write the character speech text
-            self.render_speech(first_px, left_px, ("However, there is something weird about the remains", 
-                                                    "of these invaders.",))
-
-        elif self.clicks == 2:
-
-            #Write the character speech text
-            self.render_speech(first_px, left_px, ("They seem to be made of some kind of biochemical alloy",
-                                                "we had been researching on Pluto..."))
+            #Write part 2 of the speech 
+            self.render_speech(first_px, left_px, ["Strangely, these aliens seem to be following some",
+                                                "kind of encrypted signal…"])
 
         else:
             #Reset the clicks
             self.clicks = 0
+
+            #Move to the next scene
+            self.next_scene()
 
             #Move to the next scene
             return self.get_victory_state()
@@ -152,5 +153,4 @@ class Stage1Screen(StoryTemplate):
 
     def win_condition(self):
         """The win condition of the player"""
-        return self.wave == 4
-        
+        return self.wave == 5

@@ -15,26 +15,13 @@ class Bullet(MovingObject):
         #Call the superclass
         super().__init__(sensitivity, initial_x, initial_y, game_width, game_height,self.sprites[0], debug)
 
-        #If the bullet is suppose to move up
-        if direction == Direction.UP:
-
-            #Store the direction as up
-            self.direction = self.move_up
-
-        #If it is suppose to move down
-        elif direction == Direction.DOWN:
-            
-            #If there is another sprite, use that sprite for down instead
-            if len(Bullet.sprites) >= 2:
-                self.image = self.sprites[1]
-            
-            #Set the direction to down
-            self.direction = self.move_down
+        #Store bullet direction
+        self.direction = direction.value
        
     def update(self) -> None:
         """Update the path of the bullet"""
         #Move the bullet
-        self.direction()
+        self.move(self.direction[0] * self.sensitivity, self.direction[1] * self.sensitivity)
 
         #Kill itself if the bullet is out of screen
         if self.y > self.game_height or self.y < 0:
@@ -44,6 +31,13 @@ class Bullet(MovingObject):
 
             #Do not continue to update position
             return
+
+        #Make the bullet able to bounce along the x axis
+        elif self.x <= 0 or self.x >= self.game_width:
+
+            #Set the bullet direction to opposite in x axis
+            self.direction = tuple(map(lambda x: x*self.sensitivity, self.direction))
+            
 
         #Update its coordinates
         return super().update()

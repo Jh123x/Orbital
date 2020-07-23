@@ -115,6 +115,7 @@ class GameWindow(object):
         self.story_mode = StoryModeScreen(game_width, game_height, self.main_screen, debug)
         self.ai_coop = AICoopScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.difficulty, 3, debug)
         self.stage1 = Stage1Screen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug)
+        self.stage2 = Stage2Screen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug)
         self.victory = None
         self.newhighscore = None
         self.pause = None
@@ -149,7 +150,8 @@ class GameWindow(object):
             State.TUTORIAL: self.tutorial,
             State.ONE_PLAYER_MENU: self.one_player_menu,
             State.STORY_MENU: self.story_mode,
-            State.STAGE1:self.stage1
+            State.STAGE1:self.stage1,
+            State.STAGE2:self.stage2
         }
         
         #Store the different states the menu has
@@ -179,7 +181,8 @@ class GameWindow(object):
             State.ONE_PLAYER_MENU: self.one_player_menu.handle,
             State.VICTORY: self.handle_victory,
             State.STORY_MENU: self.story_mode.handle,
-            State.STAGE1: self.stage1.handle
+            State.STAGE1: self.stage1.handle,
+            State.STAGE2: self.stage2.handle
         }
 
         #Load sound state:

@@ -1,5 +1,5 @@
-from .. import WHITE, State
 from . import Screen
+from .. import WHITE, State, Direction
 
 class StoryModeScreen(Screen):
     videos = []
@@ -13,7 +13,7 @@ class StoryModeScreen(Screen):
         self.write(Screen.title_font, WHITE, "Story modes", self.screen_width /2, self.screen_height /5)
 
         #Store the current number of stages
-        self.stages = 1
+        self.stages = 6
 
         #Create list to store the buttons
         self.video_buttons = []
@@ -32,10 +32,16 @@ class StoryModeScreen(Screen):
         """Create videos buttons for the videos"""
 
         #Iterate through all the stage videos
-        for i in range(1,self.get_stages()+1):
+        for i in range(1,self.get_stages()//2+1):
 
             #Append the button to the buttons list for checking later
-            self.video_buttons.append(self.write(Screen.end_font, WHITE, f"Stage {i}", self.screen_width // 2, self.screen_height //2 + (40*i)))
+            self.video_buttons.append(self.write(Screen.end_font, WHITE, f"Stage {i}   ", self.screen_width // 2, self.screen_height // 2 + (40*i) - 30, Direction.RIGHT))
+
+        for i in range(1, self.get_stages()  - self.get_stages()//2 + 1):
+
+            #Append the button to the buttons list for checking later
+            self.video_buttons.append(self.write(Screen.end_font, WHITE, f" Stage {self.get_stages()//2 + i}", self.screen_width // 2, self.screen_height // 2 + (40*i - self.get_stages() // 2 + 1) - 30, Direction.LEFT))
+
 
     def check_mousepress(self) -> State:
         """Check the mouse press of the user"""

@@ -21,6 +21,10 @@ class PlayScreen(ClassicScreen):
         #Set state to play state
         self.set_state(State.PLAY)
 
+    def set_powerup_chance(self, chance:float) -> None:
+        """Set the powerup chance"""
+        self.powerup_chance = chance
+
     def draw_hitboxes(self, screen = None) -> None:
         """Draw hitboxes for the objects on screen"""
         #Check if screen is none

@@ -1,16 +1,16 @@
-from . import PlayScreen
-from .. import State, Difficulty
+from . import PlayScreen, Screen
+from .. import State, Difficulty, Direction, WHITE
 
 class StoryTemplate(PlayScreen):
 
     #Store the sprites to be used for stories
     sprites = []
 
-    def __init__(self, screen_width:int, screen_height:int, screen, state:State, sensitivity:int, max_fps:int, debug:bool):
+    def __init__(self, screen_width:int, screen_height:int, screen, state:State, sensitivity:int, max_fps:int, powerup_chance:float, debug:bool):
         """The template for the stage to be built on"""
 
         #Call the superclass
-        super().__init__(screen_width, screen_height, screen, sensitivity, max_fps, Difficulty(3), 1, 1, 1, debug)
+        super().__init__(screen_width, screen_height, screen, sensitivity, max_fps, Difficulty(3), 1, 1, powerup_chance, debug)
 
         #Set the state
         self.set_state(state)
@@ -21,11 +21,31 @@ class StoryTemplate(PlayScreen):
     def reset(self) -> None:
         """Reset the state of the game"""
 
+        #Set the number of clicks to 0
+        self.clicks = 0
+
+        #Set the cooldown to max
+        self.click_cd = self.fps // 5
+
         #Reset the flag to play the cutscenes
         self.curr = 0
 
         #Call the superclass reset
         return super().reset()
+
+    def render_speech(self, first_px:int, left_px:int, speech:tuple) -> None:
+        """Render the speech onto the screen"""
+
+        #Loop through the speech
+        for index,text in enumerate(speech):
+
+            #Break if the speech is more than 6 lines
+            if index == 6:
+                break
+
+            #Render the speech in 15 spaces
+            self.write_main(Screen.font, WHITE, text, left_px, first_px + index * 15, Direction.LEFT)
+
     
     def next_scene(self):
         """Increment the scene counter to the next scene"""
@@ -70,8 +90,8 @@ class StoryTemplate(PlayScreen):
         #Otherwise if player wins
         elif self.win_condition():
 
-            #Go to victory screen
-            return self.get_victory_state()
+            #Go to next state
+            self.next_scene()
 
         #If it is the pre_cutscene stage
         if self.curr == 0:
