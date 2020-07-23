@@ -27,3 +27,4 @@ from .VictoryScreen import VictoryScreen
 from .AICoopScreen import AICoopScreen
 from .StoryTemplate import StoryTemplate
 from .Stage1Screen import Stage1Screen
+from .Stage2Screen import Stage2Screen
