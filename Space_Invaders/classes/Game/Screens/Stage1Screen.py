@@ -62,18 +62,18 @@ class Stage1Screen(StoryTemplate):
         if self.clicks == 0:
 
             #Write the character speech text
-            self.write_main(Screen.font, WHITE, "Commander, the enemy is at our doorstep, and we are in dire straits,", left_px, first_px, Direction.LEFT)
-            self.write_main(Screen.font, WHITE, "the enemy has surrounded Earth and is threatening our very survival", left_px, first_px + 15, Direction.LEFT)
-            self.write_main(Screen.font, WHITE, "The enemies here are the cannon fodder of their invasion.", left_px, first_px + 30, Direction.LEFT)
-            self.write_main(Screen.font, WHITE, "However we cannot underestimate their strength.", left_px, first_px + 45, Direction.LEFT)
+            self.render_speech(first_px, left_px, ("Commander, the enemy is at our doorstep, and we are in dire straits,", 
+                                "the enemy has surrounded Earth and is threatening our very survival",
+                                "The enemies here are the cannon fodder of their invasion.", 
+                                "However we cannot underestimate their strength."))
 
         elif self.clicks == 1:
 
             #Write part 2 of the speech 
-            self.write_main(Screen.font, WHITE, "The enemies here are the cannon fodder of their invasion. ", left_px, first_px, Direction.LEFT)
-            self.write_main(Screen.font, WHITE, "However we cannot underestimate their strength.", left_px, first_px + 15, Direction.LEFT)
-            self.write_main(Screen.font, WHITE, "As we are unable to access our main weapon caches ", left_px, first_px + 30, Direction.LEFT)
-            self.write_main(Screen.font, WHITE, "on our Moon Base either...", left_px, first_px + 45, Direction.LEFT)
+            self.render_speech(first_px, left_px, ("The enemies here are the cannon fodder of their invasion. ",
+                                "However we cannot underestimate their strength.",
+                                "As we are unable to access our main weapon caches ", 
+                                "on our Moon Base either..."))
 
         else:
             #Reset the clicks
@@ -119,20 +119,20 @@ class Stage1Screen(StoryTemplate):
         if self.clicks == 0:
 
             #Write the character speech text
-            self.write_main(Screen.font, WHITE, "Good job clearing the way. Now we can prepare to", left_px, first_px, Direction.LEFT)
-            self.write_main(Screen.font, WHITE, "take our Moon Base. ", left_px, first_px + 15, Direction.LEFT)
+            self.render_speech(first_px, left_px, ("Good job clearing the way. Now we can prepare to", 
+                                                "take our Moon Base. "))
 
         elif self.clicks == 1:
 
             #Write the character speech text
-            self.write_main(Screen.font, WHITE, "However, there is something weird about the remains", left_px, first_px, Direction.LEFT)
-            self.write_main(Screen.font, WHITE, "of these invaders.", left_px, first_px + 15, Direction.LEFT)
+            self.render_speech(first_px, left_px, ("However, there is something weird about the remains", 
+                                                    "of these invaders.",))
 
         elif self.clicks == 2:
 
             #Write the character speech text
-            self.write_main(Screen.font, WHITE, "They seem to be made of some kind of biochemical alloy", left_px, first_px, Direction.LEFT)
-            self.write_main(Screen.font, WHITE, "we had been researching on Pluto...", left_px, first_px + 15, Direction.LEFT)
+            self.render_speech(first_px, left_px, ("They seem to be made of some kind of biochemical alloy",
+                                                "we had been researching on Pluto..."))
 
         else:
             #Reset the clicks

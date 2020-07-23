@@ -1,5 +1,5 @@
-from . import PlayScreen
-from .. import State, Difficulty
+from . import PlayScreen, Screen
+from .. import State, Difficulty, Direction, WHITE
 
 class StoryTemplate(PlayScreen):
 
@@ -32,6 +32,20 @@ class StoryTemplate(PlayScreen):
 
         #Call the superclass reset
         return super().reset()
+
+    def render_speech(self, first_px:int, left_px:int, speech:tuple) -> None:
+        """Render the speech onto the screen"""
+
+        #Loop through the speech
+        for index,text in enumerate(speech):
+
+            #Break if the speech is more than 6 lines
+            if index == 6:
+                break
+
+            #Render the speech in 15 spaces
+            self.write_main(Screen.font, WHITE, text, left_px, first_px + index * 15, Direction.LEFT)
+
     
     def next_scene(self):
         """Increment the scene counter to the next scene"""
