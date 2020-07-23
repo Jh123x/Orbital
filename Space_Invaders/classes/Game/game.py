@@ -28,7 +28,6 @@ async def add_to_sprite(obj, sprite_path:str) -> None:
     """Add the pygame image to the object"""
     #For each object load the image and append it to the object
     for path in sprite_path:
-        print(path)
         obj.sprites.append(pygame.image.load(path))
         
 async def load_sound(sound_path:str, settings:int, volume:float, debug:bool) -> Sound:

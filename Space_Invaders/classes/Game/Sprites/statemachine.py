@@ -13,7 +13,7 @@ def phi(x):
     return (1.0 + math.erf(x / math.sqrt(2.0))) / 2.0
 
 class StateMachine:
-    def __init__(self, tick):
+    def __init__(self, tick, difficulty=1):
         '''
         ticks: The number of ticks between state transitions
         state: Integer value of state which determines behaviour
@@ -25,6 +25,7 @@ class StateMachine:
         position: stores current player position
         '''
         self.state = 0
+        self.difficulty = difficulty - 6
         self.tick = tick
         self.clock = 0
         self.life = 3
@@ -72,6 +73,12 @@ class StateMachine:
             elif self.life == 1 and (nearest_boss_loc <200 or nearest_boss_loc <300):
                 self.state = 1
         return self.action(entities)
+
+    def get_state(self):
+        '''
+        Returns internal state of the AI
+        '''
+        return self.state
 
 
     def action(self,entities):
@@ -125,12 +132,12 @@ class StateMachine:
         rand = np.random.rand()
         nearest_bullet_loc = min(list(map(lambda x: calc_dist(self.position,x),entities['bullets'])),default=1000)
         # If bullet is nearby, move away
-        if nearest_bullet_loc < 300 and rand > 0.5:
+        if nearest_bullet_loc < 300 and rand > (0.5-0.05*self.difficulty):
             return self.dodging_decision_control()
         nearest_boss_loc = min(list(map(lambda x: calc_dist(self.position,x), entities['bosses'])),default=1000)
         nearest_mob_loc = min(list(map(lambda x: calc_dist(self.position,x),entities['mobs'])),default=1000)
         # if a mob is closeby, perform a shooting action
-        if (nearest_mob_loc < 400 or nearest_boss_loc < 500 or entities['enemy_player'] != 'None') and rand < 0.85:
+        if (nearest_mob_loc < 400 or nearest_boss_loc < 500 or entities['enemy_player'] != 'None') and rand < (0.85-0.05*self.difficulty):
             return np.random.choice([ 0, 3, 4, 5], p = [0.2, 0.1, 0.35, 0.35])
         else:
             return np.random.choice([ 0, 1, 2, 3, 4, 5], p=[0.2, 0.1, 0.15, 0.05, 0.25, 0.25])
@@ -148,12 +155,12 @@ class StateMachine:
         rand = np.random.rand()
         nearest_bullet_loc = min(list(map(lambda x: calc_dist(self.position,x) ,entities['bullets'])),default=1000)
         # If bullet is nearby, move away
-        if nearest_bullet_loc < 200 and rand < 0.85:
+        if nearest_bullet_loc < 200 and rand < (0.5-0.05*self.difficulty):
             return self.dodging_decision_control()
         nearest_boss_loc = min(list(map(lambda x: calc_dist(self.position,x), entities['bosses'])),default=1000)
         nearest_mob_loc = min(list(map(lambda x: calc_dist(self.position,x) ,entities['mobs'])),default=1000)
         # if a mob is closeby, perform a shooting action
-        if (nearest_mob_loc < 400 or nearest_boss_loc < 500 or entities['enemy_player'] != 'None') and rand < 0.25:
+        if (nearest_mob_loc < 400 or nearest_boss_loc < 500 or entities['enemy_player'] != 'None') and rand < (0.8-0.05*self.difficulty):
             return np.random.choice([0, 3, 4, 5], p=[0.2, 0.1, 0.35, 0.35])
         else:
             return np.random.choice([0, 1, 2, 3, 4, 5], p=[0.2, 0.1, 0.15, 0.05, 0.25, 0.25])
@@ -171,20 +178,33 @@ class StateMachine:
         rand = np.random.rand()
         nearest_bullet_loc = min(list(map(lambda x: calc_dist(self.position,x) ,entities['bullets'])),default=1000)
         # If bullet is nearby, move away
-        if nearest_bullet_loc < 400 and rand < 0.85:
+        if nearest_bullet_loc < 400 and rand < (0.85-0.05*self.difficulty):
             return self.dodging_decision_control()
         nearest_boss_loc = min(list(map(lambda x: calc_dist(self.position,x) ,entities['bosses'])),default=1000)
         nearest_mob_loc = min(list(map(lambda x: calc_dist(self.position,x) ,entities['mobs'])),default=1000)
         # if a mob is closeby, perform a shooting action
-        if (nearest_mob_loc < 400 or nearest_boss_loc < 500 or entities['enemy_player'] != 'None') and rand < 0.35:
+        if (nearest_mob_loc < 400 or nearest_boss_loc < 500 or entities['enemy_player'] != 'None') and rand < (0.35-0.04*self.difficulty):
             return np.random.choice([0, 3, 4, 5], p=[0.2, 0.1, 0.35, 0.35])
         else:
             return np.random.choice([0, 1, 2, 3, 4, 5], p=[0.2, 0.1, 0.15, 0.05, 0.25, 0.25])
 
 if __name__ == '__main__':
-    machine = StateMachine(3)
-    e1 = {'mobs': [(400,300)], 'bosses': [(400,300)], 'bullets': [(350,200)], 'enemy_player': 'None', 'player': (400, 200 , 1)}
+    machine = StateMachine(1)
+    # e1 = {'mobs': [(400,300)], 'bosses': [(400,300)], 'bullets': [(350,200)],
+    # 'enemy_player': 'None', 'player': (350, 200 , 1)}
+    e1 = {'mobs': [], 'bosses': [], 'bullets': [], 'enemy_player': 'None',
+              'player': (350, 200, 2)}
+    e2 = {'mobs': [], 'bosses': [], 'bullets': [], 'enemy_player': 'None',
+          'player': (350, 200, 3)}
+    e3 = {'mobs': [(300, 400)], 'bosses': [], 'bullets': [], 'enemy_player': 'None',
+          'player': (350, 200, 1)}
+    # for i in range(18):
+    print('state', machine.state)
+    print(machine.state_check(e1))
+    print('state', machine.state)
+    print(machine.state_check(e2))
+    print('state', machine.state)
+    print(machine.state_check(e3))
+    print('state', machine.state)
 
-    for i in range(18):
-        print(machine.state_check(e1))
-        print('state',machine.state)
+
