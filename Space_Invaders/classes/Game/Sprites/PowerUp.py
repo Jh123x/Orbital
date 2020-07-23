@@ -1,4 +1,4 @@
-from . import ImageObject, BlockGroup
+from . import ImageObject, BlockGroup, MotherShip
 
 def hp_up(screen, player):
     """Increase the hp of the player"""
@@ -25,10 +25,15 @@ def deflector(screen, player):
     for sprite in screen.enemies:
         sprite.move(0, 10)
 
+    for sprite in screen.other_enemies:
+        if type(sprite) == MotherShip:
+            continue
+        sprite.move(0, 10)
+
 def extra_bullet_power(screen, player):
     """Increase the bullet power of the player"""
     #Increase the bullet power of the player
-    if player.get_bullet_power() < 5:
+    if player.get_bullet_power() < screen.wave + 2:
         player.increase_bullet_power(1)
 
 def decrease_bullet_power(screen, player):
