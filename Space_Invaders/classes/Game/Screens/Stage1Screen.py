@@ -13,7 +13,7 @@ class Stage1Screen(StoryTemplate):
         self.bg = ImageObject(300, 285, 600, 570, StoryTemplate.sprites[0], debug)
 
         #Image of figure head
-        self.dill_bates = ImageObject(300, 210, 320, 320, StoryTemplate.sprites[3], debug)
+        self.dill_bates = ImageObject(300, 210, 217, 217, StoryTemplate.sprites[3], debug)
         self.dill_bates.scale(217,217)
 
         #Textbox
