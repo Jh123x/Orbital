@@ -13,23 +13,11 @@ class Stage1Screen(StoryTemplate):
         self.bg = ImageObject(300, 285, 600, 570, StoryTemplate.sprites[0], debug)
 
         #Image of figure head
-        self.alon_dusk = ImageObject(300, 200, 320, 320, StoryTemplate.sprites[2], debug)
-        self.alon_dusk.scale(200,200)
+        self.dill_bates = ImageObject(300, 210, 320, 320, StoryTemplate.sprites[3], debug)
+        self.dill_bates.scale(217,217)
 
         #Textbox
-        self.tb = ImageObject(300, 685, 600, 230, StoryTemplate.sprites[3], debug)
-
-    def reset(self) -> None:
-        """Reset method for the stage class"""
-
-        #Set the number of clicks to 0
-        self.clicks = 0
-
-        #Set the cooldown to max
-        self.click_cd = self.fps // 5
-
-        #Call the superclass reset
-        return super().reset()
+        self.tb = ImageObject(300, 685, 600, 230, StoryTemplate.sprites[5], debug)
 
     def draw_bg(self):
         """Draw the background"""
@@ -43,7 +31,7 @@ class Stage1Screen(StoryTemplate):
         """The pre_cutscene for the class"""
 
         #Insert the Icon for the char speaking
-        self.alon_dusk.draw(self.screen)
+        self.dill_bates.draw(self.screen)
 
         #Draw the background
         self.draw_bg()
@@ -57,29 +45,35 @@ class Stage1Screen(StoryTemplate):
 
         #Check if the next button is clicked
         if self.check_clicked(self.next_btn) and not self.click_cd:
-            if self.debug:
-                print("Pressed next")
+
+            #Increment the clicks
             self.clicks += 1
+
+            #Reset the cooldown
             self.click_cd = self.fps//5
 
         #Write the character name text
-        self.write_main(Screen.end_font, WHITE, "Alon Dusk", 33, self.tb.rect.top + 15, Direction.LEFT)
+        self.write_main(Screen.end_font, WHITE, "Dill Bates", 33, self.tb.rect.top + 15, Direction.LEFT)
 
+        #Pixel vars for alignment
         first_px = self.tb.rect.top + 75
         left_px = 40
 
         if self.clicks == 0:
 
             #Write the character speech text
-            self.write_main(Screen.font, WHITE, "The enemy is at our doorstep, and we are in dire straits.", left_px, first_px, Direction.LEFT)
-            self.write_main(Screen.font, WHITE, "The enemy vanguard has surrounded Earth and is threatening", left_px, first_px + 15, Direction.LEFT)
-            self.write_main(Screen.font, WHITE, "our very survival", left_px, first_px + 30, Direction.LEFT)
+            self.write_main(Screen.font, WHITE, "Commander, the enemy is at our doorstep, and we are in dire straits,", left_px, first_px, Direction.LEFT)
+            self.write_main(Screen.font, WHITE, "the enemy has surrounded Earth and is threatening our very survival", left_px, first_px + 15, Direction.LEFT)
+            self.write_main(Screen.font, WHITE, "The enemies here are the cannon fodder of their invasion.", left_px, first_px + 30, Direction.LEFT)
+            self.write_main(Screen.font, WHITE, "However we cannot underestimate their strength.", left_px, first_px + 45, Direction.LEFT)
 
         elif self.clicks == 1:
 
             #Write part 2 of the speech 
-            self.write_main(Screen.font, WHITE, "We need you to break through their encirclement and", left_px, first_px, Direction.LEFT)
-            self.write_main(Screen.font, WHITE, "relieve earth from a land invasion.", left_px, first_px + 15, Direction.LEFT)
+            self.write_main(Screen.font, WHITE, "The enemies here are the cannon fodder of their invasion. ", left_px, first_px, Direction.LEFT)
+            self.write_main(Screen.font, WHITE, "However we cannot underestimate their strength.", left_px, first_px + 15, Direction.LEFT)
+            self.write_main(Screen.font, WHITE, "As we are unable to access our main weapon caches ", left_px, first_px + 30, Direction.LEFT)
+            self.write_main(Screen.font, WHITE, "on our Moon Base either...", left_px, first_px + 45, Direction.LEFT)
 
         else:
             #Reset the clicks
@@ -94,7 +88,7 @@ class Stage1Screen(StoryTemplate):
     def post_cutscene(self):
         """The post cutscene for stage 1"""
         #Insert the Icon for the char speaking
-        self.alon_dusk.draw(self.screen)
+        self.dill_bates.draw(self.screen)
 
         #Draw the background
         self.draw_bg()
@@ -108,22 +102,37 @@ class Stage1Screen(StoryTemplate):
 
         #Check if the next button is clicked
         if self.check_clicked(self.next_btn) and not self.click_cd:
-            if self.debug:
-                print("Pressed next")
+
+            #Increment the clicks
             self.clicks += 1
+
+            #Reset the cooldown
             self.click_cd = self.fps//5
 
         #Write the character name text
-        self.write_main(Screen.end_font, WHITE, "Alon Dusk", 33, self.tb.rect.top + 15, Direction.LEFT)
+        self.write_main(Screen.end_font, WHITE, "Dill Bates", 33, self.tb.rect.top + 15, Direction.LEFT)
 
+        #Pixels for alignment
         first_px = self.tb.rect.top + 75
         left_px = 40
 
         if self.clicks == 0:
 
             #Write the character speech text
-            self.write_main(Screen.font, WHITE, "Good job clearing the way. Now we can", left_px, first_px, Direction.LEFT)
-            self.write_main(Screen.font, WHITE, "focus on taking back our next base", left_px, first_px + 15, Direction.LEFT)
+            self.write_main(Screen.font, WHITE, "Good job clearing the way. Now we can prepare to", left_px, first_px, Direction.LEFT)
+            self.write_main(Screen.font, WHITE, "take our Moon Base. ", left_px, first_px + 15, Direction.LEFT)
+
+        elif self.clicks == 1:
+
+            #Write the character speech text
+            self.write_main(Screen.font, WHITE, "However, there is something weird about the remains", left_px, first_px, Direction.LEFT)
+            self.write_main(Screen.font, WHITE, "of these invaders.", left_px, first_px + 15, Direction.LEFT)
+
+        elif self.clicks == 2:
+
+            #Write the character speech text
+            self.write_main(Screen.font, WHITE, "They seem to be made of some kind of biochemical alloy", left_px, first_px, Direction.LEFT)
+            self.write_main(Screen.font, WHITE, "we had been researching on Pluto...", left_px, first_px + 15, Direction.LEFT)
 
         else:
             #Reset the clicks
@@ -137,9 +146,11 @@ class Stage1Screen(StoryTemplate):
 
     def play(self):
         """The playing stage for the game"""
+
+        #Call the superclass play
         return super().play()
 
     def win_condition(self):
         """The win condition of the player"""
-        return self.wave == 2
+        return self.wave == 4
         

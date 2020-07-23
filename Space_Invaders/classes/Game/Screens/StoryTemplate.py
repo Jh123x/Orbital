@@ -21,6 +21,12 @@ class StoryTemplate(PlayScreen):
     def reset(self) -> None:
         """Reset the state of the game"""
 
+        #Set the number of clicks to 0
+        self.clicks = 0
+
+        #Set the cooldown to max
+        self.click_cd = self.fps // 5
+
         #Reset the flag to play the cutscenes
         self.curr = 0
 
