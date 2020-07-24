@@ -196,6 +196,9 @@ class PlayScreen(ClassicScreen):
         #Reset the blocks from classic mode
         self.blocks.empty()
 
+        #Reset the count for the Brute
+        Brute.reset()
+
         #Reset powerup number
         self.powerup_numbers = 0
 
