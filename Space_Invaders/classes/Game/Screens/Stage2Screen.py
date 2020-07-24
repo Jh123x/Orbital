@@ -4,7 +4,7 @@ from .. import State, ImageObject, Direction, WHITE
 class Stage2Screen(StoryTemplate):
 
     def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, debug:bool):
-        """The constructor for the Stage 1 screen"""
+        """The constructor for the Stage 2 screen"""
 
         #Call the superclass init method
         super().__init__(screen_width, screen_height, screen, State(101), sensitivity, max_fps, 0.1, debug)
@@ -65,9 +65,7 @@ class Stage2Screen(StoryTemplate):
             #Write the character speech text
             self.render_speech(first_px, left_px, ["Our Moon Base, Elysium is under siege and in dire need of relief.",
                                                 "The moon base is humanity’s first step to launch the counter",
-                                                "offensive against the alien forces. ",
-                                                "",
-                                                ""])
+                                                "offensive against the alien forces. "])
 
         elif self.clicks == 1:
 
@@ -89,7 +87,7 @@ class Stage2Screen(StoryTemplate):
         return self.state
 
     def post_cutscene(self):
-        """The post cutscene for stage 1"""
+        """The post cutscene for stage 2"""
         #Insert the Icon for the char speaking
         self.tonald_drump.draw(self.screen)
 
