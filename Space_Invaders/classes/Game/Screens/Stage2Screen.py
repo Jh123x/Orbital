@@ -19,7 +19,6 @@ class Stage2Screen(StoryTemplate):
         #Textbox
         self.tb = ImageObject(300, 685, 600, 230, StoryTemplate.sprites[5], debug)
 
-
     def draw_bg(self):
         """Draw the background"""
         #Draw the commander brief
