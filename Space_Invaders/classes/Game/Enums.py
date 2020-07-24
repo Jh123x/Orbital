@@ -65,6 +65,9 @@ class State(enum.Enum):
     STAGE1 = 100
     STAGE2 = 101
     STAGE3 = 102
+    STAGE4 = 103
+    STAGE5 = 104
+    STAGE6 = 105
 
 class Difficulty_enum(enum.Enum):
     """Difficulty enum to hold the difficultly of the game"""
