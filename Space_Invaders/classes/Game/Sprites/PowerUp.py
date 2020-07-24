@@ -1,4 +1,4 @@
-from . import ImageObject, BlockGroup, MotherShip
+from . import ImageObject, BlockGroup, Mothership
 
 def hp_up(screen, player):
     """Increase the hp of the player"""
@@ -7,7 +7,7 @@ def hp_up(screen, player):
 def bullet_up(screen, player):
     """Increase player bullet reload speed"""
     #If the player is not firing at a higher speed
-    if player.maxcooldown > 10:
+    if player.maxcooldown > 6:
         player.maxcooldown -= 2
 
 def shield_up(screen, player):
@@ -26,7 +26,7 @@ def deflector(screen, player):
         sprite.move(0, 10)
 
     for sprite in screen.other_enemies:
-        if type(sprite) == MotherShip:
+        if type(sprite) == Mothership:
             continue
         sprite.move(0, 10)
 
