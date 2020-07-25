@@ -120,8 +120,8 @@ class GameWindow(object):
         self.stage2 = Stage2Screen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug)
         self.stage3 = Stage3Screen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug)
         self.stage4 = Stage4Screen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug)
-        self.stage5 = None
-        self.stage6 = None
+        self.stage5 = Stage5Screen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug)
+        self.stage6 = Stage6Screen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug)
 
         #Dynamic screens
         self.victory = None
@@ -162,8 +162,8 @@ class GameWindow(object):
             State.STAGE2:self.stage2,
             State.STAGE3:self.stage3,
             State.STAGE4:self.stage4,
-            # State.STAGE5:self.stage5,
-            # State.STAGE6:self.stage6
+            State.STAGE5:self.stage5,
+            State.STAGE6:self.stage6
         }
         
         #Store the different states the menu has
@@ -197,8 +197,8 @@ class GameWindow(object):
             State.STAGE2: self.stage2.handle,
             State.STAGE3: self.stage3.handle,
             State.STAGE4: self.stage4.handle,
-            # State.STAGE5: self.stage5.handle,
-            # State.STAGE6: self.stage6.handle
+            State.STAGE5: self.stage5.handle,
+            State.STAGE6: self.stage6.handle
         }
 
         #Load sound state:
