@@ -7,7 +7,7 @@ class Stage4Screen(StoryTemplate):
         """The constructor for the Stage 3 screen"""
 
         #Call the superclass init method
-        super().__init__(screen_width, screen_height, screen, State(103), sensitivity, max_fps, 0.1, debug)
+        super().__init__(screen_width, screen_height, screen, State(103), sensitivity, max_fps, 1, debug)
 
         #Commander brief image
         self.bg = ImageObject(300, 285, 600, 570, StoryTemplate.sprites[0], debug)
@@ -17,7 +17,7 @@ class Stage4Screen(StoryTemplate):
         self.alon_dusk.scale(217,217)
 
         #Textbox
-        self.tb = ImageObject(300, 685, 600, 230, StoryTemplate.sprites[5], debug)
+        self.tb = ImageObject(300, 685, 600, 230, StoryTemplate.sprites[6], debug)
 
     def draw_bg(self):
         """Draw the background"""
@@ -148,6 +148,12 @@ class Stage4Screen(StoryTemplate):
         return
 
     def _spawn_brute(self, x):
+        """Spawn a brute at position X, Y"""
+
+        #Fix brute health at 3
+        Brute.spawn_count = 3
+
+        #Add a brute to the enemies group
         self.other_enemies.add(Brute(self.sensitivity, x, self.screen_height//10, self.screen_width, self.screen_height, self.mob_bullet, self.debug))
 
     def spawn_brute(self):

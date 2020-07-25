@@ -17,7 +17,7 @@ class Stage1Screen(StoryTemplate):
         self.dill_bates.scale(217,217)
 
         #Textbox
-        self.tb = ImageObject(300, 685, 600, 230, StoryTemplate.sprites[5], debug)
+        self.tb = ImageObject(300, 685, 600, 230, StoryTemplate.sprites[6], debug)
 
     def draw_bg(self):
         """Draw the background"""
