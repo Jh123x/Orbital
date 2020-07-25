@@ -17,23 +17,54 @@ def shield_up(screen, player):
 
 def emp_bomb(screen, player):
     """Destroy lives of all normal enemies by 1"""
+    
+    #Var to decrease emp bomb dmg
+    if screen.wave // 4 > 1:
+        health_dec = screen.wave // 4
+    else:
+        health_dec = 1
+
+    #Iterate through all the sprites
     for sprite in screen.enemies:
-        sprite.destroy()
+
+        #If the enemy only has 1 life
+        if sprite.get_lives() <= health_dec:
+
+            #Kill the sprite
+            sprite.kill()
+
+        #Otherwise
+        else:
+
+            #Destroy it 1 time
+            for _ in range(health_dec):
+                sprite.destroy()
 
 def deflector(screen, player):
     """Move all the enemies on screen back"""
-    for sprite in screen.enemies:
-        sprite.move(0, 10)
 
+    #Iterate through the enemies
+    for sprite in screen.enemies:
+
+        #Move the enemy back
+        sprite.move(0, -10)
+
+    #Iterate through the other sprites
     for sprite in screen.other_enemies:
+
+        #If it is the mothership ignore it
         if type(sprite) == Mothership:
             continue
-        sprite.move(0, 10)
+
+        #Otherwise move the sprite back
+        sprite.move(0, -10)
 
 def extra_bullet_power(screen, player):
     """Increase the bullet power of the player"""
     #Increase the bullet power of the player
     if player.get_bullet_power() < screen.wave + 2:
+
+        #Increase the damage of the player bullet
         player.increase_bullet_power(1)
 
 def decrease_bullet_power(screen, player):
@@ -51,7 +82,7 @@ class PowerUp(ImageObject):
     sprites = []
 
     #To store the powerup functions
-    powers = [bullet_up, hp_up, shield_up]
+    powers = [bullet_up, extra_bullet_power, decrease_bullet_power, deflector, emp_bomb, hp_up, shield_up]
 
     def __init__(self, initial_x:int, initial_y:int, width:int, height:int, power_type:int, time_to_live:int, debug:bool = False):
         """Constructor for the powerup class"""
@@ -73,7 +104,11 @@ class PowerUp(ImageObject):
 
     def get_ability(self):
         """Ability of the power up"""
+
+        #Play the powerup sound
         self.sound.play('powerup')
+
+        #Return the powerup function
         return PowerUp.powers[self.power_type]
 
     def get_power_type(self) -> str:
