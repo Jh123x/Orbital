@@ -87,14 +87,28 @@ class PlayScreen(ClassicScreen):
         #Spawn brute if the conditions are met
         self.spawn_brute()
 
+        #Spawn Crabs if the conditions are met
+        self.spawn_crabs()
+
         #Call the superclass to spawn enemies
         super().spawn_enemies(number)
+
+    def _spawn_crabs(self, x):
+        #Add the scout to the other enemies grp
+        self.other_enemies.add(Crabs(self.sensitivity, x, self.screen_height//10, 1,  self.screen_width, self.screen_height, self.mob_bullet, self.debug))
+
+    def spawn_crabs(self):
+        """Spawn crabs"""        
+        if self.wave % 10 == 0:
+            total = self.wave
+            for i in range(1, total + 1):
+                self._spawn_crabs(self.screen_width//(total/i))
 
     def spawn_brute(self) -> None:
         """Spawn a brute if the conditions are met"""
 
         #Spawn the brute every wave
-        if self.wave % 10 == 0:
+        if self.wave % 15 == 0:
 
             #Add the brute to the other enemies group
             self.other_enemies.add(Brute(self.sensitivity, self.generate_random_no() * self.screen_width, self.screen_height//10, self.screen_width, self.screen_height, self.mob_bullet, self.debug))
