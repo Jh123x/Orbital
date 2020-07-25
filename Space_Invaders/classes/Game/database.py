@@ -192,7 +192,7 @@ def main() -> None:
     """The main function for the database class used for debuging and modifying database"""
 
     #Load the path of the database
-    dbpath = os.path.join(os.path.dirname(os.path.realpath(__file__)),'..', '..', 'data', 'test.db')
+    dbpath = os.path.join(os.path.dirname(os.path.realpath(__file__)),'..', '..', 'data', 't.db')
 
     #Create the scoreboard database
     db = ScoreBoard(dbpath)

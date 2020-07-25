@@ -2,17 +2,13 @@ import random
 import numpy as np
 
 class BaseAgent():
-    def __init__(self, input_shape,action_space, seed, device, gamma, alpha ,batch_size):
+    def __init__(self, input_shape,action_space, seed, device, model):
         self.input_shape = input_shape
         self.action_space = action_space
         self.seed = seed
         self.device = device
-        self.gamma = gamma
-        self.alpha = alpha
-        self.batch_size = batch_size
-        self.n_steps = 0
-        self.max_steps = 50000
-        self.tau = 0.01
+        self.model = model
+
 
     def step(self, *args):
         '''

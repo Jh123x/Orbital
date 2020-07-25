@@ -54,6 +54,7 @@ class StoryModeScreen(Screen):
         #Loop through the the video buttons
         for index,rect in enumerate(self.video_buttons):
             if self.check_clicked(rect):
+                print(index)
                 return State(100 + index)
 
         return self.state

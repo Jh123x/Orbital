@@ -20,21 +20,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1fe4a23f-441d-48f3-8044-96cbdb94ff8d" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/Stage2Screen.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Space_Invaders/images/story assets/elon_sama.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Space_Invaders/images/story assets/gates.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Space_Invaders/images/story assets/terminator.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/PlayScreen.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/PlayScreen.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/Stage1Screen.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/Stage1Screen.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/StoryModeScreen.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/StoryModeScreen.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/StoryTemplate.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/StoryTemplate.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/TutorialScreen.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/TutorialScreen.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Sprites/Bullet.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Sprites/Bullet.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Sprites/PowerUp.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Sprites/PowerUp.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/game.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/game.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Sprites/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Sprites/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/database.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/images/story assets/elon_sama.png" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/images/story assets/elon_sama.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/images/story assets/terminator.png" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/images/story assets/terminator.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Space_Invaders/images/story assets/trump.png" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/images/story assets/trump.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/tests/DatabaseTest.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/tests/DatabaseTest.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,8 +37,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Python Script" />
         <option value="Python Unit Test" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -74,7 +67,7 @@
       <recent name="$PROJECT_DIR$/gym_invaders/gym_game/envs" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.game">
+  <component name="RunManager" selected="Python.database_tester">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <module name="Orbital" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -97,6 +90,28 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="database_tester" type="PythonConfigurationType" factoryName="Python">
+      <module name="Orbital" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="$USER_HOME$/.pyenv/versions/orbital/bin/python" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Space_Invaders/classes/Game" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Space_Invaders/classes/Game/database.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="game" type="PythonConfigurationType" factoryName="Python">
       <module name="Orbital" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -110,28 +125,6 @@
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Space_Invaders/__main__.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="true" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="genepool_train" type="PythonConfigurationType" factoryName="Python">
-      <module name="Orbital" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="$USER_HOME$/.pyenv/versions/orbital/bin/python" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/gym_invaders" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/gym_invaders/deepneuroevolution.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
       <option name="REDIRECT_INPUT" value="false" />
@@ -231,7 +224,7 @@
       <item itemvalue="Python.game" />
       <item itemvalue="Python.gym" />
       <item itemvalue="Python.test script" />
-      <item itemvalue="Python.genepool_train" />
+      <item itemvalue="Python.database_tester" />
       <item itemvalue="Python.statemachine" />
     </list>
   </component>
@@ -259,6 +252,7 @@
       <workItem from="1594475192923" duration="1950000" />
       <workItem from="1594478958958" duration="21388000" />
       <workItem from="1594872415492" duration="62395000" />
+      <workItem from="1595580945470" duration="2461000" />
     </task>
     <task id="LOCAL-00001" summary="Commit Bugfixes from training problems">
       <created>1592625374788</created>
@@ -337,7 +331,14 @@
       <option name="project" value="LOCAL" />
       <updated>1595515652120</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="update storymode">
+      <created>1595516135760</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1595516135760</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -368,13 +369,14 @@
     <MESSAGE value="add statemachine.py for ai functionality" />
     <MESSAGE value="stuff" />
     <MESSAGE value="commit addition of new unittests for statemachine.py and starting on unittesting for database folder" />
-    <option name="LAST_COMMIT_MESSAGE" value="commit addition of new unittests for statemachine.py and starting on unittesting for database folder" />
+    <MESSAGE value="update storymode" />
+    <option name="LAST_COMMIT_MESSAGE" value="update storymode" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="72" y="117" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1595257230960">
+    <state x="72" y="117" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1595579470757">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state x="72" y="117" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.900/1440.0.1920.1080@0.0.1440.900" timestamp="1595257230960" />
+    <state x="72" y="117" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.900/1440.0.1920.1080@0.0.1440.900" timestamp="1595579470757" />
     <state x="1864" y="194" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.900/1440.0.1920.1080@1440.0.1920.1080" timestamp="1592213908534" />
     <state x="72" y="117" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.900/1440.23.1920.1057@0.0.1440.900" timestamp="1595252263123" />
     <state x="1864" y="213" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1440.830/1440.23.1920.1057@1440.23.1920.1057" timestamp="1591608747023" />
@@ -395,31 +397,31 @@
       <screen x="0" y="23" width="1440" height="831" />
     </state>
     <state x="100" y="100" width="1240" height="700" key="DiffContextDialog/0.23.1440.831/1440.23.1920.1057@0.23.1440.831" timestamp="1592625213367" />
-    <state width="1878" height="288" key="GridCell.Tab.0.bottom" timestamp="1595491682377">
-      <screen x="1440" y="0" width="1920" height="1080" />
+    <state width="1398" height="191" key="GridCell.Tab.0.bottom" timestamp="1595671187850">
+      <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1398" height="232" key="GridCell.Tab.0.bottom/0.0.1440.900/1440.0.1920.1080@0.0.1440.900" timestamp="1595257056768" />
+    <state width="1398" height="191" key="GridCell.Tab.0.bottom/0.0.1440.900/1440.0.1920.1080@0.0.1440.900" timestamp="1595671187850" />
     <state width="1878" height="288" key="GridCell.Tab.0.bottom/0.0.1440.900/1440.0.1920.1080@1440.0.1920.1080" timestamp="1595491682377" />
     <state width="1398" height="232" key="GridCell.Tab.0.bottom/0.0.1440.900/1440.23.1920.1057@0.0.1440.900" timestamp="1595253446270" />
     <state width="1878" height="288" key="GridCell.Tab.0.bottom/0.23.1440.877/1440.0.1920.1080@1440.0.1920.1080" timestamp="1595483337935" />
-    <state width="1878" height="288" key="GridCell.Tab.0.center" timestamp="1595491682373">
-      <screen x="1440" y="0" width="1920" height="1080" />
+    <state width="1398" height="191" key="GridCell.Tab.0.center" timestamp="1595671187848">
+      <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1398" height="232" key="GridCell.Tab.0.center/0.0.1440.900/1440.0.1920.1080@0.0.1440.900" timestamp="1595257056766" />
+    <state width="1398" height="191" key="GridCell.Tab.0.center/0.0.1440.900/1440.0.1920.1080@0.0.1440.900" timestamp="1595671187848" />
     <state width="1878" height="288" key="GridCell.Tab.0.center/0.0.1440.900/1440.0.1920.1080@1440.0.1920.1080" timestamp="1595491682373" />
     <state width="1398" height="232" key="GridCell.Tab.0.center/0.0.1440.900/1440.23.1920.1057@0.0.1440.900" timestamp="1595253446268" />
     <state width="1878" height="288" key="GridCell.Tab.0.center/0.23.1440.877/1440.0.1920.1080@1440.0.1920.1080" timestamp="1595483337934" />
-    <state width="1878" height="288" key="GridCell.Tab.0.left" timestamp="1595491682373">
-      <screen x="1440" y="0" width="1920" height="1080" />
+    <state width="1398" height="191" key="GridCell.Tab.0.left" timestamp="1595671187847">
+      <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1398" height="232" key="GridCell.Tab.0.left/0.0.1440.900/1440.0.1920.1080@0.0.1440.900" timestamp="1595257056765" />
+    <state width="1398" height="191" key="GridCell.Tab.0.left/0.0.1440.900/1440.0.1920.1080@0.0.1440.900" timestamp="1595671187847" />
     <state width="1878" height="288" key="GridCell.Tab.0.left/0.0.1440.900/1440.0.1920.1080@1440.0.1920.1080" timestamp="1595491682373" />
     <state width="1398" height="232" key="GridCell.Tab.0.left/0.0.1440.900/1440.23.1920.1057@0.0.1440.900" timestamp="1595253446267" />
     <state width="1878" height="288" key="GridCell.Tab.0.left/0.23.1440.877/1440.0.1920.1080@1440.0.1920.1080" timestamp="1595483337933" />
-    <state width="1878" height="288" key="GridCell.Tab.0.right" timestamp="1595491682374">
-      <screen x="1440" y="0" width="1920" height="1080" />
+    <state width="1398" height="191" key="GridCell.Tab.0.right" timestamp="1595671187849">
+      <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1398" height="232" key="GridCell.Tab.0.right/0.0.1440.900/1440.0.1920.1080@0.0.1440.900" timestamp="1595257056767" />
+    <state width="1398" height="191" key="GridCell.Tab.0.right/0.0.1440.900/1440.0.1920.1080@0.0.1440.900" timestamp="1595671187849" />
     <state width="1878" height="288" key="GridCell.Tab.0.right/0.0.1440.900/1440.0.1920.1080@1440.0.1920.1080" timestamp="1595491682374" />
     <state width="1398" height="232" key="GridCell.Tab.0.right/0.0.1440.900/1440.23.1920.1057@0.0.1440.900" timestamp="1595253446269" />
     <state width="1878" height="288" key="GridCell.Tab.0.right/0.23.1440.877/1440.0.1920.1080@1440.0.1920.1080" timestamp="1595483337935" />
@@ -427,16 +429,18 @@
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="144" y="79" key="MergeDialog/0.0.1440.900/1440.0.1920.1080@0.0.1440.900" timestamp="1595240775536" />
-    <state x="358" y="218" key="MultipleFileMergeDialog" timestamp="1595240775579">
-      <screen x="0" y="0" width="1440" height="900" />
+    <state x="1917" y="262" key="MultipleFileMergeDialog" timestamp="1595516109670">
+      <screen x="1440" y="0" width="1920" height="1080" />
     </state>
     <state x="358" y="218" key="MultipleFileMergeDialog/0.0.1440.900/1440.0.1920.1080@0.0.1440.900" timestamp="1595240775579" />
+    <state x="1917" y="262" key="MultipleFileMergeDialog/0.0.1440.900/1440.0.1920.1080@1440.0.1920.1080" timestamp="1595516109670" />
     <state x="1894" y="252" key="com.intellij.execution.console.ConsoleHistoryController$MyBrowseAction$1" timestamp="1591965940214">
       <screen x="1440" y="0" width="1920" height="1080" />
     </state>
     <state x="1894" y="252" key="com.intellij.execution.console.ConsoleHistoryController$MyBrowseAction$1/0.0.1440.900/1440.0.1920.1080@1440.0.1920.1080" timestamp="1591965940214" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/Orbital$database_tester.coverage" NAME="database_tester Coverage Results" MODIFIED="1595671187835" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Space_Invaders/classes/Game" />
     <SUITE FILE_PATH="coverage/Orbital$spaceinvader_aigame.coverage" NAME="genepool_train Coverage Results" MODIFIED="1593328056608" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/gym_invaders" />
     <SUITE FILE_PATH="coverage/Orbital$statemachine.coverage" NAME="statemachine Coverage Results" MODIFIED="1595483337926" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Space_Invaders/classes/Game/Sprites" />
     <SUITE FILE_PATH="coverage/Orbital$main.coverage" NAME="training_stablebaseline Coverage Results" MODIFIED="1594738987844" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/gym_invaders" />
