@@ -183,7 +183,7 @@ class ClassicScreen(Screen):
         return surface
 
     def get_entities(self):
-
+        """Get the entities for AI to process"""
         return self.enemies,self.other_enemies,self.mob_bullet
 
     def draw_hitboxes(self, screen = None):

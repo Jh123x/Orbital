@@ -45,7 +45,6 @@ class StoryTemplate(PlayScreen):
 
             #Render the speech in 15 spaces
             self.write_main(Screen.font, WHITE, text, left_px, first_px + index * 15, Direction.LEFT)
-
     
     def next_scene(self):
         """Increment the scene counter to the next scene"""

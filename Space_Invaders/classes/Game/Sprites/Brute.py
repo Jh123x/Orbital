@@ -8,6 +8,11 @@ class Brute(EnemyShip):
     #Store the number of times the brute spawned
     spawn_count = 0
 
+    @staticmethod
+    def reset():
+        """Reset method for the brute class to reset count"""
+        Brute.spawn_count = 0
+
     def __init__(self, sensitivity:int, initial_x:int, initial_y:int,  game_width:int, game_height:int, bullet_grp, debug:bool):
         """Constructor class for the Brute boss"""
 
@@ -24,7 +29,7 @@ class Brute(EnemyShip):
         self.set_points(self.spawn_count * 50)
 
         #Set the delta x for the brute
-        self.delta_y = sensitivity // 2 # It moves slower than the mobs
+        self.delta_y = sensitivity // 3 # It moves slower than the mobs
 
     def update(self) -> None:
         """Overridden update class for the scout boss"""

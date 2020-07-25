@@ -38,12 +38,12 @@ class GameWindow(object):
     def __init__(self, sensitivity:int, maxfps:int, game_width:int, game_height:int, icon_img_path:str, player_img_paths:tuple,
                  enemy_img_paths:tuple, bullet_img_paths:tuple, background_img_paths:tuple, explosion_img_paths:tuple, 
                  db_path:str, sound_path:dict, bg_limit:int, menu_music_paths:tuple, powerup_img_path:tuple, mothership_img_path:tuple, 
-                 trophy_img_path:tuple, scout_img_path:tuple, brute_img_path:tuple, screenshot_path:str, story_img_path:str, wave:int = 1,  debug:bool = False):
+                 trophy_img_path:tuple, scout_img_path:tuple, brute_img_path:tuple, screenshot_path:str, story_img_path:str, crabs_img_path:str, wave:int = 1,  debug:bool = False):
         """The Main window for the Space defenders game"""
         
         #Load sprites
-        load_sprites((Player, Bullet, EnemyShip, Background, Explosion, PowerUp, MotherShip, VictoryScreen, Scout, Brute, StoryTemplate), 
-                    (player_img_paths, bullet_img_paths, enemy_img_paths, background_img_paths, explosion_img_paths, powerup_img_path, mothership_img_path, trophy_img_path, scout_img_path, brute_img_path, story_img_path))
+        load_sprites((Player, Bullet, EnemyShip, Background, Explosion, PowerUp, MotherShip, VictoryScreen, Scout, Brute, StoryTemplate, Crabs), 
+                    (player_img_paths, bullet_img_paths, enemy_img_paths, background_img_paths, explosion_img_paths, powerup_img_path, mothership_img_path, trophy_img_path, scout_img_path, brute_img_path, story_img_path, crabs_img_path))
 
         #Store debug variable
         self.debug = debug
@@ -114,8 +114,16 @@ class GameWindow(object):
         self.tutorial = TutorialScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug)
         self.story_mode = StoryModeScreen(game_width, game_height, self.main_screen, debug)
         self.ai_coop = AICoopScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.difficulty, 3, debug)
+
+        #Create the stages
         self.stage1 = Stage1Screen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug)
         self.stage2 = Stage2Screen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug)
+        self.stage3 = Stage3Screen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug)
+        self.stage4 = Stage4Screen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug)
+        self.stage5 = Stage5Screen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug)
+        self.stage6 = Stage6Screen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug)
+
+        #Dynamic screens
         self.victory = None
         self.newhighscore = None
         self.pause = None
@@ -151,7 +159,11 @@ class GameWindow(object):
             State.ONE_PLAYER_MENU: self.one_player_menu,
             State.STORY_MENU: self.story_mode,
             State.STAGE1:self.stage1,
-            State.STAGE2:self.stage2
+            State.STAGE2:self.stage2,
+            State.STAGE3:self.stage3,
+            State.STAGE4:self.stage4,
+            State.STAGE5:self.stage5,
+            State.STAGE6:self.stage6
         }
         
         #Store the different states the menu has
@@ -182,7 +194,11 @@ class GameWindow(object):
             State.VICTORY: self.handle_victory,
             State.STORY_MENU: self.story_mode.handle,
             State.STAGE1: self.stage1.handle,
-            State.STAGE2: self.stage2.handle
+            State.STAGE2: self.stage2.handle,
+            State.STAGE3: self.stage3.handle,
+            State.STAGE4: self.stage4.handle,
+            State.STAGE5: self.stage5.handle,
+            State.STAGE6: self.stage6.handle
         }
 
         #Load sound state:

@@ -49,6 +49,7 @@ def main() -> None:
     d["trophy_img_path"] = map_dir("images", "trophys")
     d["scout_img_path"] = map_dir("images", "bosses", "scout")
     d["brute_img_path"] = map_dir("images", "bosses", "brute")
+    d["crabs_img_path"] = map_dir("images", "bosses", "crabs")
     d["story_img_path"] = map_dir("images", "story assets")
 
     #Get the number of backgrounds

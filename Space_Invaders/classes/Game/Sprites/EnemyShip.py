@@ -49,7 +49,7 @@ class EnemyShip(MovingObject):
         if self.lives:
 
             #Reduce the life of the ship
-            if self.lives < lives:
+            if self.lives <= lives:
                 self.lives = 0
             else:
                 self.lives -= lives
@@ -58,7 +58,7 @@ class EnemyShip(MovingObject):
             if not self.is_destroyed():
 
                 #Update the image to the new image of sprite
-                self.image = self.sprites[self.lives-1 if self.lives < len(EnemyShip.sprites) else len(EnemyShip.sprites)-1]
+                self.image = self.sprites[self.lives-1 if self.lives < len(self.sprites) else len(self.sprites)-1]
 
                 #Scale the mob to 40 x 40
                 self.scale(40,40)

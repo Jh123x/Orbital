@@ -17,6 +17,10 @@ class Bullet(MovingObject):
 
         #Store bullet direction
         self.direction = direction.value
+
+    def touch_edge(self):
+        """Check if the bullet touched the edge of the screen"""
+        return self.get_x() <= 0 or self.get_x() > self.game_width
        
     def update(self) -> None:
         """Update the path of the bullet"""
@@ -33,10 +37,13 @@ class Bullet(MovingObject):
             return
 
         #Make the bullet able to bounce along the x axis
-        elif self.x <= 0 or self.x >= self.game_width:
+        elif self.touch_edge():
 
             #Set the bullet direction to opposite in x axis
-            self.direction = tuple(map(lambda x: x*self.sensitivity, self.direction))
+            if self.direction == Direction.BOTTOM_LEFT.value:
+                self.direction = Direction.BOTTOM_RIGHT.value
+            elif self.direction == Direction.BOTTOM_RIGHT.value:
+                self.direction = Direction.BOTTOM_LEFT.value
             
 
         #Update its coordinates
