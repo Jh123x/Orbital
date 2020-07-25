@@ -143,7 +143,7 @@ class AIPlayer(Player):
         #Call the superclass draw
         super().draw(screen)
 
-    def get_entities(self,enemies1, enemies2, enemy_bullets, enemy_player= -1):
+    def get_entities(self, enemies1, enemies2, enemy_bullets, enemy_player= -1):
         ''' Relevent Information for AI decision making'''
         curr_x = self.get_x()
         curr_y = self.get_y()
