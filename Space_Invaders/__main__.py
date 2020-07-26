@@ -101,6 +101,7 @@ def main() -> None:
     d["brute_img_path"] = map_dir("images", "bosses", "brute")
     d["crabs_img_path"] = map_dir("images", "bosses", "crabs")
     d["story_img_path"] = map_dir("images", "story assets")
+    d["place_holder_path"] = map_dir("images", "place_holder")
 
     #Get the number of backgrounds
     bg_limit = len(d["background_img_paths"])

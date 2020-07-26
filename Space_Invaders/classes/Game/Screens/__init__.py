@@ -26,3 +26,4 @@ from .TutorialScreen import TutorialScreen
 from .VictoryScreen import VictoryScreen
 from .AICoopScreen import AICoopScreen
 from .PowerupInstructionsScreen import PowerupInstructionsScreen
+from .MobInstructionScreen import MobInstructionsScreen

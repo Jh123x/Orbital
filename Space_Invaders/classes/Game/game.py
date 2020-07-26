@@ -53,15 +53,16 @@ class GameWindow(object):
     def __init__(self, sensitivity:int, maxfps:int, game_width:int, game_height:int, icon_img_path:str, player_img_paths:tuple,
                  enemy_img_paths:tuple, bullet_img_paths:tuple, background_img_paths:tuple, explosion_img_paths:tuple, 
                  db_path:str, sound_path:dict, bg_limit:int, menu_music_paths:tuple, powerup_img_path:tuple, mothership_img_path:tuple, 
-                 trophy_img_path:tuple, scout_img_path:tuple, brute_img_path:tuple, screenshot_path:str, story_img_path:str, crabs_img_path:str, wave:int = 1,  debug:bool = False):
+                 trophy_img_path:tuple, scout_img_path:tuple, brute_img_path:tuple, screenshot_path:str, story_img_path:str, crabs_img_path:str, 
+                 place_holder_path:str, wave:int = 1,  debug:bool = False):
         """The Main window for the Space defenders game"""
         
         #Load sprites
         load_sprites((Player, Bullet, EnemyShip, Background, Explosion, MotherShip, VictoryScreen, Scout, Brute, Crabs), 
                     (player_img_paths, bullet_img_paths, enemy_img_paths, background_img_paths, explosion_img_paths, mothership_img_path, trophy_img_path, scout_img_path, brute_img_path, crabs_img_path))
 
-        load_sprites_dict((StoryTemplate,PowerUp),
-                        (story_img_path, powerup_img_path))
+        load_sprites_dict((StoryTemplate, PowerUp, MobInstructionsScreen),
+                        (story_img_path, powerup_img_path, place_holder_path))
 
         #Store debug variable
         self.debug = debug
@@ -124,6 +125,7 @@ class GameWindow(object):
         self.one_player_menu = OnePlayerModeScreen(game_width, game_height, self.main_screen, debug)
         self.story_mode = StoryModeScreen(game_width, game_height, self.main_screen, debug)
         self.powerup_instructions = PowerupInstructionsScreen(game_width, game_height, self.main_screen, self.fps, debug)
+        self.mobs_instructions = MobInstructionsScreen(game_width, game_height, self.main_screen, self.fps, debug)
 
         #Create playing screens
         self.play = PlayScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.difficulty, 3, debug = self.debug)
@@ -185,7 +187,8 @@ class GameWindow(object):
             State.STAGE4:self.stage4,
             State.STAGE5:self.stage5,
             State.STAGE6:self.stage6,
-            State.POWERUP_INSTRUCTIONS: self.powerup_instructions
+            State.POWERUP_INSTRUCTIONS: self.powerup_instructions,
+            State.MOBS_INSTRUCTIONS: self.mobs_instructions
         }
         
         #Store the different states the menu has
@@ -221,7 +224,8 @@ class GameWindow(object):
             State.STAGE4: self.stage4.handle,
             State.STAGE5: self.stage5.handle,
             State.STAGE6: self.stage6.handle,
-            State.POWERUP_INSTRUCTIONS: self.powerup_instructions.handle
+            State.POWERUP_INSTRUCTIONS: self.powerup_instructions.handle,
+            State.MOBS_INSTRUCTIONS: self.mobs_instructions.handle
         }
 
         #Load sound state:

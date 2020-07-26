@@ -38,6 +38,7 @@ class State(enum.Enum):
     AI_VS_INSTRUCTIONS = 43
     AI_COOP_INSTRUCTIONS = 44
     POWERUP_INSTRUCTIONS = 45
+    MOBS_INSTRUCTIONS = 46
     
     #Two player states
     TWO_PLAYER_MENU = 10

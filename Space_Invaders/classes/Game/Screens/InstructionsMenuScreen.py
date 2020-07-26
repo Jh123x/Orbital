@@ -23,6 +23,9 @@ class InstructionsMenuScreen(Screen):
         #Draw the Powerup instructions
         self.powerups = self.write(Screen.end_font, WHITE, "Powerups", self.screen_width//2, first_px + self.screen_height//7.5)
 
+        #Draw the sprites instructions
+        self.mobs = self.write(Screen.end_font, WHITE, "Enemies", self.screen_width//2, first_px + self.screen_height//5)
+
         #Draw the back button
         self.back = self.write(Screen.end_font, WHITE, "Back", screen_width//2, screen_height//1.2)
 
@@ -41,8 +44,13 @@ class InstructionsMenuScreen(Screen):
         elif self.check_clicked(self.back):
             return State.MENU
 
+        #If the player clicked on powerups
         elif self.check_clicked(self.powerups):
             return State.POWERUP_INSTRUCTIONS
+
+        #If the player click on mobs
+        elif self.check_clicked(self.mobs):
+            return State.MOBS_INSTRUCTIONS
 
         #Otherwise return the current state
         else:
