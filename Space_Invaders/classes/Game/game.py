@@ -153,6 +153,7 @@ class GameWindow(object):
         self.pause = None
         self.pvp_gameover = None
         self.game_over = None
+        self.stage_pause = None
 
         #Sort the highscore
         self.highscore.sort_scores()
@@ -190,45 +191,21 @@ class GameWindow(object):
             State.STAGE6:self.stage6,
             State.POWERUP_INSTRUCTIONS: self.powerup_instructions,
             State.MOBS_INSTRUCTIONS: self.mobs_instructions,
-            State.STAGE_GAMEOVER: self.stage_gameover
+            State.STAGE_GAMEOVER: self.stage_gameover,
+            State.STAGE_PAUSE: self.stage_pause,
         }
         
         #Store the different states the menu has
         self.states = {
-            State.MENU:self.menu.handle,
-            State.PLAYMODE:self.play_menu.handle,
-            State.PLAY:self.play.handle,
-            State.HIGHSCORE:self.highscore.handle,
             State.NEWHIGHSCORE:self.handle_newhighscore,
             State.GAMEOVER:self.handle_gameover,
-            State.INSTRUCTIONS_MENU: self.inst_menu.handle,
-            State.INSTRUCTIONS:self.instructions.handle,
-            State.PVP_INSTRUCTIONS: self.pvp_menu.handle,
             State.PAUSE:self.handle_pause,
-            State.TWO_PLAYER_MENU: self.two_player.handle,
-            State.AI_COOP: self.ai_coop.handle,
-            State.AI_VS: self.ai_vs.handle,
-            State.PVP: self.pvp.handle,
             State.TWO_PLAYER_GAMEOVER:self.handle_two_player_gameover,
             State.TWO_PLAYER_PAUSE: self.handle_two_player_pause,
-            State.CLASSIC: self.classic.handle,
-            State.SETTINGS: self.settings.handle,
-            State.COOP: self.coop.handle,
             State.ONLINE: self.handle_online,
             State.QUIT:self.__del__,
-            State.TUTORIAL: self.tutorial.handle,
-            State.ONE_PLAYER_MENU: self.one_player_menu.handle,
             State.VICTORY: self.handle_victory,
-            State.STORY_MENU: self.story_mode.handle,
-            State.STAGE1: self.stage1.handle,
-            State.STAGE2: self.stage2.handle,
-            State.STAGE3: self.stage3.handle,
-            State.STAGE4: self.stage4.handle,
-            State.STAGE5: self.stage5.handle,
-            State.STAGE6: self.stage6.handle,
-            State.POWERUP_INSTRUCTIONS: self.powerup_instructions.handle,
-            State.MOBS_INSTRUCTIONS: self.mobs_instructions.handle,
-            State.STAGE_GAMEOVER: self.stage_gameover.handle
+            State.STAGE_PAUSE: self.handle_stage_pause,
         }
 
         #Load sound state:
@@ -358,6 +335,28 @@ class GameWindow(object):
 
         #If it is exiting out of the pause state
         if state != State.PAUSE and state != self.prev:
+            
+            #Reset the screen
+            self.screens[self.prev].reset()
+
+        #Return the next state
+        return state
+
+    def handle_stage_pause(self) -> State:
+        """Handle the pause screen for stages"""
+
+        #Get the current stage
+        stage = self.screens[self.prev].get_stage_name()
+
+        #Create the pause screen if it is not already created
+        if not self.stage_pause or self.stage_pause.get_stage() != stage:
+            self.stage_pause = StagePauseScreen(self.game_width,self.game_height, self.main_screen, self.prev, self.debug)
+
+        #Handle the pause screen
+        state = self.stage_pause.handle()
+
+        #If it is exiting out of the pause state
+        if state != State.STAGE_PAUSE and state != self.prev:
             
             #Reset the screen
             self.screens[self.prev].reset()
@@ -496,6 +495,12 @@ class GameWindow(object):
             #Fill the background to black
             self.main_screen.fill(BLACK)
 
+    def find_method(self, prev):
+        """Find the appropriate method to execute"""
+        f = self.states.get(prev, None)
+
+        return f if f else self.screens.get(self.state).handle
+
     def update(self) -> None:
         """Update the main screen"""
 
@@ -529,14 +534,13 @@ class GameWindow(object):
             #Lower cooldown
             self.cooldown -= 1
 
-            #Continue running current state
-            self.states[self.state]()
+            self.find_method(prev)()
 
         #Otherwise
         else:
 
             #Check if there is new state
-            self.state = self.states[self.state]()
+            self.state = self.find_method(prev)()
 
         #If the state is different
         if prev != self.state:
