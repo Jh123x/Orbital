@@ -26,7 +26,7 @@ class PowerupInstructionsScreen(Screen):
         self.header = self.write(Screen.title_font, WHITE, "Power Ups", self.screen_width//2, self.screen_height//5)
 
         #Load the powerups on the screen
-        self.powerups = tuple(map(lambda x: (x[0],ImageObject(self.screen_width//2, self.screen_height//5 + self.screen_height // 15, 50, 50,x[1], debug)), PowerUp.sprites.items()))
+        self.sprites = tuple(map(lambda x: (x[0],ImageObject(self.screen_width//2, self.screen_height//5 + self.screen_height // 15, 50, 50,x[1], debug)), PowerUp.sprites.items()))
 
         #Load the current page
         self.page = 1
@@ -48,6 +48,11 @@ class PowerupInstructionsScreen(Screen):
         
         #If the player clicks on back
         elif self.check_clicked(self.back):
+
+            #Reset the page when player backs
+            self.page = 1
+
+            #Return the instructions menu screen
             return State.INSTRUCTIONS_MENU
 
         #If player clicks on next page
@@ -107,7 +112,7 @@ class PowerupInstructionsScreen(Screen):
         first_px = self.screen_height//5 + self.screen_height // 15 + 50
 
         #Unpack powerup sprites
-        name,img = self.powerups[self.page]
+        name,img = self.sprites[self.page]
 
         #Draw the powerups name
         self.write_main(Screen.end_font, WHITE, f"{self.description[name][0]}", self.screen_width // 2, first_px)
