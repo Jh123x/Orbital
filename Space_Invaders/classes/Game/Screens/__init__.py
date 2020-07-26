@@ -22,3 +22,4 @@ from .OnePlayerModesScreen import OnePlayerModeScreen
 from .TutorialScreen import TutorialScreen
 from .VictoryScreen import VictoryScreen
 from .AICoopScreen import AICoopScreen
+from .StageGameover import StageGameoverScreen

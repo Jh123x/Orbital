@@ -147,6 +147,7 @@ class GameWindow(object):
         self.stage6 = Stage6Screen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug)
 
         #Dynamic screens
+        self.stage_gameover = StageGameoverScreen(game_width, game_height, self.main_screen, debug)
         self.victory = None
         self.newhighscore = None
         self.pause = None
@@ -188,7 +189,8 @@ class GameWindow(object):
             State.STAGE5:self.stage5,
             State.STAGE6:self.stage6,
             State.POWERUP_INSTRUCTIONS: self.powerup_instructions,
-            State.MOBS_INSTRUCTIONS: self.mobs_instructions
+            State.MOBS_INSTRUCTIONS: self.mobs_instructions,
+            State.STAGE_GAMEOVER: self.stage_gameover
         }
         
         #Store the different states the menu has
@@ -225,7 +227,8 @@ class GameWindow(object):
             State.STAGE5: self.stage5.handle,
             State.STAGE6: self.stage6.handle,
             State.POWERUP_INSTRUCTIONS: self.powerup_instructions.handle,
-            State.MOBS_INSTRUCTIONS: self.mobs_instructions.handle
+            State.MOBS_INSTRUCTIONS: self.mobs_instructions.handle,
+            State.STAGE_GAMEOVER: self.stage_gameover.handle
         }
 
         #Load sound state:

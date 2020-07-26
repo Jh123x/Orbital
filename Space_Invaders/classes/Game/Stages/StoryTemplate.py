@@ -17,6 +17,17 @@ class StoryTemplate(PlayScreen):
         #Reset the game
         self.reset()
 
+    def draw_letters(self) -> None:
+        """Draw the letters on the screen"""
+        #Draw the score
+        self.write_main(Screen.font, WHITE, self.get_stage_name(), 10, 10, Direction.LEFT)
+
+        #Draw the live count
+        self.write_main(Screen.font, WHITE, f"Lives : {self.player1.get_lives()}", self.screen_width - 10, 10, Direction.RIGHT)
+
+        #Draw the wave number
+        self.write_main(Screen.font, WHITE, f"Wave : {self.wave}",self.screen_width//2, 15)
+
     def reset(self) -> None:
         """Reset the state of the game"""
 
@@ -72,6 +83,10 @@ class StoryTemplate(PlayScreen):
     def get_victory_state(self):
         """Get the state of the game when the player wins"""
         return State.VICTORY
+
+    def get_gameover_state(self):
+        """Get the state of the game when the player loses"""
+        return State.STAGE_GAMEOVER
 
     def handle(self):
         """Handles the playing out of the screen"""
