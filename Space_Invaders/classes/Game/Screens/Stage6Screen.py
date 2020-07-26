@@ -8,7 +8,7 @@ class Stage6Screen(StoryTemplate):
         """The constructor for the Stage 3 screen"""
 
         #Call the superclass init method
-        super().__init__(screen_width, screen_height, screen, State(105), sensitivity, max_fps, 0.1, debug)
+        super().__init__(screen_width, screen_height, screen, State(105), sensitivity, max_fps, 0.2, debug)
 
         #Commander brief image
         self.bg = ImageObject(300, 285, 600, 570, StoryTemplate.sprites[0], debug)
@@ -30,11 +30,12 @@ class Stage6Screen(StoryTemplate):
 
     def reset(self):
         """Reset the game"""
-        #Draw the enemy
-        self.s_net = AIPlayer(self.sensitivity, self.screen_width, self.screen_height, 0, 50, 5, self.fps, self.mob_bullet, Direction.DOWN, 5, True, self.debug)
-        self.s_net.get_points = lambda : 100
+        #Added the s_net
+        self.s_net = AIPlayer(self.sensitivity, self.screen_width, self.screen_height, self.screen_width//2, 50, 5, self.fps, self.mob_bullet, Direction.DOWN, 5, False, self.debug)
         self.other_enemies.add(self.s_net)
+        self.s_net.rotate(180)
 
+        #Call the superclass reset method
         return super().reset()
 
     def draw_bg(self):
@@ -292,11 +293,18 @@ class Stage6Screen(StoryTemplate):
             for i in range(1, 4):
                 self._spawn_crabs(self.screen_width//(3/i))
 
-    def handle(self):
-        """Stage 6 handle"""
-        #Update the action of the AI
-        self.s_net.action((pygame.sprite.Group(), pygame.sprite.Group(), self.player1_bullet, self.player1))
-        return super().handle()
+
+    def get_entities(self) -> tuple:
+        """Return the entities for s_net to handle"""
+        return (self.enemies, self.other_enemies, self.player1_bullet, self.player1,)
+
+    def update(self) -> None:
+        """Update the AI before calling superclass update"""
+        #Let the AI do a move
+        self.s_net.action(self.get_entities())
+
+        #Call the superclass update
+        return super().update()
 
     def win_condition(self):
         """The win condition of the player"""
