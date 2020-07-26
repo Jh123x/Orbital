@@ -85,6 +85,7 @@ class StoryTemplate(PlayScreen):
         return State.VICTORY
 
     def get_pause_state(self):
+        """Get the pause state of the stages"""
         return State.STAGE_PAUSE
 
     def get_gameover_state(self):

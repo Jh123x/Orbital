@@ -37,12 +37,16 @@ async def add_to_sprite(obj, sprite_path:list) -> None:
     """Add the pygame image to the object"""
     #For each object load the image and append it to the object
     for path in sprite_path:
+
+        #Append the sprite
         obj.sprites.append(pygame.image.load(path))
 
 async def add_to_sprite_dict(obj, sprite_path:list) -> None:
     """Add the pygame image to the object"""
     #For each object load the image and append it to the object
     for path in sprite_path:
+
+        #Added the name to the sprite dict
         obj.sprites[os.path.basename(path)[:-4]] = (pygame.image.load(path))
         
 async def load_sound(sound_path:str, settings:int, volume:float, debug:bool) -> Sound:
@@ -161,7 +165,7 @@ class GameWindow(object):
         #Store the variables
         self.popup = None
         self.prev = State.NONE
-        self.cooldown = self.fps/5
+        self.cooldown = self.fps // 5
 
         #Store the different screens in state
         self.screens = {
@@ -179,7 +183,7 @@ class GameWindow(object):
             State.CLASSIC: self.classic,
             State.SETTINGS: self.settings,
             State.COOP: self.coop,
-            # State.ONLINE: self.online,
+            State.ONLINE: self.online,
             State.TUTORIAL: self.tutorial,
             State.ONE_PLAYER_MENU: self.one_player_menu,
             State.STORY_MENU: self.story_mode,
@@ -256,8 +260,13 @@ class GameWindow(object):
     
     def handle_online(self) -> State:
         """Handle the online game"""
+
+        #Currently waiting for a place to host the server
         self.popup = Popup(320, 40, "Under Construction", self.fps, self.game_width//2 - 80, self.game_height//2, self.main_screen,font = Screen.end_font, debug = self.debug)
+
+        #Return playmode for now until server is found
         return State.PLAYMODE
+
         # return self.online.handle()
 
     def handle_two_player_pause(self) -> State:
@@ -294,7 +303,9 @@ class GameWindow(object):
     def handle_newhighscore(self) -> State:
         """Handle the displaying of the highscore screen"""
 
+        #If there is a new highscore that is different from before
         if not self.newhighscore or self.newhighscore.get_score() != self.play.get_score():
+
             #Create the new highscore screen
             self.newhighscore = NewhighscoreScreen(self.game_width, self.game_height, self.main_screen, self.play.get_score())
 
@@ -580,12 +591,7 @@ class GameWindow(object):
             screen.post_process()
 
     def mainloop(self) -> None:
-        """The mainloop to load the screen of the game
-            Arguments: 
-                No arguments
-            Returns:
-                No return
-        """
+        """The mainloop to load the screen of the game"""
 
         #Print the mainloop run based on debug mode
         if self.debug:
@@ -622,13 +628,7 @@ class GameWindow(object):
         self.sound.play('exit')
 
     def __del__(self) -> None:
-        """Destructor for the game window.
-            Closes all the relavent processes
-            Arguments:
-                No arguments
-            Returns: 
-                No return
-        """
+        """Destructor for the game window. Closes all the relavent processes"""
         #Add the new highscores into DB
         self.score_board.add_all(*self.highscore.get_scores())
 
