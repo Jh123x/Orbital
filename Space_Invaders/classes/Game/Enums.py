@@ -62,6 +62,8 @@ class State(enum.Enum):
     STORY_MENU = 33
     CLASSIC = 34
     ONLINE = 35
+    STAGE_GAMEOVER = 36
+    STAGE_PAUSE = 37
 
     #Story mode 
     STAGE1 = 100
@@ -70,7 +72,7 @@ class State(enum.Enum):
     STAGE4 = 103
     STAGE5 = 104
     STAGE6 = 105
-    STAGE_GAMEOVER = 99
+    
 
 class Difficulty_enum(enum.Enum):
     """Difficulty enum to hold the difficultly of the game"""
