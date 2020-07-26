@@ -25,11 +25,16 @@ class PauseScreen(Screen):
         super().__init__(screen_width, screen_height, State.PAUSE, screen, 0, 0, debug)
         self.previous_state = previous_state
 
+        #Write the lines
+        self.write_lines()
+        
+    def write_lines(self):
+        """Write the lines required for Pause screen"""
         #Draw the title of the pause screen
         self.write(Screen.title_font, WHITE, "Paused", self.screen_width//2, self.screen_height//5)
         
         #Draw the score of the person currently
-        self.write(Screen.subtitle_font, WHITE, f"Score: {score}", self.screen_width//2, self.screen_height//2)
+        self.write(Screen.subtitle_font, WHITE, f"Score: {self.score}", self.screen_width//2, self.screen_height//2)
 
         #Draw the instructions to unpause
         self.write(Screen.end_font, WHITE, "Press P to unpause", self.screen_width//2, self.screen_height//15 + self.screen_height//2)
@@ -58,7 +63,7 @@ class PauseScreen(Screen):
             return State.MENU
         
         #Return the current state if the player has not unpaused
-        return State.PAUSE
+        return self.state
 
     def handle(self) -> State:
         """Handles the drawing of the pause screen"""
