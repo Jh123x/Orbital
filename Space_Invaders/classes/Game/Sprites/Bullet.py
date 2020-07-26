@@ -18,10 +18,16 @@ class Bullet(MovingObject):
         #Store bullet direction
         self.direction = direction.value
 
+        #Set the bullet sprite based on direction
+        if self.direction[1] < 0 and len(self.sprites) >= 2:
+            self.image = self.sprites[1]
+        else:
+            self.image = self.sprites[0]
+
     def touch_edge(self):
         """Check if the bullet touched the edge of the screen"""
         return self.get_x() <= 0 or self.get_x() > self.game_width
-       
+
     def update(self) -> None:
         """Update the path of the bullet"""
         #Move the bullet
