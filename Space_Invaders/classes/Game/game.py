@@ -123,7 +123,7 @@ class GameWindow(object):
         self.settings = SettingsScreen(game_width, game_height, self.main_screen, self.fps, self.sound, self.bg, self.difficulty, debug)
         self.one_player_menu = OnePlayerModeScreen(game_width, game_height, self.main_screen, debug)
         self.story_mode = StoryModeScreen(game_width, game_height, self.main_screen, debug)
-        self.powerup_instructions = PowerupInstructionsScreen(game_width, game_height, self.main_screen, debug)
+        self.powerup_instructions = PowerupInstructionsScreen(game_width, game_height, self.main_screen, self.fps, debug)
 
         #Create playing screens
         self.play = PlayScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.difficulty, 3, debug = self.debug)
