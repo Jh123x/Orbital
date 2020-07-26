@@ -4,6 +4,7 @@ from . import ImageObject
 
 class MovingObject(ImageObject):
     """Main class for all objects that move"""
+    
     def __init__(self, sensitivity:int, initial_x:int, initial_y:int, game_width:int, game_height:int, image, debug:bool , sprite_size:tuple = (50,50)):
         """Constructor class for the moving object"""
 

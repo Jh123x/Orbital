@@ -16,7 +16,7 @@ class Scout(EnemyShip):
         self.delta_y = self.sensitivity//2
 
         #Set the score for the scout
-        self.set_points(500)
+        self.set_points(100 * lives)
 
     def update(self) -> None:
         """Overridden update class for the scout boss"""

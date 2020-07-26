@@ -1,4 +1,4 @@
-from .. import PlayScreen, Screen, State, Difficulty, Direction, WHITE
+from .. import PlayScreen, State, Difficulty, Direction, WHITE
 
 class StoryTemplate(PlayScreen):
 
@@ -20,13 +20,13 @@ class StoryTemplate(PlayScreen):
     def draw_letters(self) -> None:
         """Draw the letters on the screen"""
         #Draw the score
-        self.write_main(Screen.font, WHITE, self.get_stage_name(), 10, 10, Direction.LEFT)
+        self.write_main(self.font, WHITE, self.get_stage_name(), 10, 10, Direction.LEFT)
 
         #Draw the live count
-        self.write_main(Screen.font, WHITE, f"Lives : {self.player1.get_lives()}", self.screen_width - 10, 10, Direction.RIGHT)
+        self.write_main(self.font, WHITE, f"Lives : {self.player1.get_lives()}", self.screen_width - 10, 10, Direction.RIGHT)
 
         #Draw the wave number
-        self.write_main(Screen.font, WHITE, f"Wave : {self.wave}",self.screen_width//2, 15)
+        self.write_main(self.font, WHITE, f"Wave : {self.wave}",self.screen_width//2, 15)
 
     def reset(self) -> None:
         """Reset the state of the game"""
@@ -54,7 +54,7 @@ class StoryTemplate(PlayScreen):
                 break
 
             #Render the speech in 15 spaces
-            self.write_main(Screen.font, WHITE, text, left_px, first_px + index * 15, Direction.LEFT)
+            self.write_main(self.font, WHITE, text, left_px, first_px + index * 15, Direction.LEFT)
     
     def next_scene(self):
         """Increment the scene counter to the next scene"""

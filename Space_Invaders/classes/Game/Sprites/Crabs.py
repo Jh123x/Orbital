@@ -4,6 +4,7 @@ from .. import Direction
 
 class Crabs(EnemyShip):
 
+    #Sprites for the Crabs
     sprites = []
 
     def __init__(self, sensitivity:int, initial_x:int, initial_y:int, lives:int,  game_width:int, game_height:int, bullet_grp, debug:bool):
@@ -16,7 +17,7 @@ class Crabs(EnemyShip):
         self.delta_y = self.sensitivity // 4
 
         #Set the score for the crabs
-        self.set_points(500)
+        self.set_points(200 * lives)
 
     def shoot(self, direction: Direction = None):
         """Lets the mob shoot"""

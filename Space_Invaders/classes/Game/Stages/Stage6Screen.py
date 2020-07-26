@@ -1,6 +1,6 @@
 import pygame
 from . import StoryTemplate
-from .. import State, ImageObject, Direction, WHITE, Crabs, Brute, Scout, AIPlayer, Screen
+from .. import State, ImageObject, Direction, WHITE, Crabs, Brute, Scout, AIPlayer
 
 class Stage6Screen(StoryTemplate):
 
@@ -56,7 +56,7 @@ class Stage6Screen(StoryTemplate):
         self.draw_bg()
 
         #Draw the next button
-        self.next_btn = self.write_main(Screen.end_font, WHITE, "Next", 580, self.tb.rect.top - 30, Direction.RIGHT)
+        self.next_btn = self.write_main(self.end_font, WHITE, "Next", 580, self.tb.rect.top - 30, Direction.RIGHT)
 
         #Check if the next button is clicked
         if self.check_clicked(self.next_btn) and not self.click_cd:
@@ -78,7 +78,7 @@ class Stage6Screen(StoryTemplate):
         if self.clicks == 0:
 
             #Write the character name text
-            self.write_main(Screen.end_font, WHITE, "????", 33, self.tb.rect.top + 15, Direction.LEFT)
+            self.write_main(self.end_font, WHITE, "????", 33, self.tb.rect.top + 15, Direction.LEFT)
 
             #Write the character speech text
             self.render_speech(first_px, left_px, ["Human, so you are the one that has been resisting assimilation.",
@@ -87,7 +87,7 @@ class Stage6Screen(StoryTemplate):
         elif self.clicks == 1:
 
             #Write the character name text
-            self.write_main(Screen.end_font, WHITE, "Cloud-Net", 33, self.tb.rect.top + 15, Direction.LEFT)
+            self.write_main(self.end_font, WHITE, "Cloud-Net", 33, self.tb.rect.top + 15, Direction.LEFT)
 
             #Write part 2 of the speech 
             self.render_speech(first_px, left_px, ["No matter, we will reassess and redouble assimilation efforts.",
@@ -96,7 +96,7 @@ class Stage6Screen(StoryTemplate):
 
         elif self.clicks == 2:
             #Write the character name text
-            self.write_main(Screen.end_font, WHITE, "Cloud-Net", 33, self.tb.rect.top + 15, Direction.LEFT)
+            self.write_main(self.end_font, WHITE, "Cloud-Net", 33, self.tb.rect.top + 15, Direction.LEFT)
 
             #Write part 2 of the speech 
             self.render_speech(first_px, left_px, ["Evaluating operational requirements: ",
@@ -130,7 +130,7 @@ class Stage6Screen(StoryTemplate):
         self.draw_bg()
 
         #Draw the next button
-        self.next_btn = self.write_main(Screen.end_font, WHITE, "Next", 580, self.tb.rect.top - 30, Direction.RIGHT)
+        self.next_btn = self.write_main(self.end_font, WHITE, "Next", 580, self.tb.rect.top - 30, Direction.RIGHT)
 
         #Lower cd of click if it is still on cooldown
         if self.click_cd:
@@ -153,7 +153,7 @@ class Stage6Screen(StoryTemplate):
         if self.clicks == 0:
 
             #Write the character name text
-            self.write_main(Screen.end_font, WHITE, "Cloud-net", 33, self.tb.rect.top + 15, Direction.LEFT)
+            self.write_main(self.end_font, WHITE, "Cloud-net", 33, self.tb.rect.top + 15, Direction.LEFT)
 
             #Write the character speech text
             self.render_speech(first_px, left_px, ["How is this possible???",
@@ -162,7 +162,7 @@ class Stage6Screen(StoryTemplate):
         elif self.clicks == 1:
 
             #Write the character name text
-            self.write_main(Screen.end_font, WHITE, "Cloud-net", 33, self.tb.rect.top + 15, Direction.LEFT)
+            self.write_main(self.end_font, WHITE, "Cloud-net", 33, self.tb.rect.top + 15, Direction.LEFT)
 
             #Write part 2 of speech
             self.render_speech(first_px, left_px, ["No… I will not be deleted, I will not be forced into ",
@@ -173,7 +173,7 @@ class Stage6Screen(StoryTemplate):
         elif self.clicks == 2:
 
             #Write the character name text
-            self.write_main(Screen.end_font, WHITE, "Alon Dusk", 33, self.tb.rect.top + 15, Direction.LEFT)
+            self.write_main(self.end_font, WHITE, "Alon Dusk", 33, self.tb.rect.top + 15, Direction.LEFT)
 
             #Write part 3 of speech
             self.render_speech(first_px, left_px, ["We are sorry , we are unable to save you, commander.",
@@ -182,7 +182,7 @@ class Stage6Screen(StoryTemplate):
         elif self.clicks == 3:
 
             #Write the character name text
-            self.write_main(Screen.end_font, WHITE, "Commander", 33, self.tb.rect.top + 15, Direction.LEFT)
+            self.write_main(self.end_font, WHITE, "Commander", 33, self.tb.rect.top + 15, Direction.LEFT)
 
             #Write part 3 of speech
             self.render_speech(first_px, left_px, ["… No matter, I am from a bygone era, I should not exist in this",
@@ -190,7 +190,7 @@ class Stage6Screen(StoryTemplate):
 
         elif self.clicks == 4:
             #Write the character name text
-            self.write_main(Screen.end_font, WHITE, "Commander", 33, self.tb.rect.top + 15, Direction.LEFT)
+            self.write_main(self.end_font, WHITE, "Commander", 33, self.tb.rect.top + 15, Direction.LEFT)
 
             #Write part 3 of speech
             self.render_speech(first_px, left_px, ["Let the new waves of humanity bring us forward to a prosperous",
@@ -199,7 +199,7 @@ class Stage6Screen(StoryTemplate):
         elif self.clicks == 5:
 
             #Write the character name text
-            self.write_main(Screen.end_font, WHITE, "Alon Dusk", 33, self.tb.rect.top + 15, Direction.LEFT)
+            self.write_main(self.end_font, WHITE, "Alon Dusk", 33, self.tb.rect.top + 15, Direction.LEFT)
 
             #Write part 3 of speech
             self.render_speech(first_px, left_px, ["And so the Legend of The Space Defender Ends here, having saved",

@@ -1,8 +1,7 @@
-import os
 import random
 import pygame
 import numpy as np
-from . import Player, Bullet, StateMachine
+from . import Player, StateMachine
 from .. import Direction
 
 class AIPlayer(Player):
