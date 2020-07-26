@@ -29,9 +29,6 @@ def main() -> None:
     config = all_cfg['Space Invaders']
     config['icon_img_path'] = form_abs_path(get_curr_path(), config['icon_img_path'])
 
-    #Load all
-    d = load_all(("bullet_img_paths",), ("Bullet Sprites",), all_cfg, get_curr_path())
-
     #load soundpath
     config['db_path'] = form_abs_path(get_curr_path(), config['db_path'])
 
@@ -39,6 +36,8 @@ def main() -> None:
     config['screenshot_path'] = form_abs_path(get_curr_path(), config['screenshot_path'])
 
     #Load the other sprites
+    d = {}
+    d["bullet_img_paths"] = map_dir("images", "bullets")
     d["player_img_paths"] = map_dir("images","player")
     d["enemy_img_paths"] = map_dir("images", "enemies")
     d["background_img_paths"] = map_dir("images", "backgrounds")
