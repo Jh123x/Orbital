@@ -1,5 +1,4 @@
-from . import Screen
-from .. import State, PowerUp, WHITE, GREY, ImageObject
+from .. import State, PowerUp, WHITE, GREY, ImageObject, Screen
 
 class PowerupInstructionsScreen(Screen):
 

@@ -1,5 +1,4 @@
-from . import Screen
-from .. import WHITE, State
+from .. import WHITE, State, Screen
 
 class PVPInstructionsScreen(Screen):
     def __init__(self, screen_width:int, screen_height:int, screen, debug:bool = False):

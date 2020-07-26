@@ -1,5 +1,4 @@
-from . import Screen
-from .. import Sound, WHITE, State
+from .. import Sound, WHITE, State, Screen
 
 class InstructionScreen(Screen):
     def __init__(self, screen_width:int, screen_height:int, screen, debug:bool = False):

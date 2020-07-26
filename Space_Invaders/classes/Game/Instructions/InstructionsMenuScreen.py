@@ -1,5 +1,4 @@
-from . import Screen
-from .. import State, WHITE
+from .. import State, WHITE, Screen
 
 class InstructionsMenuScreen(Screen):
     def __init__(self, screen_width:int, screen_height:int, screen, debug:bool = False):

@@ -1,6 +1,6 @@
 import pygame
-from . import PowerupInstructionsScreen, Screen
-from .. import State, WHITE, GREY, ImageObject, Scout, EnemyShip, Crabs, Brute, MotherShip
+from . import PowerupInstructionsScreen
+from .. import State, WHITE, GREY, ImageObject, Scout, EnemyShip, Crabs, Brute, MotherShip, Screen
 
 class MobInstructionsScreen(PowerupInstructionsScreen):
 

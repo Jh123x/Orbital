@@ -5,15 +5,12 @@ from .ClassicScreen import ClassicScreen
 from .PlayScreen import PlayScreen
 from .GameoverScreen import GameoverScreen
 from .HighscoreScreen import HighscoreScreen
-from .InstructionsMenuScreen import InstructionsMenuScreen
-from .InstructionsScreen import InstructionScreen
 from .LocalPVPScreen import LocalPVPScreen
 from .MenuScreen import MenuScreen
 from .NewhighscoreScreen import NewhighscoreScreen
 from .PauseScreen import PauseScreen
 from .PlayModesScreen import PlayModeScreen
 from .TwoPlayerGameover import TwoPlayerGameoverScreen
-from .PVPInstructionsScreen import PVPInstructionsScreen
 from .TwoPlayerPauseScreen import TwoPlayerPauseScreen
 from .TwoPlayerScreen import TwoPlayerScreen
 from .SettingsScreen import SettingsScreen
@@ -25,5 +22,3 @@ from .OnePlayerModesScreen import OnePlayerModeScreen
 from .TutorialScreen import TutorialScreen
 from .VictoryScreen import VictoryScreen
 from .AICoopScreen import AICoopScreen
-from .PowerupInstructionsScreen import PowerupInstructionsScreen
-from .MobInstructionScreen import MobInstructionsScreen
