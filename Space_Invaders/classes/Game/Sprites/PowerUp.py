@@ -43,9 +43,8 @@ def emp_bomb(screen, player):
         #Otherwise
         else:
 
-            #Destroy it 1 time
-            for _ in range(health_dec):
-                sprite.destroy()
+            #Destroy it x time
+            sprite.destroy(health_dec)
 
 def deflector(screen, player):
     """Move all the enemies on screen back"""
