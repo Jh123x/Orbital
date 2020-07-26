@@ -31,7 +31,7 @@ class Stage6Screen(StoryTemplate):
     def reset(self):
         """Reset the game"""
         #Added the s_net
-        self.s_net = AIPlayer(self.sensitivity, self.screen_width, self.screen_height, self.screen_width//2, 50, 5, self.fps, self.mob_bullet, Direction.DOWN, 5, False, self.debug)
+        self.s_net = AIPlayer(self.sensitivity, self.screen_width, self.screen_height, self.screen_width//2, 50, 5, self.fps, self.mob_bullet, Direction.DOWN, 5, ai_avail=True,boss=True, debug=self.debug)
         self.other_enemies.add(self.s_net)
         self.s_net.rotate(180)
 

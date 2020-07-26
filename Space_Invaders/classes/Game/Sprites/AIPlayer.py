@@ -1,14 +1,15 @@
+import os
 import random
 import pygame
 import numpy as np
-from . import Player, StateMachine
+from . import Player, Bullet, StateMachine
 from .. import Direction
 
 class AIPlayer(Player):
     def __init__(self, sensitivity:int, game_width:int, game_height:int, initial_x:int, 
                     initial_y:int, init_life:int, fps:int, bullet_grp:pygame.sprite.Group(), 
                     bullet_direction:Direction, frames_per_action:int, 
-                    ai_avail = True, debug:bool = False):
+                    ai_avail = True,boss:bool = False ,debug:bool = False):
         """Constructor for the AI Player class"""
 
         #Call the superclass
@@ -20,10 +21,11 @@ class AIPlayer(Player):
         self.state = None
         self.screen = None
         self.cd = self.frames_per_action
-
+        self.boss = boss
         #If ai is available
         if ai_avail==True:
             self.ai = StateMachine(40)
+
 
     def get_space(self, screen):
         """
@@ -45,11 +47,12 @@ class AIPlayer(Player):
         """Does the action taken by the AI every frames"""
 
         #If there is no screen do nothing
-        if not self.has_screen():
-            return 
+        # if not self.has_screen():
+        #     return
 
-        # TODO update entity list for StateMachine here
+
         self.get_entities(*gamestate)
+
 
         #If the AI is still under cooldown
         if self.cd:
@@ -99,10 +102,12 @@ class AIPlayer(Player):
             return actions[self.ai.action(self.state)]
         elif self.ai:
             action = self.get_action_space()
+            print(action)
             return action[self.ai.state_check(self.state)]
         #Otherwise
         else:
             #Default AI
+            print('hi')
             return self.no_ai()
             
 
@@ -146,20 +151,30 @@ class AIPlayer(Player):
         #Call the superclass draw
         super().draw(screen)
 
-    def get_entities(self, enemies1, enemies2, enemy_bullets, enemy_player= -1):
+    def get_entities(self,enemies1, enemies2, enemy_bullets, enemy_player= [], player_bullets = []):
         ''' Relevent Information for AI decision making'''
         curr_x = self.get_x()
         curr_y = self.get_y()
         enemy1 = list(map(lambda y: (y.get_x(),y.get_y()),filter(lambda x: (np.abs(x.get_x()-curr_x)<=50),enemies1)))
         enemy2 = list(map(lambda y: (y.get_x(),y.get_y()),filter(lambda x: np.abs(x.get_x() - curr_x)<= 50, enemies2)))
         eb = list(map(lambda y: (y.get_x(),y.get_y()),filter(lambda x: np.abs(x.get_x() - curr_x) <= 50, enemy_bullets)))
-        
-        if enemy_player == -1:
+        if self.boss:
+            enemy1 = []
+            enemy2 = []
+            eb = []
+        if enemy_player == []:
             ep = 'None'
+
         elif np.abs(enemy_player.get_x() - curr_x) > 50:
             ep = 'None'
+            player_b = list(map(lambda y: (y.get_x(), y.get_y()),
+                                filter(lambda x: np.abs(x.get_x() - curr_x) <= 50, player_bullets)))
+            eb.extend(player_b)
         else:
             ep = (enemy_player.get_x(),enemy_player.get_y())
+            player_b = list(map(lambda y: (y.get_x(), y.get_y()),
+                          filter(lambda x: np.abs(x.get_x() - curr_x) <= 50, player_bullets)))
+            eb.extend(player_b)
 
         environment_status = {'mobs':enemy1, 'bosses':enemy2,'bullets':eb,'enemy_player':ep,'player': (curr_x,curr_y, self.life)}
 
