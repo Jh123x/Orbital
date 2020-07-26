@@ -17,7 +17,7 @@ class Stage6Screen(StoryTemplate):
         self.shadow = ImageObject(300, 215, 217, 217, StoryTemplate.sprites['silloette_commander'], debug)
         self.shadow.scale(217, 217)
 
-        #Image of S-net
+        #Image of Cloud-net
         self.terminator = ImageObject(300, 215, 217, 217, StoryTemplate.sprites['terminator'], debug)
         self.terminator.scale(217, 217)
 
@@ -82,12 +82,12 @@ class Stage6Screen(StoryTemplate):
 
             #Write the character speech text
             self.render_speech(first_px, left_px, ["Human, so you are the one that has been resisting assimilation.",
-                                                    "We are known as S-Net: Contingency 1771"])
+                                                    "We are known as Cloud-Net: Contingency 1771"])
 
         elif self.clicks == 1:
 
             #Write the character name text
-            self.write_main(Screen.end_font, WHITE, "S-Net", 33, self.tb.rect.top + 15, Direction.LEFT)
+            self.write_main(Screen.end_font, WHITE, "Cloud-Net", 33, self.tb.rect.top + 15, Direction.LEFT)
 
             #Write part 2 of the speech 
             self.render_speech(first_px, left_px, ["No matter, we will reassess and redouble assimilation efforts.",
@@ -96,7 +96,7 @@ class Stage6Screen(StoryTemplate):
 
         elif self.clicks == 2:
             #Write the character name text
-            self.write_main(Screen.end_font, WHITE, "S-Net", 33, self.tb.rect.top + 15, Direction.LEFT)
+            self.write_main(Screen.end_font, WHITE, "Cloud-Net", 33, self.tb.rect.top + 15, Direction.LEFT)
 
             #Write part 2 of the speech 
             self.render_speech(first_px, left_px, ["Evaluating operational requirements: ",
@@ -153,7 +153,7 @@ class Stage6Screen(StoryTemplate):
         if self.clicks == 0:
 
             #Write the character name text
-            self.write_main(Screen.end_font, WHITE, "S-net", 33, self.tb.rect.top + 15, Direction.LEFT)
+            self.write_main(Screen.end_font, WHITE, "Cloud-net", 33, self.tb.rect.top + 15, Direction.LEFT)
 
             #Write the character speech text
             self.render_speech(first_px, left_px, ["How is this possible???",
@@ -162,7 +162,7 @@ class Stage6Screen(StoryTemplate):
         elif self.clicks == 1:
 
             #Write the character name text
-            self.write_main(Screen.end_font, WHITE, "S-net", 33, self.tb.rect.top + 15, Direction.LEFT)
+            self.write_main(Screen.end_font, WHITE, "Cloud-net", 33, self.tb.rect.top + 15, Direction.LEFT)
 
             #Write part 2 of speech
             self.render_speech(first_px, left_px, ["No… I will not be deleted, I will not be forced into ",
