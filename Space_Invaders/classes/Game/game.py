@@ -15,7 +15,6 @@ pygame.font.init()
 #Initialise the sound
 pygame.mixer.init()
 
-
 def load_sprites(obj_list:list, paths:list):
     """Load the sprites for each of the items in parallel"""
 
@@ -139,10 +138,10 @@ class GameWindow(object):
         self.coop = CoopScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.difficulty, 3,  debug)
         self.ai_vs = AIPVPScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, 3, debug)
         self.online = OnlinePVPScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, 3,  debug)
-        self.tutorial = TutorialScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug)
         self.ai_coop = AICoopScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.difficulty, 3, debug)
 
         #Create the stages
+        self.tutorial = TutorialScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug)
         self.stage1 = Stage1Screen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug)
         self.stage2 = Stage2Screen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug)
         self.stage3 = Stage3Screen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug)
@@ -256,7 +255,6 @@ class GameWindow(object):
 
         #Handle the victory screen
         return self.victory.handle()
-            
     
     def handle_online(self) -> State:
         """Handle the online game"""
@@ -267,6 +265,7 @@ class GameWindow(object):
         #Return playmode for now until server is found
         return State.PLAYMODE
 
+        #Handle the online mode
         # return self.online.handle()
 
     def handle_two_player_pause(self) -> State:
@@ -494,6 +493,7 @@ class GameWindow(object):
 
     def fill_background(self) -> None:
         """Set the background"""
+
         #If the background is present
         if self.bg.is_present():
 
@@ -515,12 +515,8 @@ class GameWindow(object):
         #If method is found execute it else call the default handle
         return f() if f else self.screens.get(self.state).handle()
 
-    def update(self) -> None:
-        """Update the main screen"""
-
-        #Set the background
-        self.fill_background()
-
+    def check_sound(self):
+        """Check if bg should be playing"""
         #Check if background music should be playing
         if self.sound.get_state() != self.sound_state:
 
@@ -538,6 +534,15 @@ class GameWindow(object):
 
                 #Pause the music
                 pygame.mixer.music.pause()
+
+    def update(self) -> None:
+        """Update the main screen"""
+
+        #Set the background
+        self.fill_background()
+
+        #Check sound
+        self.check_sound()
 
         #Save previous state
         prev = self.state
@@ -629,6 +634,7 @@ class GameWindow(object):
 
     def __del__(self) -> None:
         """Destructor for the game window. Closes all the relavent processes"""
+
         #Add the new highscores into DB
         self.score_board.add_all(*self.highscore.get_scores())
 
@@ -648,9 +654,6 @@ class GameWindow(object):
         self.settingsdb.__del__()
 
         #Quit the game
-        pygame.display.quit()
-        pygame.font.quit()
-        pygame.mixer.quit()
         pygame.quit()
 
         #Debug message
