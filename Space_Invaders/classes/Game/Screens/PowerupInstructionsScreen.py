@@ -23,20 +23,26 @@ class PowerupInstructionsScreen(Screen):
         self.fps = fps
 
         #Draw the header
-        self.header = self.write(Screen.title_font, WHITE, "Power Ups", self.screen_width//2, self.screen_height//5)
+        self.write_header()
 
         #Load the powerups on the screen
-        self.sprites = tuple(map(lambda x: (x[0],ImageObject(self.screen_width//2, self.screen_height//5 + self.screen_height // 15, 50, 50,x[1], debug)), PowerUp.sprites.items()))
+        self.items = tuple(map(lambda x: (x[0],ImageObject(self.screen_width//2, self.screen_height//5 + self.screen_height // 15, 50, 50,x[1], debug)), PowerUp.sprites.items()))
 
         #Load the current page
         self.page = 1
-        self.total_pages = len(PowerUp.get_powerups()) - 1
+        self.total_pages = len(self.items) - 1
 
         #Set the cooldown
         self.cooldown = self.fps//5
 
         #Draw the back button
         self.back = self.write(Screen.end_font, WHITE, "Back", screen_width//2, screen_height//1.2)
+
+    def write_header(self):
+        """Write the header"""
+
+        #Draw the header
+        self.header = self.write(Screen.title_font, WHITE, "Power Ups", self.screen_width//2, self.screen_height//5)
 
 
     def check_keypresses(self) -> State:
@@ -91,7 +97,7 @@ class PowerupInstructionsScreen(Screen):
             curr = []
 
             #While the character limit is not exceeded
-            while sum(map(lambda x : len(x),curr)) < 30 and written < len(words):
+            while sum(map(lambda x : len(x),curr)) < 20 and written < len(words):
 
                 #Add words to list
                 curr.append(words[written])
@@ -112,7 +118,7 @@ class PowerupInstructionsScreen(Screen):
         first_px = self.screen_height//5 + self.screen_height // 15 + 50
 
         #Unpack powerup sprites
-        name,img = self.sprites[self.page]
+        name,img = self.items[self.page]
 
         #Draw the powerups name
         self.write_main(Screen.end_font, WHITE, f"{self.description[name][0]}", self.screen_width // 2, first_px)
