@@ -1,6 +1,6 @@
 import pygame
 import random
-from . import PlayScreen, Screen
+from . import PlayScreen
 from .. import *
 from pygame.locals import *
 
@@ -172,15 +172,15 @@ class TutorialScreen(PlayScreen):
         self.check_collisions()
 
         #Draw the tutorial label number
-        self.write_main(Screen.font, WHITE, "Tutorial", self.screen_width//2, 40)
+        self.write_main(self.font, WHITE, "Tutorial", self.screen_width//2, 40)
 
         #Instructions for the player
         for i in range(len(self.pressed)):
             if not self.pressed[i]:
-                self.write_main(Screen.end_font, WHITE, f"Press {self.information[i][0]} to {self.information[i][1]}", self.screen_width//2, self.screen_height//2)
+                self.write_main(self.end_font, WHITE, f"Press {self.information[i][0]} to {self.information[i][1]}", self.screen_width//2, self.screen_height//2)
                 break
             elif self.pressed[i] > 1:
-                self.write_main(Screen.end_font, WHITE, f"Press {self.information[i][0]} to {self.information[i][1]}", self.screen_width//2, self.screen_height//2)
+                self.write_main(self.end_font, WHITE, f"Press {self.information[i][0]} to {self.information[i][1]}", self.screen_width//2, self.screen_height//2)
                 self.pressed[i] -= 1
                 break
 
@@ -195,21 +195,21 @@ class TutorialScreen(PlayScreen):
                 if not self.pu_show:
                     self.pu_show = True
                     self.spawn_cooldown = self.fps * 5
-                self.write_main(Screen.end_font, WHITE, f"Collect powerups from aliens", self.screen_width//2, self.screen_height//2 + self.screen_height // 15)
-                self.write_main(Screen.end_font, WHITE, f"Shoot the powerups to get it", self.screen_width//2, self.screen_height//2)
+                self.write_main(self.end_font, WHITE, f"Collect powerups from aliens", self.screen_width//2, self.screen_height//2 + self.screen_height // 15)
+                self.write_main(self.end_font, WHITE, f"Shoot the powerups to get it", self.screen_width//2, self.screen_height//2)
             else:
-                self.write_main(Screen.end_font, WHITE, f"Avoid the bullets from the alien", self.screen_width//2, self.screen_height//2)
-                self.write_main(Screen.end_font, WHITE, f"Kill the alien to win", self.screen_width//2, self.screen_height//2 + self.screen_height // 15)
+                self.write_main(self.end_font, WHITE, f"Avoid the bullets from the alien", self.screen_width//2, self.screen_height//2)
+                self.write_main(self.end_font, WHITE, f"Kill the alien to win", self.screen_width//2, self.screen_height//2 + self.screen_height // 15)
                 
 
         #Draw the wave number
-        self.write_main(Screen.font, WHITE, f"Wave : {self.wave}",self.screen_width//2, 15)
+        self.write_main(self.font, WHITE, f"Wave : {self.wave}",self.screen_width//2, 15)
 
         #Draw the score
-        self.write_main(Screen.font, WHITE, f"Score : {self.p1_score}", 10, 10, Direction.LEFT)
+        self.write_main(self.font, WHITE, f"Score : {self.p1_score}", 10, 10, Direction.LEFT)
 
         #Draw the live count
-        self.write_main(Screen.font, WHITE, f"Lives : {self.player1.get_lives()}", self.screen_width - 10, 10, Direction.RIGHT)
+        self.write_main(self.font, WHITE, f"Lives : {self.player1.get_lives()}", self.screen_width - 10, 10, Direction.RIGHT)
 
         #Check the player keypress
         if self.update_keypresses():

@@ -1,6 +1,6 @@
 import pygame
 from . import Screen
-from .. import State, Direction, WHITE
+from .. import State, WHITE
 
 class Popup(Screen):
     def __init__(self, popup_width:int, popup_height:int, sentence:str, tick_life:int, initial_x:int, initial_y:int, screen, font = False, debug:bool = False):
@@ -20,7 +20,7 @@ class Popup(Screen):
         if not font:
 
             #Default to screen.font
-            font = Screen.font
+            font = self.font
 
         #Render the words for the popup
         self.write(font, WHITE, sentence, popup_width // 2, popup_height//2)

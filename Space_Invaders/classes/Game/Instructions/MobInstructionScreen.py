@@ -1,11 +1,13 @@
 import pygame
 from . import PowerupInstructionsScreen
-from .. import State, WHITE, GREY, ImageObject, Scout, EnemyShip, Crabs, Brute, MotherShip, Screen
+from .. import State, WHITE, ImageObject, Scout, EnemyShip, Crabs, Brute, MotherShip
 
 class MobInstructionsScreen(PowerupInstructionsScreen):
 
+    #Store the sprites
     sprites = {}
 
+    #Store the description
     description = {
         'enemyship': ("Normal Enemy", "The typical foot soldier, the color of the enemy represents its health, randomly shoots bullets"),
         'brute' : ("Brute","Moves straight down, shoots downwards too. They plough through everything in their path"), 
@@ -38,4 +40,4 @@ class MobInstructionsScreen(PowerupInstructionsScreen):
     def write_header(self):
         """Write the header"""
         #Draw the header
-        self.header = self.write(Screen.title_font, WHITE, "Enemies", self.screen_width//2, self.screen_height//5)
+        self.header = self.write(self.title_font, WHITE, "Enemies", self.screen_width//2, self.screen_height//5)

@@ -1,6 +1,6 @@
 import pygame
 from pygame.locals import *
-from . import Screen, PauseScreen
+from . import PauseScreen
 from .. import State, WHITE
 
 
@@ -21,13 +21,13 @@ class StagePauseScreen(PauseScreen):
 
     def write_lines(self):
         #Draw the title of the pause screen
-        self.write(Screen.title_font, WHITE, "Paused", self.screen_width//2, self.screen_height//5)
+        self.write(self.title_font, WHITE, "Paused", self.screen_width//2, self.screen_height//5)
         
         #Draw the score of the person currently
-        self.write(Screen.subtitle_font, WHITE, f"Stage {self.get_stage()}", self.screen_width//2, self.screen_height//2)
+        self.write(self.subtitle_font, WHITE, f"Stage {self.get_stage()}", self.screen_width//2, self.screen_height//2)
 
         #Draw the instructions to unpause
-        self.write(Screen.end_font, WHITE, "Press P to unpause", self.screen_width//2, self.screen_height//15 + self.screen_height//2)
+        self.write(self.end_font, WHITE, "Press P to unpause", self.screen_width//2, self.screen_height//15 + self.screen_height//2)
 
         #Draw the instructions to quit
-        self.write(Screen.end_font, WHITE, "Escape to quit, score will not be saved", self.screen_width//2, self.screen_height//7.5 + self.screen_height//2)
+        self.write(self.end_font, WHITE, "Escape to quit, score will not be saved", self.screen_width//2, self.screen_height//7.5 + self.screen_height//2)

@@ -24,20 +24,20 @@ class TwoPlayerGameoverScreen(Screen):
         self.p2_score = p2_score
 
         #Draw the scores on the screen
-        self.write(Screen.title_font, WHITE, f"Game over", self.screen_width//2, self.screen_height//5)
+        self.write(self.title_font, WHITE, f"Game over", self.screen_width//2, self.screen_height//5)
 
         #Draw the winner
         if p1_score > p2_score:
-            self.write(Screen.subtitle_font, WHITE, f"Player 1 Wins", self.screen_width//2, self.screen_height//2 - 120)
+            self.write(self.subtitle_font, WHITE, f"Player 1 Wins", self.screen_width//2, self.screen_height//2 - 120)
         elif p1_score == p2_score:
-            self.write(Screen.subtitle_font, WHITE, f"Its a draw", self.screen_width//2, self.screen_height//2 - 120)
+            self.write(self.subtitle_font, WHITE, f"Its a draw", self.screen_width//2, self.screen_height//2 - 120)
         else:
-            self.write(Screen.subtitle_font, WHITE, f"Player 2 Wins", self.screen_width//2, self.screen_height//2 - 120)
+            self.write(self.subtitle_font, WHITE, f"Player 2 Wins", self.screen_width//2, self.screen_height//2 - 120)
 
 
         #Draw the scores of each of the players
-        self.write(Screen.end_font, WHITE, f"Player 1 score: {self.p1_score}", self.screen_width//4, self.screen_height//2, Direction.LEFT)
-        self.write(Screen.end_font, WHITE, f"Player 2 score: {self.p2_score}", self.screen_width//4, self.screen_height//2 + 45, Direction.LEFT)
+        self.write(self.end_font, WHITE, f"Player 1 score: {self.p1_score}", self.screen_width//4, self.screen_height//2, Direction.LEFT)
+        self.write(self.end_font, WHITE, f"Player 2 score: {self.p2_score}", self.screen_width//4, self.screen_height//2 + 45, Direction.LEFT)
 
         #Draw instructions to go back
         self.write(self.end_font, WHITE, "Press Y to go back and N to quit", self.screen_width//2, self.screen_height // 2 + self.screen_height//6)

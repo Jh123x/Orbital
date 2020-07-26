@@ -1,6 +1,6 @@
 #To manage the database
-import sqlite3
 import os
+import sqlite3
 
 class Database(object):
     def __init__(self, dbpath:str, name:str):

@@ -1,6 +1,6 @@
 import pygame
 from pygame.locals import *
-from . import Screen, Popup
+from . import Screen
 from .. import WHITE, State
 
 class TwoPlayerScreen(Screen):
@@ -14,28 +14,26 @@ class TwoPlayerScreen(Screen):
         first_pixel = self.screen_height // 2
 
         #Draw the header
-        self.write(Screen.title_font, WHITE, "2 player modes", self.screen_width // 2 ,self.screen_height // 5) 
+        self.write(self.title_font, WHITE, "2 player modes", self.screen_width // 2 ,self.screen_height // 5) 
 
         #Draw the modes
         #Draw the coop with AI mode
-        self.ai_coop = self.write(Screen.end_font, WHITE, "Coop with AI", self.screen_width // 2, first_pixel)
+        self.ai_coop = self.write(self.end_font, WHITE, "Coop with AI", self.screen_width // 2, first_pixel)
 
         #Draw the ai versus mode
-        self.ai_vs = self.write(Screen.end_font, WHITE, "Versus AI", self.screen_width // 2, first_pixel + self.screen_height // 15)
+        self.ai_vs = self.write(self.end_font, WHITE, "Versus AI", self.screen_width // 2, first_pixel + self.screen_height // 15)
 
         #Draw the Player vs player mode
-        self.local_vs = self.write(Screen.end_font, WHITE, "Player VS Player", self.screen_width // 2, first_pixel + self.screen_height // 7.5)
+        self.local_vs = self.write(self.end_font, WHITE, "Player VS Player", self.screen_width // 2, first_pixel + self.screen_height // 7.5)
 
         #Draw the Player and Player Coop
-        self.coop = self.write(Screen.end_font, WHITE, "2 Player Coop", self.screen_width // 2, first_pixel + self.screen_height // 5)
+        self.coop = self.write(self.end_font, WHITE, "2 Player Coop", self.screen_width // 2, first_pixel + self.screen_height // 5)
 
         #Draw the back button
-        self.back = self.write(Screen.end_font, WHITE, "Back", self.screen_width // 2, self.screen_height // 1.2)
+        self.back = self.write(self.end_font, WHITE, "Back", self.screen_width // 2, self.screen_height // 1.2)
 
-        #Popup to show that it is still under construction
+        #Popup
         self.popup = None
-
-
     
     def check_mouse_press(self) -> State:
         """Check the mouse press of the user"""

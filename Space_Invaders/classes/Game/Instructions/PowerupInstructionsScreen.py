@@ -35,13 +35,13 @@ class PowerupInstructionsScreen(Screen):
         self.cooldown = self.fps//5
 
         #Draw the back button
-        self.back = self.write(Screen.end_font, WHITE, "Back", screen_width//2, screen_height//1.2)
+        self.back = self.write(self.end_font, WHITE, "Back", screen_width//2, screen_height//1.2)
 
     def write_header(self):
         """Write the header"""
 
         #Draw the header
-        self.header = self.write(Screen.title_font, WHITE, "Power Ups", self.screen_width//2, self.screen_height//5)
+        self.header = self.write(self.title_font, WHITE, "Power Ups", self.screen_width//2, self.screen_height//5)
 
 
     def check_keypresses(self) -> State:
@@ -105,7 +105,7 @@ class PowerupInstructionsScreen(Screen):
                 written += 1
 
             #Write the accumulated words
-            self.write_main(Screen.end_font, WHITE, " ".join(curr), self.screen_width//2, first_px)
+            self.write_main(self.end_font, WHITE, " ".join(curr), self.screen_width//2, first_px)
 
             #Increment first_px to next pt
             first_px += self.screen_height//15
@@ -120,7 +120,7 @@ class PowerupInstructionsScreen(Screen):
         name,img = self.items[self.page]
 
         #Draw the powerups name
-        self.write_main(Screen.end_font, WHITE, f"{self.description[name][0]}", self.screen_width // 2, first_px)
+        self.write_main(self.end_font, WHITE, f"{self.description[name][0]}", self.screen_width // 2, first_px)
 
         #Draw the description
         self.insert_description(first_px, self.description[name][1])
@@ -130,18 +130,18 @@ class PowerupInstructionsScreen(Screen):
 
         #Draw the next button
         if self.page < self.total_pages:
-            self.next = self.write_main(Screen.end_font, WHITE, "Next", self.screen_width//(4/3), self.screen_height//1.2)
+            self.next = self.write_main(self.end_font, WHITE, "Next", self.screen_width//(4/3), self.screen_height//1.2)
         else:
-            self.next = self.write_main(Screen.end_font, GREY, "Next", self.screen_width//(4/3), self.screen_height//1.2)
+            self.next = self.write_main(self.end_font, GREY, "Next", self.screen_width//(4/3), self.screen_height//1.2)
 
         #Draw the prev button
         if self.page > 1:
-            self.prev = self.write_main(Screen.end_font, WHITE, "Prev", self.screen_width//4, self.screen_height//1.2)
+            self.prev = self.write_main(self.end_font, WHITE, "Prev", self.screen_width//4, self.screen_height//1.2)
         else:
-            self.prev = self.write_main(Screen.end_font, GREY, "Prev", self.screen_width//4, self.screen_height//1.2)
+            self.prev = self.write_main(self.end_font, GREY, "Prev", self.screen_width//4, self.screen_height//1.2)
 
         #Draw the pages
-        self.write_main(Screen.end_font, WHITE, f"{self.page} / {self.total_pages}", self.screen_width//2, self.screen_height//1.1)
+        self.write_main(self.end_font, WHITE, f"{self.page} / {self.total_pages}", self.screen_width//2, self.screen_height//1.1)
 
         #Update the screen
         self.update()
