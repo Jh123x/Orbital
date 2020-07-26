@@ -110,7 +110,7 @@ class GameWindow(object):
 
         #Set difficulty
         difficulty = int(self.settings_data['difficulty'])
-        self.difficulty = Difficulty(difficulty if difficulty < 5 else 5)
+        self.difficulty = Difficulty(difficulty if difficulty < 6 else 6)
 
         #Load the sounds into the game
         pygame.mixer.music.load(menu_music_paths[0])
