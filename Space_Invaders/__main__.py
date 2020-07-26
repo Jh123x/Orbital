@@ -3,9 +3,9 @@
 ############################
 
 #Import functions from the class package
-from classes import GameWindow, list_dir, form_abs_path, read_all, load_all
-import sys
 import os
+import sys
+from classes import GameWindow, list_dir, form_abs_path, read_all
 
 def get_curr_path():
     """Get the path to the current file depending on state of application"""
@@ -16,21 +16,69 @@ def map_dir(*args):
     """Map the abs path for the files in the folder"""
     return list_dir(form_abs_path(get_curr_path(), os.path.join(*args)))
 
+def create_config_file(name:str) -> None:
+    """Create a basic config file"""
+
+    #Data in the base config file
+    data = """[Space Invaders]
+#Do not touch these parameters
+sensitivity = 5
+maxfps = 60
+game_width = 600
+game_height = 800
+
+#Debug mode
+debug = false
+
+#Path to icon
+icon_img_path = images/icon/icon.png
+
+#Path to database (DO NOT TOUCH)
+db_path = data/test.db
+
+#Path to store screenshots
+screenshot_path = screenshots
+
+[Sounds]
+#Path of the different sounds
+click = sounds/click.wav
+explosion = sounds/Explosion_short.wav
+gameover = sounds/Gameover.wav
+shooting = sounds/Shooting.wav
+exit = sounds/exit.wav
+pause = sounds/pause.wav
+screenshot = sounds/screenshot.wav
+victory = sounds/victory.wav
+powerup = sounds/powerup.wav"""
+
+    #If the name contains the .cfg file
+    if name[-4:] != ".cfg":
+        name += '.cfg'
+
+    #Open the file in write mode
+    with open(name, 'w') as file:
+
+        #Write the settings into the file
+        file.write(data)
+
 def main() -> None:
     """The main function to run the game"""
 
     #The path of the configuration file
     settings = "settings.cfg"
 
+    #If the settings file is missing
+    if not os.path.isfile(form_abs_path(get_curr_path(),settings)):
+
+        #Create the settings file
+        create_config_file(form_abs_path(get_curr_path(),settings))
+        
     #Read the configuration file for space invaders
     all_cfg = read_all(form_abs_path(get_curr_path(),settings))
     
     #Main configurations
     config = all_cfg['Space Invaders']
     config['icon_img_path'] = form_abs_path(get_curr_path(), config['icon_img_path'])
-
-    #Load all
-    d = load_all(("bullet_img_paths",), ("Bullet Sprites",), all_cfg, get_curr_path())
 
     #load soundpath
     config['db_path'] = form_abs_path(get_curr_path(), config['db_path'])
@@ -39,6 +87,8 @@ def main() -> None:
     config['screenshot_path'] = form_abs_path(get_curr_path(), config['screenshot_path'])
 
     #Load the other sprites
+    d = {}
+    d["bullet_img_paths"] = map_dir("images", "bullets")
     d["player_img_paths"] = map_dir("images","player")
     d["enemy_img_paths"] = map_dir("images", "enemies")
     d["background_img_paths"] = map_dir("images", "backgrounds")

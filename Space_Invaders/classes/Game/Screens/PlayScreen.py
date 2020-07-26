@@ -127,7 +127,7 @@ class PlayScreen(ClassicScreen):
         """Spawn a powerup at specified x and y coordinate"""
 
         #Spawn the powerup
-        self.powerups.add(PowerUp(x, y, 50, 50, random.randint(0,PowerUp.get_no_powerups()-1), self.fps * 3.5))
+        self.powerups.add(PowerUp(x, y, 50, 50, random.choice(PowerUp.get_powerups()), self.fps * 3.5))
 
         #Increase the number of powerups
         self.powerup_numbers += 1

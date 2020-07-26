@@ -22,5 +22,8 @@ from .Sprites import *
 #Import Screens
 from .Screens import *
 
+#Import Stages
+from .Stages import *
+
 #Import the game.py
 from .game import *

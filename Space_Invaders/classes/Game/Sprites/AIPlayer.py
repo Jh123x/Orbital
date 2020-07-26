@@ -38,6 +38,10 @@ class AIPlayer(Player):
         #Return the matrix of rgb
         return img
 
+    def get_points(self) -> int:
+        """Points the AI player is worth"""
+        return 0
+
     def action(self, gamestate) -> None:
         """Does the action taken by the AI every frames"""
 

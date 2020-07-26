@@ -2,6 +2,7 @@
 import pygame
 import datetime
 import asyncio
+import os
 from pygame.locals import *
 from . import *
 
@@ -24,11 +25,25 @@ def load_sprites(obj_list:list, paths:list):
         #Add image sprites to each class concurrently
         asyncio.run(add_to_sprite(obj, paths[i]))
 
-async def add_to_sprite(obj, sprite_path:str) -> None:
+def load_sprites_dict(obj_list:list, paths:list) -> None:
+    """Load the sprites as dict"""
+    #Run functions concurrently
+    for i, obj in enumerate(obj_list):
+
+        #Add image sprites to each class concurrently
+        asyncio.run(add_to_sprite_dict(obj, paths[i]))
+
+async def add_to_sprite(obj, sprite_path:list) -> None:
     """Add the pygame image to the object"""
     #For each object load the image and append it to the object
     for path in sprite_path:
         obj.sprites.append(pygame.image.load(path))
+
+async def add_to_sprite_dict(obj, sprite_path:list) -> None:
+    """Add the pygame image to the object"""
+    #For each object load the image and append it to the object
+    for path in sprite_path:
+        obj.sprites[os.path.basename(path)[:-4]] = (pygame.image.load(path))
         
 async def load_sound(sound_path:str, settings:int, volume:float, debug:bool) -> Sound:
     """Load the sound object"""
@@ -42,8 +57,11 @@ class GameWindow(object):
         """The Main window for the Space defenders game"""
         
         #Load sprites
-        load_sprites((Player, Bullet, EnemyShip, Background, Explosion, PowerUp, MotherShip, VictoryScreen, Scout, Brute, StoryTemplate, Crabs), 
-                    (player_img_paths, bullet_img_paths, enemy_img_paths, background_img_paths, explosion_img_paths, powerup_img_path, mothership_img_path, trophy_img_path, scout_img_path, brute_img_path, story_img_path, crabs_img_path))
+        load_sprites((Player, Bullet, EnemyShip, Background, Explosion, MotherShip, VictoryScreen, Scout, Brute, Crabs), 
+                    (player_img_paths, bullet_img_paths, enemy_img_paths, background_img_paths, explosion_img_paths, mothership_img_path, trophy_img_path, scout_img_path, brute_img_path, crabs_img_path))
+
+        load_sprites_dict((StoryTemplate,PowerUp),
+                        (story_img_path, powerup_img_path))
 
         #Store debug variable
         self.debug = debug
@@ -95,24 +113,27 @@ class GameWindow(object):
         #Create the background object
         self.bg = Background(int(self.settings_data['background']), game_width, game_height, bg_limit, debug)
 
-        #Create the Screen objects
+        #Create the Menu Screen objects
         self.instructions = InstructionScreen(game_width, game_height, self.main_screen,  debug = self.debug)
         self.menu = MenuScreen(game_width, game_height, self.main_screen, debug = self.debug)
-        self.play = PlayScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.difficulty, 3, debug = self.debug)
         self.play_menu = PlayModeScreen(game_width, game_height, self.main_screen,  debug)
         self.highscore = HighscoreScreen(game_width, game_height, self.main_screen, self.score_board.fetch_all(), debug = self.debug)
-        self.two_player = TwoPlayerScreen(game_width, game_height, self.main_screen,  self.debug)
-        self.pvp = LocalPVPScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, 3,  debug)
         self.pvp_menu = PVPInstructionsScreen(game_width, game_height, self.main_screen, debug)
         self.inst_menu = InstructionsMenuScreen(game_width, game_height, self.main_screen,  debug)
-        self.classic = ClassicScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.difficulty, debug = self.debug)
         self.settings = SettingsScreen(game_width, game_height, self.main_screen, self.fps, self.sound, self.bg, self.difficulty, debug)
+        self.one_player_menu = OnePlayerModeScreen(game_width, game_height, self.main_screen, debug)
+        self.story_mode = StoryModeScreen(game_width, game_height, self.main_screen, debug)
+        self.powerup_instructions = PowerupInstructionsScreen(game_width, game_height, self.main_screen, self.fps, debug)
+
+        #Create playing screens
+        self.play = PlayScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.difficulty, 3, debug = self.debug)
+        self.two_player = TwoPlayerScreen(game_width, game_height, self.main_screen,  self.debug)
+        self.pvp = LocalPVPScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, 3,  debug)
+        self.classic = ClassicScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.difficulty, debug = self.debug)
         self.coop = CoopScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.difficulty, 3,  debug)
         self.ai_vs = AIPVPScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, 3, debug)
         self.online = OnlinePVPScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, 3,  debug)
-        self.one_player_menu = OnePlayerModeScreen(game_width, game_height, self.main_screen, debug)
         self.tutorial = TutorialScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug)
-        self.story_mode = StoryModeScreen(game_width, game_height, self.main_screen, debug)
         self.ai_coop = AICoopScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.difficulty, 3, debug)
 
         #Create the stages
@@ -163,7 +184,8 @@ class GameWindow(object):
             State.STAGE3:self.stage3,
             State.STAGE4:self.stage4,
             State.STAGE5:self.stage5,
-            State.STAGE6:self.stage6
+            State.STAGE6:self.stage6,
+            State.POWERUP_INSTRUCTIONS: self.powerup_instructions
         }
         
         #Store the different states the menu has
@@ -198,7 +220,8 @@ class GameWindow(object):
             State.STAGE3: self.stage3.handle,
             State.STAGE4: self.stage4.handle,
             State.STAGE5: self.stage5.handle,
-            State.STAGE6: self.stage6.handle
+            State.STAGE6: self.stage6.handle,
+            State.POWERUP_INSTRUCTIONS: self.powerup_instructions.handle
         }
 
         #Load sound state:
@@ -418,8 +441,13 @@ class GameWindow(object):
         """Take a screenshot
             Runs in parallel to the game to reduce lag while screenshotting in game
         """
-        #Save a screenshot named based on date and time
+        #Check if the screenshot folder is not there
+        if not os.path.isdir(self.screenshot_dir):
 
+            #Create the screenshot_dir folder
+            os.mkdir(self.screenshot_dir)
+
+        #Save a screenshot named based on date and time
         name = os.path.join(self.screenshot_dir, f'{datetime.datetime.now().strftime("%d_%m_%Y_%H_%M_%S")}.png')
 
         #Play the screenshot sound

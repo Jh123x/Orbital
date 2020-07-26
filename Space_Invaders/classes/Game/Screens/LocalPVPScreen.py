@@ -41,8 +41,8 @@ class LocalPVPScreen(ClassicScreen):
         self.player1.rotate(180)
 
     def get_entities(self):
-        ent = super().get_entities() + (self.player1,self.player1_bullet)
-        return ent
+        """Get entities in pvp"""
+        return super().get_entities() + (self.player1,)
         
     def reset(self) -> None:
         """Reset the environment"""

@@ -2,7 +2,6 @@ import pygame
 from pygame.locals import *
 from .. import BaseObject, State, Direction
 
-
 pygame.font.init()
 
 class Screen(BaseObject):

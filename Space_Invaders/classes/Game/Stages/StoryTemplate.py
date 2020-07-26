@@ -1,10 +1,9 @@
-from . import PlayScreen, Screen
-from .. import State, Difficulty, Direction, WHITE
+from .. import PlayScreen, Screen, State, Difficulty, Direction, WHITE
 
 class StoryTemplate(PlayScreen):
 
     #Store the sprites to be used for stories
-    sprites = []
+    sprites = {}
 
     def __init__(self, screen_width:int, screen_height:int, screen, state:State, sensitivity:int, max_fps:int, powerup_chance:float, debug:bool):
         """The template for the stage to be built on"""

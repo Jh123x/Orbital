@@ -79,12 +79,18 @@ def decrease_bullet_power(screen, player):
 class PowerUp(ImageObject):
 
     #To store the images of the sprites
-    sprites = []
+    sprites = {}
 
     #To store the powerup functions
-    powers = [bullet_up, extra_bullet_power, decrease_bullet_power, deflector, emp_bomb, hp_up, shield_up]
+    powers = {'bullet_up' : bullet_up, 
+                'bullet_attack_up' : extra_bullet_power, 
+                "debuff_bullet" : decrease_bullet_power, 
+                "deflector" : deflector, 
+                "emp" : emp_bomb, 
+                "hp_up" : hp_up, 
+                "shield_up" : shield_up}
 
-    def __init__(self, initial_x:int, initial_y:int, width:int, height:int, power_type:int, time_to_live:int, debug:bool = False):
+    def __init__(self, initial_x:int, initial_y:int, width:int, height:int, power_type:str, time_to_live:int, debug:bool = False):
         """Constructor for the powerup class"""
 
         #Call the superclass contructor
@@ -98,9 +104,9 @@ class PowerUp(ImageObject):
         self.scale(30,30)
 
     @staticmethod
-    def get_no_powerups() -> int:
+    def get_powerups() -> tuple:
         """Return the total number of powerups"""
-        return len(PowerUp.powers)
+        return tuple(PowerUp.powers.keys())
 
     def get_ability(self):
         """Ability of the power up"""
@@ -116,7 +122,7 @@ class PowerUp(ImageObject):
         return self.power_type
 
     def update(self) -> None:
-        """Update the sprite"""
+        """Update the powerup sprite"""
         
         #If time to live is 0
         if self.ttl == 0:

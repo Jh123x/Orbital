@@ -20,6 +20,9 @@ class InstructionsMenuScreen(Screen):
         #Draw the PVP mode Instructions
         self.pvp_instructions = self.write(Screen.end_font, WHITE, "2 Player Modes", self.screen_width//2, first_px + self.screen_height//15)
 
+        #Draw the Powerup instructions
+        self.powerups = self.write(Screen.end_font, WHITE, "Powerups", self.screen_width//2, first_px + self.screen_height//7.5)
+
         #Draw the back button
         self.back = self.write(Screen.end_font, WHITE, "Back", screen_width//2, screen_height//1.2)
 
@@ -37,6 +40,9 @@ class InstructionsMenuScreen(Screen):
         #If the player clicked the back button
         elif self.check_clicked(self.back):
             return State.MENU
+
+        elif self.check_clicked(self.powerups):
+            return State.POWERUP_INSTRUCTIONS
 
         #Otherwise return the current state
         else:
