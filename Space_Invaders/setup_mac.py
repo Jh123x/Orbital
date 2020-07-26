@@ -7,7 +7,7 @@ Usage:
 
 from setuptools import setup
 
-APP = ['__main__.py']
+APP = ['SpaceDefenders.py']
 DATA_FILES = []
 OPTIONS = {}
 
