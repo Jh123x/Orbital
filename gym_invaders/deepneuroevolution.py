@@ -13,191 +13,36 @@ from joblib import Parallel, delayed, parallel_backend
 
 # In house dependencies
 import gym_game
-from ai_invader.util import stack_frame,preprocess_frame
-from ai_invader.model import EvolutionaryAI
+from ai_invader.agent import EvoAgentTrainer
+from ai_invader.agent import EvoAgent
+from ai_invader.util import load_obj
 
-def init_weights(m):
-    if ((type(m) == nn.Linear)| (type(m)== nn.Conv2d)):
-        torch.nn.init.xavier_uniform(m.weight)
-        m.bias.data.fill_(0.00)
-
-env = gym.make("Classic-v0")
-
-def return_random_agent(num_agents, input_shape, num_actions):
-    agents = []
-    global device
-    for _ in range(num_agents):
-        agent = EvolutionaryAI(input_shape,num_actions).to(device)
-        for param in agent.parameters():
-            param.requires_grad = False
-        init_weights(agent)
-        agents.append(agent)
-    return agents
-
-def stack_frames(frames, state, is_new=False):
-    '''
-    Function combine of utility functions to preprocess the frames
-    '''
-
-    #Preprocess the frame
-    frame = preprocess_frame(state, (160, 120))
-
-    #Stack the frame
-    frames = stack_frame(frames, frame, is_new)
-
-    #Return stacked frames
-    return frames
-
-def run_env(agent):
-    global env
-    # env.render(True)
-    agent.eval()
-    state = stack_frames(None,env.reset(),True)
-    r = 0
-    s = 0
-    done = False
-
-    #Plays 1 game
-    while not done:
-        inp = torch.from_numpy(state).unsqueeze(0).type('torch.FloatTensor').to(device)
-        output_probs = agent(inp).detach().cpu().numpy()[0]
-        action = np.random.choice(range(game_actions), 1, p = output_probs).item()
-        next_state, reward, done, info = env.step(action)
-        next_state = stack_frames(state, next_state, False)
-        state = next_state
-        r = r+reward
-    return r
-
-def run_agents(agents):
-    reward_agents = []
-    for agent in agents:
-        r = run_env(agent)
-        reward_agents.append(r)
-    return reward_agents
-
-def return_avg_score(agent, runs):
-    score = 0.
-    for _ in range(runs):
-        score += run_agents([agent])[0]
-    return score/runs
-
-def run_agents_n_runs(agents, runs):
-    avg_scores = []
-    for agent in agents:
-        avg_scores.append(return_avg_score(agent,runs))
-    return avg_scores
-
-def process_param(param, mutation_power):
-    if (len(param.shape)==4): # Mutating weights of Conv2D
-        for i in range(param.shape[0]):
-            for j in range(param.shape[1]):
-                for k in range(param.shape[2]):
-                    for l in range(param.shape[3]):
-                        param[i][j][k][l] += mutation_power*np.random.randn()
-
-    elif len(param.shape) == 2: # Linear layer
-        for i in range(param.shape[0]):
-            for j in range(param.shape[1]):
-                param[i][j] += mutation_power*np.random.randn()
-
-    elif len(param.shape) == 1:
-        for i in range(param.shape[0]):
-            param[i] += mutation_power*np.random.randn()
-
-def mutation(agent):
-    child = copy.deepcopy((agent))
-    mutation_power = 0.02
-    for param in child.parameters():
-        process_param(param, mutation_power)
-
-    return child
-
-def return_children(agents, sorted_parent_index, elite_index):
-
-    child_agents = []
-    for i in range(len(agents)-1):
-        selected_agent_index = sorted_parent_index[np.random.randint(len(sorted_parent_index))]
-        child_agents.append(mutation(agents[selected_agent_index]))
-
-    elite_child = add_elite(agents, sorted_parent_index,elite_index)
-    child_agents.append(elite_child)
-    elite_index = len(child_agents) -1 # the last child
-    return child_agents, elite_index
-
-def add_elite(agents, sorted_parent_index, elite_index= None, top_k = 10, num_runs = 5):
-    candidate = sorted_parent_index[:top_k]
-    if elite_index != None:
-        candidate = np.append(candidate,[elite_index])
-    top_score = None
-    top_elite = None
-
-    for i in candidate:
-        score = return_avg_score(agents[i], runs= num_runs)
-        print('Score ', i, ' is ',score,end= ' ' )
-        if top_score is None:
-            top_score = score
-            top_elite = i
-        elif score > top_score:
-            top_score = score
-            top_elite = i
-    print("Elite selected with index", top_elite, ' score ', top_score)
-    elite_agent = copy.deepcopy(agents[top_elite])
-    return elite_agent
-
-def softmax(x):
-    '''Compute softmax values for each set of scores in x'''
-    return np.exp(x)/np.sum(np.exp(x), axis=0)
-
-def survival_of_fittest(action_space, num_agents, input_dim, top_k, generations):
-    elite_index = None
-    torch.set_grad_enabled(False)
-    agents = return_random_agent(num_agents, input_dim, action_space)
-    for gen in range(generations):
-        rewards = run_agents_n_runs(agents,5)
-
-        sorted_parent_index = np.argsort(rewards)[::-1][:top_k]
-        top_reward = []
-
-        for best in sorted_parent_index:
-            top_reward.append((rewards[best]))
-
-        print("Generation ", gen, " | Mean rewards: ", np.mean(rewards), " | Mean of top 5: ",np.mean(top_reward[:5]))
-        print("Top ", elites, " scores", sorted_parent_index)
-        print('Rewards for top ', top_reward)
-
-        child_agents, elite_index = return_children(agents,sorted_parent_index,elite_index)
-        agents = child_agents
-
-    #Return last agent
-    return agents[-1]
+def make_env():
+    envir = gym.make("Classic-v0")
+    return envir
 
 #Select device to be used
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 #Get the game_actions from the env
-game_actions = env.action_space.n
+action_space = 6
 
 #Get the number of agents per generation
-num_agents = 15
+num_agents = 2
 
 #Get the input shape (No of frames, x pixels, y pixels)
 #No of frames is to let AI to perceive motion
 input_shape = (4, 160, 120)
 
 #Get the Top k scores
-elites = 3 
+elites = 1
 
 #Number of generations to train the AI
-generations = 20
+generations = 2
 
 #Start evolution
-ag = survival_of_fittest(game_actions,num_agents,input_shape,elites,generations)
-
-#If the directory is not found
-if not os.path.isdir(os.path.join("obj","gene_algo")):
-
-    #Make the directory
-    os.mkdir(os.path.join("obj","gene_algo"))
-
-#Save the pytorch file
-torch.save(ag, os.path.join("obj","gene_algo","survival.pth"))
+# ag = EvoAgentTrainer(input_shape,action_space, num_agents, elites, 1, env = make_env)
+# ag.train(generations)
+ag = EvoAgent()
+ag.load_model(load_obj('/Users/stephen/GitRepositories/Orbital/gym_invaders/model/abc.pth', device))
+print(ag.model)

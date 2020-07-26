@@ -140,6 +140,23 @@ class TrainingAgent(BaseAgent):
 
     def eval(self):
         '''
-        Takes the trained agent and plays a game using the trained agent
+        Takes the trained agent and plays a set of 5 game using the trained agent
         '''
-        raise NotImplementedError
+        scores = []
+
+        # Render gym environment
+        self.env.render(True)
+        for i in range(5):
+            state = self.stack_frames(None, self.reset(), True)
+            score = 0
+            while True:
+
+                action = self.action(state)
+                next_state, reward, done, _ = self.env.step(action)
+                score += reward
+                state = self.stack_frames(state, next_state, False)
+                if done:
+                    print("You Final score is:", score)
+                    scores.append(score)
+                    break
+        return np.mean(scores)

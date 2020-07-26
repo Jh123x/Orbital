@@ -136,7 +136,7 @@ class DQNAgent(TrainingAgent):
             state = self.stack_frames(None, self.reset(), True)
             score = 0
             eps = self.epsilon_delta(self.num_epochs)
-            self.save_obj(self.model_dict(), os.path.join(self.path, filename))
+
             while True:
                 action = self.action(state, eps)
 
@@ -175,19 +175,4 @@ class DQNAgent(TrainingAgent):
 
         # Return the scores.
         return self.scores
-
-    def eval(self):
-        score = 0
-        state = self.stack_frames(None, self.reset(), True)
-        # Render gym environment
-        self.env.render(True)
-        while True:
-
-            action = self.action(state)
-            next_state, reward, done, _ = self.env.step(action)
-            score += reward
-            state = self.stack_frames(state, next_state, False)
-            if done:
-                print("You Final score is:", score)
-                break
 
