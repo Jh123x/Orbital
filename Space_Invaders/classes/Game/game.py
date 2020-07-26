@@ -418,8 +418,13 @@ class GameWindow(object):
         """Take a screenshot
             Runs in parallel to the game to reduce lag while screenshotting in game
         """
-        #Save a screenshot named based on date and time
+        #Check if the screenshot folder is not there
+        if not os.path.isdir(self.screenshot_dir):
 
+            #Create the screenshot_dir folder
+            os.mkdir(self.screenshot_dir)
+
+        #Save a screenshot named based on date and time
         name = os.path.join(self.screenshot_dir, f'{datetime.datetime.now().strftime("%d_%m_%Y_%H_%M_%S")}.png')
 
         #Play the screenshot sound
