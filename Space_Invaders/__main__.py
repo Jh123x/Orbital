@@ -68,10 +68,10 @@ def main() -> None:
     settings = "settings.cfg"
 
     #If the settings file is missing
-    if not os.path.isfile(settings):
+    if not os.path.isfile(form_abs_path(get_curr_path(),settings)):
 
         #Create the settings file
-        create_config_file(settings)
+        create_config_file(form_abs_path(get_curr_path(),settings))
         
     #Read the configuration file for space invaders
     all_cfg = read_all(form_abs_path(get_curr_path(),settings))
