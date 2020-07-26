@@ -83,7 +83,7 @@ class PowerUp(ImageObject):
 
     #To store the powerup functions
     powers = {'bullet_up' : bullet_up, 
-                'bulletattackup' : extra_bullet_power, 
+                'bullet_attack_up' : extra_bullet_power, 
                 "debuff_bullet" : decrease_bullet_power, 
                 "deflector" : deflector, 
                 "emp" : emp_bomb, 
