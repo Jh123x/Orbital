@@ -19,7 +19,47 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1fe4a23f-441d-48f3-8044-96cbdb94ff8d" name="Default Changelist" comment="" />
+    <list default="true" id="1fe4a23f-441d-48f3-8044-96cbdb94ff8d" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/StoryModeScreen.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/StoryModeScreen.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/Untitled.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/gym_invaders/Untitled.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/ai_invader/agent/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/gym_invaders/ai_invader/agent/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/ai_invader/agent/baseagent.py" beforeDir="false" afterPath="$PROJECT_DIR$/gym_invaders/ai_invader/agent/baseagent.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/ai_invader/agent/dqn_agent.py" beforeDir="false" afterPath="$PROJECT_DIR$/gym_invaders/ai_invader/agent/dqn_agent.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/ai_invader/agent/pygadagent.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/ai_invader/model/CNN2D.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/ai_invader/model/src/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/ai_invader/model/src/activation/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/ai_invader/model/src/activation/relu.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/ai_invader/model/src/activation/softmax.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/ai_invader/model/src/base.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/ai_invader/model/src/cs231n/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/ai_invader/model/src/cs231n/fast_conv.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/ai_invader/model/src/cs231n/fast_conv_cython.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/ai_invader/model/src/cs231n/fast_conv_cython.pyx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/ai_invader/model/src/cs231n/setup.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/ai_invader/model/src/errors.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/ai_invader/model/src/layers/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/ai_invader/model/src/layers/convolutional.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/ai_invader/model/src/layers/dense.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/ai_invader/model/src/layers/dropout.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/ai_invader/model/src/layers/flatten.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/ai_invader/model/src/layers/pooling.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/ai_invader/model/src/model/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/ai_invader/model/src/model/sequential.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/ai_invader/model/src/optimizers/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/ai_invader/model/src/optimizers/adam.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/ai_invader/model/src/optimizers/gradient_descent.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/ai_invader/model/src/optimizers/rms_prop.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/ai_invader/model/src/utils/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/ai_invader/model/src/utils/core.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/ai_invader/model/src/utils/metrics.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/ai_invader/model/src/utils/plots.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/ai_invader/util/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/gym_invaders/ai_invader/util/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/ai_invader/util/memory.py" beforeDir="false" afterPath="$PROJECT_DIR$/gym_invaders/ai_invader/util/memory.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/gym_game/envs/custom_env.py" beforeDir="false" afterPath="$PROJECT_DIR$/gym_invaders/gym_game/envs/custom_env.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/training.py" beforeDir="false" afterPath="$PROJECT_DIR$/gym_invaders/training.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -58,7 +98,7 @@
       <recent name="$PROJECT_DIR$/gym_invaders/gym_game/envs" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.database_tester">
+  <component name="RunManager" selected="Python.testing">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <module name="Orbital" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -170,9 +210,6 @@
       <module name="Orbital" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
       <option name="SDK_HOME" value="$USER_HOME$/.pyenv/versions/orbital/bin/python" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/gym_invaders" />
       <option name="IS_MODULE_SDK" value="false" />
@@ -192,16 +229,13 @@
       <module name="Orbital" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
       <option name="SDK_HOME" value="$USER_HOME$/.pyenv/versions/orbital/bin/python" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/gym_invaders/gym_game/envs" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/gym_invaders" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/gym_invaders/gym_game/envs/AI_game.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/gym_invaders/training.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -243,7 +277,8 @@
       <workItem from="1594475192923" duration="1950000" />
       <workItem from="1594478958958" duration="21388000" />
       <workItem from="1594872415492" duration="62395000" />
-      <workItem from="1595580945470" duration="2800000" />
+      <workItem from="1595580945470" duration="3159000" />
+      <workItem from="1595701884129" duration="21634000" />
     </task>
     <task id="LOCAL-00001" summary="Commit Bugfixes from training problems">
       <created>1592625374788</created>
@@ -336,7 +371,14 @@
       <option name="project" value="LOCAL" />
       <updated>1595701043604</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="Commit previous things">
+      <created>1595701103427</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1595701103427</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -372,10 +414,10 @@
     <option name="LAST_COMMIT_MESSAGE" value="Commit previous things" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="72" y="117" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1595579470757">
+    <state x="72" y="117" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1595746279474">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state x="72" y="117" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.900/1440.0.1920.1080@0.0.1440.900" timestamp="1595579470757" />
+    <state x="72" y="117" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.900/1440.0.1920.1080@0.0.1440.900" timestamp="1595746279474" />
     <state x="1864" y="194" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.900/1440.0.1920.1080@1440.0.1920.1080" timestamp="1592213908534" />
     <state x="72" y="117" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.900/1440.23.1920.1057@0.0.1440.900" timestamp="1595252263123" />
     <state x="1864" y="213" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1440.830/1440.23.1920.1057@1440.23.1920.1057" timestamp="1591608747023" />
@@ -388,50 +430,55 @@
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="408" y="193" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.0.1440.900/1440.0.1920.1080@0.0.1440.900" timestamp="1594478926300" />
-    <state x="2138" y="294" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1591938814230">
-      <screen x="1440" y="0" width="1920" height="1080" />
+    <state x="524" y="245" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1595735327141">
+      <screen x="0" y="0" width="1440" height="900" />
     </state>
+    <state x="524" y="245" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1440.900/1440.0.1920.1080@0.0.1440.900" timestamp="1595735327141" />
     <state x="2138" y="294" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1440.900/1440.0.1920.1080@1440.0.1920.1080" timestamp="1591938814230" />
     <state x="100" y="100" width="1240" height="700" key="DiffContextDialog" timestamp="1592625213367">
       <screen x="0" y="23" width="1440" height="831" />
     </state>
     <state x="100" y="100" width="1240" height="700" key="DiffContextDialog/0.23.1440.831/1440.23.1920.1057@0.23.1440.831" timestamp="1592625213367" />
-    <state width="1398" height="191" key="GridCell.Tab.0.bottom" timestamp="1595671187850">
-      <screen x="0" y="0" width="1440" height="900" />
+    <state width="1398" height="191" key="GridCell.Tab.0.bottom" timestamp="1595701627123">
+      <screen x="0" y="23" width="1440" height="832" />
     </state>
     <state width="1398" height="191" key="GridCell.Tab.0.bottom/0.0.1440.900/1440.0.1920.1080@0.0.1440.900" timestamp="1595671187850" />
     <state width="1878" height="288" key="GridCell.Tab.0.bottom/0.0.1440.900/1440.0.1920.1080@1440.0.1920.1080" timestamp="1595491682377" />
     <state width="1398" height="232" key="GridCell.Tab.0.bottom/0.0.1440.900/1440.23.1920.1057@0.0.1440.900" timestamp="1595253446270" />
+    <state width="1398" height="191" key="GridCell.Tab.0.bottom/0.23.1440.832/1440.23.1920.1057@0.23.1440.832" timestamp="1595701627123" />
     <state width="1878" height="288" key="GridCell.Tab.0.bottom/0.23.1440.877/1440.0.1920.1080@1440.0.1920.1080" timestamp="1595483337935" />
-    <state width="1398" height="191" key="GridCell.Tab.0.center" timestamp="1595671187848">
-      <screen x="0" y="0" width="1440" height="900" />
+    <state width="1398" height="191" key="GridCell.Tab.0.center" timestamp="1595701627121">
+      <screen x="0" y="23" width="1440" height="832" />
     </state>
     <state width="1398" height="191" key="GridCell.Tab.0.center/0.0.1440.900/1440.0.1920.1080@0.0.1440.900" timestamp="1595671187848" />
     <state width="1878" height="288" key="GridCell.Tab.0.center/0.0.1440.900/1440.0.1920.1080@1440.0.1920.1080" timestamp="1595491682373" />
     <state width="1398" height="232" key="GridCell.Tab.0.center/0.0.1440.900/1440.23.1920.1057@0.0.1440.900" timestamp="1595253446268" />
+    <state width="1398" height="191" key="GridCell.Tab.0.center/0.23.1440.832/1440.23.1920.1057@0.23.1440.832" timestamp="1595701627121" />
     <state width="1878" height="288" key="GridCell.Tab.0.center/0.23.1440.877/1440.0.1920.1080@1440.0.1920.1080" timestamp="1595483337934" />
-    <state width="1398" height="191" key="GridCell.Tab.0.left" timestamp="1595671187847">
-      <screen x="0" y="0" width="1440" height="900" />
+    <state width="1398" height="191" key="GridCell.Tab.0.left" timestamp="1595701627120">
+      <screen x="0" y="23" width="1440" height="832" />
     </state>
     <state width="1398" height="191" key="GridCell.Tab.0.left/0.0.1440.900/1440.0.1920.1080@0.0.1440.900" timestamp="1595671187847" />
     <state width="1878" height="288" key="GridCell.Tab.0.left/0.0.1440.900/1440.0.1920.1080@1440.0.1920.1080" timestamp="1595491682373" />
     <state width="1398" height="232" key="GridCell.Tab.0.left/0.0.1440.900/1440.23.1920.1057@0.0.1440.900" timestamp="1595253446267" />
+    <state width="1398" height="191" key="GridCell.Tab.0.left/0.23.1440.832/1440.23.1920.1057@0.23.1440.832" timestamp="1595701627120" />
     <state width="1878" height="288" key="GridCell.Tab.0.left/0.23.1440.877/1440.0.1920.1080@1440.0.1920.1080" timestamp="1595483337933" />
-    <state width="1398" height="191" key="GridCell.Tab.0.right" timestamp="1595671187849">
-      <screen x="0" y="0" width="1440" height="900" />
+    <state width="1398" height="191" key="GridCell.Tab.0.right" timestamp="1595701627122">
+      <screen x="0" y="23" width="1440" height="832" />
     </state>
     <state width="1398" height="191" key="GridCell.Tab.0.right/0.0.1440.900/1440.0.1920.1080@0.0.1440.900" timestamp="1595671187849" />
     <state width="1878" height="288" key="GridCell.Tab.0.right/0.0.1440.900/1440.0.1920.1080@1440.0.1920.1080" timestamp="1595491682374" />
     <state width="1398" height="232" key="GridCell.Tab.0.right/0.0.1440.900/1440.23.1920.1057@0.0.1440.900" timestamp="1595253446269" />
+    <state width="1398" height="191" key="GridCell.Tab.0.right/0.23.1440.832/1440.23.1920.1057@0.23.1440.832" timestamp="1595701627122" />
     <state width="1878" height="288" key="GridCell.Tab.0.right/0.23.1440.877/1440.0.1920.1080@1440.0.1920.1080" timestamp="1595483337935" />
-    <state x="144" y="79" key="MergeDialog" timestamp="1595240775536">
+    <state x="144" y="79" key="MergeDialog" timestamp="1595701098935">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state x="144" y="79" key="MergeDialog/0.0.1440.900/1440.0.1920.1080@0.0.1440.900" timestamp="1595240775536" />
-    <state x="1917" y="262" key="MultipleFileMergeDialog" timestamp="1595516109670">
-      <screen x="1440" y="0" width="1920" height="1080" />
+    <state x="144" y="79" key="MergeDialog/0.0.1440.900/1440.0.1920.1080@0.0.1440.900" timestamp="1595701098935" />
+    <state x="358" y="218" key="MultipleFileMergeDialog" timestamp="1595701099005">
+      <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state x="358" y="218" key="MultipleFileMergeDialog/0.0.1440.900/1440.0.1920.1080@0.0.1440.900" timestamp="1595240775579" />
+    <state x="358" y="218" key="MultipleFileMergeDialog/0.0.1440.900/1440.0.1920.1080@0.0.1440.900" timestamp="1595701099005" />
     <state x="1917" y="262" key="MultipleFileMergeDialog/0.0.1440.900/1440.0.1920.1080@1440.0.1920.1080" timestamp="1595516109670" />
     <state x="1894" y="252" key="com.intellij.execution.console.ConsoleHistoryController$MyBrowseAction$1" timestamp="1591965940214">
       <screen x="1440" y="0" width="1920" height="1080" />
