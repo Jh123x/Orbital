@@ -1,7 +1,8 @@
 import pygame
-from pygame.locals import *
+import random
 from . import PlayScreen, Screen
 from .. import *
+from pygame.locals import *
 
 class TutorialScreen(PlayScreen):
     
@@ -27,7 +28,7 @@ class TutorialScreen(PlayScreen):
         """Spawn a powerup at specified x and y coordinate"""
 
         #Spawn the powerups
-        self.powerups.add(PowerUp(x, y, 50, 50, 2, self.fps * 20))
+        self.powerups.add(PowerUp(x, y, 50, 50, random.choice(PowerUp.get_powerups()), -1))
 
         #Increase the number of powerups
         self.powerup_numbers += 1
