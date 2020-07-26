@@ -11,22 +11,22 @@ class Stage6Screen(StoryTemplate):
         super().__init__(screen_width, screen_height, screen, State(105), sensitivity, max_fps, 0.2, debug)
 
         #Commander brief image
-        self.bg = ImageObject(300, 285, 600, 570, StoryTemplate.sprites[0], debug)
+        self.bg = ImageObject(300, 285, 600, 570, StoryTemplate.sprites['commander_brief'], debug)
 
         #Image of silluette
-        self.shadow = ImageObject(300, 215, 217, 217, StoryTemplate.sprites[4], debug)
+        self.shadow = ImageObject(300, 215, 217, 217, StoryTemplate.sprites['silloette_commander'], debug)
         self.shadow.scale(217, 217)
 
         #Image of S-net
-        self.terminator = ImageObject(300, 215, 217, 217, StoryTemplate.sprites[5], debug)
+        self.terminator = ImageObject(300, 215, 217, 217, StoryTemplate.sprites['terminator'], debug)
         self.terminator.scale(217, 217)
 
         #Image of figure head (To be replaced with the actual image)
-        self.alon_dusk = ImageObject(300, 215, 217, 217, StoryTemplate.sprites[2], debug)
+        self.alon_dusk = ImageObject(300, 215, 217, 217, StoryTemplate.sprites['alon_sama'], debug)
         self.alon_dusk.scale(217,217)
 
         #Textbox
-        self.tb = ImageObject(300, 685, 600, 230, StoryTemplate.sprites[6], debug)
+        self.tb = ImageObject(300, 685, 600, 230, StoryTemplate.sprites['textbox'], debug)
 
     def reset(self):
         """Reset the game"""
