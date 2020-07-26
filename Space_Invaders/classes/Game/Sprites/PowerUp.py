@@ -10,6 +10,13 @@ def bullet_up(screen, player):
     if player.maxcooldown > 6:
         player.maxcooldown -= 2
 
+def bullet_down(screen, player):
+    """Decrease the bullet reload speed"""
+
+    #If the player is not firing at a really slow speed
+    if player.maxcooldown < screen.fps:
+        player.maxcooldown += 2
+
 def shield_up(screen, player):
     """Creates a shield for the player"""
     #Spawn the blocks
