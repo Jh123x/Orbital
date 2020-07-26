@@ -495,11 +495,14 @@ class GameWindow(object):
             #Fill the background to black
             self.main_screen.fill(BLACK)
 
-    def find_method(self, prev):
+    def find_method(self, prev) -> State:
         """Find the appropriate method to execute"""
+
+        #Try to find the method in self.states
         f = self.states.get(prev, None)
 
-        return f if f else self.screens.get(self.state).handle
+        #If method is found execute it else call the default handle
+        return f() if f else self.screens.get(self.state).handle()
 
     def update(self) -> None:
         """Update the main screen"""
@@ -534,13 +537,14 @@ class GameWindow(object):
             #Lower cooldown
             self.cooldown -= 1
 
-            self.find_method(prev)()
+            #Run the state
+            self.find_method(prev)
 
         #Otherwise
         else:
 
             #Check if there is new state
-            self.state = self.find_method(prev)()
+            self.state = self.find_method(prev)
 
         #If the state is different
         if prev != self.state:
