@@ -1,1 +1,1 @@
-python3 setup.py build_exe
+python3 setup.py bdist_dmg
