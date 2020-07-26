@@ -1,6 +1,6 @@
 import pygame
-from . import StoryTemplate, Screen
-from .. import State, ImageObject, Direction, WHITE, Crabs, Brute, Scout, AIPlayer
+from . import StoryTemplate
+from .. import State, ImageObject, Direction, WHITE, Crabs, Brute, Scout, AIPlayer, Screen
 
 class Stage6Screen(StoryTemplate):
 

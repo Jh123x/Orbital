@@ -1,5 +1,4 @@
-from . import PlayScreen, Screen
-from .. import State, Difficulty, Direction, WHITE
+from .. import PlayScreen, Screen, State, Difficulty, Direction, WHITE
 
 class StoryTemplate(PlayScreen):
 

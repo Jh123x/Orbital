@@ -1,5 +1,5 @@
-from . import StoryTemplate, Screen
-from .. import State, ImageObject, Direction, WHITE, Crabs, Brute, Scout
+from . import StoryTemplate
+from .. import State, ImageObject, Direction, WHITE, Crabs, Brute, Scout, Screen
 
 class Stage5Screen(StoryTemplate):
 
