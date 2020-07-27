@@ -129,6 +129,7 @@ class GameWindow(object):
         self.story_mode = StoryModeScreen(game_width, game_height, self.main_screen, debug)
         self.powerup_instructions = PowerupInstructionsScreen(game_width, game_height, self.main_screen, self.fps, debug)
         self.mobs_instructions = MobInstructionsScreen(game_width, game_height, self.main_screen, self.fps, debug)
+        self.ai_menu = AIMenuScreen(game_width, game_height, self.main_screen, debug)
 
         #Create playing screens
         self.play = PlayScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.difficulty, 3, debug = self.debug)
@@ -196,6 +197,7 @@ class GameWindow(object):
             State.MOBS_INSTRUCTIONS: self.mobs_instructions,
             State.STAGE_GAMEOVER: self.stage_gameover,
             State.STAGE_PAUSE: self.stage_pause,
+            State.AI_MENU: self.ai_menu
         }
         
         #Store the different states the menu has

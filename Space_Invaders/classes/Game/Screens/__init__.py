@@ -24,3 +24,4 @@ from .VictoryScreen import VictoryScreen
 from .AICoopScreen import AICoopScreen
 from .StageGameover import StageGameoverScreen
 from .StagePauseScreen import StagePauseScreen
+from .AIMenuScreen import AIMenuScreen
