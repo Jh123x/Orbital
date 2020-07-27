@@ -9,7 +9,7 @@ import gym
 import gym_game
 from ai_invader.agent import DQNAgent
 from ai_invader.model import DQNCNN
-from ai_invader.util import load_obj
+
 #create a local directory to store pickle files from training
 PATH = os.getcwd()+'/obj'
 os.makedirs('obj', exist_ok=True)
@@ -56,7 +56,7 @@ if __name__ == '__main__':
 
     agent = DQNAgent(INPUT_SHAPE, ACTION_SIZE, SEED, device, DQNCNN, GAMMA, LR, TAU, BATCH_SIZE,
                      UPDATE_EVERY, REPLAY,BUFFER_SIZE, make_env, path = 'model', num_epochs = 0)
-    statedict = load_obj(os.path.join(agent.get_path(),'test.pth'),device)
-    agent.load_model(statedict)
-    agent.eval()
+    agent.train(1)
+
+
 
