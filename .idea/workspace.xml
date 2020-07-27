@@ -20,13 +20,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1fe4a23f-441d-48f3-8044-96cbdb94ff8d" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/gym_invaders/evalDQN.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gym_invaders/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gym_invaders/deepneuroevolution.py" beforeDir="false" afterPath="$PROJECT_DIR$/gym_invaders/evalEvolution.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gym_invaders/dqneval.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gym_invaders/obj/gene_algo/survival.pth" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gym_invaders/obj/sample.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/data/test.db" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/data/test.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/ai_invader/agent/dqn_agent.py" beforeDir="false" afterPath="$PROJECT_DIR$/gym_invaders/ai_invader/agent/dqn_agent.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/ai_invader/agent/evoagent.py" beforeDir="false" afterPath="$PROJECT_DIR$/gym_invaders/ai_invader/agent/evoagent.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/evalEvolution.py" beforeDir="false" afterPath="$PROJECT_DIR$/gym_invaders/evalEvolution.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gym_invaders/trainingDQN.py" beforeDir="false" afterPath="$PROJECT_DIR$/gym_invaders/trainingDQN.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gym_invaders/trainingEvolution.py" beforeDir="false" afterPath="$PROJECT_DIR$/gym_invaders/trainingEvolution.py" afterDir="false" />
     </list>
@@ -68,7 +66,7 @@
       <recent name="$PROJECT_DIR$/gym_invaders/gym_game/envs" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.game">
+  <component name="RunManager" selected="Python.test script">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <module name="Orbital" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -117,6 +115,9 @@
       <module name="Orbital" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
       <option name="SDK_HOME" value="$USER_HOME$/.pyenv/versions/orbital/bin/python" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Space_Invaders" />
       <option name="IS_MODULE_SDK" value="false" />
@@ -256,6 +257,9 @@
       <workItem from="1595580945470" duration="3159000" />
       <workItem from="1595701884129" duration="22190000" />
       <workItem from="1595824480439" duration="4537000" />
+      <workItem from="1595833065569" duration="2314000" />
+      <workItem from="1595859431056" duration="1217000" />
+      <workItem from="1595865210758" duration="250000" />
     </task>
     <task id="LOCAL-00001" summary="Commit Bugfixes from training problems">
       <created>1592625374788</created>
@@ -428,10 +432,10 @@
     <option name="LAST_COMMIT_MESSAGE" value="Accept changes to game" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="72" y="117" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1595746279474">
+    <state x="72" y="117" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1595855465875">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state x="72" y="117" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.900/1440.0.1920.1080@0.0.1440.900" timestamp="1595746279474" />
+    <state x="72" y="117" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.900/1440.0.1920.1080@0.0.1440.900" timestamp="1595855465875" />
     <state x="1864" y="194" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.900/1440.0.1920.1080@1440.0.1920.1080" timestamp="1592213908534" />
     <state x="72" y="117" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.900/1440.23.1920.1057@0.0.1440.900" timestamp="1595252263123" />
     <state x="1864" y="213" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1440.830/1440.23.1920.1057@1440.23.1920.1057" timestamp="1591608747023" />
