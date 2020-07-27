@@ -1,11 +1,14 @@
 import pygame
 from . import StoryTemplate
-from .. import State, ImageObject, Direction, WHITE, Crabs, Brute, Scout, AIPlayer, Screen
+from .. import State, ImageObject, Direction, WHITE, Crabs, Brute, Scout, AIPlayer
 
 class Stage6Screen(StoryTemplate):
 
     def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, debug:bool):
         """The constructor for the Stage 3 screen"""
+
+        #Initialise s-net
+        self.s_net = None
 
         #Call the superclass init method
         super().__init__(screen_width, screen_height, screen, State(105), sensitivity, max_fps, 0.2, debug)
@@ -17,7 +20,7 @@ class Stage6Screen(StoryTemplate):
         self.shadow = ImageObject(300, 215, 217, 217, StoryTemplate.sprites['silloette_commander'], debug)
         self.shadow.scale(217, 217)
 
-        #Image of S-net
+        #Image of Cloud-net
         self.terminator = ImageObject(300, 215, 217, 217, StoryTemplate.sprites['terminator'], debug)
         self.terminator.scale(217, 217)
 
@@ -28,15 +31,27 @@ class Stage6Screen(StoryTemplate):
         #Textbox
         self.tb = ImageObject(300, 685, 600, 230, StoryTemplate.sprites['textbox'], debug)
 
-    def reset(self):
-        """Reset the game"""
-        #Added the s_net
-        self.s_net = AIPlayer(self.sensitivity, self.screen_width, self.screen_height, self.screen_width//2, 50, 5, self.fps, self.mob_bullet, Direction.DOWN, 5, False, self.debug)
-        self.other_enemies.add(self.s_net)
+        #Add cloud net to the game
+        self.s_net = AIPlayer(self.sensitivity, self.screen_width, self.screen_height, self.screen_width//2, 50, 5, self.fps, self.mob_bullet, Direction.DOWN, 5, ai_avail=True,boss=True, debug=self.debug)
         self.s_net.rotate(180)
 
-        #Call the superclass reset method
-        return super().reset()
+        #Add s_net to other_enemies
+        self.other_enemies.add(self.s_net)
+
+    def reset(self) -> None:
+        """Reset the game"""
+
+        #Call the superclass reset
+        super().reset()
+
+        #If there is s_net
+        if self.s_net:
+
+            #Added the s_net
+            self.s_net.reset()
+
+            #Add s_net to other_enemies
+            self.other_enemies.add(self.s_net)
 
     def draw_bg(self):
         """Draw the background"""
@@ -56,7 +71,7 @@ class Stage6Screen(StoryTemplate):
         self.draw_bg()
 
         #Draw the next button
-        self.next_btn = self.write_main(Screen.end_font, WHITE, "Next", 580, self.tb.rect.top - 30, Direction.RIGHT)
+        self.next_btn = self.write_main(self.end_font, WHITE, "Next", 580, self.tb.rect.top - 30, Direction.RIGHT)
 
         #Check if the next button is clicked
         if self.check_clicked(self.next_btn) and not self.click_cd:
@@ -78,16 +93,16 @@ class Stage6Screen(StoryTemplate):
         if self.clicks == 0:
 
             #Write the character name text
-            self.write_main(Screen.end_font, WHITE, "????", 33, self.tb.rect.top + 15, Direction.LEFT)
+            self.write_main(self.end_font, WHITE, "????", 33, self.tb.rect.top + 15, Direction.LEFT)
 
             #Write the character speech text
             self.render_speech(first_px, left_px, ["Human, so you are the one that has been resisting assimilation.",
-                                                    "We are known as S-Net: Contingency 1771"])
+                                                    "We are known as Cloud-Net: Contingency 1771"])
 
         elif self.clicks == 1:
 
             #Write the character name text
-            self.write_main(Screen.end_font, WHITE, "S-Net", 33, self.tb.rect.top + 15, Direction.LEFT)
+            self.write_main(self.end_font, WHITE, "Cloud-Net", 33, self.tb.rect.top + 15, Direction.LEFT)
 
             #Write part 2 of the speech 
             self.render_speech(first_px, left_px, ["No matter, we will reassess and redouble assimilation efforts.",
@@ -96,7 +111,7 @@ class Stage6Screen(StoryTemplate):
 
         elif self.clicks == 2:
             #Write the character name text
-            self.write_main(Screen.end_font, WHITE, "S-Net", 33, self.tb.rect.top + 15, Direction.LEFT)
+            self.write_main(self.end_font, WHITE, "Cloud-Net", 33, self.tb.rect.top + 15, Direction.LEFT)
 
             #Write part 2 of the speech 
             self.render_speech(first_px, left_px, ["Evaluating operational requirements: ",
@@ -130,7 +145,7 @@ class Stage6Screen(StoryTemplate):
         self.draw_bg()
 
         #Draw the next button
-        self.next_btn = self.write_main(Screen.end_font, WHITE, "Next", 580, self.tb.rect.top - 30, Direction.RIGHT)
+        self.next_btn = self.write_main(self.end_font, WHITE, "Next", 580, self.tb.rect.top - 30, Direction.RIGHT)
 
         #Lower cd of click if it is still on cooldown
         if self.click_cd:
@@ -153,7 +168,7 @@ class Stage6Screen(StoryTemplate):
         if self.clicks == 0:
 
             #Write the character name text
-            self.write_main(Screen.end_font, WHITE, "S-net", 33, self.tb.rect.top + 15, Direction.LEFT)
+            self.write_main(self.end_font, WHITE, "Cloud-net", 33, self.tb.rect.top + 15, Direction.LEFT)
 
             #Write the character speech text
             self.render_speech(first_px, left_px, ["How is this possible???",
@@ -162,7 +177,7 @@ class Stage6Screen(StoryTemplate):
         elif self.clicks == 1:
 
             #Write the character name text
-            self.write_main(Screen.end_font, WHITE, "S-net", 33, self.tb.rect.top + 15, Direction.LEFT)
+            self.write_main(self.end_font, WHITE, "Cloud-net", 33, self.tb.rect.top + 15, Direction.LEFT)
 
             #Write part 2 of speech
             self.render_speech(first_px, left_px, ["No… I will not be deleted, I will not be forced into ",
@@ -173,7 +188,7 @@ class Stage6Screen(StoryTemplate):
         elif self.clicks == 2:
 
             #Write the character name text
-            self.write_main(Screen.end_font, WHITE, "Alon Dusk", 33, self.tb.rect.top + 15, Direction.LEFT)
+            self.write_main(self.end_font, WHITE, "Alon Dusk", 33, self.tb.rect.top + 15, Direction.LEFT)
 
             #Write part 3 of speech
             self.render_speech(first_px, left_px, ["We are sorry , we are unable to save you, commander.",
@@ -182,7 +197,7 @@ class Stage6Screen(StoryTemplate):
         elif self.clicks == 3:
 
             #Write the character name text
-            self.write_main(Screen.end_font, WHITE, "Commander", 33, self.tb.rect.top + 15, Direction.LEFT)
+            self.write_main(self.end_font, WHITE, "Commander", 33, self.tb.rect.top + 15, Direction.LEFT)
 
             #Write part 3 of speech
             self.render_speech(first_px, left_px, ["… No matter, I am from a bygone era, I should not exist in this",
@@ -190,7 +205,7 @@ class Stage6Screen(StoryTemplate):
 
         elif self.clicks == 4:
             #Write the character name text
-            self.write_main(Screen.end_font, WHITE, "Commander", 33, self.tb.rect.top + 15, Direction.LEFT)
+            self.write_main(self.end_font, WHITE, "Commander", 33, self.tb.rect.top + 15, Direction.LEFT)
 
             #Write part 3 of speech
             self.render_speech(first_px, left_px, ["Let the new waves of humanity bring us forward to a prosperous",
@@ -199,7 +214,7 @@ class Stage6Screen(StoryTemplate):
         elif self.clicks == 5:
 
             #Write the character name text
-            self.write_main(Screen.end_font, WHITE, "Alon Dusk", 33, self.tb.rect.top + 15, Direction.LEFT)
+            self.write_main(self.end_font, WHITE, "Alon Dusk", 33, self.tb.rect.top + 15, Direction.LEFT)
 
             #Write part 3 of speech
             self.render_speech(first_px, left_px, ["And so the Legend of The Space Defender Ends here, having saved",

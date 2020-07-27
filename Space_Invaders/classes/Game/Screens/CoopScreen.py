@@ -2,8 +2,8 @@
 import pygame
 import random
 from pygame.locals import *
-from . import LocalPVPScreen, Screen, PlayScreen
-from .. import State, Player, Direction, EnemyShip, WHITE, Explosion, Difficulty
+from . import PlayScreen
+from .. import State, Player, Direction, WHITE, Explosion, Difficulty
 
 class CoopScreen(PlayScreen):
     def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, fps:int, difficulty: Difficulty, player_lives:int = 3, debug:bool = False):
@@ -234,19 +234,19 @@ class CoopScreen(PlayScreen):
     def draw_letters(self) -> None:
         """Draw the words on the screen"""
         #Draw the wave number
-        self.write_main(Screen.font, WHITE, f"Wave: {self.wave}", self.screen_width // 2, 20)
+        self.write_main(self.font, WHITE, f"Wave: {self.wave}", self.screen_width // 2, 20)
 
         #Draw the lives of player 1
-        self.write_main(Screen.font, WHITE, f"P1 Lives: {self.player1.get_lives()}", self.screen_width - 10, 10, Direction.RIGHT)
+        self.write_main(self.font, WHITE, f"P1 Lives: {self.player1.get_lives()}", self.screen_width - 10, 10, Direction.RIGHT)
 
         #Draw score of player 1
-        self.write_main(Screen.font, WHITE, f"P1 Score: {self.p1_score}", 10, 10, Direction.LEFT)
+        self.write_main(self.font, WHITE, f"P1 Score: {self.p1_score}", 10, 10, Direction.LEFT)
 
         #Draw the lives of player 2
-        self.write_main(Screen.font, WHITE, f"P2 Lives: {self.player2.get_lives()}", self.screen_width - 10, 30, Direction.RIGHT)
+        self.write_main(self.font, WHITE, f"P2 Lives: {self.player2.get_lives()}", self.screen_width - 10, 30, Direction.RIGHT)
 
         #Draw score of player 2
-        self.write_main(Screen.font, WHITE, f"P2 Score: {self.p2_score}", 10, 30, Direction.LEFT)
+        self.write_main(self.font, WHITE, f"P2 Score: {self.p2_score}", 10, 30, Direction.LEFT)
 
 
     def handle(self) -> State:

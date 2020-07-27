@@ -1,5 +1,5 @@
 from . import StoryTemplate
-from .. import State, ImageObject, Direction, WHITE, Crabs, Brute, Scout, Screen
+from .. import State, ImageObject, Direction, WHITE, Crabs, Brute, Scout
 
 class Stage5Screen(StoryTemplate):
 
@@ -37,7 +37,7 @@ class Stage5Screen(StoryTemplate):
         self.draw_bg()
 
         #Draw the next button
-        self.next_btn = self.write_main(Screen.end_font, WHITE, "Next", 580, self.tb.rect.top - 30, Direction.RIGHT)
+        self.next_btn = self.write_main(self.end_font, WHITE, "Next", 580, self.tb.rect.top - 30, Direction.RIGHT)
 
         #Lower cd of click if it is still on cooldown
         if self.click_cd:
@@ -53,7 +53,7 @@ class Stage5Screen(StoryTemplate):
             self.click_cd = self.fps//5
 
         #Write the character name text
-        self.write_main(Screen.end_font, WHITE, "Alon Dusk", 33, self.tb.rect.top + 15, Direction.LEFT)
+        self.write_main(self.end_font, WHITE, "Alon Dusk", 33, self.tb.rect.top + 15, Direction.LEFT)
 
         #Pixel vars for alignment
         first_px = self.tb.rect.top + 75
@@ -91,7 +91,7 @@ class Stage5Screen(StoryTemplate):
         self.draw_bg()
 
         #Draw the next button
-        self.next_btn = self.write_main(Screen.end_font, WHITE, "Next", 580, self.tb.rect.top - 30, Direction.RIGHT)
+        self.next_btn = self.write_main(self.end_font, WHITE, "Next", 580, self.tb.rect.top - 30, Direction.RIGHT)
 
         #Lower cd of click if it is still on cooldown
         if self.click_cd:
@@ -107,7 +107,7 @@ class Stage5Screen(StoryTemplate):
             self.click_cd = self.fps//5
 
         #Write the character name text
-        self.write_main(Screen.end_font, WHITE, "Alon Dusk", 33, self.tb.rect.top + 15, Direction.LEFT)
+        self.write_main(self.end_font, WHITE, "Alon Dusk", 33, self.tb.rect.top + 15, Direction.LEFT)
 
         #Pixels for alignment
         first_px = self.tb.rect.top + 75

@@ -24,14 +24,19 @@ class GameoverScreen(Screen):
         #Call the superclass method
         super().__init__(screen_width, screen_height, State.GAMEOVER, screen, 0, 0, debug)
 
+        #Draw the score
+        self.write_score()
+
         #Draw the words for gameover
         self.write(self.title_font, WHITE, "Game Over", self.screen_width//2, self.screen_height//5)
 
-        #Draw the score
-        self.write(self.end_font, WHITE,"Total Score : " + str(self.score),self.screen_width // 2, self.screen_height // 2)
-
         #Prompt player to update
         self.write(self.end_font, WHITE, "Press Y to go back and N to quit", self.screen_width//2, self.screen_height // 2 + self.screen_height//12)
+
+    def write_score(self):
+        """Draw the score"""
+        #Draw the score
+        self.write(self.end_font, WHITE,"Total Score : " + str(self.score),self.screen_width // 2, self.screen_height // 2)
 
     def get_score(self):
         """Return the score of the player"""
@@ -83,4 +88,4 @@ class GameoverScreen(Screen):
         else:
             
             #Return the gameover state
-            return State.GAMEOVER
+            return self.state

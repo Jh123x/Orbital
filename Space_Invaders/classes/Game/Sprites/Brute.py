@@ -26,7 +26,7 @@ class Brute(EnemyShip):
         self.direction = None
 
         #Set the points
-        self.set_points(self.spawn_count * 50)
+        self.set_points(self.spawn_count * 100)
 
         #Set the delta x for the brute
         self.delta_y = sensitivity // 3 # It moves slower than the mobs

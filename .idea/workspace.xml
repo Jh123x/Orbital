@@ -19,7 +19,73 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1fe4a23f-441d-48f3-8044-96cbdb94ff8d" name="Default Changelist" comment="" />
+    <list default="true" id="1fe4a23f-441d-48f3-8044-96cbdb94ff8d" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/Space_Invaders/SpaceDefenders.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Instructions/InstructionsScreen.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Instructions/MobInstructionScreen.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Instructions/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Misc/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/StageGameover.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/StagePauseScreen.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Space_Invaders/icon/icon.ico" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Space_Invaders/images/place_holder/unknown.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/__main__.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/__main__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Colors.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Misc/Colors.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Difficulty.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Misc/Difficulty.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Enums.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Misc/Enums.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/AICoopScreen.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/AICoopScreen.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/AIPVPScreen.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/AIPVPScreen.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/ClassicScreen.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/ClassicScreen.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/CoopScreen.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/CoopScreen.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/GameoverScreen.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/GameoverScreen.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/HighscoreScreen.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/HighscoreScreen.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/InstructionsMenuScreen.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Instructions/InstructionsMenuScreen.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/InstructionsScreen.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/LocalPVPScreen.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/LocalPVPScreen.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/MenuScreen.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/MenuScreen.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/OnePlayerModesScreen.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/OnePlayerModesScreen.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/OnlinePVPScreen.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/OnlinePVPScreen.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/PVPInstructionsScreen.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Instructions/PVPInstructionsScreen.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/PauseScreen.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/PauseScreen.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/Popup.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/Popup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/PowerupInstructionsScreen.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Instructions/PowerupInstructionsScreen.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/SettingsScreen.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/SettingsScreen.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/StoryModeScreen.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/StoryModeScreen.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/TutorialScreen.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/TutorialScreen.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/TwoPlayerGameover.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/TwoPlayerGameover.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/TwoPlayerPauseScreen.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/TwoPlayerPauseScreen.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/TwoPlayerScreen.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/TwoPlayerScreen.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/VictoryScreen.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/VictoryScreen.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Screens/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Sound.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Misc/Sound.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Sprites/AIPlayer.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Sprites/AIPlayer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Sprites/Brute.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Sprites/Brute.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Sprites/Bullet.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Sprites/Bullet.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Sprites/Crabs.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Sprites/Crabs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Sprites/InputBox.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Sprites/InputBox.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Sprites/MovingObject.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Sprites/MovingObject.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Sprites/PowerUp.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Sprites/PowerUp.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Sprites/Scout.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Sprites/Scout.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Stages/Stage1Screen.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Stages/Stage1Screen.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Stages/Stage2Screen.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Stages/Stage2Screen.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Stages/Stage3Screen.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Stages/Stage3Screen.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Stages/Stage4Screen.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Stages/Stage4Screen.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Stages/Stage5Screen.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Stages/Stage5Screen.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Stages/Stage6Screen.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Stages/Stage6Screen.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/Stages/StoryTemplate.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Stages/StoryTemplate.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Misc/database.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/game.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/game.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Game/network.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Game/Misc/network.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/classes/Misc/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/classes/Misc/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/compile.sh" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/compile.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/data/test.db" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/data/test.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/images/place_holder/test1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/Space_Invaders/setup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Space_Invaders/setup_mac.py" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -58,7 +124,7 @@
       <recent name="$PROJECT_DIR$/gym_invaders/gym_game/envs" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.testing">
+  <component name="RunManager" selected="Python.game">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <module name="Orbital" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -170,6 +236,9 @@
       <module name="Orbital" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
       <option name="SDK_HOME" value="$USER_HOME$/.pyenv/versions/orbital/bin/python" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/gym_invaders" />
       <option name="IS_MODULE_SDK" value="false" />
@@ -189,6 +258,9 @@
       <module name="Orbital" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
       <option name="SDK_HOME" value="$USER_HOME$/.pyenv/versions/orbital/bin/python" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/gym_invaders" />
       <option name="IS_MODULE_SDK" value="false" />
@@ -239,6 +311,7 @@
       <workItem from="1594872415492" duration="62395000" />
       <workItem from="1595580945470" duration="3159000" />
       <workItem from="1595701884129" duration="22190000" />
+      <workItem from="1595824480439" duration="914000" />
     </task>
     <task id="LOCAL-00001" summary="Commit Bugfixes from training problems">
       <created>1592625374788</created>
@@ -386,7 +459,8 @@
     <MESSAGE value="update storymode" />
     <MESSAGE value="Commit previous things" />
     <MESSAGE value="Refactoring AI Invaders for Developer Kit" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactoring AI Invaders for Developer Kit" />
+    <MESSAGE value="Accept changes to game" />
+    <option name="LAST_COMMIT_MESSAGE" value="Accept changes to game" />
   </component>
   <component name="WindowStateProjectService">
     <state x="72" y="117" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1595746279474">
@@ -446,14 +520,14 @@
     <state width="1398" height="232" key="GridCell.Tab.0.right/0.0.1440.900/1440.23.1920.1057@0.0.1440.900" timestamp="1595253446269" />
     <state width="1398" height="191" key="GridCell.Tab.0.right/0.23.1440.832/1440.23.1920.1057@0.23.1440.832" timestamp="1595701627122" />
     <state width="1878" height="288" key="GridCell.Tab.0.right/0.23.1440.877/1440.0.1920.1080@1440.0.1920.1080" timestamp="1595483337935" />
-    <state x="144" y="79" key="MergeDialog" timestamp="1595701098935">
+    <state x="144" y="79" key="MergeDialog" timestamp="1595824535591">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state x="144" y="79" key="MergeDialog/0.0.1440.900/1440.0.1920.1080@0.0.1440.900" timestamp="1595701098935" />
-    <state x="358" y="218" key="MultipleFileMergeDialog" timestamp="1595701099005">
+    <state x="144" y="79" key="MergeDialog/0.0.1440.900/1440.0.1920.1080@0.0.1440.900" timestamp="1595824535591" />
+    <state x="358" y="218" key="MultipleFileMergeDialog" timestamp="1595824535637">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state x="358" y="218" key="MultipleFileMergeDialog/0.0.1440.900/1440.0.1920.1080@0.0.1440.900" timestamp="1595701099005" />
+    <state x="358" y="218" key="MultipleFileMergeDialog/0.0.1440.900/1440.0.1920.1080@0.0.1440.900" timestamp="1595824535637" />
     <state x="1917" y="262" key="MultipleFileMergeDialog/0.0.1440.900/1440.0.1920.1080@1440.0.1920.1080" timestamp="1595516109670" />
     <state x="1894" y="252" key="com.intellij.execution.console.ConsoleHistoryController$MyBrowseAction$1" timestamp="1591965940214">
       <screen x="1440" y="0" width="1920" height="1080" />

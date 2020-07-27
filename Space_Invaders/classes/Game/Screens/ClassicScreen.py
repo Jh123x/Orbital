@@ -52,12 +52,7 @@ class ClassicScreen(Screen):
         self.player1 = Player(self.sensitivity, self.screen_width, self.screen_height, self.screen_width//2, self.screen_height - 50, 3, self.fps, self.player1_bullet, Direction.UP, self.debug)
 
     def reset(self) -> None:
-        """Reset the play screen and variables
-            Arguments:
-                No arguments
-            Returns: 
-                No returns
-        """
+        """Reset the play screen and variables"""
 
         #If already resetted
         if self.resetted:
@@ -277,9 +272,6 @@ class ClassicScreen(Screen):
         #Draw the block
         self.blocks.draw(self.screen)
 
-        #Uncomment this to draw the hitbox instead
-        # self.draw_hitboxes()
-
     def get_score(self) -> int:
         """Gets the score of the player in the current state"""
         return self.p1_score
@@ -454,13 +446,13 @@ class ClassicScreen(Screen):
     def draw_letters(self) -> None:
         """Draw the letters on the screen"""
         #Draw the score
-        self.write_main(Screen.font, WHITE, f"Score : {self.p1_score}", 10, 10, Direction.LEFT)
+        self.write_main(self.font, WHITE, f"Score : {self.p1_score}", 10, 10, Direction.LEFT)
 
         #Draw the live count
-        self.write_main(Screen.font, WHITE, f"Lives : {self.player1.get_lives()}", self.screen_width - 10, 10, Direction.RIGHT)
+        self.write_main(self.font, WHITE, f"Lives : {self.player1.get_lives()}", self.screen_width - 10, 10, Direction.RIGHT)
 
         #Draw the wave number
-        self.write_main(Screen.font, WHITE, f"Wave : {self.wave}",self.screen_width//2, 15)
+        self.write_main(self.font, WHITE, f"Wave : {self.wave}",self.screen_width//2, 15)
 
     def get_pause_state(self) -> State:
         """Get the pause state for the game"""

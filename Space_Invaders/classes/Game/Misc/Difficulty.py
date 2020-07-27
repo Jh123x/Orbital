@@ -24,7 +24,7 @@ class Difficulty(object):
         """Toggles the difficulty"""
 
         #Check if it is not the max difficulty
-        if self.difficulty.value < 5:
+        if self.difficulty.value < 6:
 
             #Set the difficulty to 1 higher
             self.difficulty =  Difficulty_enum(self.difficulty.value + 1)

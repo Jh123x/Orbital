@@ -11,22 +11,22 @@ class MenuScreen(Screen):
         super().__init__(screen_width, screen_height, State.MENU, screen, 0, 0, debug)
 
         #Draw the title
-        self.write(Screen.title_font, WHITE, "Space Invaders", self.screen_width//2, self.screen_height//5)
+        self.write(self.title_font, WHITE, "Space Invaders", self.screen_width//2, self.screen_height//5)
 
         #Draw the Play button
-        self.rect_play = self.write(Screen.end_font,WHITE, "Play", self.screen_width//2, self.screen_height//2)
+        self.rect_play = self.write(self.end_font,WHITE, "Play", self.screen_width//2, self.screen_height//2)
 
         #Draw the highscore button
-        self.rect_highscore = self.write(Screen.end_font, WHITE, "High Score", self.screen_width//2, self.screen_height//15 + self.screen_height//2)
+        self.rect_highscore = self.write(self.end_font, WHITE, "High Score", self.screen_width//2, self.screen_height//15 + self.screen_height//2)
 
         #Draw the instructions button
-        self.rect_instruction = self.write(Screen.end_font, WHITE, "Instructions", self.screen_width//2, self.screen_height//7.5 + self.screen_height//2)
+        self.rect_instruction = self.write(self.end_font, WHITE, "Instructions", self.screen_width//2, self.screen_height//7.5 + self.screen_height//2)
 
         #Draw the settings button
-        self.rect_settings = self.write(Screen.end_font, WHITE, "Settings", self.screen_width//2, self.screen_height//5 + self.screen_height//2)
+        self.rect_settings = self.write(self.end_font, WHITE, "Settings", self.screen_width//2, self.screen_height//5 + self.screen_height//2)
 
         #Draw the quit button
-        self.rect_end = self.write(Screen.end_font, WHITE, "Quit", self.screen_width//2, self.screen_height//1.2)
+        self.rect_end = self.write(self.end_font, WHITE, "Quit", self.screen_width//2, self.screen_height//1.2)
 
 
     def update_keypresses(self) -> State:

@@ -9,7 +9,7 @@ class AIPlayer(Player):
     def __init__(self, sensitivity:int, game_width:int, game_height:int, initial_x:int, 
                     initial_y:int, init_life:int, fps:int, bullet_grp:pygame.sprite.Group(), 
                     bullet_direction:Direction, frames_per_action:int, 
-                    ai_avail = True, debug:bool = False):
+                    ai_avail = True,boss:bool = False ,debug:bool = False):
         """Constructor for the AI Player class"""
 
         #Call the superclass
@@ -21,7 +21,7 @@ class AIPlayer(Player):
         self.state = None
         self.screen = None
         self.cd = self.frames_per_action
-
+        self.boss = boss
         #If ai is available
         if ai_avail==True:
             self.ai = StateMachine(40)
@@ -44,11 +44,6 @@ class AIPlayer(Player):
 
     def action(self, gamestate) -> None:
         """Does the action taken by the AI every frames"""
-
-        #If there is no screen do nothing
-        if not self.has_screen():
-            return 
-
 
         self.get_entities(*gamestate)
 
@@ -101,8 +96,10 @@ class AIPlayer(Player):
         elif self.ai:
             action = self.get_action_space()
             return action[self.ai.state_check(self.state)]
+
         #Otherwise
         else:
+
             #Default AI
             return self.no_ai()
             
@@ -147,15 +144,18 @@ class AIPlayer(Player):
         #Call the superclass draw
         super().draw(screen)
 
-    def get_entities(self,enemies1, enemies2, enemy_bullets, enemy_player= -1, player_bullets = -1):
+    def get_entities(self,enemies1, enemies2, enemy_bullets, enemy_player= [], player_bullets = []):
         ''' Relevent Information for AI decision making'''
         curr_x = self.get_x()
         curr_y = self.get_y()
         enemy1 = list(map(lambda y: (y.get_x(),y.get_y()),filter(lambda x: (np.abs(x.get_x()-curr_x)<=50),enemies1)))
         enemy2 = list(map(lambda y: (y.get_x(),y.get_y()),filter(lambda x: np.abs(x.get_x() - curr_x)<= 50, enemies2)))
         eb = list(map(lambda y: (y.get_x(),y.get_y()),filter(lambda x: np.abs(x.get_x() - curr_x) <= 50, enemy_bullets)))
-        
-        if enemy_player == -1:
+        if self.boss:
+            enemy1 = []
+            enemy2 = []
+            eb = []
+        if enemy_player == []:
             ep = 'None'
 
         elif np.abs(enemy_player.get_x() - curr_x) > 50:

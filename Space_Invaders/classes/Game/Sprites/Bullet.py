@@ -50,7 +50,6 @@ class Bullet(MovingObject):
                 self.direction = Direction.BOTTOM_RIGHT.value
             elif self.direction == Direction.BOTTOM_RIGHT.value:
                 self.direction = Direction.BOTTOM_LEFT.value
-            
 
         #Update its coordinates
         return super().update()

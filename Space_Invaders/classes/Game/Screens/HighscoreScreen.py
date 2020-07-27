@@ -60,19 +60,19 @@ class HighscoreScreen(Screen):
         start_px = 200
 
         #Draw the button for back
-        self.end_rect = self.write(Screen.end_font, WHITE, "Back", self.screen_width//2, self.screen_height//2 + self.screen_height//3)
+        self.end_rect = self.write(self.end_font, WHITE, "Back", self.screen_width//2, self.screen_height//2 + self.screen_height//3)
 
         #Draw the highscore header
-        self.write(Screen.title_font, WHITE, f"HIGH SCORES", self.screen_width//2, 100)
+        self.write(self.title_font, WHITE, f"HIGH SCORES", self.screen_width//2, 100)
 
         #Draw the scores of the players
         for index, item in enumerate(self.scores[:5]):
 
             #Draw the first half of the scoreboard
-            self.write(Screen.end_font, WHITE, f"{index+1}. {item[1]}".ljust(15, ' '), self.screen_width//4, start_px + self.screen_height//(15/(index+1)),Direction.LEFT)
+            self.write(self.end_font, WHITE, f"{index+1}. {item[1]}".ljust(15, ' '), self.screen_width//4, start_px + self.screen_height//(15/(index+1)),Direction.LEFT)
 
             #Draw the 2nd half of the scoreboard
-            self.write(Screen.end_font, WHITE, f"{item[2]:<5}",self.screen_width//1.6, start_px + self.screen_height//(15/(index+1)),Direction.LEFT)
+            self.write(self.end_font, WHITE, f"{item[2]:<5}",self.screen_width//1.6, start_px + self.screen_height//(15/(index+1)),Direction.LEFT)
 
     def handle(self) -> State:
         """Handles the drawing of the highscore screen"""

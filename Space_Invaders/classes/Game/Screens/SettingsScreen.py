@@ -1,4 +1,4 @@
-from . import Screen, Popup
+from . import Screen
 from .. import State, WHITE, Direction, Sound, Background, Difficulty, GREY
 
 class SettingsScreen(Screen):
@@ -18,10 +18,10 @@ class SettingsScreen(Screen):
         self.cooldown = self.fps//10
 
         #Draw the Header
-        self.write(Screen.title_font, WHITE, "Settings", screen_width//2, screen_height//5)
+        self.write(self.title_font, WHITE, "Settings", screen_width//2, screen_height//5)
 
         #Draw the back button
-        self.back = self.write(Screen.end_font, WHITE, "Back", screen_width//2, screen_height//1.2)
+        self.back = self.write(self.end_font, WHITE, "Back", screen_width//2, screen_height//1.2)
 
     def get_bg_no(self) -> int:
         """Get the current background that the user chose"""
@@ -112,21 +112,21 @@ class SettingsScreen(Screen):
         first_pixel = self.screen_height//2
 
         #Draw the different settings options
-        self.background = self.write_main(Screen.end_font, WHITE, f"Background: {self.get_bg_no()}", self.screen_width//4, first_pixel, Direction.LEFT)
-        self.music = self.write_main(Screen.end_font, WHITE, f"Music: {'On' if self.get_music_enabled() else 'Off'}", self.screen_width//4, first_pixel + self.screen_height//15, Direction.LEFT)
-        self.difficulty_rect = self.write_main(Screen.end_font, WHITE, f"Difficulty: {self.get_difficulty().title()}", self.screen_width//4, first_pixel + self.screen_height//7.5, Direction.LEFT)
+        self.background = self.write_main(self.end_font, WHITE, f"Background: {self.get_bg_no()}", self.screen_width//4, first_pixel, Direction.LEFT)
+        self.music = self.write_main(self.end_font, WHITE, f"Music: {'On' if self.get_music_enabled() else 'Off'}", self.screen_width//4, first_pixel + self.screen_height//15, Direction.LEFT)
+        self.difficulty_rect = self.write_main(self.end_font, WHITE, f"Difficulty: {self.get_difficulty().title()}", self.screen_width//4, first_pixel + self.screen_height//7.5, Direction.LEFT)
 
         #If sound is enabled
         if self.get_music_enabled():
 
             #Write to the screen that the music is enabled
-            self.sound_btn = self.write_main(Screen.end_font, WHITE, f"Sound: {int(self.get_volume()*100)}", self.screen_width//4, first_pixel + self.screen_height//5, Direction.LEFT)
+            self.sound_btn = self.write_main(self.end_font, WHITE, f"Sound: {int(self.get_volume()*100)}", self.screen_width//4, first_pixel + self.screen_height//5, Direction.LEFT)
 
         #Otherwise
         else:
 
             #Write that the music is disabled
-            self.sound_btn = self.write_main(Screen.end_font, GREY, f"Sound: {int(self.get_volume()*100)}", self.screen_width//4, first_pixel + self.screen_height//5, Direction.LEFT)
+            self.sound_btn = self.write_main(self.end_font, GREY, f"Sound: {int(self.get_volume()*100)}", self.screen_width//4, first_pixel + self.screen_height//5, Direction.LEFT)
 
         #Return based on what the user press
         return self.handle_mouse_presses()

@@ -38,6 +38,7 @@ class State(enum.Enum):
     AI_VS_INSTRUCTIONS = 43
     AI_COOP_INSTRUCTIONS = 44
     POWERUP_INSTRUCTIONS = 45
+    MOBS_INSTRUCTIONS = 46
     
     #Two player states
     TWO_PLAYER_MENU = 10
@@ -61,6 +62,8 @@ class State(enum.Enum):
     STORY_MENU = 33
     CLASSIC = 34
     ONLINE = 35
+    STAGE_GAMEOVER = 36
+    STAGE_PAUSE = 37
 
     #Story mode 
     STAGE1 = 100
@@ -69,6 +72,7 @@ class State(enum.Enum):
     STAGE4 = 103
     STAGE5 = 104
     STAGE6 = 105
+    
 
 class Difficulty_enum(enum.Enum):
     """Difficulty enum to hold the difficultly of the game"""

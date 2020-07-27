@@ -15,7 +15,6 @@ pygame.font.init()
 #Initialise the sound
 pygame.mixer.init()
 
-
 def load_sprites(obj_list:list, paths:list):
     """Load the sprites for each of the items in parallel"""
 
@@ -37,12 +36,16 @@ async def add_to_sprite(obj, sprite_path:list) -> None:
     """Add the pygame image to the object"""
     #For each object load the image and append it to the object
     for path in sprite_path:
+
+        #Append the sprite
         obj.sprites.append(pygame.image.load(path))
 
 async def add_to_sprite_dict(obj, sprite_path:list) -> None:
     """Add the pygame image to the object"""
     #For each object load the image and append it to the object
     for path in sprite_path:
+
+        #Added the name to the sprite dict
         obj.sprites[os.path.basename(path)[:-4]] = (pygame.image.load(path))
         
 async def load_sound(sound_path:str, settings:int, volume:float, debug:bool) -> Sound:
@@ -53,15 +56,16 @@ class GameWindow(object):
     def __init__(self, sensitivity:int, maxfps:int, game_width:int, game_height:int, icon_img_path:str, player_img_paths:tuple,
                  enemy_img_paths:tuple, bullet_img_paths:tuple, background_img_paths:tuple, explosion_img_paths:tuple, 
                  db_path:str, sound_path:dict, bg_limit:int, menu_music_paths:tuple, powerup_img_path:tuple, mothership_img_path:tuple, 
-                 trophy_img_path:tuple, scout_img_path:tuple, brute_img_path:tuple, screenshot_path:str, story_img_path:str, crabs_img_path:str, wave:int = 1,  debug:bool = False):
+                 trophy_img_path:tuple, scout_img_path:tuple, brute_img_path:tuple, screenshot_path:str, story_img_path:str, crabs_img_path:str, 
+                 place_holder_path:str, wave:int = 1,  debug:bool = False):
         """The Main window for the Space defenders game"""
         
         #Load sprites
         load_sprites((Player, Bullet, EnemyShip, Background, Explosion, MotherShip, VictoryScreen, Scout, Brute, Crabs), 
                     (player_img_paths, bullet_img_paths, enemy_img_paths, background_img_paths, explosion_img_paths, mothership_img_path, trophy_img_path, scout_img_path, brute_img_path, crabs_img_path))
 
-        load_sprites_dict((StoryTemplate,PowerUp),
-                        (story_img_path, powerup_img_path))
+        load_sprites_dict((StoryTemplate, PowerUp, MobInstructionsScreen),
+                        (story_img_path, powerup_img_path, place_holder_path))
 
         #Store debug variable
         self.debug = debug
@@ -105,7 +109,7 @@ class GameWindow(object):
 
         #Set difficulty
         difficulty = int(self.settings_data['difficulty'])
-        self.difficulty = Difficulty(difficulty if difficulty < 5 else 5)
+        self.difficulty = Difficulty(difficulty if difficulty < 6 else 6)
 
         #Load the sounds into the game
         pygame.mixer.music.load(menu_music_paths[0])
@@ -124,6 +128,7 @@ class GameWindow(object):
         self.one_player_menu = OnePlayerModeScreen(game_width, game_height, self.main_screen, debug)
         self.story_mode = StoryModeScreen(game_width, game_height, self.main_screen, debug)
         self.powerup_instructions = PowerupInstructionsScreen(game_width, game_height, self.main_screen, self.fps, debug)
+        self.mobs_instructions = MobInstructionsScreen(game_width, game_height, self.main_screen, self.fps, debug)
 
         #Create playing screens
         self.play = PlayScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.difficulty, 3, debug = self.debug)
@@ -133,10 +138,10 @@ class GameWindow(object):
         self.coop = CoopScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.difficulty, 3,  debug)
         self.ai_vs = AIPVPScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, 3, debug)
         self.online = OnlinePVPScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, 3,  debug)
-        self.tutorial = TutorialScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug)
         self.ai_coop = AICoopScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.difficulty, 3, debug)
 
         #Create the stages
+        self.tutorial = TutorialScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug)
         self.stage1 = Stage1Screen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug)
         self.stage2 = Stage2Screen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug)
         self.stage3 = Stage3Screen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug)
@@ -145,11 +150,13 @@ class GameWindow(object):
         self.stage6 = Stage6Screen(game_width, game_height, self.main_screen, sensitivity, maxfps, debug)
 
         #Dynamic screens
+        self.stage_gameover = StageGameoverScreen(game_width, game_height, self.main_screen, debug)
         self.victory = None
         self.newhighscore = None
         self.pause = None
         self.pvp_gameover = None
         self.game_over = None
+        self.stage_pause = None
 
         #Sort the highscore
         self.highscore.sort_scores()
@@ -157,7 +164,7 @@ class GameWindow(object):
         #Store the variables
         self.popup = None
         self.prev = State.NONE
-        self.cooldown = self.fps/5
+        self.cooldown = self.fps // 5
 
         #Store the different screens in state
         self.screens = {
@@ -175,7 +182,7 @@ class GameWindow(object):
             State.CLASSIC: self.classic,
             State.SETTINGS: self.settings,
             State.COOP: self.coop,
-            # State.ONLINE: self.online,
+            State.ONLINE: self.online,
             State.TUTORIAL: self.tutorial,
             State.ONE_PLAYER_MENU: self.one_player_menu,
             State.STORY_MENU: self.story_mode,
@@ -185,43 +192,23 @@ class GameWindow(object):
             State.STAGE4:self.stage4,
             State.STAGE5:self.stage5,
             State.STAGE6:self.stage6,
-            State.POWERUP_INSTRUCTIONS: self.powerup_instructions
+            State.POWERUP_INSTRUCTIONS: self.powerup_instructions,
+            State.MOBS_INSTRUCTIONS: self.mobs_instructions,
+            State.STAGE_GAMEOVER: self.stage_gameover,
+            State.STAGE_PAUSE: self.stage_pause,
         }
         
         #Store the different states the menu has
         self.states = {
-            State.MENU:self.menu.handle,
-            State.PLAYMODE:self.play_menu.handle,
-            State.PLAY:self.play.handle,
-            State.HIGHSCORE:self.highscore.handle,
             State.NEWHIGHSCORE:self.handle_newhighscore,
             State.GAMEOVER:self.handle_gameover,
-            State.INSTRUCTIONS_MENU: self.inst_menu.handle,
-            State.INSTRUCTIONS:self.instructions.handle,
-            State.PVP_INSTRUCTIONS: self.pvp_menu.handle,
             State.PAUSE:self.handle_pause,
-            State.TWO_PLAYER_MENU: self.two_player.handle,
-            State.AI_COOP: self.ai_coop.handle,
-            State.AI_VS: self.ai_vs.handle,
-            State.PVP: self.pvp.handle,
             State.TWO_PLAYER_GAMEOVER:self.handle_two_player_gameover,
             State.TWO_PLAYER_PAUSE: self.handle_two_player_pause,
-            State.CLASSIC: self.classic.handle,
-            State.SETTINGS: self.settings.handle,
-            State.COOP: self.coop.handle,
             State.ONLINE: self.handle_online,
             State.QUIT:self.__del__,
-            State.TUTORIAL: self.tutorial.handle,
-            State.ONE_PLAYER_MENU: self.one_player_menu.handle,
             State.VICTORY: self.handle_victory,
-            State.STORY_MENU: self.story_mode.handle,
-            State.STAGE1: self.stage1.handle,
-            State.STAGE2: self.stage2.handle,
-            State.STAGE3: self.stage3.handle,
-            State.STAGE4: self.stage4.handle,
-            State.STAGE5: self.stage5.handle,
-            State.STAGE6: self.stage6.handle,
-            State.POWERUP_INSTRUCTIONS: self.powerup_instructions.handle
+            State.STAGE_PAUSE: self.handle_stage_pause,
         }
 
         #Load sound state:
@@ -268,12 +255,17 @@ class GameWindow(object):
 
         #Handle the victory screen
         return self.victory.handle()
-            
     
     def handle_online(self) -> State:
         """Handle the online game"""
+
+        #Currently waiting for a place to host the server
         self.popup = Popup(320, 40, "Under Construction", self.fps, self.game_width//2 - 80, self.game_height//2, self.main_screen,font = Screen.end_font, debug = self.debug)
+
+        #Return playmode for now until server is found
         return State.PLAYMODE
+
+        #Handle the online mode
         # return self.online.handle()
 
     def handle_two_player_pause(self) -> State:
@@ -310,7 +302,9 @@ class GameWindow(object):
     def handle_newhighscore(self) -> State:
         """Handle the displaying of the highscore screen"""
 
+        #If there is a new highscore that is different from before
         if not self.newhighscore or self.newhighscore.get_score() != self.play.get_score():
+
             #Create the new highscore screen
             self.newhighscore = NewhighscoreScreen(self.game_width, self.game_height, self.main_screen, self.play.get_score())
 
@@ -351,6 +345,28 @@ class GameWindow(object):
 
         #If it is exiting out of the pause state
         if state != State.PAUSE and state != self.prev:
+            
+            #Reset the screen
+            self.screens[self.prev].reset()
+
+        #Return the next state
+        return state
+
+    def handle_stage_pause(self) -> State:
+        """Handle the pause screen for stages"""
+
+        #Get the current stage
+        stage = self.screens[self.prev].get_stage_name()
+
+        #Create the pause screen if it is not already created
+        if not self.stage_pause or self.stage_pause.get_stage() != stage:
+            self.stage_pause = StagePauseScreen(self.game_width,self.game_height, self.main_screen, self.prev, self.debug)
+
+        #Handle the pause screen
+        state = self.stage_pause.handle()
+
+        #If it is exiting out of the pause state
+        if state != State.STAGE_PAUSE and state != self.prev:
             
             #Reset the screen
             self.screens[self.prev].reset()
@@ -477,6 +493,7 @@ class GameWindow(object):
 
     def fill_background(self) -> None:
         """Set the background"""
+
         #If the background is present
         if self.bg.is_present():
 
@@ -489,12 +506,17 @@ class GameWindow(object):
             #Fill the background to black
             self.main_screen.fill(BLACK)
 
-    def update(self) -> None:
-        """Update the main screen"""
+    def find_method(self, prev) -> State:
+        """Find the appropriate method to execute"""
 
-        #Set the background
-        self.fill_background()
+        #Try to find the method in self.states
+        f = self.states.get(prev, None)
 
+        #If method is found execute it else call the default handle
+        return f() if f else self.screens.get(self.state).handle()
+
+    def check_sound(self):
+        """Check if bg should be playing"""
         #Check if background music should be playing
         if self.sound.get_state() != self.sound_state:
 
@@ -513,6 +535,15 @@ class GameWindow(object):
                 #Pause the music
                 pygame.mixer.music.pause()
 
+    def update(self) -> None:
+        """Update the main screen"""
+
+        #Set the background
+        self.fill_background()
+
+        #Check sound
+        self.check_sound()
+
         #Save previous state
         prev = self.state
 
@@ -522,14 +553,14 @@ class GameWindow(object):
             #Lower cooldown
             self.cooldown -= 1
 
-            #Continue running current state
-            self.states[self.state]()
+            #Run the state
+            self.find_method(prev)
 
         #Otherwise
         else:
 
             #Check if there is new state
-            self.state = self.states[self.state]()
+            self.state = self.find_method(prev)
 
         #If the state is different
         if prev != self.state:
@@ -565,12 +596,7 @@ class GameWindow(object):
             screen.post_process()
 
     def mainloop(self) -> None:
-        """The mainloop to load the screen of the game
-            Arguments: 
-                No arguments
-            Returns:
-                No return
-        """
+        """The mainloop to load the screen of the game"""
 
         #Print the mainloop run based on debug mode
         if self.debug:
@@ -607,13 +633,8 @@ class GameWindow(object):
         self.sound.play('exit')
 
     def __del__(self) -> None:
-        """Destructor for the game window.
-            Closes all the relavent processes
-            Arguments:
-                No arguments
-            Returns: 
-                No return
-        """
+        """Destructor for the game window. Closes all the relavent processes"""
+
         #Add the new highscores into DB
         self.score_board.add_all(*self.highscore.get_scores())
 
@@ -633,9 +654,6 @@ class GameWindow(object):
         self.settingsdb.__del__()
 
         #Quit the game
-        pygame.display.quit()
-        pygame.font.quit()
-        pygame.mixer.quit()
         pygame.quit()
 
         #Debug message

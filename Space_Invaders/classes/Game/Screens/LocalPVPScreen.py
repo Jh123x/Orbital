@@ -2,7 +2,7 @@ import pygame
 import random
 import time
 from pygame.locals import *
-from . import Screen, ClassicScreen
+from . import ClassicScreen
 from .. import *
 
 class LocalPVPScreen(ClassicScreen):
@@ -12,7 +12,7 @@ class LocalPVPScreen(ClassicScreen):
         #Bullet groups
         self.player2_bullet = pygame.sprite.Group()
 
-        #Call the super class Screen object
+        #Call the super class classic screen object
         super().__init__(screen_width, screen_height, screen, sensitivity, fps, Difficulty(3), 1, player_lives, debug)
 
         #Set current state
@@ -68,12 +68,7 @@ class LocalPVPScreen(ClassicScreen):
         self.blocks.empty()
 
     def spawn_enemies(self, number:int = None) -> None:
-        """Spawn enemies into the game, Ignore numbers
-            Arguments: 
-                number: Number of enemies to spawn (int)
-            Returns: 
-                No returns
-        """
+        """Spawn enemies into the game, Ignore numbers"""
 
         #Make the enemies into rows of 6
         for j in range(2):
@@ -224,19 +219,19 @@ class LocalPVPScreen(ClassicScreen):
     def draw_letters(self) -> None:
         """Draw the words on the screen"""
         #Draw the wave number
-        self.write_main(Screen.font, WHITE, f"Wave: {self.wave}", self.screen_width // 2, 20)
+        self.write_main(self.font, WHITE, f"Wave: {self.wave}", self.screen_width // 2, 20)
 
         #Draw the lives of player 1
-        self.write_main(Screen.font, WHITE, f"Lives: {self.player1.get_lives()}", self.screen_width - 10, 10, Direction.RIGHT)
+        self.write_main(self.font, WHITE, f"Lives: {self.player2.get_lives()}", self.screen_width - 10, 10, Direction.RIGHT)
 
         #Draw score of player 1
-        self.write_main(Screen.font, WHITE, f"Score: {self.p1_score}", 10, 10, Direction.LEFT)
+        self.write_main(self.font, WHITE, f"Score: {self.p2_score}", 10, 10, Direction.LEFT)
 
         #Draw the lives of player 2
-        self.write_main(Screen.font, WHITE, f"Lives: {self.player2.get_lives()}", self.screen_width - 10, self.screen_height - 20, Direction.RIGHT)
+        self.write_main(self.font, WHITE, f"Lives: {self.player1.get_lives()}", self.screen_width - 10, self.screen_height - 20, Direction.RIGHT)
 
         #Draw score of player 2
-        self.write_main(Screen.font, WHITE, f"Score: {self.p2_score}", 10, self.screen_height - 20, Direction.LEFT)
+        self.write_main(self.font, WHITE, f"Score: {self.p1_score}", 10, self.screen_height - 20, Direction.LEFT)
 
     def handle(self) -> State:
         """Handle the drawing of the screen"""
