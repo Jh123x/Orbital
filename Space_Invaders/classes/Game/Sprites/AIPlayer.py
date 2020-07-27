@@ -26,7 +26,6 @@ class AIPlayer(Player):
         if ai_avail==True:
             self.ai = StateMachine(40)
 
-
     def get_space(self, screen):
         """
         Returns the pixel space of the screen
@@ -46,13 +45,7 @@ class AIPlayer(Player):
     def action(self, gamestate) -> None:
         """Does the action taken by the AI every frames"""
 
-        #If there is no screen do nothing
-        # if not self.has_screen():
-        #     return
-
-
         self.get_entities(*gamestate)
-
 
         #If the AI is still under cooldown
         if self.cd:
@@ -102,12 +95,12 @@ class AIPlayer(Player):
             return actions[self.ai.action(self.state)]
         elif self.ai:
             action = self.get_action_space()
-            print(action)
             return action[self.ai.state_check(self.state)]
+
         #Otherwise
         else:
+
             #Default AI
-            print('hi')
             return self.no_ai()
             
 

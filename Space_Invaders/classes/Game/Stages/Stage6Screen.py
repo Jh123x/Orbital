@@ -7,6 +7,9 @@ class Stage6Screen(StoryTemplate):
     def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, debug:bool):
         """The constructor for the Stage 3 screen"""
 
+        #Initialise s-net
+        self.s_net = None
+
         #Call the superclass init method
         super().__init__(screen_width, screen_height, screen, State(105), sensitivity, max_fps, 0.2, debug)
 
@@ -28,15 +31,27 @@ class Stage6Screen(StoryTemplate):
         #Textbox
         self.tb = ImageObject(300, 685, 600, 230, StoryTemplate.sprites['textbox'], debug)
 
-    def reset(self):
-        """Reset the game"""
-        #Added the s_net
+        #Add cloud net to the game
         self.s_net = AIPlayer(self.sensitivity, self.screen_width, self.screen_height, self.screen_width//2, 50, 5, self.fps, self.mob_bullet, Direction.DOWN, 5, ai_avail=True,boss=True, debug=self.debug)
-        self.other_enemies.add(self.s_net)
         self.s_net.rotate(180)
 
-        #Call the superclass reset method
-        return super().reset()
+        #Add s_net to other_enemies
+        self.other_enemies.add(self.s_net)
+
+    def reset(self) -> None:
+        """Reset the game"""
+
+        #Call the superclass reset
+        super().reset()
+
+        #If there is s_net
+        if self.s_net:
+
+            #Added the s_net
+            self.s_net.reset()
+
+            #Add s_net to other_enemies
+            self.other_enemies.add(self.s_net)
 
     def draw_bg(self):
         """Draw the background"""
