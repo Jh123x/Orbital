@@ -50,27 +50,47 @@ class Player(MovingObject):
         #Player bullet group
         self.bullet_grp = bullet_grp
 
-        #Set player max cooldown
-        self.maxcooldown = fps // (3 * 0.95)
-
-        #Keep track of bullet cooldown
-        self.cooldown = 0
-
         #If the life is not valid set it to 3 by default
-        if init_life > 0:
+        if init_life >= 0:
             init_life = 3
 
         #Initial amount of life
         self.init_life = init_life
 
-        #Current life
-        self.life = init_life
+        #Set rotation to None
+        self.rotation = 0
 
         #Store game variables
         self.fps = fps
 
-        #Re-render the character
+        #Reset player character
+        self.reset()
+
+    def reset(self) -> None:
+        """Reset the player stats
+            Arguments:
+                No arguments:
+            Returns: 
+                No return
+        """
+        #Reset life
+        self.life = self.init_life
+
+        #Reset shooting cooldown
+        self.maxcooldown = self.fps // (3 * 0.95)
+
+        #Keep track of bullet cooldown
+        self.cooldown = 0
+
+        #Reset position
+        self.x = self.initial_x
+        self.y = self.initial_y
+
+        #Rerender rect
         self.changed = True
+
+        #Give player 1s invisibility
+        self.invincible = self.fps
 
     def isInvincible(self) -> bool:
         """Check if the player is invincible"""
@@ -209,28 +229,10 @@ class Player(MovingObject):
         """
         return self.life
 
-    def reset(self) -> None:
-        """Reset the player stats
-            Arguments:
-                No arguments:
-            Returns: 
-                No return
-        """
-        #Reset life
-        self.life = self.init_life
-
-        #Reset shooting cooldown
-        self.maxcooldown = self.fps // (3 * 0.95)
-
-        #Reset position
-        self.x = self.initial_x
-        self.y = self.initial_y
-
-        #Rerender rect
-        self.changed = True
-
-        #Give player 1s invisibility
-        self.invincible = self.fps
+    def rotate(self, angle:int):
+        """Store the rotation to be updated when sprite changes"""
+        self.rotation = angle
+        return super().rotate(self.rotation)
 
     def update(self) -> None:
         """Update the position of the player
@@ -254,6 +256,7 @@ class Player(MovingObject):
 
         #Load the Image of the player based on his life
         self.image = Player.sprites[self.get_lives()-1 if self.get_lives() < len(Player.sprites) else len(Player.sprites) - 1]
+        self.rotate(self.rotation)
 
         #Call the super update
         return super().update()

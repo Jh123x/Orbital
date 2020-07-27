@@ -39,10 +39,14 @@ class GameoverScreen(Screen):
         self.write(self.title_font, WHITE, "Game Over", self.screen_width//2, self.screen_height//5)
 
         #Draw the score
-        self.write(self.end_font, WHITE,"Score : " + str(self.score),self.screen_width // 2, self.screen_height // 2)
+        self.write(self.end_font, WHITE,"Total Score : " + str(self.score),self.screen_width // 2, self.screen_height // 2)
 
         #Prompt player to update
         self.write(self.end_font, WHITE, "Press Y to go back and N to quit", self.screen_width//2, self.screen_height // 2 + self.screen_height//12)
+
+    def get_score(self):
+        """Return the score of the player"""
+        return self.score
         
     def update_keypresses(self) -> bool:
         """Check if player wants to stay

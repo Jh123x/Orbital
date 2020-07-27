@@ -1,5 +1,5 @@
 from . import MovingObject
-from .. import *
+from .. import Direction
 
 class Bullet(MovingObject):
 
@@ -7,53 +7,31 @@ class Bullet(MovingObject):
     sprites = []
 
     def __init__(self, sensitivity:int, initial_x:int, initial_y:int, direction:Direction, game_width:int, game_height:int, debug:bool = False):
-        """The constructor for the bullet class
-            Arguments:
-                sensitivity: Sensitivity of the bullets (int)
-                initial_x: Initial x position of the bullet (int)
-                initial_y: Initial y position of the bullet (int)
-                direction: Direction of bullet (Direction)
-                game_width: Width of the game in pixels (int)
-                game_height: Height of the game in pixels (int)
-                debug: Toggles debug mode (bool): default = False
+        """The constructor for the bullet class"""
 
-            Methods:
-                update: Update the position of the bullet
-            
-        """
         #Play the shoot sound
         self.sound.play('shooting')
 
         #Call the superclass
         super().__init__(sensitivity, initial_x, initial_y, game_width, game_height,self.sprites[0], debug)
 
-        #Store the direction, move up it the enum is move up, else move it down
-        if direction == Direction.UP:
-            self.direction = self.move_up
+        #Store bullet direction
+        self.direction = direction.value
 
-        elif direction == Direction.DOWN:
-            #If there is another sprite, use that sprite for down instead
-            if len(Bullet.sprites) >= 2:
-                self.image = self.sprites[1]
-            
-            #Set the direction to down
-            self.direction = self.move_down
-
+        #Set the bullet sprite based on direction
+        if self.direction[1] < 0 and len(self.sprites) >= 2:
+            self.image = self.sprites[1]
         else:
+            self.image = self.sprites[0]
 
-            #Otherwise it is invalid
-            assert False, f"Direction of bullet is invalid: {direction}"
+    def touch_edge(self):
+        """Check if the bullet touched the edge of the screen"""
+        return self.get_x() <= 0 or self.get_x() > self.game_width
 
-       
     def update(self) -> None:
-        """Update the path of the bullet
-            Arguments:
-                No arguments
-            Returns: 
-                No return
-        """
+        """Update the path of the bullet"""
         #Move the bullet
-        self.direction()
+        self.move(self.direction[0] * self.sensitivity, self.direction[1] * self.sensitivity)
 
         #Kill itself if the bullet is out of screen
         if self.y > self.game_height or self.y < 0:
@@ -63,6 +41,15 @@ class Bullet(MovingObject):
 
             #Do not continue to update position
             return
+
+        #Make the bullet able to bounce along the x axis
+        elif self.touch_edge():
+
+            #Set the bullet direction to opposite in x axis
+            if self.direction == Direction.BOTTOM_LEFT.value:
+                self.direction = Direction.BOTTOM_RIGHT.value
+            elif self.direction == Direction.BOTTOM_RIGHT.value:
+                self.direction = Direction.BOTTOM_LEFT.value
 
         #Update its coordinates
         return super().update()

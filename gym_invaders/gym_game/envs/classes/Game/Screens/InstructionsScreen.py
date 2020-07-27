@@ -23,10 +23,10 @@ class InstructionScreen(Screen):
         #Draw the header
         self.write(Screen.title_font, WHITE, "Instructions", self.screen_width//2, first_px - self.screen_height//7)
 
-        #Draw the instructions
+        #Draw the instructionsw
         self.write(Screen.end_font, WHITE, "Use AD or arrow keys to move", self.screen_width//2, first_px)
-        self.write(Screen.end_font, WHITE, "Press spacebar to shoot, P to pause", self.screen_width//2, first_px + self.screen_height//15)
-        self.write(Screen.end_font, WHITE, "Press O to unpause", self.screen_width//2, first_px + self.screen_height//7.5)
+        self.write(Screen.end_font, WHITE, "Press spacebar to shoot", self.screen_width//2, first_px + self.screen_height//15)
+        self.write(Screen.end_font, WHITE, "Press P to pause and unpause", self.screen_width//2, first_px + self.screen_height//7.5)
         self.write(Screen.end_font, WHITE, "Press X to screenshot anytime", self.screen_width//2, first_px + self.screen_height//5)
 
         #Draw the back button

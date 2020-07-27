@@ -32,7 +32,7 @@ class PyGame_2D(object):
                     (d["player_img_paths"], d["bullet_img_paths"], d["enemy_img_paths"], d["explosion_img_paths"], d["powerup_img_path"], d["mothership_img_path"]))
 
         #Load sounds
-        self.sound = Sound({}, False, False)
+        self.sound = Sound({}, False, False, False)
 
         #Load the sounds into the relavant Sprites
         Bullet.sound = self.sound
@@ -60,7 +60,7 @@ class PyGame_2D(object):
         self.clock = pygame.time.Clock()
 
         #Player Object
-        self.player = self.state.player
+        self.player = self.state.player1
         self.nextState = -1
 
     def create_screen(self) -> Screen:
@@ -136,9 +136,12 @@ class PyGame_2D(object):
         Returns the pixel space of the screen
         Performs preliminary Preprocessing by making values
         """
+
+        #load the hitbox
         self.state.draw_hitboxes()
-        space = pygame.surfarray.array2d(self.state.surface)
-        return space *-1
+
+        #Returns the array
+        return pygame.surfarray.array3d(self.state.surface) 
 
     def show_space(self):
         """Show the space in a matplotlib diagram"""

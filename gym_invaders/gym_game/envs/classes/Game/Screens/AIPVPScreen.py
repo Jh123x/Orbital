@@ -1,11 +1,12 @@
 import pygame
 from pygame.locals import *
+import matplotlib.pyplot as plt
 from . import LocalPVPScreen
 from .. import AIPlayer, State, Player, Direction
 
 class AIPVPScreen(LocalPVPScreen):
-    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, fps:int, 
-                player_lives:int = 3, debug:bool = False):
+    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, fps:int,
+                 player_lives:int = 3, debug:bool = False):
         """The AI PVP screen"""
         
         #Call the superclass
@@ -14,14 +15,25 @@ class AIPVPScreen(LocalPVPScreen):
         #Set the state to the correct state
         self.set_state(State.AI_VS)
 
-
     def spawn_players(self) -> None:
         """Spawn the players for the game"""
         #Spawn the first player
-        self.player1 = Player(self.sensitivity, self.screen_width, self.screen_height, self.screen_width//2, 50, self.player_lives, self.fps, self.player1_bullet, Direction.DOWN, self.debug)
+        self.player1 = Player(self.sensitivity, self.screen_width, self.screen_height, self.screen_width//2, self.screen_height-50, self.player_lives, self.fps, self.player1_bullet, Direction.UP, self.debug, False)
 
         #Override the 2nd player with the AI player
-        self.player2 = AIPlayer(self.sensitivity, self.screen_width, self.screen_height, self.screen_width//2, self.screen_height-50, self.player_lives, self.fps, self.player2_bullet, Direction.UP, 1, None, self.debug)
+        self.player2 = AIPlayer(self.sensitivity, self.screen_width, self.screen_height, self.screen_width//2, 50,
+                        self.player_lives, self.fps, self.player2_bullet, Direction.DOWN, 1, True, self.debug)
+
+        #Rotate the AI
+        self.player2.rotate(180)
+
+    def update(self) -> None:
+        """Update the AI before calling superclass update"""
+        #Let the AI do a move
+        self.player2.action(self.get_hitboxes_copy())
+
+        #Call the superclass update
+        return super().update()
 
     def check_keypresses(self) -> bool:
         """Check the keys which are pressed
@@ -53,12 +65,3 @@ class AIPVPScreen(LocalPVPScreen):
         
         #Return False if they do not want to pause the game
         return False
-
-    def handle(self) -> State:
-        """Handles the drawing of the screen"""
-
-        #Let the AI do a move
-        self.player2.action()
-
-        #Call the superclass handle
-        return super().handle()

@@ -1,8 +1,8 @@
 #Import all the screens
 from .Screens import Screen
 from .Popup import Popup
-from .PlayScreen import PlayScreen
 from .ClassicScreen import ClassicScreen
+from .PlayScreen import PlayScreen
 from .GameoverScreen import GameoverScreen
 from .HighscoreScreen import HighscoreScreen
 from .InstructionsMenuScreen import InstructionsMenuScreen
@@ -22,3 +22,7 @@ from .AIPVPScreen import AIPVPScreen
 from .OnlinePVPScreen import OnlinePVPScreen
 from .Cutscene import Cutscene
 from .StoryModeScreen import StoryModeScreen
+from .OnePlayerModesScreen import OnePlayerModeScreen
+from .TutorialScreen import TutorialScreen
+from .VictoryScreen import VictoryScreen
+from .AICoopScreen import AICoopScreen
