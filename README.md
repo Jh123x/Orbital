@@ -45,7 +45,7 @@ Click here to provide any feedback you want to share
 
 
 ### Development RoadMap
-![](images/RoadMap.png)
+![](images/RoadMap_v2.png)
 
 ### Proposal
 * Link to proposal : [here](https://docs.google.com/document/d/1FzKTmnhRiYNqQPP4pEpr50egbKD4TC94Nx8LIj1bqZw/edit?usp=sharing)
