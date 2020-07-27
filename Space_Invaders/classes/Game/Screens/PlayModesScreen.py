@@ -18,22 +18,24 @@ class PlayModeScreen(Screen):
         self.header = self.write(Screen.title_font, WHITE, "Modes", self.screen_width//2, self.screen_height//5)
 
         #Draw the rectangles for the different game modes
-
         #Rect for tutorial
         tutorial = self.write(Screen.end_font, WHITE, "Tutorial", self.screen_width//2, first_pixel)
 
+        #Rect for AI modes
+        ai_modes = self.write(Screen.end_font, WHITE, "AI modes", self.screen_width //2, first_pixel + self.screen_height//15)
+
         #Rect for the single player mode
-        one_player = self.write(Screen.end_font, WHITE, "1 Player modes", self.screen_width //2, first_pixel + self.screen_height//15)
+        one_player = self.write(Screen.end_font, WHITE, "1 Player modes", self.screen_width //2, first_pixel + self.screen_height//7.5)
 
         #2 Player mode (2 player mode menu)
-        two_player = self.write(Screen.end_font, WHITE, "2 Player Modes", self.screen_width//2, first_pixel + self.screen_height//7.5)
+        two_player = self.write(Screen.end_font, WHITE, "2 Player Modes", self.screen_width//2, first_pixel + self.screen_height//5)
 
         #Back button
         back = self.write(Screen.end_font, WHITE, "Back", self.screen_width // 2, self.screen_height//1.2)
 
         #Store all the buttons
-        self.buttons = [tutorial, one_player, two_player, back]
-        self.modes = [State.TUTORIAL, State.ONE_PLAYER_MENU, State.TWO_PLAYER_MENU, State.MENU]
+        self.buttons = [tutorial, ai_modes, one_player, two_player, back]
+        self.modes = [State.TUTORIAL, State.AI_MENU, State.ONE_PLAYER_MENU, State.TWO_PLAYER_MENU, State.MENU]
 
     def check_mouse_clicks(self) -> State:
         """Check the button that the player pressed"""

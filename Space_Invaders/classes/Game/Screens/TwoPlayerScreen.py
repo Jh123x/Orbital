@@ -17,17 +17,11 @@ class TwoPlayerScreen(Screen):
         self.write(self.title_font, WHITE, "2 player modes", self.screen_width // 2 ,self.screen_height // 5) 
 
         #Draw the modes
-        #Draw the coop with AI mode
-        self.ai_coop = self.write(self.end_font, WHITE, "Coop with AI", self.screen_width // 2, first_pixel)
-
-        #Draw the ai versus mode
-        self.ai_vs = self.write(self.end_font, WHITE, "Versus AI", self.screen_width // 2, first_pixel + self.screen_height // 15)
-
         #Draw the Player vs player mode
-        self.local_vs = self.write(self.end_font, WHITE, "Player VS Player", self.screen_width // 2, first_pixel + self.screen_height // 7.5)
+        self.local_vs = self.write(self.end_font, WHITE, "Player VS Player", self.screen_width // 2, first_pixel)
 
         #Draw the Player and Player Coop
-        self.coop = self.write(self.end_font, WHITE, "2 Player Coop", self.screen_width // 2, first_pixel + self.screen_height // 5)
+        self.coop = self.write(self.end_font, WHITE, "2 Player Coop", self.screen_width // 2, first_pixel + self.screen_height // 15)
 
         #Draw the back button
         self.back = self.write(self.end_font, WHITE, "Back", self.screen_width // 2, self.screen_height // 1.2)
@@ -37,21 +31,9 @@ class TwoPlayerScreen(Screen):
     
     def check_mouse_press(self) -> State:
         """Check the mouse press of the user"""
-
-        #Check if the person clicked on the AI Coop rect
-        if self.check_clicked(self.ai_coop):
-
-            #Return the AI Coop mode state
-            return State.AI_COOP
-
-        #Check if the person clicked on the AI Vs rect
-        elif self.check_clicked(self.ai_vs):
-
-            #Return the AI Vs mode state
-            return State.AI_VS
         
         #Check if the pereson clicked on the 
-        elif self.check_clicked(self.local_vs):
+        if self.check_clicked(self.local_vs):
 
             #Return the local PVP state
             return State.PVP
