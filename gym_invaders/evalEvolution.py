@@ -5,7 +5,7 @@ import os
 # In house dependencies
 from ai_invader.agent import EvoAgentTrainer
 from ai_invader.agent import EvoAgent
-from ai_invader.util import load_obj
+from ai_invader.util import load_obj,get_filename
 
 def make_env():
     envir = gym.make("Classic-v0")
@@ -26,19 +26,9 @@ def main():
     #No of frames is to let AI to perceive motion
     input_shape = (4, 160, 120)
 
-    #Get the Top k scores
-    elites = 1
-
-    #Number of generations to train the AI
-    generations = 2
-
-    #Start evolution (Uncomment to start training)
-    # ag = EvoAgentTrainer(input_shape,action_space, num_agents, elites, 1, env = make_env)
-    # ag.train(generations)
-
     #Load the model to evaluate
     ag = EvoAgent()
-    ag.load_model(load_obj(os.path.join(os.path.basename(__file__),'model','abc.pth'), device))
+    ag.load_model(load_obj(os.path.join(os.path.basename(__file__),'model',get_filename()), device))
     print(ag.model)
 
 

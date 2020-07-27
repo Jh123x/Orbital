@@ -46,7 +46,7 @@ def main():
 
     agent = DQNAgent(INPUT_SHAPE, ACTION_SIZE, SEED, device, DQNCNN, GAMMA, LR, TAU, BATCH_SIZE,
                      UPDATE_EVERY, REPLAY,BUFFER_SIZE, make_env, path = 'model', num_epochs = 0)
-    agent.train(1)
+    agent.train(3,render = True)
 
 #Initialise the DQNagent
 if __name__ == '__main__':

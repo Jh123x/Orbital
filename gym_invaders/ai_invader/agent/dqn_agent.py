@@ -122,14 +122,14 @@ class DQNAgent(TrainingAgent):
         for t_param, p_param in zip(target_model.parameters(), policy_model.parameters()):
             t_param.data.copy_(tau * p_param.data + (1.0 - tau) * t_param.data)
 
-    def train(self, n_episodes=1000):
+    def train(self, n_episodes=1000,render= False):
         """
         n_episodes: maximum number of training episodes
         Saves Model every 100 Epochs
         """
         filename = get_filename()
 
-
+        self.env.render(render)
         # Toggles the render on
         for i_episode in range(n_episodes):
             self.num_epochs += 1

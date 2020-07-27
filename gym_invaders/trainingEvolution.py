@@ -5,45 +5,34 @@ import torch
 #Gym Environment Dependencies
 import gym
 from ai_invader.util import load_obj
-from ai_invader.agent import DQNAgent
+from ai_invader.agent import EvoAgentTrainer
 from ai_invader.model import DQNCNN
 
 def main():
-    print("The size of frame is: ", make_env().observation_space.shape)
-    print("No. of Actions: ", make_env().action_space.n)
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-    # Initialise device (Uses cuda if possible to speed up training)
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    # Get the game_actions from the env
+    action_space = 6
 
-    # Print cuda
-    print('Device:', device)
+    # Get the number of agents per generation
+    num_agents = 2
 
-    # Shape of nn
-    INPUT_SHAPE = (4, 84, 84)
+    # Get the input shape (No of frames, x pixels, y pixels)
+    # No of frames is to let AI to perceive motion
+    input_shape = (4, 160, 120)
 
-    # Determine rendering of GUI
-    RENDER = True
+    # Get the Top k scores
+    elites = 1
 
-    # AI vars
-    ACTION_SIZE = 6
-    SEED = 0
-    GAMMA = 0.99  # discount factor
-    BUFFER_SIZE = 10000  # replay buffer size
-    BATCH_SIZE = 64  # Update batch size
-    LR = 0.0001  # learning rate
-    TAU = 1e-3  # for soft update of target parameters
-    UPDATE_EVERY = 100  # how often to update the network
-    REPLAY = 6 * BATCH_SIZE  # After which thershold replay to be started
-    EPS_START = 0.99  # starting value of epsilon
-    EPS_END = 0.01  # Ending value of epsilon
-    EPS_DECAY = 200  # 200 #500         # Rate by which epsilon to be decayed
-    RUNS = 0
+    # Number of generations to train the AI
+    generations = 2
 
-    agent = DQNAgent(INPUT_SHAPE, ACTION_SIZE, SEED, device, DQNCNN, GAMMA, LR, TAU, BATCH_SIZE,
-                     UPDATE_EVERY, REPLAY, BUFFER_SIZE, make_env, path='model', num_epochs=0)
-    statedict = load_obj(os.path.join(agent.get_path(), 'test.pth'), device)
-    agent.load_model(statedict)
-    agent.eval()
+    # Start evolution (Uncomment to start training)
+    ag = EvoAgentTrainer(input_shape,action_space, num_agents, elites, 1, env = make_env)
+    ag.train(generations)
+
+    # Load the model to evaluate
+
 
 if __name__ == '__main__':
     main()
