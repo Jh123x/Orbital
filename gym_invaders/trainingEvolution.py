@@ -1,48 +1,49 @@
-import gym
-import numpy as np
-import torch
-import matplotlib.pyplot as plt
+#Python Modules
 import os
-import torch.nn as nn
-import torch.nn.functional as F
-import torch.optim as optim
-import copy
+# Neural Network Modules
+import torch
+#Gym Environment Dependencies
 import gym
-import multiprocessing as mp
-from joblib import Parallel, delayed, parallel_backend
-
-# In house dependencies
-import gym_game
-from ai_invader.agent import EvoAgentTrainer
-from ai_invader.agent import EvoAgent
 from ai_invader.util import load_obj
+from ai_invader.agent import DQNAgent
+from ai_invader.model import DQNCNN
 
-def make_env():
-    envir = gym.make("Classic-v0")
-    return envir
+def main():
+    print("The size of frame is: ", make_env().observation_space.shape)
+    print("No. of Actions: ", make_env().action_space.n)
+
+    # Initialise device (Uses cuda if possible to speed up training)
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+    # Print cuda
+    print('Device:', device)
+
+    # Shape of nn
+    INPUT_SHAPE = (4, 84, 84)
+
+    # Determine rendering of GUI
+    RENDER = True
+
+    # AI vars
+    ACTION_SIZE = 6
+    SEED = 0
+    GAMMA = 0.99  # discount factor
+    BUFFER_SIZE = 10000  # replay buffer size
+    BATCH_SIZE = 64  # Update batch size
+    LR = 0.0001  # learning rate
+    TAU = 1e-3  # for soft update of target parameters
+    UPDATE_EVERY = 100  # how often to update the network
+    REPLAY = 6 * BATCH_SIZE  # After which thershold replay to be started
+    EPS_START = 0.99  # starting value of epsilon
+    EPS_END = 0.01  # Ending value of epsilon
+    EPS_DECAY = 200  # 200 #500         # Rate by which epsilon to be decayed
+    RUNS = 0
+
+    agent = DQNAgent(INPUT_SHAPE, ACTION_SIZE, SEED, device, DQNCNN, GAMMA, LR, TAU, BATCH_SIZE,
+                     UPDATE_EVERY, REPLAY, BUFFER_SIZE, make_env, path='model', num_epochs=0)
+    statedict = load_obj(os.path.join(agent.get_path(), 'test.pth'), device)
+    agent.load_model(statedict)
+    agent.eval()
+
 if __name__ == '__main__':
-    #Select device to be used
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
-
-    #Get the game_actions from the env
-    action_space = 6
-
-    #Get the number of agents per generation
-    num_agents = 2
-
-    #Get the input shape (No of frames, x pixels, y pixels)
-    #No of frames is to let AI to perceive motion
-    input_shape = (4, 160, 120)
-
-    #Get the Top k scores
-    elites = 1
-
-    #Number of generations to train the AI
-    generations = 2
-
-    #Start evolution
-    ag = EvoAgentTrainer(input_shape,action_space, num_agents, elites, 1, env = make_env)
-    ag.train(generations)
-    ag = EvoAgent()
-    ag.load_model(load_obj('/Users/stephen/GitRepositories/Orbital/gym_invaders/model/abc.pth', device))
-    print(ag.model)
+    main()

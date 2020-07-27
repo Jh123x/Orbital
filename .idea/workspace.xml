@@ -19,7 +19,17 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1fe4a23f-441d-48f3-8044-96cbdb94ff8d" name="Default Changelist" comment="" />
+    <list default="true" id="1fe4a23f-441d-48f3-8044-96cbdb94ff8d" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/gym_invaders/evalDQN.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/deepneuroevolution.py" beforeDir="false" afterPath="$PROJECT_DIR$/gym_invaders/evalEvolution.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/dqneval.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/obj/gene_algo/survival.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/obj/sample.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/trainingDQN.py" beforeDir="false" afterPath="$PROJECT_DIR$/gym_invaders/trainingDQN.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym_invaders/trainingEvolution.py" beforeDir="false" afterPath="$PROJECT_DIR$/gym_invaders/trainingEvolution.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -245,7 +255,7 @@
       <workItem from="1594872415492" duration="62395000" />
       <workItem from="1595580945470" duration="3159000" />
       <workItem from="1595701884129" duration="22190000" />
-      <workItem from="1595824480439" duration="2924000" />
+      <workItem from="1595824480439" duration="4537000" />
     </task>
     <task id="LOCAL-00001" summary="Commit Bugfixes from training problems">
       <created>1592625374788</created>
@@ -373,7 +383,14 @@
       <option name="project" value="LOCAL" />
       <updated>1595828947744</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="Accept changes to game">
+      <created>1595829000098</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1595829000098</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -468,14 +485,14 @@
     <state width="1398" height="232" key="GridCell.Tab.0.right/0.0.1440.900/1440.23.1920.1057@0.0.1440.900" timestamp="1595253446269" />
     <state width="1398" height="191" key="GridCell.Tab.0.right/0.23.1440.832/1440.23.1920.1057@0.23.1440.832" timestamp="1595701627122" />
     <state width="1878" height="288" key="GridCell.Tab.0.right/0.23.1440.877/1440.0.1920.1080@1440.0.1920.1080" timestamp="1595483337935" />
-    <state x="144" y="79" key="MergeDialog" timestamp="1595824535591">
+    <state x="144" y="79" key="MergeDialog" timestamp="1595828992389">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state x="144" y="79" key="MergeDialog/0.0.1440.900/1440.0.1920.1080@0.0.1440.900" timestamp="1595824535591" />
-    <state x="358" y="218" key="MultipleFileMergeDialog" timestamp="1595824535637">
+    <state x="144" y="79" key="MergeDialog/0.0.1440.900/1440.0.1920.1080@0.0.1440.900" timestamp="1595828992389" />
+    <state x="358" y="218" key="MultipleFileMergeDialog" timestamp="1595828992422">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state x="358" y="218" key="MultipleFileMergeDialog/0.0.1440.900/1440.0.1920.1080@0.0.1440.900" timestamp="1595824535637" />
+    <state x="358" y="218" key="MultipleFileMergeDialog/0.0.1440.900/1440.0.1920.1080@0.0.1440.900" timestamp="1595828992422" />
     <state x="1917" y="262" key="MultipleFileMergeDialog/0.0.1440.900/1440.0.1920.1080@1440.0.1920.1080" timestamp="1595516109670" />
     <state x="1894" y="252" key="com.intellij.execution.console.ConsoleHistoryController$MyBrowseAction$1" timestamp="1591965940214">
       <screen x="1440" y="0" width="1920" height="1080" />
