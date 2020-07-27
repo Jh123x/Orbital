@@ -12,10 +12,8 @@ Level of achievement: Artemis
   - Milestone 3: [To be updated](#)
 
 * Download Link: [Windows v1.0](https://drive.google.com/file/d/1sg8KXjIIUoKLrhnO1ZvNEcx9PiAcC4ad/view?usp=sharing)
-Windows version is more updated
 
-* Download Link: [Mac v0.3](https://drive.google.com/file/d/1z63AhBXrn_slqsYesebs102QaxBa5sRq/view?usp=sharing)
-Link for Mac is not tested due to lack of mac devices
+* Download Link: [Mac v1.0](https://drive.google.com/file/d/1M_bW1mwZJyTDDUkjQgFV_vmN-44SBRk9/view?usp=sharing)
 
 * Feedback Link: [here](https://forms.gle/kibPWXRtb1x3JJvT9)
 Click here to provide any feedback you want to share
