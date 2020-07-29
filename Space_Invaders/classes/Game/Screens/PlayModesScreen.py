@@ -19,16 +19,16 @@ class PlayModeScreen(Screen):
 
         #Draw the rectangles for the different game modes
         #Rect for tutorial
-        tutorial = self.write(Screen.end_font, WHITE, "Tutorial", self.screen_width//2, first_pixel)
+        tutorial = self.write(Screen.end_font, WHITE, "Tutorial", self.screen_width//2, first_pixel + self.screen_height//5)
 
         #Rect for AI modes
-        ai_modes = self.write(Screen.end_font, WHITE, "AI modes", self.screen_width //2, first_pixel + self.screen_height//15)
+        ai_modes = self.write(Screen.end_font, WHITE, "AI Modes", self.screen_width //2, first_pixel + self.screen_height//7.5)
 
         #Rect for the single player mode
-        one_player = self.write(Screen.end_font, WHITE, "1 Player modes", self.screen_width //2, first_pixel + self.screen_height//7.5)
+        one_player = self.write(Screen.end_font, WHITE, "1 Player Modes", self.screen_width //2, first_pixel)
 
         #2 Player mode (2 player mode menu)
-        two_player = self.write(Screen.end_font, WHITE, "2 Player Modes", self.screen_width//2, first_pixel + self.screen_height//5)
+        two_player = self.write(Screen.end_font, WHITE, "2 Player Modes", self.screen_width//2, first_pixel + self.screen_height//15)
 
         #Back button
         back = self.write(Screen.end_font, WHITE, "Back", self.screen_width // 2, self.screen_height//1.2)

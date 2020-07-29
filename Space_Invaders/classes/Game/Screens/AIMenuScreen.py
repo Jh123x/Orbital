@@ -15,7 +15,7 @@ class AIMenuScreen(Screen):
         first_pixel = self.screen_height // 2
 
         #Draw the header
-        self.write(self.title_font, WHITE, "AI modes", self.screen_width // 2 ,self.screen_height // 5)
+        self.write(self.title_font, WHITE, "AI Modes", self.screen_width // 2 ,self.screen_height // 5)
 
         #Draw the coop with AI mode
         self.ai_coop = self.write(self.end_font, WHITE, "Coop with AI", self.screen_width // 2, first_pixel)

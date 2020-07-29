@@ -39,7 +39,7 @@ class TwoPlayerPauseScreen(Screen):
         self.write(self.end_font, WHITE, f"Player 2: {p2_score}", screen_width//4, first_pixel + self.screen_height//15, Direction.LEFT)
 
         #Draw the instructions to unpause
-        self.write(self.end_font, WHITE, "Press P to unpause", self.screen_width//4, first_pixel + self.screen_height//7.5, Direction.LEFT)
+        self.write(self.end_font, WHITE, "Press p to unpause", self.screen_width//4, first_pixel + self.screen_height//7.5, Direction.LEFT)
 
         #Draw the instructions to quit
         self.write(self.end_font, WHITE, "Escape to quit", self.screen_width//4, first_pixel + self.screen_height//5, Direction.LEFT)

@@ -9,7 +9,7 @@ class OnePlayerModeScreen(Screen):
         super().__init__(screen_width, screen_height, State.ONE_PLAYER_MENU, screen, 0, 0, debug)
 
         #Single player modes
-        self.write(self.title_font, WHITE, "1 Player modes", screen_width//2, screen_height//5)
+        self.write(self.title_font, WHITE, "1 Player Modes", screen_width//2, screen_height//5)
 
         #Draw the screen for the story mode
         storymode = self.write(self.end_font, WHITE, "Story Mode", screen_width//2, screen_height//2)

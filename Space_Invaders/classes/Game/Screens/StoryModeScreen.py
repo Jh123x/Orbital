@@ -56,6 +56,7 @@ class StoryModeScreen(Screen):
             if self.check_clicked(rect):
                 return State(100 + index)
 
+        #Return the current state
         return self.state
 
     def handle(self) -> None:

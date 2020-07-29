@@ -27,7 +27,7 @@ class StagePauseScreen(PauseScreen):
         self.write(self.subtitle_font, WHITE, f"Stage {self.get_stage()}", self.screen_width//2, self.screen_height//2)
 
         #Draw the instructions to unpause
-        self.write(self.end_font, WHITE, "Press P to unpause", self.screen_width//2, self.screen_height//15 + self.screen_height//2)
+        self.write(self.end_font, WHITE, "Press p to unpause", self.screen_width//2, self.screen_height//15 + self.screen_height//2)
 
         #Draw the instructions to quit
         self.write(self.end_font, WHITE, "Escape to quit, score will not be saved", self.screen_width//2, self.screen_height//7.5 + self.screen_height//2)
