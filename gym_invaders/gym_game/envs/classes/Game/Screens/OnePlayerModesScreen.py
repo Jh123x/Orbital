@@ -9,22 +9,22 @@ class OnePlayerModeScreen(Screen):
         super().__init__(screen_width, screen_height, State.ONE_PLAYER_MENU, screen, 0, 0, debug)
 
         #Single player modes
-        self.write(Screen.title_font, WHITE, "1 Player modes", screen_width//2, screen_height//5)
+        self.write(self.title_font, WHITE, "1 Player modes", screen_width//2, screen_height//5)
 
         #Draw the screen for the story mode
-        storymode = self.write(Screen.end_font, WHITE, "Story Mode", screen_width//2, screen_height//2)
+        storymode = self.write(self.end_font, WHITE, "Story Mode", screen_width//2, screen_height//2)
 
         #Draw the rectangles for the classic button
-        classic = self.write(Screen.end_font, WHITE, "Classic Mode", screen_width//2, screen_height//15 + screen_height//2)
+        classic = self.write(self.end_font, WHITE, "Classic Mode", screen_width//2, screen_height//15 + screen_height//2)
 
         #Draw the rectangles for the endless button
-        endless = self.write(Screen.end_font, WHITE, "Endless Mode", screen_width//2, screen_height//7.5 + screen_height//2)
+        endless = self.write(self.end_font, WHITE, "Endless Mode", screen_width//2, screen_height//7.5 + screen_height//2)
 
         #Draw the online button
-        online = self.write(Screen.end_font, WHITE, "Online Mode", screen_width//2, screen_height//5 + screen_height//2)
+        online = self.write(self.end_font, WHITE, "Online Mode", screen_width//2, screen_height//5 + screen_height//2)
 
         #Draw the back button
-        back = self.write(Screen.end_font, WHITE, "Back", screen_width//2, screen_height//1.2)
+        back = self.write(self.end_font, WHITE, "Back", screen_width//2, screen_height//1.2)
 
         #Store the button rects
         self.buttons = [storymode, classic, endless, online, back]

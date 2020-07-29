@@ -2,31 +2,14 @@ import os
 import random
 import pygame
 import numpy as np
-import matplotlib.pyplot as plt
-from . import Player, Bullet
+from . import Player, Bullet, StateMachine
 from .. import Direction
-from ..ai_invader.agent import DQNAgent
-from ..ai_invader.model import DQNCNN
-from ..ai_invader.util import stack_frame,preprocess_frame
-
-def stack_frames(frames, state, input_shape:tuple, is_new=False):
-    '''
-    Function combine of utility functions to preprocess the frames
-    '''
-    #Preprocess the frame (Input shape needs to be processed to 1x2 tuple from 1x3)
-    frame = preprocess_frame(state, input_shape[1:])
-
-    #Stack the frame
-    frames = stack_frame(frames, frame, is_new)
-
-    #Return stacked frames
-    return frames
 
 class AIPlayer(Player):
     def __init__(self, sensitivity:int, game_width:int, game_height:int, initial_x:int, 
                     initial_y:int, init_life:int, fps:int, bullet_grp:pygame.sprite.Group(), 
                     bullet_direction:Direction, frames_per_action:int, 
-                    ai_avail = True, debug:bool = False):
+                    ai_avail = True,boss:bool = False ,debug:bool = False):
         """Constructor for the AI Player class"""
 
         #Call the superclass
@@ -38,26 +21,10 @@ class AIPlayer(Player):
         self.state = None
         self.screen = None
         self.cd = self.frames_per_action
-        
+        self.boss = boss
         #If ai is available
-        if ai_avail:
-
-            #AI variables
-            ACTION_SIZE = 6
-            SEED = 0
-            GAMMA = 0.99  # discount factor
-            BUFFER_SIZE = 10000  # replay buffer size
-            BATCH_SIZE = 64  # Update batch size
-            LR = 0.0001  # learning rate
-            TAU = 1e-3  # for soft update of target parameters
-            UPDATE_EVERY = 7  # how often to update the network
-            UPDATE_TARGET = 6 * BATCH_SIZE  # After which thershold replay to be started
-
-            #Load the Deep Q learning Agent
-            self.ai = DQNAgent(AIPlayer.input_shape, ACTION_SIZE, SEED,  AIPlayer.device, BUFFER_SIZE, BATCH_SIZE, GAMMA, LR, TAU, UPDATE_EVERY, UPDATE_TARGET, DQNCNN)
-
-            #Load the model
-            self.ai.load_model(AIPlayer.ai_dic)
+        if ai_avail==True:
+            self.ai = StateMachine(40)
 
     def get_space(self, screen):
         """
@@ -71,30 +38,14 @@ class AIPlayer(Player):
         #Return the matrix of rgb
         return img
 
-    def show_space(self, screen):
-        """Show the space in a matplotlib diagram"""
-        image_transp = self.get_space(screen)
-        print(image_transp.shape)
-        plt.imshow(image_transp, interpolation='none')
-        plt.show()
+    def get_points(self) -> int:
+        """Points the AI player is worth"""
+        return 0
 
-    def action(self, screen) -> None:
+    def action(self, gamestate) -> None:
         """Does the action taken by the AI every frames"""
 
-        #If there is no screen
-        if not self.has_screen():
-
-            #Do nothing
-            return 
-        
-        # first pass
-        if self.state is None:
-
-            #Stack the first frame
-            self.state = stack_frames(None, self.get_space(screen), AIPlayer.input_shape, True)
-
-        # updates the state of the game for the model
-        self.state = stack_frames(self.state,self.get_space(screen), AIPlayer.input_shape, False)
+        self.get_entities(*gamestate)
 
         #If the AI is still under cooldown
         if self.cd:
@@ -138,13 +89,17 @@ class AIPlayer(Player):
         #Add the AI to make the choice TODO
 
         #If an ai exists
-        if self.ai:
+        if self.ai=='torch':
             # Get possible actions
             actions = self.get_action_space()
             return actions[self.ai.action(self.state)]
+        elif self.ai:
+            action = self.get_action_space()
+            return action[self.ai.state_check(self.state)]
 
         #Otherwise
         else:
+
             #Default AI
             return self.no_ai()
             
@@ -188,7 +143,37 @@ class AIPlayer(Player):
 
         #Call the superclass draw
         super().draw(screen)
-    
-    def has_screen(self):
-        ''' Detect if screen does not exist'''
+
+    def get_entities(self,enemies1, enemies2, enemy_bullets, enemy_player= [], player_bullets = []):
+        ''' Relevent Information for AI decision making'''
+        curr_x = self.get_x()
+        curr_y = self.get_y()
+        enemy1 = list(map(lambda y: (y.get_x(),y.get_y()),filter(lambda x: (np.abs(x.get_x()-curr_x)<=50),enemies1)))
+        enemy2 = list(map(lambda y: (y.get_x(),y.get_y()),filter(lambda x: np.abs(x.get_x() - curr_x)<= 50, enemies2)))
+        eb = list(map(lambda y: (y.get_x(),y.get_y()),filter(lambda x: np.abs(x.get_x() - curr_x) <= 50, enemy_bullets)))
+        if self.boss:
+            enemy1 = []
+            enemy2 = []
+            eb = []
+        if enemy_player == []:
+            ep = 'None'
+
+        elif np.abs(enemy_player.get_x() - curr_x) > 50:
+            ep = 'None'
+            player_b = list(map(lambda y: (y.get_x(), y.get_y()),
+                                filter(lambda x: np.abs(x.get_x() - curr_x) <= 50, player_bullets)))
+            eb.extend(player_b)
+        else:
+            ep = (enemy_player.get_x(),enemy_player.get_y())
+            player_b = list(map(lambda y: (y.get_x(), y.get_y()),
+                          filter(lambda x: np.abs(x.get_x() - curr_x) <= 50, player_bullets)))
+            eb.extend(player_b)
+
+        environment_status = {'mobs':enemy1, 'bosses':enemy2,'bullets':eb,'enemy_player':ep,'player': (curr_x,curr_y, self.life)}
+
+        # Set state stored in AI for
+        self.state = environment_status
+
+    def has_screen(self) -> bool:
+        """Detect if screen does not exist"""
         return self.screen != None

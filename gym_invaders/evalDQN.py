@@ -16,9 +16,10 @@ from ai_invader.util import load_obj
 Example of training script
 '''
 #Retrieve Training Environment
+# gym.make("Classic-v0")
 # env = gym.make("Invader-v0")
 def make_env():
-    envir = gym.make("Classic-v0")
+    envir = gym.make("Invader-v0")
     return envir
 def main():
     print("The size of frame is: ", make_env().observation_space.shape)
@@ -50,7 +51,7 @@ def main():
                      UPDATE_EVERY, REPLAY,BUFFER_SIZE, make_env, path = 'model', num_epochs = 0)
     statedict = load_obj(os.path.join(agent.get_path(), 'test.pth'), device)
     agent.load_model(statedict)
-    agent.eval()
+    agent.random_play(True)
 
 #Initialise the DQNagent
 if __name__ == '__main__':

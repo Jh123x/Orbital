@@ -3,22 +3,8 @@ from . import BaseObject
 
 class ImageObject(BaseObject):
     def __init__(self, initial_x:int, initial_y:int, width:int, height:int, image = None, debug:bool = False):
-        """Main class for all objects with images
-            Arguments:
-                initial_x: initial X position of the MovingObject (int)
-                initial_y: initial Y position of the MovingObject (int)
-                width: Width of the image in terms of pixels (int)
-                height: Height of the image in terms of pixels (int)
-                debug: Toggles debug mode (bool)
+        """Main class for all objects with images"""
 
-            Methods:
-                load_rect: Load the rectangle of the MovingObject
-                rotate: Rotate the sprite
-                get_center: Get the center coordinate of the object
-                scale: Scale the image of the sprite
-                get_height: Get the height of the image
-                get_width: Get the width of image
-        """
         #Call superclass
         super().__init__(initial_x, initial_y, debug)
 
@@ -33,7 +19,6 @@ class ImageObject(BaseObject):
         #Load the rect
         self.load_rect()
 
-
     def draw(self, screen) -> None:
         """Draw the player onto the screen"""
 
@@ -41,12 +26,7 @@ class ImageObject(BaseObject):
         screen.blit(self.image, self.rect)
 
     def load_rect(self) -> None:
-        """Load the rectangle for the obj
-            Arguments:
-                No arguments
-            Returns: 
-                No return
-        """
+        """Load the rectangle for the obj"""
 
         #If image exists
         if self.image:
@@ -71,25 +51,20 @@ class ImageObject(BaseObject):
 
     def set_coord(self, position):
         """Set the coordinate of the moving object"""
+
+        #Set the coordinates
         super().set_coord(position)
+
+        #Load rectangle
         self.load_rect()
 
     def get_center(self) -> tuple:
-        """Get the coordinate of the center of the object
-            Arguments:
-                No arguments
-            Returns: 
-                Returns the center coordinate of the object
-        """
+        """Get the coordinate of the center of the object"""
         return self.rect.center
 
     def rotate(self, angle:int) -> None:
-        """Rotate the image by x degrees
-            Arguments:
-                Angle: Rotate by angle degrees (int)
-            Returns: 
-                No return
-        """
+        """Rotate the image by x degrees"""
+
         #If the image exists
         if self.image:
 
@@ -105,12 +80,7 @@ class ImageObject(BaseObject):
                 print("There is no image to rotate")
 
     def update(self) -> None:
-        """Update the object rect position
-            Arguments:
-                No arguments
-            Returns: 
-                No return
-        """
+        """Update the object rect position"""
 
         #Set the position of the rect if it has changed from before
         if self.changed:
@@ -122,12 +92,7 @@ class ImageObject(BaseObject):
             self.changed = False
 
     def scale(self, width:int, height:int) -> None:
-        """Scale the image
-            Arguments:
-                No arguments
-            Returns: 
-                No return
-        """
+        """Scale the image"""
         
         #If the image exists
         if self.image:
@@ -145,28 +110,9 @@ class ImageObject(BaseObject):
             
 
     def get_height(self) -> None:
-        """Get the height of the image
-            Arguments:
-                No arguments
-            Returns: 
-                Return the height of the image (int)
-        """
+        """Get the height of the image"""
         return self.image.get_height() if self.image else self.height
 
     def get_width(self) -> None:
-        """Get the width of the image
-            Arguments:
-                No arguments
-            Returns: 
-                Return the width of the image (int)
-        """
+        """Get the width of the image"""
         return self.image.get_width() if self.image else self.width
-
-    def saveSelf(self):
-        """Save the object in to a state"""
-        pass
-       
-        
-    def loadSelf(self):
-        """Load the object from state"""
-        pass
