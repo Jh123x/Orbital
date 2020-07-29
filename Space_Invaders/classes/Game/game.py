@@ -158,6 +158,7 @@ class GameWindow(object):
         self.pvp_gameover = None
         self.game_over = None
         self.stage_pause = None
+        self.two_player_pause = None
 
         #Sort the highscore
         self.highscore.sort_scores()
@@ -272,13 +273,17 @@ class GameWindow(object):
 
     def handle_two_player_pause(self) -> State:
         """Handle the PVP pause screen"""
-
         #Check based on previous state
         prev_screen = self.screens[self.prev]
-        scores = self.screens[self.prev].get_scores()
 
-        #Create the pause screen
-        self.two_player_pause = TwoPlayerPauseScreen(self.game_width, self.game_height, self.main_screen, *scores, self.prev, self.debug)
+        if not self.two_player_pause or prev_screen.get_scores() != self.two_player_pause.get_scores():
+            
+            #Check based on previous state
+            prev_screen = self.screens[self.prev]
+            scores = self.screens[self.prev].get_scores()
+
+            #Create the pause screen
+            self.two_player_pause = TwoPlayerPauseScreen(self.game_width, self.game_height, self.main_screen, *scores, self.prev, self.debug)
 
         #Return the function
         state = self.two_player_pause.handle()
@@ -339,7 +344,7 @@ class GameWindow(object):
         score = self.screens[self.prev].get_score()
 
         #Create the pause screen if it is not already created
-        if not self.pause or self.pause.get_score() != score:
+        if not self.pause or self.pause.get_score() != score or self.pause.previous_state != self.prev:
             self.pause = PauseScreen(self.game_width,self.game_height, self.main_screen, score, self.prev, self.debug)
 
         #Handle the pause screen

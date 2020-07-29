@@ -101,7 +101,7 @@ class ClassicScreen(Screen):
         keys = pygame.key.get_pressed()
 
         #Check if they want to pause game
-        if keys[K_p]:
+        if keys[K_p] or keys[K_ESCAPE]:
             return True
 
         if not self.player1.is_destroyed():
