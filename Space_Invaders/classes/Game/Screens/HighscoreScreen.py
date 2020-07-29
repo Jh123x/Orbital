@@ -63,7 +63,7 @@ class HighscoreScreen(Screen):
         self.end_rect = self.write(self.end_font, WHITE, "Back", self.screen_width//2, self.screen_height//2 + self.screen_height//3)
 
         #Draw the highscore header
-        self.write(self.title_font, WHITE, f"HIGH SCORES", self.screen_width//2, 100)
+        self.write(self.title_font, WHITE, f"High Scores", self.screen_width//2, 100)
 
         #Draw the scores of the players
         for index, item in enumerate(self.scores[:5]):

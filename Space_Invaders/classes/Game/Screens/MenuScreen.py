@@ -42,13 +42,7 @@ class MenuScreen(Screen):
             return State.PLAYMODE
 
     def check_mouse(self, rects:list, states:list):
-        """Check the position of the mouse on the menu to see what the player clicked
-            Arguments:
-                rects: List of Rects to be checked (list of pygame.Rects)
-                states: List of states to be returned if it is clicked (list of States)
-            Return:
-                Returns the next state of the game (State)
-        """
+        """Check the position of the mouse on the menu to see what the player clicked"""
         
         #Iterate through each of the rects
         for i in range(len(rects)):
@@ -63,12 +57,7 @@ class MenuScreen(Screen):
         return State.MENU
 
     def handle(self) -> State:
-        """Load the Menu onto the screen
-            Arguments:
-                No Arguments
-            Returns:
-                Returns the State the game should be in (State)
-        """
+        """Load the Menu onto the screen"""
         #Update the screen
         self.update()
 

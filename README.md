@@ -9,11 +9,11 @@ Level of achievement: Artemis
   - LiftOff: [Liftoff Video](https://youtu.be/UNIIZMoY21Y)
   - Milestone 1: [Milestone 1 Video](https://youtu.be/B_vnh2F5NsM)
   - Milestone 2: [Milestone 2 Video](https://www.youtube.com/watch?v=oTaomwA8UFw)
-  - Milestone 3: [To be updated](#)
+  - Milestone 3: [Milestone 3 Video](https://youtu.be/_8in7JavAHs)
 
 * Download Link: [Windows v1.0](https://drive.google.com/file/d/1sg8KXjIIUoKLrhnO1ZvNEcx9PiAcC4ad/view?usp=sharing)
 
-* Download Link: [Mac v1.0](https://drive.google.com/file/d/1M_bW1mwZJyTDDUkjQgFV_vmN-44SBRk9/view?usp=sharing)
+* Download Link: [Mac v1.0](https://drive.google.com/file/d/1HfSrewqjheuAdSa83yHG1T8vIK-0Iw7c/view?usp=sharing)
 
 * Feedback Link: [here](https://forms.gle/kibPWXRtb1x3JJvT9)
 Click here to provide any feedback you want to share

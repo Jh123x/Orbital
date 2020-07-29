@@ -7,7 +7,7 @@ import torch
 import torch.nn as nn
 from . import TrainingAgent
 from ..model import EvolutionaryAI
-from .. import ReplayMemory, get_filename
+from .. import get_filename
 
 class EvoAgentTrainer(TrainingAgent):
     '''
@@ -128,8 +128,7 @@ class EvoAgentTrainer(TrainingAgent):
             candidate = np.append(candidate, [elite_index])
         top_score = None
         top_elite = None
-        print(len(candidate))
-        print(len(self.agents))
+
         for i in range(len(candidate)):
             score = self.return_avg_score(self.agents[i], runs=self.num_trials)
             print('Score ', i, ' is ', score, end=' ')

@@ -16,6 +16,10 @@ class Stage5Screen(StoryTemplate):
         self.alon_dusk = ImageObject(300, 215, 217, 217, StoryTemplate.sprites['alon_sama'], debug)
         self.alon_dusk.scale(217,217)
 
+        #Image of the commander
+        self.commander = ImageObject(300, 215, 217, 217, StoryTemplate.sprites['silloette_commander'], debug)
+        self.commander.scale(217,217)
+
         #Textbox
         self.tb = ImageObject(300, 685, 600, 230, StoryTemplate.sprites['textbox'], debug)
 
@@ -30,18 +34,21 @@ class Stage5Screen(StoryTemplate):
     def pre_cutscene(self):
         """The pre_cutscene for the class"""
 
+        #Lower cd of click if it is still on cooldown
+        if self.click_cd:
+            self.click_cd -= 1
+
         #Insert the Icon for the char speaking
-        self.alon_dusk.draw(self.screen)
+        if self.clicks <= 1:
+            self.alon_dusk.draw(self.screen)
+        else:
+            self.commander.draw(self.screen)
 
         #Draw the background
         self.draw_bg()
 
         #Draw the next button
         self.next_btn = self.write_main(self.end_font, WHITE, "Next", 580, self.tb.rect.top - 30, Direction.RIGHT)
-
-        #Lower cd of click if it is still on cooldown
-        if self.click_cd:
-            self.click_cd -= 1
 
         #Check if the next button is clicked
         if self.check_clicked(self.next_btn) and not self.click_cd:
@@ -52,14 +59,14 @@ class Stage5Screen(StoryTemplate):
             #Reset the cooldown
             self.click_cd = self.fps//5
 
-        #Write the character name text
-        self.write_main(self.end_font, WHITE, "Alon Dusk", 33, self.tb.rect.top + 15, Direction.LEFT)
-
         #Pixel vars for alignment
         first_px = self.tb.rect.top + 75
         left_px = 40
 
         if self.clicks == 0:
+
+            #Write the character name text
+            self.write_main(self.end_font, WHITE, "Alon Dusk", 33, self.tb.rect.top + 15, Direction.LEFT)
 
             #Write the character speech text
             self.render_speech(first_px, left_px, ["The main forces of the enemy are here, and they have strange tricks",
@@ -67,10 +74,21 @@ class Stage5Screen(StoryTemplate):
 
         elif self.clicks == 1:
 
+            #Write the character name text
+            self.write_main(self.end_font, WHITE, "Alon Dusk", 33, self.tb.rect.top + 15, Direction.LEFT)
+
             #Write part 2 of the speech 
             self.render_speech(first_px, left_px, ["Be wary of the CRABS who attack in unorthodox ways,",
                                                 "and break our formations. We must break through with ",
                                                 "a full frontal assault!"])
+
+        elif self.clicks == 2:
+
+            #Write the character name text
+            self.write_main(self.end_font, WHITE, "Commander", 33, self.tb.rect.top + 15, Direction.LEFT)
+
+            #Write part 3 of the speech
+            self.render_speech(first_px, left_px, ["I will crush their will to fight and end this invasion in their tracks"])
 
         else:
             #Reset the clicks
@@ -84,18 +102,22 @@ class Stage5Screen(StoryTemplate):
 
     def post_cutscene(self):
         """The post cutscene for stage 3"""
+
+        #Lower cd of click if it is still on cooldown
+        if self.click_cd:
+            self.click_cd -= 1
+
         #Insert the Icon for the char speaking
-        self.alon_dusk.draw(self.screen)
+        if self.clicks <= 2:
+            self.alon_dusk.draw(self.screen)
+        else:
+            self.commander.draw(self.screen)
 
         #Draw the background
         self.draw_bg()
 
         #Draw the next button
         self.next_btn = self.write_main(self.end_font, WHITE, "Next", 580, self.tb.rect.top - 30, Direction.RIGHT)
-
-        #Lower cd of click if it is still on cooldown
-        if self.click_cd:
-            self.click_cd -= 1
 
         #Check if the next button is clicked
         if self.check_clicked(self.next_btn) and not self.click_cd:
@@ -106,9 +128,6 @@ class Stage5Screen(StoryTemplate):
             #Reset the cooldown
             self.click_cd = self.fps//5
 
-        #Write the character name text
-        self.write_main(self.end_font, WHITE, "Alon Dusk", 33, self.tb.rect.top + 15, Direction.LEFT)
-
         #Pixels for alignment
         first_px = self.tb.rect.top + 75
         left_px = 40
@@ -116,19 +135,46 @@ class Stage5Screen(StoryTemplate):
         #Drawing of the speech
         if self.clicks == 0:
 
+            #Write the character name text
+            self.write_main(self.end_font, WHITE, "Alon Dusk", 33, self.tb.rect.top + 15, Direction.LEFT)
+
             #Write the character speech text
             self.render_speech(first_px, left_px, ["Strange, results of the analysis of the enemy have come back,",
                                                     "and it appears that they all come from a common source in Pluto."])
 
         elif self.clicks == 1:
 
+            #Write the character name text
+            self.write_main(self.end_font, WHITE, "Alon Dusk", 33, self.tb.rect.top + 15, Direction.LEFT)
+
             #Write part 2 of speech
             self.render_speech(first_px, left_px, ["This means that the threat… is not from an alien at all! ",])
 
         elif self.clicks == 2:
+
+            #Write the character name text
+            self.write_main(self.end_font, WHITE, "Alon Dusk", 33, self.tb.rect.top + 15, Direction.LEFT)
+
             #Write part 3 of speech
             self.render_speech(first_px, left_px, ["It points towards instead that something in Pluto is manufacturing",
                                                     "these Invading Creatures and sending them against us."])
+
+        elif self.clicks == 3:
+
+            #Write the character name text
+            self.write_main(self.end_font, WHITE, "Commander", 33, self.tb.rect.top + 15, Direction.LEFT)
+
+            #Write part 4 of the speech
+            self.render_speech(first_px, left_px, ["I have a bad feeling about this, you should consolidate the",
+                                                    "main forces here before proceeding."])
+
+        elif self.clicks == 4:
+
+            #Write the character name text
+            self.write_main(self.end_font, WHITE, "Commander", 33 ,self.tb.rect.top + 15, Direction.LEFT)
+
+            #Write part 5 of the speech
+            self.render_speech(first_px, left_px, ["I will be the vanguard and set up an encampment first."])
 
         else:
             #Reset the clicks

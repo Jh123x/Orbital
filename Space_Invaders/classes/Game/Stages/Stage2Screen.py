@@ -16,6 +16,10 @@ class Stage2Screen(StoryTemplate):
         self.tonald_drump = ImageObject(300, 215, 217, 217, StoryTemplate.sprites['drump'], debug)
         self.tonald_drump.scale(217,217)
 
+        #Image of the commander
+        self.commander = ImageObject(300, 210, 217, 217, StoryTemplate.sprites['silloette_commander'], debug)
+        self.commander.scale(217,217)
+
         #Textbox
         self.tb = ImageObject(300, 685, 600, 230, StoryTemplate.sprites['textbox'], debug)
 
@@ -87,15 +91,6 @@ class Stage2Screen(StoryTemplate):
 
     def post_cutscene(self):
         """The post cutscene for stage 2"""
-        #Insert the Icon for the char speaking
-        self.tonald_drump.draw(self.screen)
-
-        #Draw the background
-        self.draw_bg()
-
-        #Draw the next button
-        self.next_btn = self.write_main(self.end_font, WHITE, "Next", 580, self.tb.rect.top - 30, Direction.RIGHT)
-
         #Lower cd of click if it is still on cooldown
         if self.click_cd:
             self.click_cd -= 1
@@ -109,8 +104,17 @@ class Stage2Screen(StoryTemplate):
             #Reset the cooldown
             self.click_cd = self.fps//5
 
-        #Write the character name text
-        self.write_main(self.end_font, WHITE, "Tonald Drump", 33, self.tb.rect.top + 15, Direction.LEFT)
+        #Insert the Icon for the char speaking
+        if self.clicks <= 1:
+            self.tonald_drump.draw(self.screen)
+        else:
+            self.commander.draw(self.screen)
+
+        #Draw the background
+        self.draw_bg()
+
+        #Draw the next button
+        self.next_btn = self.write_main(self.end_font, WHITE, "Next", 580, self.tb.rect.top - 30, Direction.RIGHT)
 
         #Pixels for alignment
         first_px = self.tb.rect.top + 75
@@ -119,15 +123,38 @@ class Stage2Screen(StoryTemplate):
         #Drawing of the speech
         if self.clicks == 0:
 
+            #Write the character name text
+            self.write_main(self.end_font, WHITE, "Tonald Drump", 33, self.tb.rect.top + 15, Direction.LEFT)
+
             #Write the character speech text
             self.render_speech(first_px, left_px, ["With Elysium relieved we can now strike back at the invaders",
                                                 "much more effectively than before."])
 
         elif self.clicks == 1:
 
+            #Write the character name text
+            self.write_main(self.end_font, WHITE, "Tonald Drump", 33, self.tb.rect.top + 15, Direction.LEFT)
+
             #Write part 2 of the speech 
             self.render_speech(first_px, left_px, ["Strangely, these aliens seem to be following some",
                                                 "kind of encrypted signal…"])
+
+        elif self.clicks == 2:
+
+            #Write the character name text
+            self.write_main(self.end_font, WHITE, "Commander", 33, self.tb.rect.top + 15, Direction.LEFT)
+
+            #Write part 3 of the speech 
+            self.render_speech(first_px, left_px, ["All of those years of fighting and sacrifices…"])
+
+        elif self.clicks == 3:
+            
+            #Write the character name text
+            self.write_main(self.end_font, WHITE, "Commander", 33, self.tb.rect.top + 15, Direction.LEFT)
+            
+            #Write part 3 of the speech 
+            self.render_speech(first_px, left_px, ["I cannot let these aliens succeed and tear down all the",
+                                                    "sacrifices we made back then."])
 
         else:
             #Reset the clicks
