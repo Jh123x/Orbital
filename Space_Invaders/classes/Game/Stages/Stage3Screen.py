@@ -16,6 +16,10 @@ class Stage3Screen(StoryTemplate):
         self.marco = ImageObject(300, 215, 217, 217, StoryTemplate.sprites['yuckerberg'], debug)
         self.marco.scale(217,217)
 
+        #Image of the commander
+        self.commander = ImageObject(300, 210, 217, 217, StoryTemplate.sprites['silloette_commander'], debug)
+        self.commander.scale(217,217)
+
         #Textbox
         self.tb = ImageObject(300, 685, 600, 230, StoryTemplate.sprites['textbox'], debug)
 
@@ -85,15 +89,7 @@ class Stage3Screen(StoryTemplate):
 
     def post_cutscene(self):
         """The post cutscene for stage 3"""
-        #Insert the Icon for the char speaking
-        self.marco.draw(self.screen)
-
-        #Draw the background
-        self.draw_bg()
-
-        #Draw the next button
-        self.next_btn = self.write_main(self.end_font, WHITE, "Next", 580, self.tb.rect.top - 30, Direction.RIGHT)
-
+        
         #Lower cd of click if it is still on cooldown
         if self.click_cd:
             self.click_cd -= 1
@@ -106,9 +102,18 @@ class Stage3Screen(StoryTemplate):
 
             #Reset the cooldown
             self.click_cd = self.fps//5
+        
+        #Insert the Icon for the char speaking
+        if self.clicks <= 0:
+            self.marco.draw(self.screen)
+        else:
+            self.commander.draw(self.screen)
 
-        #Write the character name text
-        self.write_main(self.end_font, WHITE, "Marco Yuckerberg", 33, self.tb.rect.top + 15, Direction.LEFT)
+        #Draw the background
+        self.draw_bg()
+
+        #Draw the next button
+        self.next_btn = self.write_main(self.end_font, WHITE, "Next", 580, self.tb.rect.top - 30, Direction.RIGHT)
 
         #Pixels for alignment
         first_px = self.tb.rect.top + 75
@@ -117,10 +122,22 @@ class Stage3Screen(StoryTemplate):
         #Drawing of the speech
         if self.clicks == 0:
 
+            #Write the character name text
+            self.write_main(self.end_font, WHITE, "Marco Yuckerberg", 33, self.tb.rect.top + 15, Direction.LEFT)
+
             #Write the character speech text
             self.render_speech(first_px, left_px, ["We have successfully prevented their vanguard from arriving,",
                                                 "but our brethren on Mars are reporting that the aliens are",
                                                 "ravaging their lands."])
+
+        elif self.clicks == 1:
+
+            #Write the character name text
+            self.write_main(self.end_font, WHITE, "Commander", 33, self.tb.rect.top + 15, Direction.LEFT)
+
+            #Write the character speech text
+            self.render_speech(first_px, left_px, ["Mars… the first colony, and the reason for that war in ",
+                                                    "the first place."])
 
         else:
             #Reset the clicks

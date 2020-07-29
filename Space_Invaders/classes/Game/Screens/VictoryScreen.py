@@ -31,7 +31,7 @@ class VictoryScreen(Screen):
         self.write(self.end_font, WHITE, f"{prev_stage} cleared", self.screen_width//2, first_px)
 
         #Write the back button
-        self.back = self.write(self.end_font, WHITE, "back", self.screen_width//2, self.screen_height // 1.2)
+        self.back = self.write(self.end_font, WHITE, "Back", self.screen_width//2, self.screen_height // 1.2)
 
         #Show the trophy in the middle of the screen
         self.trophy = ImageObject(self.screen_width//2, first_px - 100, 50, 50, VictoryScreen.sprites[0])

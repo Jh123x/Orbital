@@ -1,9 +1,11 @@
-# import torch
+import torch
 import random
+
 import cv2
 import numpy as np
+import matplotlib.pyplot as plt
 from collections import namedtuple, deque
-from scipy.special import expit
+
 
 class ReplayMemory(object):
 
@@ -82,7 +84,33 @@ def stack_frame(stacked_frames, frame, is_new):
 
     return stacked_frames
 
+def load_obj(path,device):
+    return torch.load(path, map_location=device)
 
+def display_preprocessed(env,frame):
+    """Plot the preprocessed frame"""
+    env.reset()
+
+    #Plot the figure
+    plt.figure()
+
+    #Show the pre processed frame
+    plt.imshow(preprocess_frame(env.reset(), (0, 0, 0, 0), 84), cmap="gray")
+
+    #Add title
+    plt.title('Pre Processed image')
+
+    #Show the plot
+    plt.show()
+
+def get_filename() -> str:
+    #Ask for file to be saved
+    filename = input(f'Please input the filename to save: ')
+
+    #Check if it has the correct extension
+    if filename[-4:] != '.pth':
+        filename += '.pth'
+    return filename
 if __name__ == '__main__':
     mem = ReplayMemory(1000, 4, 123, 'cuda')
 
