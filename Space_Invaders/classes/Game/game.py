@@ -363,11 +363,11 @@ class GameWindow(object):
         """Handle the pause screen for stages"""
 
         #Get the current stage
-        stage = self.screens[self.prev].get_stage_name()
+        stage = self.screens[self.prev].get_stage()
 
         #Create the pause screen if it is not already created
         if not self.stage_pause or self.stage_pause.get_stage() != stage:
-            self.stage_pause = StagePauseScreen(self.game_width,self.game_height, self.main_screen, self.prev, self.debug)
+            self.stage_pause = StagePauseScreen(self.game_width, self.game_height, self.main_screen, self.prev, self.debug)
 
         #Handle the pause screen
         state = self.stage_pause.handle()

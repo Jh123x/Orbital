@@ -1,7 +1,5 @@
 import pygame
-from pygame.locals import *
 from .. import State, WHITE, PauseScreen
-
 
 class StagePauseScreen(PauseScreen):
 
@@ -14,7 +12,9 @@ class StagePauseScreen(PauseScreen):
         #Set the current state
         self.set_state(State.STAGE_PAUSE)
 
-    def write_lines(self):
+    def write_lines(self) -> None:
+        """Write the lines of the pause screen"""
+
         #Draw the title of the pause screen
         self.write(self.title_font, WHITE, "Paused", self.screen_width//2, self.screen_height//5)
         
@@ -30,6 +30,10 @@ class StagePauseScreen(PauseScreen):
         #Draw the instructions to quit
         self.quit = self.write(self.end_font, WHITE, "Quit (Esc)", self.screen_width//2, self.screen_height//5 + self.screen_height//2)
 
-    def get_stage(self) -> int():
+    def get_stage(self) -> int:
         """Return the current stage of the game"""
         return self.previous_state.value - 99
+
+    def get_stage_name(self) -> str:
+        """Return the name of the stage"""
+        return f"Stage {self.get_stage()}"
