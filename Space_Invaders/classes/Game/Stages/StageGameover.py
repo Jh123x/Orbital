@@ -1,11 +1,8 @@
 import pygame
 from pygame.locals import *
-from . import GameoverScreen
-from .. import State, WHITE
+from .. import State, WHITE, GameoverScreen
 
 class StageGameoverScreen(GameoverScreen):
-    sound = None
-    played = False
 
     def __init__(self, screen_width:int, screen_height:int, screen, debug:bool = False):
         """The main class for stage gameovers"""
