@@ -12,11 +12,12 @@ class TwoPlayerGameoverScreen(GameoverScreen):
     def __init__(self, screen_width:int, screen_height:int, screen, player_scores:tuple, prev_state, debug:bool = False):
         """Constructor for the Two Player Gameover class"""
 
+        #Store extra vars
+        self.p1_score = player_scores[0]
+        self.p2_score = player_scores[1]
+
         #Call the superclass
         super().__init__(screen_width, screen_height, screen, player_scores[0], prev_state, debug)
-
-        #Store extra vars
-        self.p2_score = player_scores[1]
 
         #Set the state to 2 player gameover
         self.set_state(State.TWO_PLAYER_GAMEOVER)
@@ -24,9 +25,9 @@ class TwoPlayerGameoverScreen(GameoverScreen):
     def write_scores(self):
         """Write the scores of the players"""
         #Draw the winner
-        if p1_score > p2_score:
+        if self.p1_score > self.p2_score:
             self.write(self.subtitle_font, WHITE, f"Player 1 Wins", self.screen_width//2, self.screen_height//2 - 120)
-        elif p1_score == p2_score:
+        elif self.p1_score == self.p2_score:
             self.write(self.subtitle_font, WHITE, f"Its a draw", self.screen_width//2, self.screen_height//2 - 120)
         else:
             self.write(self.subtitle_font, WHITE, f"Player 2 Wins", self.screen_width//2, self.screen_height//2 - 120)
