@@ -1,7 +1,7 @@
 import pygame
 from pygame.locals import *
 from . import Screen
-from .. import State, WHITE
+from .. import State, WHITE, ImageObject
 
 class MenuScreen(Screen):
     def __init__(self, screen_width:int, screen_height:int, screen, debug:bool = False):
@@ -9,6 +9,39 @@ class MenuScreen(Screen):
 
         #Call the superclass
         super().__init__(screen_width, screen_height, State.MENU, screen, 0, 0, debug)
+
+        #Write content for menu screen
+        self.write_lines()
+
+        #Store the rects and the effects
+        self.rects = (self.rect_play, self.rect_highscore, self.rect_instruction, self.rect_settings, self.rect_end)
+        self.effects = (State.PLAYMODE, State.HIGHSCORE, State.INSTRUCTIONS_MENU, State.SETTINGS, State.QUIT)
+
+        #Reset the menu
+        self.reset()
+
+    def reset(self) -> None:
+        """Reset the menu to default state"""
+        #Show the menu currently selected
+        self.selected = 0
+
+        #Refresh pointer cd
+        self.pointer_cd = 20
+        
+    def refresh_pointer(self) -> None:
+        """Redraw the pointer to the correct position"""
+
+        #Reference the rect obj selected
+        pointed_obj = self.rects[self.selected]
+
+        #Create the pointer object
+        self.pointer = ImageObject(pointed_obj.left - 40, pointed_obj.center[1], 40, 30, self.sprites['pointer'], self.debug)
+
+        #Draw the pointer on the screen
+        self.pointer.draw(self.screen)
+
+    def write_lines(self) -> None:
+        """Write lines for the menu"""
 
         #Draw the title
         self.write(self.title_font, WHITE, "Space Invaders", self.screen_width//2, self.screen_height//5)
@@ -28,7 +61,6 @@ class MenuScreen(Screen):
         #Draw the quit button
         self.rect_end = self.write(self.end_font, WHITE, "Quit", self.screen_width//2, self.screen_height//1.2)
 
-
     def update_keypresses(self) -> State:
         """Track the keypress for the menu"""
 
@@ -39,22 +71,31 @@ class MenuScreen(Screen):
         if keys[K_RETURN]:
 
             #Start the game
-            return State.PLAYMODE
+            return self.effects[self.selected]
 
-    def check_mouse(self, rects:list, states:list):
-        """Check the position of the mouse on the menu to see what the player clicked"""
-        
-        #Iterate through each of the rects
-        for i in range(len(rects)):
+        #If selector is moved down
+        if (keys[K_s] or keys[K_DOWN]) and not self.pointer_cd:
 
-            #Check if the rect is clicked
-            if self.check_clicked(rects[i]):
+            #Refresh pointer cd
+            self.pointer_cd = 15
 
-                #Return the state if it is clicked
-                return states[i]
+            #Move the selected down
+            self.selected = (self.selected + 1) % len(self.rects)
 
-        #Otherwise return the Menu state
-        return State.MENU
+        #If selector is moved up
+        if (keys[K_w] or keys[K_UP]) and not self.pointer_cd:
+
+            #Refresh pointer cd
+            self.pointer_cd = 15
+
+            #Move the selected up
+            self.selected = (self.selected - 1) % len(self.rects)
+
+        #If the pointer is on cooldown
+        if self.pointer_cd:
+
+            #Reduce its cooldown
+            self.pointer_cd -= 1
 
     def handle(self) -> State:
         """Load the Menu onto the screen"""
@@ -64,5 +105,8 @@ class MenuScreen(Screen):
         #Check for keypress of user
         state = self.update_keypresses()
 
+        #Update the selector
+        self.refresh_pointer()
+
         #Check the position of the mouse to return the state and combine it with the keypress of user
-        return state if state else self.check_mouse([self.rect_play, self.rect_end, self.rect_highscore, self.rect_instruction, self.rect_settings],[State.PLAYMODE,State.QUIT, State.HIGHSCORE, State.INSTRUCTIONS_MENU, State.SETTINGS])
+        return state if state else self.check_mouse(self.rects, self.effects)

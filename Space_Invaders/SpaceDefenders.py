@@ -2,20 +2,18 @@
 #-------Orbital 2020-------#
 ############################
 
-#Import functions from the class package
+#Import other dependencies
 import os
 import sys
+
+#Initialise pygame
 import pygame
+pygame.init()
+pygame.font.init()
+pygame.mixer.init()
+
+#Functions from the class package
 from classes import GameWindow, list_dir, form_abs_path, read_all, create_config_file
-
-def get_curr_path():
-    """Get the path to the current file depending on state of application"""
-    #Return correct directory
-    return sys.executable if getattr(sys, 'frozen', False) else __file__
-
-def map_dir(*args):
-    """Map the abs path for the files in the folder"""
-    return list_dir(form_abs_path(get_curr_path(), os.path.join(*args)))
 
 def main() -> None:
     """The main function to run the game"""
@@ -58,6 +56,7 @@ def main() -> None:
     d["crabs_img_path"] = map_dir("images", "bosses", "crabs")
     d["story_img_path"] = map_dir("images", "story assets")
     d["place_holder_path"] = map_dir("images", "place_holder")
+    d["pointer_img_path"] = map_dir("images", "pointer")
 
     #Get the number of backgrounds
     bg_limit = len(d["background_img_paths"])
@@ -72,20 +71,20 @@ def main() -> None:
         for k,v in config.items():
             print(f"{k} : {v}")
 
-    #Initialise pygame
-    pygame.init()
-
-    #Initialise the font
-    pygame.font.init()
-
-    #Initialise the sound
-    pygame.mixer.init()
-
     #Create the new game window with the configurations
     game = GameWindow(**d, sound_path = sound_path, **config, bg_limit = bg_limit)
 
     #Run the mainloop for the GameWindow
     game.mainloop()
+
+def get_curr_path():
+    """Get the path to the current file depending on state of application"""
+    #Return correct directory
+    return sys.executable if getattr(sys, 'frozen', False) else __file__
+
+def map_dir(*args):
+    """Map the abs path for the files in the folder"""
+    return list_dir(form_abs_path(get_curr_path(), os.path.join(*args)))
 
 
 #Run the following if the file is run as main
