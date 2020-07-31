@@ -21,6 +21,10 @@ class CoopScreen(PlayScreen):
         #Set the state of the enemy ship
         self.enemies.set_state(self.state)
 
+    def comparator(self):
+        """Return variable used for comparison"""
+        return self.get_score()
+
     def reset(self) -> None:
         """Reset the environment"""
         #If the environment is already resetted

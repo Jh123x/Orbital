@@ -96,6 +96,10 @@ class StoryTemplate(PlayScreen):
         """Get the state of the game when the player loses"""
         return State.STAGE_GAMEOVER
 
+    def comparator(self):
+        """Variable used for comparison"""
+        return self.get_stage()
+
     def handle(self):
         """Handles the playing out of the screen"""
 

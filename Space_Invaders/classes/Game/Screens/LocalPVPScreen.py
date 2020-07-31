@@ -31,6 +31,9 @@ class LocalPVPScreen(ClassicScreen):
         """Do not spawn any motherships for 2 players"""
         return
 
+    def comparator(self):
+        return self.get_scores()
+
     def spawn_players(self) -> None:
         """Create the players variables"""
         #Initialise the players
@@ -138,7 +141,7 @@ class LocalPVPScreen(ClassicScreen):
 
     def get_scores(self) -> tuple:
         """Get the scores of the players"""
-        return (self.p1_score, self.p2_score)
+        return (self.get_score(), self.p2_score)
 
     def update(self) -> None:
         """Update the movement of the sprites"""

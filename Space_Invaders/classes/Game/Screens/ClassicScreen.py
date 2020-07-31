@@ -94,6 +94,10 @@ class ClassicScreen(Screen):
         """Get a tuple of the enemies"""
         return tuple(self.enemies)
 
+    def comparator(self) -> int:
+        """Variable used for comparison"""
+        return self.get_score()
+
     def update_keypresses(self) -> None:
         """Update the screen based on what the player has pressed"""
 
