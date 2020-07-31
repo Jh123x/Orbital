@@ -153,7 +153,7 @@ class GameWindow(object):
         #Add Powerup sound
         PowerUp.sound = self.sound
 
-        #Add pause sound
+        #Add pause sounds
         TwoPlayerPauseScreen.sound = self.sound
         PauseScreen.sound = self.sound
         GameoverScreen.sound = self.sound
@@ -224,37 +224,6 @@ class GameWindow(object):
         #Otherwise return the state
         return state
 
-    def handle_newhighscore(self) -> State:
-        """Handle the displaying of the highscore screen"""
-
-        #If there is a new highscore that is different from before
-        if not self.newhighscore or self.newhighscore.get_score() != self.play.get_score():
-
-            #Create the new highscore screen
-            self.newhighscore = NewhighscoreScreen(self.game_width, self.game_height, self.main_screen, self.play.get_score())
-
-        #Get the next state
-        state = self.newhighscore.handle()
-
-        #If the state is gameover
-        if state == State.GAMEOVER:
-            
-            #Debugging information
-            if self.debug:
-                print(f"Name:{NewhighscoreScreen.get_name()}\nScore:{self.play.get_score()}")
-
-            #Update the score of the player
-            self.highscore.update_score(self.newhighscore.get_name(), self.play.get_score())
-
-            #Clear the input box
-            NewhighscoreScreen.inputbox.clear()
-            
-            #Mark as highscore written
-            self.written = True
-
-        #Return the next state
-        return state
-
     def handle_pause(self) -> State:
         """Handle the displaying of the pause screen"""
 
@@ -299,80 +268,90 @@ class GameWindow(object):
         #Return the next state
         return state
 
-    def handle_two_player_gameover(self) -> State:
-        """Handle the PVP gameover screen"""
+    def handle_newhighscore(self) -> State:
+        """Handle the displaying of the highscore screen"""
 
-        #Set variables based on previous state
-        prev_screen = self.screens[self.prev]
-        scores = prev_screen.get_scores()
+        #If there is a new highscore that is different from before
+        if not self.screens[State.NEWHIGHSCORE] or self.screens[State.NEWHIGHSCORE].get_score() != self.screens[State.PLAY].get_score():
 
-        #Generate gameover screen if it is not found
-        if not self.pvp_gameover or self.pvp_gameover.get_scores() != scores:
-            self.pvp_gameover = TwoPlayerGameoverScreen(self.game_width, self.game_height, self.main_screen, *scores)
+            #Create the new highscore screen
+            self.screens[State.NEWHIGHSCORE] = NewhighscoreScreen(self.game_width, self.game_height, self.main_screen, self.screens[State.PLAY].get_score())
 
-        #Get next state
-        state = self.pvp_gameover.handle()
+        #Get the next state
+        state = self.screens[State.NEWHIGHSCORE].handle()
 
-        #If the gameover screen is over
-        if state != State.TWO_PLAYER_GAMEOVER:
+        #If the state is gameover
+        if state == State.GAMEOVER:
+            
+            #Debugging information
+            if self.debug:
+                print(f"Name:{NewhighscoreScreen.get_name()}\nScore:{self.screens[State.PLAY].get_score()}")
 
-            #Reset the environment
-            prev_screen.reset()
+            #Update the score of the player
+            self.screens[State.HIGHSCORE].update_score(self.screens[State.NEWHIGHSCORE].get_name(), self.screens[State.PLAY].get_score())
+
+            #Clear the input box
+            NewhighscoreScreen.inputbox.clear()
+            
+            #Mark as highscore written
+            self.written = True
+
+        #Return the next state
+        return state
+
+    def _handle_gameovers(self, gameover_state:State, screen_type) -> State:
+        """A General handle for gameover modes"""
+            
+        #Get the score of the previous screen
+        comp = self.screens[self.prev].comparator()
+
+        #Create the gameover screen
+        if not self.screens[gameover_state] or self.screens[gameover_state].comparator() != comp or self.screens[gameover_state].get_prev_state() != self.prev:
+
+            #Create a new gameover screen
+            self.screens[gameover_state] = screen_type(self.game_width, self.game_height, self.main_screen, comp, self.prev, self.debug)
+
+        #Check the state given by gameover
+        state = self.screens[gameover_state].handle()
+
+        #If player is going back
+        if state != gameover_state:
+
+            #Reset the play screen
+            self.screens[self.prev].reset()
+
+            #Mark written as false
+            self.written = False
 
         #Return the state
         return state
+
+    def handle_two_player_gameover(self) -> State:
+        """Handle the PVP gameover screen"""
+
+        #Return the state
+        return self._handle_gameovers(State.TWO_PLAYER_GAMEOVER, TwoPlayerGameoverScreen)
+
+    def handle_stage_gameover(self) -> State:
+        """Handle the displaying of the gameover screen"""
+
+        #Return the state
+        return self._handle_gameovers(State.STAGE_GAMEOVER, StageGameoverScreen)
         
     def handle_gameover(self) -> State:
         """Handle the displaying of the gameover screen"""
 
-        #Check previous state
+        #Check for new highscore
         if self.prev == State.PLAY or self.prev == State.NEWHIGHSCORE:
 
             #If it is a new highscore
-            if self.highscore.beat_highscore(self.play.get_score()) and not self.written:
+            if self.screens[State.HIGHSCORE].beat_highscore(self.screens[State.PLAY].get_score()) and not self.written:
 
                 #Go to the new highscore state
                 return State.NEWHIGHSCORE
-
-            #Create the gameover screen
-            self.game_over = GameoverScreen(self.game_width,self.game_height, self.main_screen, self.play.get_score(), self.debug)
-
-            #Check the state given by gameover
-            state = self.game_over.handle()
-
-            #If player is going back
-            if state == State.MENU:
-
-                #Mark written as false
-                self.written = False
-
-                #Reset the play screen
-                self.play.reset()
-
-        #If it is classic mode
-        else:
             
-            #Get the score of the previous screen
-            score = self.screens[self.prev].get_score()
-
-            #Create the gameover screen
-            if not self.game_over or self.game_over.get_score() != score:
-                self.game_over = GameoverScreen(self.game_width,self.game_height, self.main_screen, score, self.debug)
-
-            #Check the state given by gameover
-            state = self.game_over.handle()
-
-            #If player is going back
-            if state == State.MENU:
-
-                #Mark written as false
-                self.written = False
-
-                #Reset the play screen
-                self.screens[self.prev].reset()
-
-        #Return the state
-        return state
+        #Call the main handle gameover method
+        return self._handle_gameovers(State.GAMEOVER, GameoverScreen)
 
     def get_state(self) -> State:
         """Return the state the game is in"""
@@ -435,10 +414,10 @@ class GameWindow(object):
         """Find the appropriate method to execute"""
 
         #Try to find the method in self.states
-        f = self.states.get(prev, None)
+        handle_method = self.states.get(prev, None)
 
         #If method is found execute it else call the default handle
-        return f() if f else self.screens.get(self.state).handle()
+        return handle_method() if handle_method else self.screens.get(self.state).handle()
 
     def check_sound(self):
         """Check if bg should be playing"""
@@ -451,7 +430,7 @@ class GameWindow(object):
             #If sound is enabled
             if self.sound_state:
 
-                #Play the music
+                #Play the music looped infinitely (-1)
                 pygame.mixer.music.play(-1)
 
             #Otherwise
