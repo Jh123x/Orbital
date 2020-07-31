@@ -3,7 +3,7 @@ from .. import State, WHITE, PauseScreen
 
 class StagePauseScreen(PauseScreen):
 
-    def __init__(self, screen_width:int, screen_height:int, screen, previous_state: State, debug:bool = False):
+    def __init__(self, screen_width:int, screen_height:int, screen, stage:int, previous_state: State, debug:bool = False):
         """Constructor for the Stage pause screen"""
 
         #Call the superclass
@@ -33,6 +33,10 @@ class StagePauseScreen(PauseScreen):
     def get_stage(self) -> int:
         """Return the current stage of the game"""
         return self.previous_state.value - 99
+
+    def comparator(self) -> int:
+        """Function used in comparison"""
+        return self.get_stage()
 
     def get_stage_name(self) -> str:
         """Return the name of the stage"""

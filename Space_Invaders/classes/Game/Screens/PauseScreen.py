@@ -50,6 +50,10 @@ class PauseScreen(Screen):
         """Get the score displayed for the pause screen"""
         return self.p1_score
 
+    def comparator(self) -> int:
+        """Comparison function"""
+        return self.get_score()
+
     def update_keypresses(self) -> State:
         """Check for the keypresses within the pause screen"""
 

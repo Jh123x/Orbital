@@ -5,14 +5,14 @@ from .. import WHITE, State, Direction
 
 class TwoPlayerPauseScreen(PauseScreen):
 
-    def __init__(self, screen_width:int, screen_height:int, screen, p1_score:int, p2_score:int, previous_state:State, debug:bool = False):
+    def __init__(self, screen_width:int, screen_height:int, screen, player_scores:tuple, previous_state:State, debug:bool = False):
         """Main class for PVP pause screen"""
 
         #Store the vars
-        self.p2_score = p2_score
+        self.p2_score = player_scores[1]
         
         #Call the superclass
-        super().__init__(screen_width, screen_height, screen, p1_score, previous_state, debug)
+        super().__init__(screen_width, screen_height, screen, player_scores[0], previous_state, debug)
 
         #Set state as 2 player pause
         self.set_state(State.TWO_PLAYER_PAUSE)
@@ -40,3 +40,7 @@ class TwoPlayerPauseScreen(PauseScreen):
     def get_scores(self) -> tuple:
         """Return the score of the 2 players"""
         return self.get_score(),self.p2_score
+
+    def comparator(self) -> tuple:
+        """Function used for comparison"""
+        return self.get_scores()

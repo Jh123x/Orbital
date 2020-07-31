@@ -46,11 +46,10 @@ class GameWindow(object):
 
         #Initialise the pygame vars
         self.clock = pygame.time.Clock()
-        self.score = 0
-        self.fps = maxfps
         self.sensitivity = sensitivity
-        self.game_width = game_width
         self.game_height = game_height
+        self.game_width = game_width
+        self.fps = maxfps
 
         #Starting State
         self.state = State.MENU
@@ -72,9 +71,9 @@ class GameWindow(object):
         self.bg = Background(int(self.settings_data['background']), game_width, game_height, bg_limit, debug)
 
         #Store the variables
-        self.popup = None
-        self.prev = State.NONE
         self.cooldown = self.fps // 5
+        self.prev = State.NONE
+        self.popup = None
 
         #Store the different screens in state
         self.screens = {
@@ -114,9 +113,6 @@ class GameWindow(object):
             State.GAMEOVER:             None,
             State.TWO_PLAYER_PAUSE:     None,
         }
-
-        #Sort the highscore
-        self.screens[State.HIGHSCORE].sort_scores()
         
         #Store the different states the menu has
         self.states = {
@@ -131,6 +127,9 @@ class GameWindow(object):
             State.PAUSE:                self.handle_pause,
             State.QUIT:                 self.__del__,
         }
+
+        #Sort the highscore
+        self.screens[State.HIGHSCORE].sort_scores()
 
         #Load sound state:
         self.sound_state = self.sound.get_state()
@@ -167,12 +166,14 @@ class GameWindow(object):
         #Get the name of the stage cleared
         cleared_stage = stage.get_stage_name()
 
-        #Reset the cleared stage
-        stage.reset()
-
         #If there is no victory screen or it is a different victory screen
         if not self.screens[State.VICTORY] or self.screens[State.VICTORY].get_stage_name() != cleared_stage:
+
+            #Create a new victory screen
             self.screens[State.VICTORY] = VictoryScreen(self.game_width, self.game_height, self.main_screen, cleared_stage, self.sound)
+
+            #Reset the cleared stage
+            stage.reset()
 
         #Handle the victory screen
         return self.screens[State.VICTORY].handle()
@@ -189,22 +190,22 @@ class GameWindow(object):
         #Handle the online mode
         # return self.screens[State.ONLINE].handle()
 
-    def handle_two_player_pause(self) -> State:
-        """Handle the PVP pause screen"""
+    def _handle_pause(self, pause_state:State, screen_type):
         #Check based on previous state
         prev_screen = self.screens[self.prev]
 
-        if not self.screens[State.TWO_PLAYER_PAUSE] or prev_screen.get_scores() != self.screens[State.TWO_PLAYER_PAUSE].get_scores():
+        #If the screen is not created / different
+        if not self.screens[pause_state] or prev_screen.comparator() != self.screens[pause_state].comparator():
             
             #Check based on previous state
             prev_screen = self.screens[self.prev]
-            scores = self.screens[self.prev].get_scores()
+            comp = self.screens[self.prev].comparator()
 
             #Create the pause screen
-            self.screens[State.TWO_PLAYER_PAUSE] = TwoPlayerPauseScreen(self.game_width, self.game_height, self.main_screen, *scores, self.prev, self.debug)
+            self.screens[pause_state] = screen_type(self.game_width, self.game_height, self.main_screen, comp, self.prev, self.debug)
 
         #Return the function
-        state = self.screens[State.TWO_PLAYER_PAUSE].handle()
+        state = self.screens[pause_state].handle()
 
         #If new state is menu state
         if state == State.MENU:
@@ -216,7 +217,7 @@ class GameWindow(object):
             return state
 
         #If it goes back to the game
-        elif state != State.TWO_PLAYER_PAUSE:
+        elif state != pause_state:
 
             #Return previous state
             return self.prev
@@ -224,49 +225,23 @@ class GameWindow(object):
         #Otherwise return the state
         return state
 
+    def handle_two_player_pause(self) -> State:
+        """Handle the PVP pause screen"""
+
+        #Call the handle pause method
+        return self._handle_pause(State.TWO_PLAYER_PAUSE, TwoPlayerPauseScreen)
+
     def handle_pause(self) -> State:
         """Handle the displaying of the pause screen"""
 
-        #Get the correct score from the correct state
-        score = self.screens[self.prev].get_score()
-
-        #Create the pause screen if it is not already created
-        if not self.screens[State.PAUSE] or self.screens[State.PAUSE] .get_score() != score or self.screens[State.PAUSE] .previous_state != self.prev:
-            self.screens[State.PAUSE]  = PauseScreen(self.game_width,self.game_height, self.main_screen, score, self.prev, self.debug)
-
-        #Handle the pause screen
-        state = self.screens[State.PAUSE] .handle()
-
-        #If it is exiting out of the pause state
-        if state != State.PAUSE and state != self.prev:
-            
-            #Reset the screen
-            self.screens[self.prev].reset()
-
-        #Return the next state
-        return state
+        #Call the handle pause method
+        return self._handle_pause(State.PAUSE, PauseScreen)
 
     def handle_stage_pause(self) -> State:
         """Handle the pause screen for stages"""
 
-        #Get the current stage
-        stage = self.screens[self.prev].get_stage()
-
-        #Create the pause screen if it is not already created
-        if not self.screens[State.STAGE_PAUSE] or self.screens[State.STAGE_PAUSE].get_stage() != stage:
-            self.screens[State.STAGE_PAUSE] = StagePauseScreen(self.game_width, self.game_height, self.main_screen, self.prev, self.debug)
-
-        #Handle the pause screen
-        state = self.screens[State.STAGE_PAUSE].handle()
-
-        #If it is exiting out of the pause state
-        if state != State.STAGE_PAUSE and state != self.prev:
-            
-            #Reset the screen
-            self.screens[self.prev].reset()
-
-        #Return the next state
-        return state
+        #Call the handle pause method
+        return self._handle_pause(State.STAGE_PAUSE, StagePauseScreen)
 
     def handle_newhighscore(self) -> State:
         """Handle the displaying of the highscore screen"""
