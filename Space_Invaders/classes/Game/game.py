@@ -524,10 +524,10 @@ class GameWindow(object):
         self.score_board.__del__()
 
         #Get the settings that was saved and save it to the Database
-        self.settingsdb.update('volume',str(self.screens[State.SETTINGS].get_volume()))
-        self.settingsdb.update('background',str(self.screens[State.SETTINGS].get_bg_no()))
-        self.settingsdb.update('music',int(self.screens[State.SETTINGS].get_music_enabled()))
         self.settingsdb.update('difficulty', int(self.screens[State.SETTINGS].get_difficulty_no()))
+        self.settingsdb.update('music',int(self.screens[State.SETTINGS].get_music_enabled()))
+        self.settingsdb.update('background',str(self.screens[State.SETTINGS].get_bg_no()))
+        self.settingsdb.update('volume',str(self.screens[State.SETTINGS].get_volume()))
 
         #Close the settingsdb
         self.settingsdb.__del__()

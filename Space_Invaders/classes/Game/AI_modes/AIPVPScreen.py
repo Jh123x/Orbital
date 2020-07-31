@@ -1,7 +1,6 @@
 import pygame
 from pygame.locals import *
-from . import LocalPVPScreen
-from .. import AIPlayer, State, Player, Direction, WHITE
+from .. import AIPlayer, State, Player, Direction, WHITE, LocalPVPScreen
 
 class AIPVPScreen(LocalPVPScreen):
     def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, fps:int,

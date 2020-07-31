@@ -15,11 +15,8 @@ from .TwoPlayerPauseScreen import TwoPlayerPauseScreen
 from .TwoPlayerScreen import TwoPlayerScreen
 from .SettingsScreen import SettingsScreen
 from .CoopScreen import CoopScreen
-from .AIPVPScreen import AIPVPScreen
 from .OnlinePVPScreen import OnlinePVPScreen
 from .StoryModeScreen import StoryModeScreen
 from .OnePlayerModesScreen import OnePlayerModeScreen
 from .TutorialScreen import TutorialScreen
 from .VictoryScreen import VictoryScreen
-from .AICoopScreen import AICoopScreen
-from .AIMenuScreen import AIMenuScreen
