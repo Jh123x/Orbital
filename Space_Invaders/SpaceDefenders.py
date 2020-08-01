@@ -2,64 +2,18 @@
 #-------Orbital 2020-------#
 ############################
 
-#Import functions from the class package
+#Import other dependencies
 import os
 import sys
-from classes import GameWindow, list_dir, form_abs_path, read_all
 
-def get_curr_path():
-    """Get the path to the current file depending on state of application"""
-    #Return correct directory
-    return sys.executable if getattr(sys, 'frozen', False) else __file__
+#Initialise pygame
+import pygame
+pygame.init()
+pygame.font.init()
+pygame.mixer.init()
 
-def map_dir(*args):
-    """Map the abs path for the files in the folder"""
-    return list_dir(form_abs_path(get_curr_path(), os.path.join(*args)))
-
-def create_config_file(name:str) -> None:
-    """Create a basic config file"""
-
-    #Data in the base config file
-    data = """[Space Invaders]
-#Do not touch these parameters
-sensitivity = 5
-maxfps = 60
-game_width = 600
-game_height = 800
-
-#Debug mode
-debug = false
-
-#Path to icon
-icon_img_path = images/icon/icon.png
-
-#Path to database (DO NOT TOUCH)
-db_path = data/test.db
-
-#Path to store screenshots
-screenshot_path = screenshots
-
-[Sounds]
-#Path of the different sounds
-click = sounds/click.wav
-explosion = sounds/Explosion_short.wav
-gameover = sounds/Gameover.wav
-shooting = sounds/Shooting.wav
-exit = sounds/exit.wav
-pause = sounds/pause.wav
-screenshot = sounds/screenshot.wav
-victory = sounds/victory.wav
-powerup = sounds/powerup.wav"""
-
-    #If the name contains the .cfg file
-    if name[-4:] != ".cfg":
-        name += '.cfg'
-
-    #Open the file in write mode
-    with open(name, 'w') as file:
-
-        #Write the settings into the file
-        file.write(data)
+#Functions from the class package
+from classes import GameWindow, list_dir, form_abs_path, read_all, create_config_file
 
 def main() -> None:
     """The main function to run the game"""
@@ -102,6 +56,7 @@ def main() -> None:
     d["crabs_img_path"] = map_dir("images", "bosses", "crabs")
     d["story_img_path"] = map_dir("images", "story assets")
     d["place_holder_path"] = map_dir("images", "place_holder")
+    d["pointer_img_path"] = map_dir("images", "pointer")
 
     #Get the number of backgrounds
     bg_limit = len(d["background_img_paths"])
@@ -121,6 +76,15 @@ def main() -> None:
 
     #Run the mainloop for the GameWindow
     game.mainloop()
+
+def get_curr_path():
+    """Get the path to the current file depending on state of application"""
+    #Return correct directory
+    return sys.executable if getattr(sys, 'frozen', False) else __file__
+
+def map_dir(*args):
+    """Map the abs path for the files in the folder"""
+    return list_dir(form_abs_path(get_curr_path(), os.path.join(*args)))
 
 
 #Run the following if the file is run as main

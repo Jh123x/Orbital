@@ -5,7 +5,7 @@ from cx_Freeze import setup, Executable
 # Dependencies are automatically detected, but it might need fine tuning.
 build_exe_options = {
                     "optimize": 2,
-                    "include_files": ["data", "images", "sounds", "screenshots", "settings.cfg"],
+                    "include_files": ["data", "images", "sounds", "screenshots", "settings.cfg", "icon"],
                     "excludes": ['matplotlib.tests','numpy.random._examples'],
                     
                     }

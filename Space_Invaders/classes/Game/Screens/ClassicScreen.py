@@ -94,6 +94,10 @@ class ClassicScreen(Screen):
         """Get a tuple of the enemies"""
         return tuple(self.enemies)
 
+    def comparator(self) -> int:
+        """Variable used for comparison"""
+        return self.get_score()
+
     def update_keypresses(self) -> None:
         """Update the screen based on what the player has pressed"""
 
@@ -101,7 +105,7 @@ class ClassicScreen(Screen):
         keys = pygame.key.get_pressed()
 
         #Check if they want to pause game
-        if keys[K_p]:
+        if keys[K_p] or keys[K_ESCAPE]:
             return True
 
         if not self.player1.is_destroyed():

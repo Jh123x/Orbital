@@ -1,8 +1,7 @@
 #Play mode screen
 import pygame
 from pygame.locals import *
-from . import Screen
-from .. import State, WHITE
+from .. import State, WHITE, Screen
 
 class AIMenuScreen(Screen):
     def __init__(self, screen_width:int, screen_height:int, screen, debug:bool = False):

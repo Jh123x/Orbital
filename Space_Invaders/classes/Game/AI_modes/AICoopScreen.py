@@ -1,7 +1,6 @@
 import pygame
 from pygame.locals import *
-from . import CoopScreen
-from .. import *
+from .. import CoopScreen, Player, AIPlayer, WHITE, Difficulty, Direction, State
 
 class AICoopScreen(CoopScreen):
     def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, fps:int, difficulty: Difficulty, player_lives:int = 3, debug:bool = False):

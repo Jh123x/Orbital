@@ -30,6 +30,15 @@ class VictoryScreen(Screen):
         #Write the stage that was cleared
         self.write(self.end_font, WHITE, f"{prev_stage} cleared", self.screen_width//2, first_px)
 
+        #Draw the try again button
+        
+
+        #Write the next stage button
+        if self.get_stage_name() != "Stage 6" or self.get_stage_name() != 'Tutorial':
+            self.next_stage = self.write(self.end_font, WHITE, "Next Stage", self.screen_width//2, self.screen_height //1.2 - self.screen_height // 15)
+        else:
+            self.next_stage = None
+
         #Write the back button
         self.back = self.write(self.end_font, WHITE, "Back", self.screen_width//2, self.screen_height // 1.2)
 
@@ -49,6 +58,15 @@ class VictoryScreen(Screen):
 
             #Return menu state
             return State.MENU
+        
+        #If there is a next_stage button
+        if self.next_stage:
+
+            #If the player clicked the next stage button
+            if self.check_clicked(self.next_stage):
+
+                #Return the next stage
+                return State(int(self.get_stage_name()[6:])+ 100)
 
         #Return the current state
         return self.state

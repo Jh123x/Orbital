@@ -64,9 +64,13 @@ class StoryTemplate(PlayScreen):
         """Check if the player has won"""
         raise NotImplementedError("Please override this method")
 
+    def get_stage(self) -> int:
+        """Return the stage number"""
+        return self.state.value - 99
+
     def get_stage_name(self):
         """Get the name of the stage"""
-        return f"Stage {self.state.value - 99}"
+        return f"Stage {self.get_stage()}"
 
     def pre_cutscene(self):
         """Plays the precutscene for the story"""
@@ -91,6 +95,10 @@ class StoryTemplate(PlayScreen):
     def get_gameover_state(self):
         """Get the state of the game when the player loses"""
         return State.STAGE_GAMEOVER
+
+    def comparator(self):
+        """Variable used for comparison"""
+        return self.get_stage()
 
     def handle(self):
         """Handles the playing out of the screen"""

@@ -10,6 +10,52 @@ def form_abs_path(current_path:str, filepath:str):
     """Get the absolute path of a filepath"""
     return os.path.join(os.path.dirname(current_path),filepath)
 
+def create_config_file(name:str) -> None:
+    """Create a basic config file"""
+
+    #Data in the base config file
+    data = """[Space Invaders]
+#Do not touch these parameters
+sensitivity = 5
+maxfps = 60
+game_width = 600
+game_height = 800
+
+#Debug mode
+debug = false
+
+#Path to icon
+icon_img_path = images/icon/icon.png
+
+#Path to database (DO NOT TOUCH)
+db_path = data/test.db
+
+#Path to store screenshots
+screenshot_path = screenshots
+
+[Sounds]
+#Path of the different sounds
+click = sounds/click.wav
+explosion = sounds/Explosion_short.wav
+gameover = sounds/Gameover.wav
+shooting = sounds/Shooting.wav
+exit = sounds/exit.wav
+pause = sounds/pause.wav
+screenshot = sounds/screenshot.wav
+victory = sounds/victory.wav
+powerup = sounds/powerup.wav"""
+
+    #If the name contains the .cfg file
+    if name[-4:] != ".cfg":
+        name += '.cfg'
+
+    #Open the file in write mode
+    with open(name, 'w') as file:
+
+        #Write the settings into the file
+        file.write(data)
+
+
 def convertType(pair:tuple):
     """Convert items to the appropriate types
         Arguments:
