@@ -10,6 +10,9 @@ class MenuTemplate(Screen):
         #Call the superclass
         super().__init__(screen_width, screen_height, state, screen, 0, 0, debug)
 
+        #Preprocess items
+        self.preprocess()
+
         #Write the lines required for the Menu
         self.write_lines()
 
@@ -34,6 +37,31 @@ class MenuTemplate(Screen):
     def get_effects(self) -> None:
         """Override the method in the subclass"""
         raise NotImplementedError("Please Implement get_effects method in the class")
+
+    def preprocess(self):
+        """Preprocess items"""
+        pass
+
+    def check_mouse(self, rects:list, states:list):
+        """Check the position of the mouse on the menu to see what the player clicked"""
+        
+        #Iterate through each of the rects
+        for i in range(len(rects)):
+
+            #Check if the rect is clicked
+            if self.check_clicked(rects[i]) and not self.pointer_cd:
+                
+                #Reset pointer cd
+                self.pointer_cd = 20
+
+                #Return the state if it is clicked
+                if type(states[i]) == State:
+                    return states[i]
+                else:
+                    return states[i]()
+
+        #Otherwise return the Menu state
+        return self.state
 
     def reset(self) -> None:
         """Reset the menu to default state"""

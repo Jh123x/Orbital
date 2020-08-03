@@ -72,21 +72,6 @@ class Screen(BaseObject):
             #Blit the screen while making background transparent
             self.screen.blit(self.surface.convert_alpha(), self.get_coord())
 
-    def check_mouse(self, rects:list, states:list):
-        """Check the position of the mouse on the menu to see what the player clicked"""
-        
-        #Iterate through each of the rects
-        for i in range(len(rects)):
-
-            #Check if the rect is clicked
-            if self.check_clicked(rects[i]):
-
-                #Return the state if it is clicked
-                return states[i]
-
-        #Otherwise return the Menu state
-        return self.state
-
     def set_state(self, state:State):
         """Set the current state of the screen"""
         self.state = state
