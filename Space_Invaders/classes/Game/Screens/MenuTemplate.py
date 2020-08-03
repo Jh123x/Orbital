@@ -38,8 +38,8 @@ class MenuTemplate(Screen):
         """Override the method in the subclass"""
         raise NotImplementedError("Please Implement get_effects method in the class")
 
-    def preprocess(self):
-        """Preprocess items"""
+    def preprocess(self) -> None:
+        """Override the method in the subclass to add items to preprocessing"""
         pass
 
     def check_mouse(self, rects:list, states:list):
