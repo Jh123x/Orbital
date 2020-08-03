@@ -1,6 +1,6 @@
 # Orbital project 2020 AI Dev Kit
 
-##Installation
+## Installation
 
 Via virtualenv
 ~~~
@@ -13,7 +13,7 @@ source .env/bin/activate
 pip3 install -r requirements.txt
 ~~~
 
-##Usage
+## Usage
 ### How to train your AI:
 1. View the trainingDQN or trainingEvolution file, and change the given hyperparameters
 2. The training loop is handled by the .train() method in the agent.
