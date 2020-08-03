@@ -21,7 +21,6 @@ class PowerupInstructionsScreen(MenuTemplate):
         #Call the superclass
         super().__init__(screen_width, screen_height, State.POWERUP_INSTRUCTIONS, screen, debug)
 
-
     def preprocess(self):
         """Load other variables which will be used later"""
         #Load the powerups on the screen
@@ -30,7 +29,6 @@ class PowerupInstructionsScreen(MenuTemplate):
         #Load the current page
         self.page = 1
         self.total_pages = len(self.items) - 1
-
 
     def write_lines(self):
         """Write the header"""
