@@ -1,9 +1,9 @@
 import pygame
-from . import Screen
+from . import MenuTemplate
 from .. import State, WHITE
 from pygame.locals import *
 
-class PauseScreen(Screen):
+class PauseScreen(MenuTemplate):
 
     #Check if the pause sound has been played
     sound = None
@@ -11,17 +11,17 @@ class PauseScreen(Screen):
     def __init__(self, screen_width:int, screen_height:int, screen, score:int, previous_state: State, debug:bool = False):
         """Main class for the pause screen"""
 
-        #Call the superclass
-        super().__init__(screen_width, screen_height, State.PAUSE, screen, 0, 0, debug)
-
-        #Set sound played to false
-        self.played = False
-
         #Store the score
         self.p1_score = score
 
         #Store the previous state
         self.previous_state = previous_state
+
+        #Call the superclass
+        super().__init__(screen_width, screen_height, State.PAUSE, screen, debug)
+
+        #Set sound played to false
+        self.played = False
 
         #Set a cd
         self.cd = 20
@@ -54,6 +54,12 @@ class PauseScreen(Screen):
         """Comparison function"""
         return self.get_score()
 
+    def get_rects(self):
+        return (self.quit, self.unpause)
+
+    def get_effects(self):
+        return (State.MENU, self.previous_state)
+
     def update_keypresses(self) -> State:
         """Check for the keypresses within the pause screen"""
 
@@ -76,25 +82,7 @@ class PauseScreen(Screen):
                 return State.MENU
         
         #Return the current state if the player has not unpaused
-        return self.state
-
-    def check_clicks(self):
-        """Check the clicks done by the player"""
-
-        #If the player clicked on the quit button
-        if self.check_clicked(self.quit):
-            self.played = False
-            self.cd = 20
-            return State.MENU
-            
-        #If the player clicked on the unpause button
-        elif self.check_clicked(self.unpause):
-            self.played = False
-            self.cd = 20
-            return self.previous_state
-
-        #Otherwise
-        return None
+        return super().update_keypresses()
 
     def handle(self) -> State:
         """Handles the drawing of the pause screen"""
@@ -110,9 +98,5 @@ class PauseScreen(Screen):
         if self.cd:
             self.cd -= 1
 
-        #Update the screen itself
-        self.update()
-
-        #Detect the keypress
-        state = self.check_clicks()
-        return self.update_keypresses() if state == None else state
+        #Call the superclass handle
+        return super().handle()

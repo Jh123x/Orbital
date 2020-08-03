@@ -4,7 +4,7 @@ from .. import BaseObject, State, Direction
 
 class Screen(BaseObject):
     #Store the pointer sprite
-    sprites = {}
+    pointers = []
 
     #Store the fonts in the Screen Object
     font = pygame.font.Font(pygame.font.get_default_font(),15)
@@ -151,5 +151,3 @@ class Screen(BaseObject):
 
         #Return if the mouse position is within the rect and the player clicked
         return pygame.mouse.get_pressed()[0] and rect.collidepoint(mouse_pos)
-
-

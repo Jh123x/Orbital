@@ -1,5 +1,6 @@
 #Import all the screens
 from .Screens import Screen
+from .MenuTemplate import MenuTemplate
 from .Popup import Popup
 from .ClassicScreen import ClassicScreen
 from .PlayScreen import PlayScreen

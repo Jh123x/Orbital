@@ -5,7 +5,7 @@ from .. import State, WHITE, ImageObject, Scout, EnemyShip, Crabs, Brute, Mother
 class MobInstructionsScreen(PowerupInstructionsScreen):
 
     #Store the sprites
-    sprites = {}
+    sprites_dict = {}
 
     #Store the description
     description = {
@@ -32,7 +32,7 @@ class MobInstructionsScreen(PowerupInstructionsScreen):
                         ('brute', Brute(0, self.screen_width//2, self.screen_height//5 + self.screen_height // 15, self.screen_width, self.screen_height, None, debug)), 
                         ('scout', Scout(0, self.screen_width//2, self.screen_height//5 + self.screen_height // 15, 1, self.screen_width, self.screen_height, None, debug)), 
                         ('crabs', Crabs(0, self.screen_width//2, self.screen_height//5 + self.screen_height // 15, 1,  self.screen_width, self.screen_height, None, debug)), 
-                        ('s-net', ImageObject(self.screen_width//2, self.screen_height//5 + self.screen_height // 15, 50, 50, self.sprites['unknown'], debug)))
+                        ('s-net', ImageObject(self.screen_width//2, self.screen_height//5 + self.screen_height // 15, 50, 50, self.sprites_dict['unknown'], debug)))
 
         #Set the total number of pages
         self.total_pages = len(self.items) - 1

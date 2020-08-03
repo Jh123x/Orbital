@@ -14,22 +14,22 @@ class Stage6Screen(StoryTemplate):
         super().__init__(screen_width, screen_height, screen, State(105), sensitivity, max_fps, 0.2, debug)
 
         #Commander brief image
-        self.bg = ImageObject(300, 285, 600, 570, StoryTemplate.sprites['commander_brief'], debug)
+        self.bg = ImageObject(300, 285, 600, 570, StoryTemplate.sprites_dict['commander_brief'], debug)
 
         #Image of silluette
-        self.shadow = ImageObject(300, 215, 217, 217, StoryTemplate.sprites['silloette_commander'], debug)
+        self.shadow = ImageObject(300, 215, 217, 217, StoryTemplate.sprites_dict['silloette_commander'], debug)
         self.shadow.scale(217, 217)
 
         #Image of Cloud-net
-        self.terminator = ImageObject(300, 215, 217, 217, StoryTemplate.sprites['terminator'], debug)
+        self.terminator = ImageObject(300, 215, 217, 217, StoryTemplate.sprites_dict['terminator'], debug)
         self.terminator.scale(217, 217)
 
         #Image of figure head (To be replaced with the actual image)
-        self.alon_dusk = ImageObject(300, 215, 217, 217, StoryTemplate.sprites['alon_sama'], debug)
+        self.alon_dusk = ImageObject(300, 215, 217, 217, StoryTemplate.sprites_dict['alon_sama'], debug)
         self.alon_dusk.scale(217,217)
 
         #Textbox
-        self.tb = ImageObject(300, 685, 600, 230, StoryTemplate.sprites['textbox'], debug)
+        self.tb = ImageObject(300, 685, 600, 230, StoryTemplate.sprites_dict['textbox'], debug)
 
         #Add cloud net to the game
         self.s_net = AIPlayer(self.sensitivity, self.screen_width, self.screen_height, self.screen_width//2, 50, 5, self.fps, self.mob_bullet, Direction.DOWN, 5, ai_avail=True,boss=True, debug=self.debug)

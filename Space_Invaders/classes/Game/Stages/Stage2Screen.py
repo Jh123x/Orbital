@@ -10,18 +10,18 @@ class Stage2Screen(StoryTemplate):
         super().__init__(screen_width, screen_height, screen, State(101), sensitivity, max_fps, 0.1, debug)
 
         #Commander brief image
-        self.bg = ImageObject(300, 285, 600, 570, StoryTemplate.sprites['commander_brief'], debug)
+        self.bg = ImageObject(300, 285, 600, 570, StoryTemplate.sprites_dict['commander_brief'], debug)
 
         #Image of figure head
-        self.tonald_drump = ImageObject(300, 215, 217, 217, StoryTemplate.sprites['drump'], debug)
+        self.tonald_drump = ImageObject(300, 215, 217, 217, StoryTemplate.sprites_dict['drump'], debug)
         self.tonald_drump.scale(217,217)
 
         #Image of the commander
-        self.commander = ImageObject(300, 210, 217, 217, StoryTemplate.sprites['silloette_commander'], debug)
+        self.commander = ImageObject(300, 210, 217, 217, StoryTemplate.sprites_dict['silloette_commander'], debug)
         self.commander.scale(217,217)
 
         #Textbox
-        self.tb = ImageObject(300, 685, 600, 230, StoryTemplate.sprites['textbox'], debug)
+        self.tb = ImageObject(300, 685, 600, 230, StoryTemplate.sprites_dict['textbox'], debug)
 
     def draw_bg(self):
         """Draw the background"""

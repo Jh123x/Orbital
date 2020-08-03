@@ -11,15 +11,18 @@ class GameWindow(object):
                  enemy_img_paths:tuple, bullet_img_paths:tuple, background_img_paths:tuple, explosion_img_paths:tuple, 
                  db_path:str, sound_path:dict, bg_limit:int, menu_music_paths:tuple, powerup_img_path:tuple, mothership_img_path:tuple, 
                  trophy_img_path:tuple, scout_img_path:tuple, brute_img_path:tuple, screenshot_path:str, story_img_path:str, crabs_img_path:str, 
-                 place_holder_path:str, pointer_img_path:str, wave:int = 1,  debug:bool = False):
+                 place_holder_path:str, pointer_img_path:tuple, wave:int = 1,  debug:bool = False):
         """The Main window for the Space defenders game"""
         
         #Load sprites
         load_sprites((Player, Bullet, EnemyShip, Background, Explosion, MotherShip, VictoryScreen, Scout, Brute, Crabs), 
                     (player_img_paths, bullet_img_paths, enemy_img_paths, background_img_paths, explosion_img_paths, mothership_img_path, trophy_img_path, scout_img_path, brute_img_path, crabs_img_path))
 
-        load_sprites_dict((StoryTemplate, PowerUp, MobInstructionsScreen, Screen),
-                        (story_img_path, powerup_img_path, place_holder_path, pointer_img_path))
+        load_sprites_dict((StoryTemplate, PowerUp, MobInstructionsScreen),
+                        (story_img_path, powerup_img_path, place_holder_path))
+
+        #Load the pointers
+        load_pointers(pointer_img_path, Screen)
 
         #Store debug variable
         self.debug = debug
@@ -385,11 +388,11 @@ class GameWindow(object):
             #Fill the background to black
             self.main_screen.fill(BLACK)
 
-    def find_method(self, prev) -> State:
+    def find_method(self, state) -> State:
         """Find the appropriate method to execute"""
 
         #Try to find the method in self.states
-        handle_method = self.states.get(prev, None)
+        handle_method = self.states.get(state, None)
 
         #If method is found execute it else call the default handle
         return handle_method() if handle_method else self.screens.get(self.state).handle()

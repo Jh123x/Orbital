@@ -25,7 +25,7 @@ class PowerupInstructionsScreen(Screen):
         self.write_header()
 
         #Load the powerups on the screen
-        self.items = tuple(map(lambda x: (x[0],ImageObject(self.screen_width//2, self.screen_height//5 + self.screen_height // 15, 50, 50,x[1], debug)), PowerUp.sprites.items()))
+        self.items = tuple(map(lambda x: (x[0],ImageObject(self.screen_width//2, self.screen_height//5 + self.screen_height // 15, 50, 50,x[1], debug)), PowerUp.sprites_dict.items()))
 
         #Load the current page
         self.page = 1
