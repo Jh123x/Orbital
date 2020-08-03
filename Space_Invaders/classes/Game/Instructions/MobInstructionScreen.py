@@ -26,15 +26,19 @@ class MobInstructionsScreen(PowerupInstructionsScreen):
         #Set the current state
         self.set_state(State.MOBS_INSTRUCTIONS)
 
-        #Init the sprites
-        self.items = (('enemyship', EnemyShip(0, self.screen_width//2, self.screen_height//5 + self.screen_height // 15, 1,  self.screen_width, self.screen_height, None, None, debug)), 
-                        ('mothership',MotherShip(self.screen_width//2, self.screen_height//5 + self.screen_height // 15, self.screen_width, self.screen_height, 0, debug)), 
-                        ('brute', Brute(0, self.screen_width//2, self.screen_height//5 + self.screen_height // 15, self.screen_width, self.screen_height, None, debug)), 
-                        ('scout', Scout(0, self.screen_width//2, self.screen_height//5 + self.screen_height // 15, 1, self.screen_width, self.screen_height, None, debug)), 
-                        ('crabs', Crabs(0, self.screen_width//2, self.screen_height//5 + self.screen_height // 15, 1,  self.screen_width, self.screen_height, None, debug)), 
-                        ('s-net', ImageObject(self.screen_width//2, self.screen_height//5 + self.screen_height // 15, 50, 50, self.sprites_dict['unknown'], debug)))
+    def preprocess(self):
+        """Load other variables"""
 
-        #Set the total number of pages
+        #Init the sprites
+        self.items = (('enemyship', EnemyShip(0, self.screen_width//2, self.screen_height//5 + self.screen_height // 15, 1,  self.screen_width, self.screen_height, None, None, self.debug)), 
+                        ('mothership',MotherShip(self.screen_width//2, self.screen_height//5 + self.screen_height // 15, self.screen_width, self.screen_height, 0, self.debug)), 
+                        ('brute', Brute(0, self.screen_width//2, self.screen_height//5 + self.screen_height // 15, self.screen_width, self.screen_height, None, self.debug)), 
+                        ('scout', Scout(0, self.screen_width//2, self.screen_height//5 + self.screen_height // 15, 1, self.screen_width, self.screen_height, None, self.debug)), 
+                        ('crabs', Crabs(0, self.screen_width//2, self.screen_height//5 + self.screen_height // 15, 1,  self.screen_width, self.screen_height, None, self.debug)), 
+                        ('s-net', ImageObject(self.screen_width//2, self.screen_height//5 + self.screen_height // 15, 50, 50, self.sprites_dict['unknown'], self.debug)))
+
+        #Load the current page
+        self.page = 1
         self.total_pages = len(self.items) - 1
     
     def write_header(self):
