@@ -16,7 +16,7 @@ class EnemyShip(MovingObject):
             print(switch_direction)
 
         #Scale the mob to 40 x 40
-        self.scale(40,40)
+        self.scale(40 * game_width // 600, 40 * game_height // 800)
 
         #Store variables
         self.switch_direction = switch_direction
@@ -61,7 +61,7 @@ class EnemyShip(MovingObject):
                 self.image = self.sprites[self.lives-1 if self.lives < len(self.sprites) else len(self.sprites)-1]
 
                 #Scale the mob to 40 x 40
-                self.scale(40,40)
+                self.scale(40 * self.game_width // 600, 40 * self.game_height // 800)
 
         else:
 

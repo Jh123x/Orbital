@@ -50,7 +50,7 @@ class Stage5Screen(StoryTemplate):
         self.draw_bg()
 
         #Draw the next button
-        self.next_btn = self.write_main(self.end_font, WHITE, "Next", 580, self.tb.rect.top - 30, Direction.RIGHT)
+        self.next_btn = self.write_main(self.end_font, WHITE, "Next", (580/600 * self.screen_width), self.tb.rect.top - 30, Direction.RIGHT)
 
         #Check if the next button is clicked
         if self.check_clicked(self.next_btn) and not self.click_cd:
@@ -119,7 +119,7 @@ class Stage5Screen(StoryTemplate):
         self.draw_bg()
 
         #Draw the next button
-        self.next_btn = self.write_main(self.end_font, WHITE, "Next", 580, self.tb.rect.top - 30, Direction.RIGHT)
+        self.next_btn = self.write_main(self.end_font, WHITE, "Next", (580/600 * self.screen_width), self.tb.rect.top - 30, Direction.RIGHT)
 
         #Check if the next button is clicked
         if self.check_clicked(self.next_btn) and not self.click_cd:

@@ -11,7 +11,7 @@ class MotherShip(EnemyShip):
         super().__init__(5, initial_x, initial_y, 1, game_width, game_height, None, None, debug)
 
         #Scale the mothership
-        self.scale(100,50)
+        self.scale(100 * game_width // 600, 50 * game_height // 800)
 
         #Store the points
         self.set_points(points)

@@ -12,6 +12,9 @@ class Crabs(EnemyShip):
         #Call the superclass init with 1.2 times the sensitivity to make it move faster
         super().__init__(sensitivity, initial_x, initial_y, lives,  game_width, game_height, None, bullet_grp, debug)
 
+        #Scale according to the fps
+        self.scale(50 * game_width // 600, 50 * game_height // 800)
+
         #Store the x_velocity and y_velocity (To be fine tuned later)
         self.delta_x = self.sensitivity // 4
         self.delta_y = self.sensitivity // 4

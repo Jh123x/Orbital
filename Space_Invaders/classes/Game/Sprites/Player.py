@@ -19,7 +19,7 @@ class Player(MovingObject):
         super().__init__(sensitivity, initial_x, initial_y, game_width, game_height, Player.sprites[-1], debug)
 
         #Scale the image to 50x50
-        self.scale(50,50)
+        self.scale(50 * game_width // 600, 50 * game_height // 800)
 
         #Invicibility when it just spawned
         self.invincible = fps

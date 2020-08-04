@@ -36,10 +36,16 @@ class Scout(EnemyShip):
                     #Change the image to face the right
                     self.image = self.sprites[0]
 
+                    #Scale the image base on the resolution
+                    self.scale(50 * self.screen_width // 600, 50 * self.screen_height // 800)
+
                 else:
 
                     #Change the image to face the left
                     self.image = self.sprites[1]
+
+                    #Scale the image base on the resolution
+                    self.scale(50 * self.screen_width // 600, 50 * self.screen_height // 800)
 
         #Update the position of the ship
         self.move(self.delta_x, self.delta_y)

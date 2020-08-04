@@ -39,7 +39,7 @@ class Stage4Screen(StoryTemplate):
         self.draw_bg()
 
         #Draw the next button
-        self.next_btn = self.write_main(self.end_font, WHITE, "Next", 580, self.tb.rect.top - 30, Direction.RIGHT)
+        self.next_btn = self.write_main(self.end_font, WHITE, "Next", (580/600 * self.screen_width), self.tb.rect.top - 30, Direction.RIGHT)
 
         #Lower cd of click if it is still on cooldown
         if self.click_cd:
@@ -98,7 +98,7 @@ class Stage4Screen(StoryTemplate):
         self.draw_bg()
 
         #Draw the next button
-        self.next_btn = self.write_main(self.end_font, WHITE, "Next", 580, self.tb.rect.top - 30, Direction.RIGHT)
+        self.next_btn = self.write_main(self.end_font, WHITE, "Next", (580/600 * self.screen_width), self.tb.rect.top - 30, Direction.RIGHT)
 
         #Lower cd of click if it is still on cooldown
         if self.click_cd:

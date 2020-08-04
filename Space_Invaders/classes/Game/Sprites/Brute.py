@@ -22,6 +22,9 @@ class Brute(EnemyShip):
         #Call the superclass constructer
         super().__init__(sensitivity, initial_x, initial_y, self.spawn_count,  game_width, game_height, None, bullet_grp, debug)
 
+        #Scale to the resolution
+        self.scale(50 * game_width // 600, 50 * game_height // 800)
+
         #Set direction to none
         self.direction = None
 
@@ -29,7 +32,7 @@ class Brute(EnemyShip):
         self.set_points(self.spawn_count * 100)
 
         #Set the delta x for the brute
-        self.delta_y = sensitivity // 3 # It moves slower than the mobs
+        self.delta_y = self.sensitivity // 3 # It moves slower than the mobs
 
     def update(self) -> None:
         """Overridden update class for the scout boss"""
