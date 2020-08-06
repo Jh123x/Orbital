@@ -25,13 +25,17 @@ def load_sprites_dict(obj_list:list, paths:list) -> None:
         #Add image sprites to each class concurrently
         asyncio.run(add_to_sprite_dict(obj, paths[i]))
 
+def load_img(path:str):
+    """Load image"""
+    return pygame.image.load(path)
+
 async def add_to_sprite(obj, sprite_path:list) -> None:
     """Add the pygame image to the object"""
     #For each object load the image and append it to the object
     for path in sprite_path:
 
         #Append the sprite
-        obj.sprites.append(pygame.image.load(path))
+        obj.sprites.append(load_img(path))
 
 async def add_to_sprite_dict(obj, sprite_path:list) -> None:
     """Add the pygame image to the object"""
@@ -39,7 +43,7 @@ async def add_to_sprite_dict(obj, sprite_path:list) -> None:
     for path in sprite_path:
 
         #Added the name to the sprite dict
-        obj.sprites_dict[os.path.basename(path)[:-4]] = (pygame.image.load(path))
+        obj.sprites_dict[os.path.basename(path)[:-4]] = load_img(path)
         
 async def load_sound(sound_path:str, settings:int, volume:float, debug:bool) -> Sound:
     """Load the sound object"""
