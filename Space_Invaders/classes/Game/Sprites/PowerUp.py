@@ -20,7 +20,7 @@ def bullet_down(screen, player):
 def shield_up(screen, player):
     """Creates a shield for the player"""
     #Spawn the blocks
-    screen.blocks = BlockGroup(screen.screen_width, screen.screen_height//1.2, screen.screen, 3, screen.player1.get_height() + 10)
+    screen.blocks = BlockGroup(screen.screen_width, screen.screen_height, screen.screen_width, screen.screen_height//1.2, screen.screen, 3, screen.player1.get_height() + 10)
 
 def emp_bomb(screen, player):
     """Destroy lives of all normal enemies by 1"""
