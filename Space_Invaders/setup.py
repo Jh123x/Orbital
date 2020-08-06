@@ -10,9 +10,6 @@ build_exe_options = {
                     
                     }
 
-# GUI applications require a different base on Windows (the default is for a
-# console application).
-
 setup(name = "Space Defenders",
     version = "1.0",
     description = "Space Defenders Game",
