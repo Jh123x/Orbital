@@ -1,55 +1,97 @@
 import os
-import tkinter as ttk
+import pygame
+import tkinter as tk
 import multiprocessing as mp
-from tkinter import *
 from SpaceDefenders import load_settings, run_game
 
-def launch(result:str, root):
-    """Function to launch the game"""
+class Application(tk.Frame):
+    def __init__(self, master = None):
+        """Main frame for the tkinter window"""
+        #Call the superclass
+        super().__init__(master)
 
-    #Load files
-    config = load_settings('settings.cfg')
+        # Create a Tkinter string variable
+        self.tkvar = tk.StringVar(self.master)
 
-    #Get the resolution chosen
-    config['game_height'],config['game_width'] = tuple(map(lambda x: int(x), result.split("x")))
+        #Choices
+        self.choices = {'680x510','800x600'}
 
-    #Launch the game
-    process = mp.Process(target = run_game, args = (config,))
-    process.daemon = False
-    process.start()
+        #Create layout
+        self.set_layout()
+
+        #Create widgets
+        self.create_widgets()
+
+    def set_layout(self):
+        """Set the layout of the frame"""
+
+        #Set the grid
+        self.grid(column=0, row=0, sticky=(tk.N, tk.W, tk.E, tk.S) )
+
+        #Set the maximum column for the configuration
+        self.columnconfigure(0, weight = 5)
+
+        #Set the maximum number of rows
+        self.rowconfigure(0, weight = 3)
+
+        #Add the padding of 100 px in both dimensions
+        self.pack(pady = 100, padx = 100)
+    
+    def create_widgets(self):
+        """Create the widgets"""
+
+        # Set with options
+        self.tkvar.set('800x600') # set the default option
+
+        #Create popup menu
+        self.popupMenu = tk.OptionMenu(self, self.tkvar, *self.choices)
+
+        #Create the launch button
+        self.launchBtn = tk.Button(self, text = "Launch", command = self.launch)
+
+        #Create a label
+        self.label = tk.Label(self, text="Choose a Resolution")
+
+        #Grid the items
+        self.label.grid(row = 1, column = 2)
+        self.popupMenu.grid(row = 2, column = 2)
+        self.launchBtn.grid(row = 3, column = 2)
+
+    def launch(self):
+        """Function to launch the game"""
+
+        #Load files
+        config = load_settings('settings.cfg')
+
+        #Get the resolution chosen
+        config['game_height'],config['game_width'] = tuple(map(lambda x: int(x), self.tkvar.get().split("x")))
+
+        #Launch the game
+        process = mp.Process(target = run_game, args = (config,))
+
+        #Set the daemon to false
+        process.daemon = False
+
+        #Start the process
+        process.start()
 
 def main():
     """Main function for the screen launcher"""
+
     #Create windows
-    root = Tk()
+    root = tk.Tk()
 
     #Set title of window
     root.title("Space Defenders Launcher")
 
     # Add a grid
-    mainframe = Frame(root)
-    mainframe.grid(column=0,row=0, sticky=(N,W,E,S) )
-    mainframe.columnconfigure(0, weight = 1)
-    mainframe.rowconfigure(0, weight = 1)
-    mainframe.pack(pady = 100, padx = 100)
-
-    # Create a Tkinter variable
-    tkvar = StringVar(root)
-
-    # Set with options
-    choices = {'680x510','800x600'}
-    tkvar.set('800x600') # set the default option
-
-    popupMenu = OptionMenu(mainframe, tkvar, *choices)
-    launchBtn = Button(mainframe, text = "Launch", command = lambda : launch(tkvar.get(), root))
-    Label(mainframe, text="Choose a Resolution").grid(row = 1, column = 1)
-    popupMenu.grid(row = 2, column = 1)
-    launchBtn.grid(row = 3, column = 1)
+    mainframe = Application(root)
 
     #Launch the launcher
     root.mainloop()
 
 #If this file is run as main file
 if __name__ == "__main__":
-    main()
 
+    #Run the main function
+    main()

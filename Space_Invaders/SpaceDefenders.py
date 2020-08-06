@@ -71,6 +71,7 @@ def load_settings(settings_path:str) -> dict:
 
 def run_game(config:dict):
     """Run the game"""
+
     #Create the new game window with the configurations
     game = GameWindow(**config)
 
