@@ -195,5 +195,8 @@ class Player(MovingObject):
         #Rotate the corresponding image
         self.rotate(self.rotation)
 
+        #Scale the image to 50x50
+        self.scale(50 * self.game_width // 600, 50 * self.game_height // 800)
+
         #Call the super update
         return super().update()
