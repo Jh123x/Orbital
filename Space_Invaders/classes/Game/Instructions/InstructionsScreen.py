@@ -1,11 +1,14 @@
-from .. import Sound, WHITE, State, Screen
+from .. import Sound, WHITE, State, MenuTemplate
 
-class InstructionScreen(Screen):
+class InstructionScreen(MenuTemplate):
     def __init__(self, screen_width:int, screen_height:int, screen, debug:bool = False):
         """Screen for displaying the instructions"""
 
         #Call the superclass
-        super().__init__(screen_width, screen_height, State.INSTRUCTIONS, screen, 0, 0, debug)
+        super().__init__(screen_width, screen_height, State.INSTRUCTIONS, screen, debug)
+
+    def write_lines(self):
+        """Write the lines in the instructions screen"""
 
         #The first pixel to align
         first_px = self.screen_height//2 - 100
@@ -22,24 +25,10 @@ class InstructionScreen(Screen):
         #Draw the back button
         self.back_rect = self.write(self.end_font,WHITE, "Back", self.screen_width//2, self.screen_height//1.2)
 
+    def get_rects(self) -> tuple:
+        """Return the rects on the screen"""
+        return (self.back_rect,)
 
-    def check_keypresses(self):
-        """Check keypresses"""
-
-        #Check if the back button is clicked
-        if self.check_clicked(self.back_rect):
-
-            #Go back to the instructions menu
-            return State.INSTRUCTIONS_MENU
-        
-        #Otherwise return current state
-        return self.state
-
-    def handle(self) -> State:
-        """Load the Instructions onto the screen"""
-
-        #Update onto the screen
-        self.update()
-
-        #Otherwise return the current state
-        return self.check_keypresses()
+    def get_effects(self) -> tuple:
+        """Return the effects to be mapped"""
+        return (State.INSTRUCTIONS_MENU,)

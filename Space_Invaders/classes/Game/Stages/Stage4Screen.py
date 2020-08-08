@@ -11,14 +11,16 @@ class Stage4Screen(StoryTemplate):
         super().__init__(screen_width, screen_height, screen, State(103), sensitivity, max_fps, 0.1, tracker, debug)
 
         #Commander brief image
-        self.bg = ImageObject(300, 285, 600, 570, StoryTemplate.sprites['commander_brief'], debug)
+        self.bg = ImageObject(self.screen_width//2, int(self.screen_height * 285 / 800), 600, 570, StoryTemplate.sprites_dict["commander_brief"], debug)
+        self.bg.scale(self.screen_width, int(self.screen_height * 57/80))
 
-        #Image of figure head (To be replaced with the actual image)
-        self.alon_dusk = ImageObject(300, 215, 217, 217, StoryTemplate.sprites['alon_sama'], debug)
-        self.alon_dusk.scale(217,217)
+        #Image of figure head
+        self.alon_dusk = ImageObject(self.screen_width//2, int(self.screen_height * 210 / 800), 217, 217, StoryTemplate.sprites_dict['alon_sama'], debug)
+        self.alon_dusk.scale(int(217 * screen_width//600),int(217 * screen_height//800))
 
         #Textbox
-        self.tb = ImageObject(300, 685, 600, 230, StoryTemplate.sprites['textbox'], debug)
+        self.tb = ImageObject(self.screen_width//2, int(self.screen_height * 685 / 800), 600, 230, StoryTemplate.sprites_dict['textbox'], debug)
+        self.tb.scale(self.screen_width, int(self.screen_height * 23/80))
 
     def draw_bg(self):
         """Draw the background"""
@@ -38,7 +40,7 @@ class Stage4Screen(StoryTemplate):
         self.draw_bg()
 
         #Draw the next button
-        self.next_btn = self.write_main(self.end_font, WHITE, "Next", 580, self.tb.rect.top - 30, Direction.RIGHT)
+        self.next_btn = self.write_main(self.end_font, WHITE, "Next", (580/600 * self.screen_width), self.tb.rect.top - 30, Direction.RIGHT)
 
         #Lower cd of click if it is still on cooldown
         if self.click_cd:
@@ -97,7 +99,7 @@ class Stage4Screen(StoryTemplate):
         self.draw_bg()
 
         #Draw the next button
-        self.next_btn = self.write_main(self.end_font, WHITE, "Next", 580, self.tb.rect.top - 30, Direction.RIGHT)
+        self.next_btn = self.write_main(self.end_font, WHITE, "Next", (580/600 * self.screen_width), self.tb.rect.top - 30, Direction.RIGHT)
 
         #Lower cd of click if it is still on cooldown
         if self.click_cd:

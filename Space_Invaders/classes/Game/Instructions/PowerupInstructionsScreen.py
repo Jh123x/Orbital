@@ -1,6 +1,6 @@
-from .. import State, PowerUp, WHITE, GREY, ImageObject, Screen
+from .. import State, PowerUp, WHITE, GREY, ImageObject, MenuTemplate
 
-class PowerupInstructionsScreen(Screen):
+class PowerupInstructionsScreen(MenuTemplate):
 
     description = {
         'bullet_up' : ("Increase bullet speed","Increases the speed of the bullets"), 
@@ -15,68 +15,71 @@ class PowerupInstructionsScreen(Screen):
     def __init__(self, screen_width:int, screen_height:int, screen, fps, debug:bool = False):
         """Constructor for the powerup instructions screen"""
 
-        #Call the superclass
-        super().__init__(screen_width, screen_height, State.POWERUP_INSTRUCTIONS, screen, 0, 0, debug)
-
         #Store the fps
         self.fps = fps
 
-        #Draw the header
-        self.write_header()
+        #Call the superclass
+        super().__init__(screen_width, screen_height, State.POWERUP_INSTRUCTIONS, screen, debug)
 
+    def preprocess(self):
+        """Load other variables which will be used later"""
         #Load the powerups on the screen
-        self.items = tuple(map(lambda x: (x[0],ImageObject(self.screen_width//2, self.screen_height//5 + self.screen_height // 15, 50, 50,x[1], debug)), PowerUp.sprites.items()))
+        self.items = tuple(map(lambda x: (x[0],ImageObject(self.screen_width//2, self.screen_height//5 + self.screen_height // 15, 50, 50,x[1], self.debug)), PowerUp.sprites_dict.items()))
 
         #Load the current page
         self.page = 1
         self.total_pages = len(self.items) - 1
 
-        #Set the cooldown
-        self.cooldown = self.fps//5
-
-        #Draw the back button
-        self.back = self.write(self.end_font, WHITE, "Back", screen_width//2, screen_height//1.2)
-
-    def write_header(self):
+    def write_lines(self):
         """Write the header"""
 
         #Draw the header
         self.header = self.write(self.title_font, WHITE, "Power Ups", self.screen_width//2, self.screen_height//5)
 
+        #Draw the back button
+        self.back = self.write(self.end_font, WHITE, "Back", self.screen_width//2, self.screen_height//1.2)
 
-    def check_keypresses(self) -> State:
-        """Check the keypresses on the PVP instructions screen"""
+        #Write data onto the main screen
+        self.main_write()
 
-        if self.cooldown:
-            self.cooldown -= 1
-            return self.state
-        
-        #If the player clicks on back
-        elif self.check_clicked(self.back):
+    def get_rects(self) -> tuple:
+        """Get the rects within the game"""
+        return (self.prev, self.back, self.next)
 
-            #Reset the page when player backs
-            self.page = 1
+    def get_effects(self) -> tuple:
+        """Get the effects within the game"""
+        return (self.dec_page, self._back, self.inc_page)
 
-            #Return the instructions menu screen
-            return State.INSTRUCTIONS_MENU
+    def _back(self):
+        """The command to run when the player backs"""
+        #Reset the page when player backs
+        self.page = 1
 
-        #If player clicks on next page
-        elif self.page < self.total_pages and self.check_clicked(self.next):
+        #Return the instructions menu screen
+        return State.INSTRUCTIONS_MENU
+
+    def inc_page(self):
+        """Function to be executed when player clicks next"""
+
+        #If current page is less than next page
+        if self.page < self.total_pages:
+
+            #Increment the page by 1
             self.page += 1
 
-            #Set the cooldown
-            self.cooldown = self.fps//5
-        
-        #If player clicks on prev page
-        elif self.check_clicked(self.prev) and self.page > 1:
+        #Return the current state
+        return self.state
+
+    def dec_page(self):
+        """Function to execute when player clicks prev"""
+
+        #If it is more than page 1
+        if self.page > 1:
 
             #Decrease the page by 1
             self.page -= 1
 
-            #Set the cooldown
-            self.cooldown = self.fps//5
-
-        #Otherwise return current state
+        #Return the current state
         return self.state
 
     def insert_description(self, first_px, description:str) -> None:
@@ -110,8 +113,8 @@ class PowerupInstructionsScreen(Screen):
             #Increment first_px to next pt
             first_px += self.screen_height//15
 
-    def handle(self) -> State:
-        """Handle the drawing of the PVP instructions screen"""
+    def main_write(self):
+        """Writing the main information onto the screen"""
 
         #First pixel used for alignment
         first_px = self.screen_height//5 + self.screen_height // 15 + 50
@@ -143,8 +146,11 @@ class PowerupInstructionsScreen(Screen):
         #Draw the pages
         self.write_main(self.end_font, WHITE, f"{self.page} / {self.total_pages}", self.screen_width//2, self.screen_height//1.1)
 
-        #Update the screen
-        self.update()
+    def handle(self) -> State:
+        """Handle the drawing of the PVP instructions screen"""
 
-        #Check for keypresses
-        return self.check_keypresses()
+        #Do the main writing on the screen
+        self.main_write()
+
+        #Call the superclass handle
+        return super().handle()

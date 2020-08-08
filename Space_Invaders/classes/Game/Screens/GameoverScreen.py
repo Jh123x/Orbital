@@ -1,15 +1,12 @@
 import pygame
 from pygame.locals import *
-from . import Screen
+from . import MenuTemplate
 from .. import State, WHITE
 
-class GameoverScreen(Screen):
+class GameoverScreen(MenuTemplate):
     sound = None
     def __init__(self, screen_width:int, screen_height:int, screen, score:int, prev_state:State, debug:bool = False):
         """Constructor for the gameover screen for 1 player modes"""
-
-        #Call the superclass method
-        super().__init__(screen_width, screen_height, State.GAMEOVER, screen, 0, 0, debug)
 
         #Set the sound played to False
         self.played = False
@@ -20,8 +17,8 @@ class GameoverScreen(Screen):
         #Store the previous state
         self.prev = prev_state
 
-        #Write lines
-        self.write_lines()
+        #Call the superclass method
+        super().__init__(screen_width, screen_height, State.GAMEOVER, screen, debug)
 
     def write_lines(self) -> None:
         """Write lines of the gameover screen"""
@@ -55,31 +52,13 @@ class GameoverScreen(Screen):
         """The comparator for the gameover screen"""
         return self.get_score()
 
-    def check_clicks(self) -> State:
-        """Check the clicks of the user"""
-        #If the player clicked on the quit button
-        if self.check_clicked(self.quit):
+    def get_rects(self) -> tuple:
+        """Get the rects for the gameover screen"""
+        return (self.try_again, self.menu, self.quit)
 
-            #Return the quit state
-            return State.QUIT
-
-        #If the player clicked on the menu button
-        elif self.check_clicked(self.menu):
-
-            #Return the menu button
-            return State.MENU
-
-        #Check if the player wants to try again
-        elif self.check_clicked(self.try_again):
-
-            #Return the previous state of the game
-            return self.get_prev_state()
-
-        #Otherwise
-        else:
-            
-            #Return the current state
-            return None
+    def get_effects(self) -> tuple:
+        """Get the effects for the gameover screen"""
+        return (self.get_prev_state(), State.MENU, State.QUIT)
         
     def update_keypresses(self) -> State:
         """Check if player wants to stay"""
@@ -103,7 +82,7 @@ class GameoverScreen(Screen):
         
         #Otherwise return None for it to be asked in the next iteration
         else:
-            return self.state
+            return super().update_keypresses()
 
     def handle(self) -> State:
         """Handles drawing of the gameover screen"""
@@ -117,11 +96,5 @@ class GameoverScreen(Screen):
             #Set sound played to true
             self.played = True
         
-        #Update itself into the screen
-        self.update()
-
-        #Update the stay status
-        state = self.check_clicks()
-
-        #Return the correct state
-        return state if state else self.update_keypresses()
+        #Call the superclass handle method
+        return super().handle()

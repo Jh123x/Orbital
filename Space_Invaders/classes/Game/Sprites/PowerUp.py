@@ -20,7 +20,7 @@ def bullet_down(screen, player):
 def shield_up(screen, player):
     """Creates a shield for the player"""
     #Spawn the blocks
-    screen.blocks = BlockGroup(screen.screen_width, screen.screen_height//1.2, screen.screen, 3, screen.player1.get_height() + 10)
+    screen.blocks = BlockGroup(screen.screen_width, screen.screen_height, screen.screen_width, screen.screen_height//1.2, screen.screen, 3, screen.player1.get_height() + 10)
 
 def emp_bomb(screen, player):
     """Destroy lives of all normal enemies by 1"""
@@ -85,7 +85,7 @@ def decrease_bullet_power(screen, player):
 class PowerUp(ImageObject):
 
     #To store the images of the sprites
-    sprites = {}
+    sprites_dict = {}
 
     #To store the powerup functions
     powers = {'bullet_up' : bullet_up, 
@@ -100,7 +100,7 @@ class PowerUp(ImageObject):
         """Constructor for the powerup class"""
 
         #Call the superclass contructor
-        super().__init__(initial_x, initial_y, width, height, PowerUp.sprites[power_type], debug)
+        super().__init__(initial_x, initial_y, width, height, self.sprites_dict[power_type], debug)
 
         #Store variables
         self.power_type = power_type
@@ -121,7 +121,7 @@ class PowerUp(ImageObject):
         self.sound.play('powerup')
 
         #Return the powerup function
-        return PowerUp.powers[self.power_type]
+        return self.powers[self.power_type]
 
     def get_power_type(self) -> str:
         """Get the power type of the power up"""

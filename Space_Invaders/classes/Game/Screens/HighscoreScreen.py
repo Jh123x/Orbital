@@ -1,7 +1,7 @@
-from . import Screen
+from . import MenuTemplate
 from .. import State, WHITE, Direction
 
-class HighscoreScreen(Screen):
+class HighscoreScreen(MenuTemplate):
     def __init__(self, screen_width:int, screen_height:int, screen, scores:tuple, debug:bool = False):
         """Constructor for the Highscore screen"""
 
@@ -12,10 +12,7 @@ class HighscoreScreen(Screen):
         self.removed = []
 
         #Call the superclass
-        super().__init__(screen_width, screen_height, State.HIGHSCORE, screen, 0, 0, debug)
-
-        #Draw the sprite
-        self.draw()
+        super().__init__(screen_width, screen_height, State.HIGHSCORE, screen, debug)
 
     def update_score(self, name:str, score:int) -> None:
         """Update the new player's name and score into the score board"""
@@ -51,7 +48,7 @@ class HighscoreScreen(Screen):
         """Get a list of people removed from the database"""
         return tuple(self.removed)
 
-    def draw(self) -> None:
+    def write_lines(self) -> None:
         """Draws the highscore screen onto the predefined surface"""
         #Reset the screen
         super().reset_surface()
@@ -74,20 +71,11 @@ class HighscoreScreen(Screen):
             #Draw the 2nd half of the scoreboard
             self.write(self.end_font, WHITE, f"{item[2]:<5}",self.screen_width//1.6, start_px + self.screen_height//(15/(index+1)),Direction.LEFT)
 
-    def handle(self) -> State:
-        """Handles the drawing of the highscore screen"""
 
-        #Update itself
-        self.update()
+    def get_rects(self):
+        """Get the rects in the highscore screen"""
+        return (self.end_rect,)
 
-        #Check if the back button is clicked
-        if self.check_clicked(self.end_rect):
-
-            #Return the menu state
-            return State.MENU
-
-        #Otherwise
-        else:
-            
-            #Return the current state
-            return State.HIGHSCORE
+    def get_effects(self):
+        """Get the effects of the rect in the highscore screen"""
+        return (State.MENU,)

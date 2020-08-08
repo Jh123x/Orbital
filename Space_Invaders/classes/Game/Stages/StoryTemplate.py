@@ -3,7 +3,7 @@ from .. import PlayScreen, State, Difficulty, Direction, WHITE, StatTracker
 class StoryTemplate(PlayScreen):
 
     #Store the sprites to be used for stories
-    sprites = {}
+    sprites_dict = {}
 
     def __init__(self, screen_width:int, screen_height:int, screen, state:State, sensitivity:int, max_fps:int,
                  powerup_chance:float, tracker:StatTracker, debug:bool):

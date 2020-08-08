@@ -14,8 +14,8 @@ class ClassicScreen(Screen):
 
         #Store the variables
         self.p1_score = 0
-        self.wave = wave - 1 
-        self.sensitivity = sensitivity
+        self.wave = wave - 1
+        self.sensitivity = int(sensitivity * self.screen_width/600)
         self.fps = max_fps
         self.difficulty = difficulty
         self.player_lives = player_lives
@@ -100,7 +100,7 @@ class ClassicScreen(Screen):
         self.explosions.empty()
 
         #Reset the blocks to original block group
-        self.blocks = BlockGroup(self.screen_width, self.screen_height//1.2, self.screen, 5, self.player1.get_height() + 10)
+        self.blocks = BlockGroup(self.screen_width, self.screen_height, self.screen_width, self.screen_height//1.2, self.screen, 5, self.player1.get_height() + 10)
 
         #Reset the player
         self.player1.reset()
@@ -202,7 +202,7 @@ class ClassicScreen(Screen):
 
     def get_entities(self):
         """Get the entities for AI to process"""
-        return self.enemies,self.other_enemies,self.mob_bullet
+        return self.enemies, self.other_enemies, self.mob_bullet
 
     def draw_hitboxes(self, screen = None):
         """Draw hitboxes for players and objects"""
@@ -276,7 +276,7 @@ class ClassicScreen(Screen):
 
     def draw_sprites(self):
         """Draw the sprites"""
-        #Draw bullet
+        #Draw bullets
         self.player1_bullet.draw(self.screen)
         self.mob_bullet.draw(self.screen)
 
@@ -472,7 +472,10 @@ class ClassicScreen(Screen):
         
         #Make the enemies into rows of 6
         for j in range(number//6 if number // 6 < 5 else 5):
-            self.enemies.add([EnemyShip(self.sensitivity, self.screen_width//4 + i*self.screen_width//10, self.screen_height//10 + EnemyShip.sprites[0].get_height() * j, self.wave_random(), self.screen_width,  self.screen_height, Direction.DOWN, self.mob_bullet, self.debug) for i in range(6)])
+
+            self.enemies.add([EnemyShip(self.sensitivity, self.screen_width//4 + i * self.screen_width//10 * self.screen_width // 600, 
+                            self.screen_height//10 + EnemyShip.sprites[0].get_height() * j * self.screen_height // 800, 
+                            self.wave_random(), self.screen_width,  self.screen_height, Direction.DOWN, self.mob_bullet, self.debug) for i in range(6)])
 
     def randomly_spawn_mothership(self) -> bool:
         """Spawns a mothership randomly, returns if mothership is spawned"""

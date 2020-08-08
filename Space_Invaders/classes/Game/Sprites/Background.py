@@ -12,9 +12,6 @@ class Background(ImageObject):
         self.rect = None
         self.bg_no = bg_no
 
-        if debug:
-            print(f"bg_no: {bg_no}")
-
         #Check if the background number is valid
         if self.check_valid_bgno(bg_no):
 
@@ -53,14 +50,6 @@ class Background(ImageObject):
 
         #Choose the background no
         self.choose(self.bg_no)
-        
-    def is_present(self) -> bool:
-        """Check if there is a valid background"""
-        return True if self.image else False
-
-    def check_valid_bgno(self, num:int) -> bool:
-        """Check if the background number is valid"""
-        return num <= len(Background.sprites) and num > 0
 
     def generate_rect(self) -> None:
         """Generate the rectangle"""
@@ -76,11 +65,23 @@ class Background(ImageObject):
         self.rect = self.image.get_rect()
 
         #Set the top left of rect to top left of the game
-        self.rect.left, self.rect.top = 0,0
+        self.rect.left, self.rect.top = 0, 0
+
+    def is_present(self) -> bool:
+        """Check if there is a valid background"""
+        return True if self.image else False
+
+    def check_valid_bgno(self, num:int) -> bool:
+        """Check if the background number is valid"""
+        return num <= len(Background.sprites) and num > 0
 
     def get_bg_no(self) -> int:
         """Get the background number"""
         return self.bg_no
+
+    def update(self, screen) -> None:
+        """Blit the background to the screen"""
+        screen.blit(self.image, self.rect)
 
     def choose(self, bg_no:int) -> None:
         """Choose a background"""
@@ -97,7 +98,3 @@ class Background(ImageObject):
 
         #Generate rect
         self.generate_rect()
-
-    def update(self, screen) -> None:
-        """Blit the background to the screen"""
-        screen.blit(self.image, self.rect)

@@ -15,6 +15,9 @@ class Bullet(MovingObject):
         #Call the superclass
         super().__init__(sensitivity, initial_x, initial_y, game_width, game_height,self.sprites[0], debug)
 
+        #Scale to the correct size
+        self.scale(11 * game_width // 600, 11 * game_height // 800)
+
         #Store bullet direction
         self.direction = direction.value
 

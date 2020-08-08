@@ -13,27 +13,29 @@ class Stage6Screen(StoryTemplate):
         #Call the superclass init method
         super().__init__(screen_width, screen_height, screen, State(105), sensitivity, max_fps, 0.2, tracker, debug)
 
-        #Commander brief image
-        self.bg = ImageObject(300, 285, 600, 570, StoryTemplate.sprites['commander_brief'], debug)
-
-        #Image of silluette
-        self.shadow = ImageObject(300, 215, 217, 217, StoryTemplate.sprites['silloette_commander'], debug)
-        self.shadow.scale(217, 217)
-
-        #Image of Cloud-net
-        self.terminator = ImageObject(300, 215, 217, 217, StoryTemplate.sprites['terminator'], debug)
-        self.terminator.scale(217, 217)
-
-        #Image of figure head (To be replaced with the actual image)
-        self.alon_dusk = ImageObject(300, 215, 217, 217, StoryTemplate.sprites['alon_sama'], debug)
-        self.alon_dusk.scale(217,217)
-
-        #Textbox
-        self.tb = ImageObject(300, 685, 600, 230, StoryTemplate.sprites['textbox'], debug)
-
         #Add cloud net to the game
         self.s_net = AIPlayer(self.sensitivity, self.screen_width, self.screen_height, self.screen_width//2, 50, 5, self.fps, self.mob_bullet, Direction.DOWN, 5, ai_avail=True,boss=True, debug=self.debug)
         self.s_net.rotate(180)
+
+        #Commander brief image
+        self.bg = ImageObject(self.screen_width//2, int(self.screen_height * 285 / 800), 600, 570, StoryTemplate.sprites_dict["commander_brief"], debug)
+        self.bg.scale(self.screen_width, int(self.screen_height * 57/80))
+
+        #Image of Cloud-net
+        self.terminator = ImageObject(self.screen_width//2, int(self.screen_height * 210 / 800), 217, 217, StoryTemplate.sprites_dict['terminator'], debug)
+        self.terminator.scale(int(217 * screen_width//600),int(217 * screen_height//800))
+
+        #Image of figure head
+        self.alon_dusk = ImageObject(self.screen_width//2, int(self.screen_height * 210 / 800), 217, 217, StoryTemplate.sprites_dict['alon_sama'], debug)
+        self.alon_dusk.scale(int(217 * screen_width//600),int(217 * screen_height//800))
+
+        #Image of the commander
+        self.shadow = ImageObject(self.screen_width//2, int(self.screen_height * 210 / 800), 217, 217, StoryTemplate.sprites_dict['silloette_commander'], debug)
+        self.shadow.scale(int(217 * screen_width//600), int(217 * screen_height//800))
+
+        #Textbox
+        self.tb = ImageObject(self.screen_width//2, int(self.screen_height * 685 / 800), 600, 230, StoryTemplate.sprites_dict['textbox'], debug)
+        self.tb.scale(self.screen_width, int(self.screen_height * 23/80))
 
         #Add s_net to other_enemies
         self.other_enemies.add(self.s_net)
@@ -71,7 +73,7 @@ class Stage6Screen(StoryTemplate):
         self.draw_bg()
 
         #Draw the next button
-        self.next_btn = self.write_main(self.end_font, WHITE, "Next", 580, self.tb.rect.top - 30, Direction.RIGHT)
+        self.next_btn = self.write_main(self.end_font, WHITE, "Next", (580/600 * self.screen_width), self.tb.rect.top - 30, Direction.RIGHT)
 
         #Check if the next button is clicked
         if self.check_clicked(self.next_btn) and not self.click_cd:
@@ -145,7 +147,7 @@ class Stage6Screen(StoryTemplate):
         self.draw_bg()
 
         #Draw the next button
-        self.next_btn = self.write_main(self.end_font, WHITE, "Next", 580, self.tb.rect.top - 30, Direction.RIGHT)
+        self.next_btn = self.write_main(self.end_font, WHITE, "Next", (580/600 * self.screen_width), self.tb.rect.top - 30, Direction.RIGHT)
 
         #Lower cd of click if it is still on cooldown
         if self.click_cd:

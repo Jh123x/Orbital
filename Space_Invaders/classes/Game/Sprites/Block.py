@@ -3,7 +3,7 @@ from . import BaseObject
 from .. import YELLOW
 
 class Block(BaseObject):
-    def __init__(self, initial_x:int, initial_y:int, screen, color:tuple = YELLOW, debug:bool = False):
+    def __init__(self, game_width:int, game_height:int, initial_x:int, initial_y:int, screen, color:tuple = YELLOW, debug:bool = False):
         """Class for individual blocks in block group"""
 
         #Call the superclass
@@ -11,8 +11,8 @@ class Block(BaseObject):
 
         #Dimentions of the block
         self.screen = screen
-        self.width = 10
-        self.height = 10
+        self.width = int(10 / 600 * game_width)
+        self.height = int(10 / 800 * game_height)
 
         #Create the rect for the block
         self.rect = pygame.Rect(initial_x - self.width//2, initial_y - self.height//2, self.width, self.height)
