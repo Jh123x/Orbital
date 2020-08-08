@@ -1,13 +1,13 @@
 from . import StoryTemplate
-from .. import State, ImageObject, Direction, WHITE, Scout
+from .. import State, ImageObject, Direction, WHITE, Scout, StatTracker
 
 class Stage3Screen(StoryTemplate):
 
-    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, debug:bool):
+    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, tracker:StatTracker,debug:bool):
         """The constructor for the Stage 3 screen"""
 
         #Call the superclass init method
-        super().__init__(screen_width, screen_height, screen, State(102), sensitivity, max_fps, 0.1, debug)
+        super().__init__(screen_width, screen_height, screen, State(102), sensitivity, max_fps, 0.1,tracker,debug)
 
         #Commander brief image
         self.bg = ImageObject(300, 285, 600, 570, StoryTemplate.sprites['commander_brief'], debug)

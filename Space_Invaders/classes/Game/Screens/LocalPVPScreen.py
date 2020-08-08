@@ -6,14 +6,18 @@ from . import ClassicScreen
 from .. import *
 
 class LocalPVPScreen(ClassicScreen):
-    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, fps:int, player_lives:int = 3, debug:bool = False):
+    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, fps:int, tracker:StatTracker,
+                 player_lives:int = 3, debug:bool = False):
         """Constructor for local PVP class"""
 
         #Bullet groups
         self.player2_bullet = pygame.sprite.Group()
 
+        print('LPVP',tracker)
+
         #Call the super class classic screen object
-        super().__init__(screen_width, screen_height, screen, sensitivity, fps, Difficulty(3), 1, player_lives, debug)
+        super().__init__(screen_width, screen_height, screen, sensitivity, fps, Difficulty(3),tracker, 1,
+                         player_lives,debug)
 
         #Set current state
         self.set_state(State.PVP)
@@ -235,6 +239,24 @@ class LocalPVPScreen(ClassicScreen):
 
         #Draw score of player 2
         self.write_main(self.font, WHITE, f"Score: {self.p1_score}", 10, self.screen_height - 20, Direction.LEFT)
+
+    def accumulate_elite_killed(self) -> None:
+        pass
+
+    def accumulate_enemy_killed(self) -> None:
+        pass
+
+    def accumulate_shots(self) -> None:
+        pass
+
+    def accumulate_powerups(self) -> None:
+        pass
+
+    def accumulate_sd(self) -> None:
+        pass
+
+    def handle_threshold(self)-> None:
+        pass
 
     def handle(self) -> State:
         """Handle the drawing of the screen"""

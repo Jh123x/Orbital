@@ -9,11 +9,12 @@ class TutorialScreen(PlayScreen):
     #Store the information for the tutorial screen
     information = [("a", "move left"), ("d", "move right"), ("spacebar", "shoot"), ("p", "to pause")]
 
-    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, debug:bool = False):
+    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int
+                 ,tracker:StatTracker ,debug:bool = False):
         """Main class for the tutorial screen"""
 
         #Call the superclass
-        super().__init__(screen_width, screen_height, screen, sensitivity, max_fps, Difficulty(1), 1, 1, 1, debug)
+        super().__init__(screen_width, screen_height, screen, sensitivity, max_fps, Difficulty(1),tracker, 1, 1, 1, debug)
 
         #Set the state to tutorial
         self.set_state(State.TUTORIAL)

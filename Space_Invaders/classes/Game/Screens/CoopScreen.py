@@ -3,17 +3,18 @@ import pygame
 import random
 from pygame.locals import *
 from . import PlayScreen
-from .. import State, Player, Direction, WHITE, Explosion, Difficulty
+from .. import State, Player, Direction, WHITE, Explosion, Difficulty, StatTracker
 
 class CoopScreen(PlayScreen):
-    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, fps:int, difficulty: Difficulty, player_lives:int = 3, debug:bool = False):
+    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, fps:int,
+                 difficulty: Difficulty, tracker:StatTracker , player_lives:int = 3, debug:bool = False):
         """Main Coop screen for local cooperative mode"""
 
         #Bullet groups for player 2
         self.player2_bullet = pygame.sprite.Group()
 
         #Call the super class
-        super().__init__(screen_width, screen_height, screen, sensitivity, fps, difficulty, 1, player_lives, 0.1, debug)
+        super().__init__(screen_width, screen_height, screen, sensitivity, fps, difficulty,tracker, 1, player_lives, 0.1, debug)
 
         #Set to the correct state
         self.set_state(State.COOP)
@@ -24,6 +25,21 @@ class CoopScreen(PlayScreen):
     def comparator(self):
         """Return variable used for comparison"""
         return self.get_score()
+
+    def accumulate_elite_killed(self) -> None:
+        pass
+
+    def accumulate_enemy_killed(self) -> None:
+        pass
+
+    def accumulate_shots(self) -> None:
+        pass
+
+    def accumulate_powerups(self) -> None:
+        pass
+
+    def accumulate_sd(self) -> None:
+        pass
 
     def reset(self) -> None:
         """Reset the environment"""

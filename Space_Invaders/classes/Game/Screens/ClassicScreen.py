@@ -5,7 +5,8 @@ from . import Screen
 from .. import *
 
 class ClassicScreen(Screen):
-    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, difficulty:Difficulty, wave:int = 1, player_lives:int = 3,debug:bool = False):
+    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, difficulty:Difficulty,
+                 tracker:StatTracker ,wave:int = 1, player_lives:int = 3, debug:bool = False):
         """Constructor for Classic screen for the game"""
 
         #Call the superclass init
@@ -19,6 +20,12 @@ class ClassicScreen(Screen):
         self.difficulty = difficulty
         self.player_lives = player_lives
         self.over = False
+
+        self.tracker = tracker
+        print('Classic screen ping',tracker)
+        print('my type', self)
+        print(wave)
+
 
         #Create the groups
         #Bullets shot by player
@@ -40,8 +47,14 @@ class ClassicScreen(Screen):
         #Spawn the players
         self.spawn_players()
 
+        # Initialise values for tracker
+        self._killed = None
+        self.max_kill = None
+
         #Set resetted to false
         self.resetted = False
+
+
 
         #Reset the variables
         self.reset()
@@ -50,6 +63,9 @@ class ClassicScreen(Screen):
         """Spawn the players"""
         #Create the player
         self.player1 = Player(self.sensitivity, self.screen_width, self.screen_height, self.screen_width//2, self.screen_height - 50, 3, self.fps, self.player1_bullet, Direction.UP, self.debug)
+
+
+
 
     def reset(self) -> None:
         """Reset the play screen and variables"""
@@ -62,13 +78,16 @@ class ClassicScreen(Screen):
 
         #Store mothership cooldown
         self.ms_cooldown = 0
-
+        self._shots = 0
         #Reset the over
         self.over = False
         
         #Zero the score and the wave
         self.p1_score = 0
         self.wave = 0
+
+        # Reset the number of Mobs killed in current session to 0
+        self.set_threshold()
 
         #Set resetted to True
         self.resetted = True
@@ -329,12 +348,47 @@ class ClassicScreen(Screen):
 
                 #Remove ship from all groups
                 ship.kill()
+                self.accumulate_elite_killed()
 
                 #Return the points of the ship
                 return ship.get_points()
 
         #return 0 score
         return 0
+
+    def accumulate_sd(self):
+        '''Abstraction of handling of powerups in order to allow overriding in downstream classes'''
+
+        self.tracker.ships_destroyed(1)
+
+    def accumulate_enemy_killed(self):
+        self._killed += 1
+        self.tracker.enemies_killed(1)
+
+    def accumulate_elite_killed(self):
+        self.tracker.enemies_killed(1)
+        self.tracker.elites_killed(1)
+        self._killed += 1
+
+    def accumulate_shots(self):
+        # If previous tick has less bullets before collisions resolved increase tracked state
+        if self._shots < len(self.player1_bullet):
+            self.tracker.shot_fired(len(self.player1_bullet)-self._shots)
+        self._shots = len(self.player1_bullet)
+
+    def set_threshold(self) -> None:
+        '''Get current threshold for applicable screens via querying database'''
+        self._killed = 0
+        print(self.tracker)
+        self.max_kill = self.tracker.get_stat('ek_c')
+
+    def handle_threshold(self) -> None:
+        ''' Handle updating threshold value for given statistics'''
+        if self._killed == self.max_kill + 1 :
+            #TODO Make Popup appear Once You have killed more in this session than all time!
+            print('killed most')
+        if self._killed > self.max_kill:
+            self.tracker.enemies_killed_in_classic(self._killed)
 
     def check_collisions(self):
         """Check the objects which collided"""
@@ -354,7 +408,10 @@ class ClassicScreen(Screen):
 
             #Destroy 1 of the player's life
             self.player1.destroy()
-            
+
+            # Update Statistic Tracker to track 1 Ship destroyed
+            self.accumulate_sd()
+
             #Add explosion to the player's position
             self.spawn_explosion(self.player1.get_x(), self.player1.get_y())
 
@@ -390,6 +447,9 @@ class ClassicScreen(Screen):
 
                 #Remove the ship from all groups
                 ship.kill()
+
+                # Track Statistics for killing ship
+                self.accumulate_enemy_killed()
 
                 #Remove sprites that collide with bullets and return the sum of all the scores
                 score = ship.get_points()
@@ -469,7 +529,8 @@ class ClassicScreen(Screen):
     def end_game(self) -> None:
         """Ends the game"""
         self.over = True
-        
+
+
     def handle(self) -> State:
         """Handle the drawing of the classic screen"""
         
@@ -512,9 +573,13 @@ class ClassicScreen(Screen):
 
             #Spawn the aliens
             self.spawn_enemies(int(6 * self.wave))
-
+        self.accumulate_shots()
         #Check object collisions
         self.check_collisions()
+        # TODO update the max_killed if threshold is reached
+        self.handle_threshold()
+        # TODO Give achievement here
+
 
         #Draw the letters on the screen
         self.draw_letters()

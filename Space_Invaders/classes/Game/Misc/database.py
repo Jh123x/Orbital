@@ -82,6 +82,8 @@ class SettingsDB(Database):
     def update(self, name:str, setting:str) -> None:
         """Update the value of the settings"""
         #Call the update function
+
+        # print(settings)
         self.execute("UPDATE settings SET settings = ? WHERE name = ?", (setting,name))
 
         #Mark db as changed
@@ -93,6 +95,60 @@ class SettingsDB(Database):
         self.execute(f"DELETE FROM {self.name} WHERE name = ?", (name,))
 
         #Mark the database as changed
+        self.changed = True
+
+
+class Statistics(Database):
+    def __init__(self, dbpath:str):
+        """Class for keeping track of game statistics"""
+        #Call the superclass
+        super().__init__(dbpath, 'statistics')
+
+        #Create the table if it does not exist
+        self.execute("CREATE TABLE IF NOT EXISTS statistics (id INTEGER, name TEXT, value INTEGER)")
+
+        self.execute(''' SELECT count(name) FROM sqlite_master WHERE type='table' AND name='statistics' ''')
+        bo = self.cursor.fetchone()[0]
+
+        if bo == 0:
+            """Add the relevant settings"""
+            self.add("sf", 0)
+            self.add("en_k", 0)
+            self.add("el_k", 0)
+            self.add("sl", 0)
+            self.add("pu", 0)
+            self.add("mpu", 0)
+            self.add("ek_c", 0)
+            self.add("ek_e", 0)
+
+    def add(self, name:str, stat:int) -> None:
+        '''
+        Add the related statistic into the table
+        '''
+        # Insert element into table
+        self.execute('INSERT INTO statistics VALUES(?, ?, ?)', (None, name, stat))
+
+        # Mark DB as changed
+        self.changed = True
+
+    def update(self,name:str, stat:int ) -> None:
+        """Update the value of the settings"""
+        # Call the update function
+        # print(self.name)
+        # print('name',name)
+        # print('setting',stat)
+        self.execute("UPDATE statistics SET value = ? WHERE name = ?", (stat, name))
+        # (setting, name)
+        # self.execute("UPDATE settings SET settings = ? WHERE name = ?", (setting,name))
+        # Mark db as changed
+        self.changed = True
+
+    def remove(self, name: str) -> None:
+        """Remove the last entry from the highscore board"""
+        # Remove from the database where the name matches the name to be removed
+        self.execute(f"DELETE FROM {self.name} WHERE name = ?", (name,))
+
+        # Mark the database as changed
         self.changed = True
 
 class Achievements(Database):
@@ -187,17 +243,18 @@ class ScoreBoard(Database):
             if item in self.cache:
                 self.remove_exact(item[1], item[2])
 
-    
+
 def main() -> None:
     """The main function for the database class used for debuging and modifying database"""
 
     #Load the path of the database
-    dbpath = os.path.join(os.path.dirname(os.path.realpath(__file__)),'..', '..', 'data', 't.db')
-
+    dbpath = os.path.join(os.path.dirname(os.path.realpath(__file__)),'..', '..','..' ,'data', 'test.db')
+    # print(dbpath)
     #Create the scoreboard database
     db = ScoreBoard(dbpath)
     ac = Achievements(dbpath)
     s = SettingsDB(dbpath)
+    stat = Statistics(dbpath)
 
     #For debugging
     print(f"Running the main function from database file")
@@ -210,6 +267,7 @@ def main() -> None:
         print(f"Highscore: {db.fetch_all()}")
         print(f"Achievements: {ac.fetch_all()}")
         print(f"Settings: {s.fetch_all()}")
+        print(f"Stats: {stat.fetch_all()}" )
 
         
         #Get commands from user
