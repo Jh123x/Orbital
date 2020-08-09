@@ -19,13 +19,14 @@ class Screen(BaseObject):
         super().__init__(initial_x, initial_y, debug)
 
         #Store the variables
+        self.screen_height = screen_height
+        self.screen_width = screen_width
         self.screen = screen
         self.state = state
-        self.screen_width = screen_width
-        self.screen_height = screen_height
-        self.debug = debug
-        self.bg = None
         self.cooldown = 20
+        self.debug = debug
+        self.popup = None
+        self.bg = None
 
         #Create a surface with a transparent background
         self.reset_surface()
@@ -59,6 +60,12 @@ class Screen(BaseObject):
 
     def update(self) -> None:
         """Blits the screen onto the surface"""
+
+        #If the popup exists
+        if self.popup:
+
+            #Update the popup
+            self.popup = self.popup.update()
         
         #If the screen has a background
         if self.bg:
