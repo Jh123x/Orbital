@@ -1,8 +1,16 @@
 import os
 import pygame
+
+# import matplotlib
+# matplotlib.use("TkAgg")
+#
+# os.environ['MPLBACKEND'] ='TkAgg'
+#
+# from matplotlib import pyplot as plt
 import tkinter as tk
+
 import multiprocessing as mp
-from SpaceDefenders import load_settings, run_game
+from SpaceDefenders import main
 
 class Application(tk.Frame):
     def __init__(self, master = None):
@@ -61,13 +69,13 @@ class Application(tk.Frame):
         """Function to launch the game"""
 
         #Load files
-        config = load_settings('settings.cfg')
+        # config = load_settings('settings.cfg')
 
         #Get the resolution chosen
-        config['game_height'],config['game_width'] = tuple(map(lambda x: int(x), self.tkvar.get().split("x")))
+        # config['game_height'],config['game_width'] = tuple(map(lambda x: int(x), self.tkvar.get().split("x")))
 
         #Launch the game
-        process = mp.Process(target = run_game, args = (config,))
+        process = mp.Process(target = main, args = ())
 
         #Set the daemon to false
         process.daemon = False
