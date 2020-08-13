@@ -1,6 +1,6 @@
 import os
 import pygame
-
+#
 # import matplotlib
 # matplotlib.use("TkAgg")
 #
@@ -83,7 +83,7 @@ class Application(tk.Frame):
         #Start the process
         process.start()
 
-def main():
+def main1():
     """Main function for the screen launcher"""
 
     #Create windows
@@ -102,4 +102,4 @@ def main():
 if __name__ == "__main__":
 
     #Run the main function
-    main()
+    main1()

@@ -109,17 +109,27 @@ class Statistics(Database):
 
         self.execute(''' SELECT count(name) FROM sqlite_master WHERE type='table' AND name='statistics' ''')
         bo = self.cursor.fetchone()[0]
-
-        if bo == 0:
-            """Add the relevant settings"""
-            self.add("sf", 0)
-            self.add("en_k", 0)
-            self.add("el_k", 0)
-            self.add("sl", 0)
-            self.add("pu", 0)
-            self.add("mpu", 0)
-            self.add("ek_c", 0)
-            self.add("ek_e", 0)
+        # if bo == 0:
+        """Add the relevant settings"""
+        self.add("sf", 0)
+        self.add("en_k", 0)
+        self.add("el_k", 0)
+        self.add("sl", 0)
+        self.add("pu", 0)
+        self.add("mpu", 0)
+        self.add("ek_c", 0)
+        self.add("ek_e", 0)
+        self.add('tut_n_clr', 0)
+        self.add('st_1_clr',0)
+        self.add('st_2_clr',0)
+        self.add('st_3_clr', 0)
+        self.add('st_4_clr', 0)
+        self.add('st_5_clr', 0)
+        self.add('st_6_clr', 0)
+        self.add('coop', 0)
+        self.add('pvp', 0)
+        self.add('aivs', 0)
+        self.add('aicoop', 0)
 
     def add(self, name:str, stat:int) -> None:
         '''
@@ -158,12 +168,33 @@ class Achievements(Database):
         super().__init__(dbpath, 'achievement')
 
         #Create the table if it does not exist
-        self.execute("CREATE TABLE IF NOT EXISTS achievement (id INTEGER, name TEXT, reward INTEGER, description TEXT, completed INTEGER)")
+        # Template format: ID, Short form Name of achievement, Statistic, Long Text of Achievement, 1/0 on whether completed
+        self.execute("CREATE TABLE IF NOT EXISTS achievement (id INTEGER, name TEXT, stat TEXT , condition INTEGER , description TEXT, completed INTEGER, img TEXT)")
 
-    def add(self, name:str, reward:int, description:str):
+        self.execute(''' SELECT count(name) FROM sqlite_master WHERE type='table' AND name='achievement' ''')
+        bo = self.cursor.fetchone()
+
+        if bo == 0:
+            self.add("low", 'tut_n_clr', 1, 'A new low....', 'path')
+            self.add("gr", 'st_1_clr', 1, 'Back from the Grave')
+            self.add('man', 'st_2_clr', 1,'One small step for Man...', 'path')
+            self.add('mars', 'st_4_clr', 1, 'Mars Colony', 'path')
+            self.add('back', 'st_5_clr', 1, 'Beat them Back')
+            self.add('sky_net', 'st_6_clr', 1, 'Sk-...Cloud Net !!??', 'path')
+            self.add('taste', 'en_k', 1, 'The First taste of Victory', 'path')
+            self.add('hero', 'en_k', 1000, 'Hero of Humanity', 'path')
+            self.add('monst', 'en_k', 5000, 'Are you a Monster??', 'path')
+            self.add('sp_d', 'ek_e', 150, 'Space Defender', 'path')
+            self.add('sp_inv', 'ek_c', 100, 'Master of Space Invaders', 'path')
+            self.add('ck', 'coop', 10, 'Coop King', 'path')
+            self.add('no_u', 'pvp', 10, "No, I'm the Space Defender!"), 'path'
+            self.add('be_back', 'aicoop', 10, "I’ll Be Back", 'path')
+            self.add('replace', 'aicoop', 10, 'Am I getting Replaced?', 'path')
+
+    def add(self, name:str, stat:str, condition:int, description:str, path = 'path'):
         """Add the achievement to the list"""
         #Insert the element into the table
-        self.execute('INSERT INTO achievement VALUES(NULL, ?, ?, ?)', (name, reward, description))
+        self.execute('INSERT INTO achievement VALUES(NULL, ?, ?, ?, ?, ?, ?)', ( name, stat, condition, description, 0 ,path))
 
         #Mark the database as changed
         self.changed = True
@@ -175,6 +206,13 @@ class Achievements(Database):
 
         #Mark the database as changed
         self.changed = True
+
+    def update(self, name:str, completed:int):
+
+        self.execute("UPDATE achievement SET completed = ? WHERE name = ?", (completed , name))
+
+        self.changed = True
+
 
 class ScoreBoard(Database):
     def __init__(self, dbpath:str, max_length:int = 5):

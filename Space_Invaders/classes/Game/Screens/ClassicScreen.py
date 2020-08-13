@@ -6,7 +6,7 @@ from .. import *
 
 class ClassicScreen(Screen):
     def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, difficulty:Difficulty,
-                 tracker:StatTracker ,wave:int = 1, player_lives:int = 3, debug:bool = False):
+                 tracker:AchievmentTracker, wave:int = 1, player_lives:int = 3, debug:bool = False):
         """Constructor for Classic screen for the game"""
 
         #Call the superclass init
@@ -20,11 +20,11 @@ class ClassicScreen(Screen):
         self.difficulty = difficulty
         self.player_lives = player_lives
         self.over = False
-
+        self.session_stats= {'sf': 0, 'en_k': 0, 'el_k': 0, 'sl': 0, 'pu': 0, 'mpu': 0, 'ek_c': 0, 'ek_e': 0}
         self.tracker = tracker
-        print('Classic screen ping',tracker)
-        print('my type', self)
-        print(wave)
+        # print('Classic screen ping',tracker)
+        # print('my type', self)
+        # print(wave)
 
 
         #Create the groups
@@ -85,9 +85,6 @@ class ClassicScreen(Screen):
         #Zero the score and the wave
         self.p1_score = 0
         self.wave = 0
-
-        # Reset the number of Mobs killed in current session to 0
-        self.set_threshold()
 
         #Set resetted to True
         self.resetted = True
@@ -348,7 +345,8 @@ class ClassicScreen(Screen):
 
                 #Remove ship from all groups
                 ship.kill()
-                self.accumulate_elite_killed()
+                self.accumulate('en_k', 1)
+                self.accumulate('el_k', 1)
 
                 #Return the points of the ship
                 return ship.get_points()
@@ -356,39 +354,30 @@ class ClassicScreen(Screen):
         #return 0 score
         return 0
 
-    def accumulate_sd(self):
-        '''Abstraction of handling of powerups in order to allow overriding in downstream classes'''
+    def accumulate(self, k, v):
+        '''Accumulate a stat in the dictionary'''
+        self.session_stats[k] += v
+        # self.tracker.ships_destroyed(1)
 
-        self.tracker.ships_destroyed(1)
-
-    def accumulate_enemy_killed(self):
-        self._killed += 1
-        self.tracker.enemies_killed(1)
-
-    def accumulate_elite_killed(self):
-        self.tracker.enemies_killed(1)
-        self.tracker.elites_killed(1)
-        self._killed += 1
-
-    def accumulate_shots(self):
-        # If previous tick has less bullets before collisions resolved increase tracked state
-        if self._shots < len(self.player1_bullet):
-            self.tracker.shot_fired(len(self.player1_bullet)-self._shots)
-        self._shots = len(self.player1_bullet)
-
-    def set_threshold(self) -> None:
-        '''Get current threshold for applicable screens via querying database'''
-        self._killed = 0
-        print(self.tracker)
-        self.max_kill = self.tracker.get_stat('ek_c')
+    def update_trackers(self):
+        '''Update stat tracker stats that we want to add'''
+        for k,v in self.session_stats.items():
+            if k != 'mpu' or k != 'ek_c' or k != 'ek_e':
+                self.tracker.add_value(k,v)
+            if k == 'mpu' or k == 'ek_c' or k == 'ek_e':
+                self.tracker.set_max_value(k,v)
 
     def handle_threshold(self) -> None:
-        ''' Handle updating threshold value for given statistics'''
-        if self._killed == self.max_kill + 1 :
+        ''' Handle updating threshold value for given statistics -> throws popup on screen'''
+        if self.session_stats['en_k'] == self.tracker.get_stat('ek_c') + 1:
             #TODO Make Popup appear Once You have killed more in this session than all time!
             print('killed most')
-        if self._killed > self.max_kill:
-            self.tracker.enemies_killed_in_classic(self._killed)
+        if self.session_stats['en_k'] >= self.tracker.get_stat('ek_c') + 1:
+            self.session_stats['ek_c'] = self.session_stats['en_k']
+
+
+        # if self._killed > self.max_kill:
+        #     self.tracker.enemies_killed_in_classic(self._killed)
 
     def check_collisions(self):
         """Check the objects which collided"""
@@ -410,7 +399,7 @@ class ClassicScreen(Screen):
             self.player1.destroy()
 
             # Update Statistic Tracker to track 1 Ship destroyed
-            self.accumulate_sd()
+            self.accumulate('sl', 1)
 
             #Add explosion to the player's position
             self.spawn_explosion(self.player1.get_x(), self.player1.get_y())
@@ -449,7 +438,7 @@ class ClassicScreen(Screen):
                 ship.kill()
 
                 # Track Statistics for killing ship
-                self.accumulate_enemy_killed()
+                self.accumulate('en_k', 1)
 
                 #Remove sprites that collide with bullets and return the sum of all the scores
                 score = ship.get_points()
@@ -530,8 +519,11 @@ class ClassicScreen(Screen):
         return State.GAMEOVER
 
     def end_game(self) -> None:
-        """Ends the game"""
+        """Ends the game and updates relevent statistics"""
         self.over = True
+
+
+
 
 
     def handle(self) -> State:
@@ -549,6 +541,8 @@ class ClassicScreen(Screen):
             #Set the game to be over
             self.end_game()
 
+            self.update_trackers()
+
             #Return the gameover state
             return self.get_gameover_state()
 
@@ -561,7 +555,8 @@ class ClassicScreen(Screen):
 
             #Set the game to be over
             self.end_game()
-                
+            # Update Trackers for the game variables
+            self.update_trackers()
             #If so it is gameover for the player
             return self.get_gameover_state()
 
@@ -576,14 +571,17 @@ class ClassicScreen(Screen):
 
             #Spawn the aliens
             self.spawn_enemies(int(6 * self.wave))
-        self.accumulate_shots()
+        if self._shots < len(self.player1_bullet):
+            self.accumulate('sf', len(self.player1_bullet) - self._shots)
+        self._shots = len(self.player1_bullet)
+
         #Check object collisions
         self.check_collisions()
         # TODO update the max_killed if threshold is reached
         self.handle_threshold()
         # TODO Give achievement here
 
-
+        print('internal stats', self.session_stats)
         #Draw the letters on the screen
         self.draw_letters()
 

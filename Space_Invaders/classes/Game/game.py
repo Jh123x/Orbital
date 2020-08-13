@@ -18,9 +18,9 @@ class GameWindow(object):
         load_sprites((Player, Bullet, EnemyShip, Background, Explosion, MotherShip, VictoryScreen, Scout, Brute, Crabs), 
                     (player_img_paths, bullet_img_paths, enemy_img_paths, background_img_paths, explosion_img_paths, mothership_img_path, trophy_img_path, scout_img_path, brute_img_path, crabs_img_path))
 
-        load_sprites_dict((StoryTemplate, PowerUp, MobInstructionsScreen, Screen),
-                        (story_img_path, powerup_img_path, place_holder_path, pointer_img_path))
-
+        load_sprites_dict((StoryTemplate, PowerUp, MobInstructionsScreen),
+                        (story_img_path, powerup_img_path, place_holder_path))
+        load_pointers(pointer_img_path,Screen)
         #Store debug variable
         self.debug = debug
 
@@ -32,7 +32,9 @@ class GameWindow(object):
         self.settings_data = dict(map(lambda x: x[1:], self.settingsdb.fetch_all()))
 
         # Stats Tracker
-        self.stattracker = StatTracker(db_path)
+        self.achievementtracker = AchievmentTracker(db_path)
+        # self.achievementtracker.reset()
+        print(self.achievementtracker.stats)
 
         #Load sounds
         self.sound = asyncio.run(load_sound(sound_path, self.settings_data['music'], float(self.settings_data['volume']), self.debug))
@@ -81,30 +83,30 @@ class GameWindow(object):
         #Store the different screens in state
         self.screens = {
             State.PLAY:                 PlayScreen(game_width, game_height, self.main_screen, sensitivity, maxfps,
-                                                   self.difficulty, self.stattracker , 3,debug = self.debug),
+                                                   self.difficulty, self.achievementtracker , 3,debug = self.debug),
             State.CLASSIC:              ClassicScreen(game_width, game_height, self.main_screen, sensitivity, maxfps,
-                                                      self.difficulty,self.stattracker, debug = self.debug),
+                                                      self.difficulty,self.achievementtracker, debug = self.debug),
             State.SETTINGS:             SettingsScreen(game_width, game_height, self.main_screen, self.fps, self.sound,
                                                        self.bg, self.difficulty, debug),
             State.HIGHSCORE:            HighscoreScreen(game_width, game_height, self.main_screen,
                                                         self.score_board.fetch_all(), debug = self.debug),
             State.AI_COOP:              AICoopScreen(game_width, game_height, self.main_screen, sensitivity, maxfps,
-                                                     self.difficulty,self.stattracker ,3, debug),
+                                                     self.difficulty,self.achievementtracker ,3, debug),
             State.COOP:                 CoopScreen(game_width, game_height, self.main_screen, sensitivity, maxfps,
-                                                   self.difficulty,self.stattracker, 3 , debug),
+                                                   self.difficulty,self.achievementtracker, 3 , debug),
             State.ONLINE:               OnlinePVPScreen(game_width, game_height, self.main_screen, sensitivity,
-                                                        maxfps, self.stattracker, player_lives=3, debug=debug),
+                                                        maxfps, self.achievementtracker, player_lives=3, debug=debug),
             State.PVP:                  LocalPVPScreen(game_width, game_height, self.main_screen, sensitivity, maxfps,
-                                                       self.stattracker, player_lives=3, debug=debug),
+                                                       self.achievementtracker, player_lives=3, debug=debug),
             State.POWERUP_INSTRUCTIONS: PowerupInstructionsScreen(game_width, game_height, self.main_screen, self.fps, debug),
-            State.AI_VS:                AIPVPScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.stattracker, 3, debug),
-            State.TUTORIAL:             TutorialScreen(game_width, game_height, self.main_screen, sensitivity, maxfps,self.stattracker, debug),
-            State.STAGE1:               Stage1Screen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.stattracker ,debug),
-            State.STAGE2:               Stage2Screen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.stattracker ,debug),
-            State.STAGE3:               Stage3Screen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.stattracker ,debug),
-            State.STAGE4:               Stage4Screen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.stattracker ,debug),
-            State.STAGE5:               Stage5Screen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.stattracker ,debug),
-            State.STAGE6:               Stage6Screen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.stattracker ,debug),
+            State.AI_VS:                AIPVPScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.achievementtracker, 3, debug),
+            State.TUTORIAL:             TutorialScreen(game_width, game_height, self.main_screen, sensitivity, maxfps,self.achievementtracker, debug),
+            State.STAGE1:               Stage1Screen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.achievementtracker ,debug),
+            State.STAGE2:               Stage2Screen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.achievementtracker ,debug),
+            State.STAGE3:               Stage3Screen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.achievementtracker ,debug),
+            State.STAGE4:               Stage4Screen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.achievementtracker ,debug),
+            State.STAGE5:               Stage5Screen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.achievementtracker ,debug),
+            State.STAGE6:               Stage6Screen(game_width, game_height, self.main_screen, sensitivity, maxfps, self.achievementtracker ,debug),
             State.MOBS_INSTRUCTIONS:    MobInstructionsScreen(game_width, game_height, self.main_screen, self.fps, debug),
             State.MENU:                 MenuScreen(game_width, game_height, self.main_screen, debug = self.debug),
             State.INSTRUCTIONS_MENU:    InstructionsMenuScreen(game_width, game_height, self.main_screen,  debug),
@@ -525,6 +527,8 @@ class GameWindow(object):
     def __del__(self) -> None:
         """Destructor for the game window. Closes all the relavent processes"""
 
+        self.achievementtracker.__del__()
+
         #Add the new highscores into DB
         self.score_board.add_all(*self.screens[State.HIGHSCORE].get_scores())
 
@@ -540,11 +544,10 @@ class GameWindow(object):
         self.settingsdb.update('background',str(self.screens[State.SETTINGS].get_bg_no()))
         self.settingsdb.update('volume',str(self.screens[State.SETTINGS].get_volume()))
 
-
         #Close the settingsdb
         self.settingsdb.__del__()
 
-        self.stattracker.__del__()
+
 
         #Quit the game
         pygame.quit()

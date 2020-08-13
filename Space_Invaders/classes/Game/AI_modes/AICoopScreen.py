@@ -1,10 +1,10 @@
 import pygame
 from pygame.locals import *
-from .. import CoopScreen, Player, AIPlayer, WHITE, Difficulty, Direction, State, StatTracker
+from .. import CoopScreen, Player, AIPlayer, WHITE, Difficulty, Direction, State, AchievmentTracker
 
 class AICoopScreen(CoopScreen):
     def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, fps:int, difficulty: Difficulty,
-                 tracker:StatTracker, player_lives:int = 3,debug:bool = False):
+                 tracker:AchievmentTracker, player_lives:int = 3, debug:bool = False):
         """Main constructor the AICoopScreen"""
         
         #Call the superclass constructor
@@ -12,6 +12,9 @@ class AICoopScreen(CoopScreen):
 
         #Set the state
         self.set_state(State.AI_COOP)
+
+    def update_trackers(self):
+        self.tracker.add_value('aicoop')
 
     def spawn_players(self) -> None:
         """Spawn the players

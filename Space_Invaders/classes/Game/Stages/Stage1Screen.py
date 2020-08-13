@@ -1,9 +1,9 @@
 from . import StoryTemplate
-from .. import State, ImageObject, Direction, WHITE, StatTracker
+from .. import State, ImageObject, Direction, WHITE, AchievmentTracker
 
 class Stage1Screen(StoryTemplate):
 
-    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, tracker:StatTracker, debug:bool):
+    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, tracker:AchievmentTracker, debug:bool):
         """The constructor for the Stage 1 screen"""
 
         #Call the superclass init method
@@ -25,6 +25,10 @@ class Stage1Screen(StoryTemplate):
         self.tb = ImageObject(self.screen_width//2, int(self.screen_height * 685 / 800), 600, 230, StoryTemplate.sprites_dict['textbox'], debug)
         self.tb.scale(self.screen_width, int(self.screen_height * 23/80))
 
+    def update_trackers(self, win = False):
+        super(Stage1Screen, self).update_trackers()
+        if win:
+            self.tracker.add_value('st_1_clr', 1)
     def draw_bg(self):
         """Draw the background"""
         #Draw the commander brief
@@ -90,6 +94,8 @@ class Stage1Screen(StoryTemplate):
 
         #Return the current state
         return self.state
+
+
 
     def post_cutscene(self):
         """The post cutscene for stage 1"""

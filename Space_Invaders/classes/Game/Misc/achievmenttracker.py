@@ -1,23 +1,29 @@
-from . import Statistics
-class StatTracker:
+from . import Statistics, AchievementManager
+
+class AchievmentTracker(object):
 
     def __init__(self, db_path:str):
-        self.db = Statistics(db_path)
-        self.stats = dict(map(lambda x: x[1:], self.db.fetch_all()))
+        self.statdb = Statistics(db_path)
+        self.stats = dict(map(lambda x: x[1:], self.statdb.fetch_all()))
         self.long_form = {'sf': "Number of Shots Fired", 'en_k': "Number of Enemies killed",
                           'el_k': "Number of Elite Enemies killed",'sl': "Number of Ships wrecked",
                           'pu': "Number of Powerups used", 'mpu': "Max Powerups used",
                           'ek_c': "Number of Enemies Killed in Classic", 'ek_e': "Number of Enemies Killed in Endless"}
+        self.manager = AchievementManager(db_path)
     def get_statistic(self, key) -> tuple:
         '''Get Key Value Pair of Longform statistic'''
         return self.get_longform(key),self.get_stat(key)
+
+    def update_achievement(self,stat:dict, state:dict={}) -> None:
+        '''Message Passing down to achievment manager'''
+        self.manager.checkAchieved(stat,state)
 
     def get_stat(self,key):
         '''Getter to retrieve tracked statistic'''
         return self.stats.get(key, None)
 
     def get_longform(self, key):
-        '''Getter to retrieve longform text of tracked statistic'''
+        '''Getter to retrieve longform text of tracked statistic for display'''
         return self.long_form.get(key,None)
 
     def add_value(self, key:str, value:int) -> None:
@@ -68,6 +74,10 @@ class StatTracker:
     def __del__(self) -> None:
         # Writes cached values into the database
         for k,v in self.stats.items():
-            self.db.update(k,v)
+            self.statdb.update(k,v)
+
+        self.statdb.__del__()
+
+        self.manager.__del__()
 
 

@@ -1,10 +1,10 @@
 import pygame
 from . import StoryTemplate
-from .. import State, ImageObject, Direction, WHITE, Crabs, Brute, Scout, AIPlayer, StatTracker
+from .. import State, ImageObject, Direction, WHITE, Crabs, Brute, Scout, AIPlayer, AchievmentTracker
 
 class Stage6Screen(StoryTemplate):
 
-    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int,tracker:StatTracker, debug:bool):
+    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, tracker:AchievmentTracker, debug:bool):
         """The constructor for the Stage 3 screen"""
 
         #Initialise s-net
@@ -39,6 +39,11 @@ class Stage6Screen(StoryTemplate):
 
         #Add s_net to other_enemies
         self.other_enemies.add(self.s_net)
+
+    def update_trackers(self, win=False):
+        super(Stage6Screen, self).update_trackers()
+        if win:
+            self.tracker.add_value('st_6_clr', 1)
 
     def reset(self) -> None:
         """Reset the game"""

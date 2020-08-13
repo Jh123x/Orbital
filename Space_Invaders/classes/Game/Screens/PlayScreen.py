@@ -6,7 +6,7 @@ from .. import *
 
 class PlayScreen(ClassicScreen):
     def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, difficulty: Difficulty,
-                 tracker:StatTracker, wave:int = 1, player_lives:int = 3, powerup_chance:float = 0.1, debug:bool = False):
+                 tracker:AchievmentTracker, wave:int = 1, player_lives:int = 3, powerup_chance:float = 0.1, debug:bool = False):
         """The Endless mode screen"""
 
         #Power ups group
@@ -163,30 +163,26 @@ class PlayScreen(ClassicScreen):
 
         #Return the destroyed ship
         return ship
-    def accumulate_powerups(self):
-        '''Abstraction of the handling of powerups in order to allow overriding in downstream classes'''
-        self.tracker.powerups_used(1)
-        self._powerup += 1
 
     def set_threshold(self) -> None:
         '''Get current threshold for applicable screens via querying database'''
 
         # Accumulator for number of powerups in single session and number of mobs killed
-        self._powerup = 0
-        self._killed = 0
-        self.max_powerup= self.tracker.get_stat('mpu')
-        self.max_kill = self.tracker.get_stat('ek_e')
+        for k in self.session_stats:
+            self.session_stats[k] = 0
+
 
     def handle_threshold(self) -> None:
-        if self._powerup == self.max_powerup + 1:
-            self.tracker.max_powerups_used(self._powerup)
-        if self._powerup > self.max_powerup:
-            self.tracker.enemies_killed_in_classic(self._killed)
-        if self._killed == self.max_kill + 1 :
-            #TODO Make Popup appear Once You have killed more in this session than all time!
+        if self.session_stats['en_k'] == self.tracker.get_stat('ek_e') + 1:
+            # Activate popup
             print('killed most')
-        if self._killed > self.max_kill:
-            self.tracker.enemies_killed_in_endless(self._killed)
+        if self.session_stats['en_k'] >= self.tracker.get_stat('ek_e') + 1:
+            self.session_stats['ek_e'] = self.session_stats['en_k']
+
+        if self.session_stats['pu'] == self.tracker.get_stat('mpu') + 1:
+            #TODO Make Popup appear Once You have killed more in this session than all time!
+            print('most powerups')
+            self.session_stats['mpu'] = self.session_stats['pu']
 
     def check_powerup_collision(self) -> None:
         """Check the collisions of the powerups"""
@@ -200,7 +196,7 @@ class PlayScreen(ClassicScreen):
             if len(hit):
 
                 # Accumulate Statistics
-                self.accumulate_powerups()
+                self.accumulate('pu', 1)
 
                 #For each list of powerups hit
                 for l in hit.values():

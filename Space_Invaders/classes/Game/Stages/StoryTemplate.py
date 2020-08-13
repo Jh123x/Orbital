@@ -1,4 +1,4 @@
-from .. import PlayScreen, State, Difficulty, Direction, WHITE, StatTracker
+from .. import PlayScreen, State, Difficulty, Direction, WHITE, AchievmentTracker
 
 class StoryTemplate(PlayScreen):
 
@@ -6,7 +6,7 @@ class StoryTemplate(PlayScreen):
     sprites_dict = {}
 
     def __init__(self, screen_width:int, screen_height:int, screen, state:State, sensitivity:int, max_fps:int,
-                 powerup_chance:float, tracker:StatTracker, debug:bool):
+                 powerup_chance:float, tracker:AchievmentTracker, debug:bool):
         """The template for the stage to be built on"""
 
         #Call the superclass
@@ -101,6 +101,9 @@ class StoryTemplate(PlayScreen):
         """Variable used for comparison"""
         return self.get_stage()
 
+    def update_trackers(self, win:bool = False):
+        super(StoryTemplate, self).update_trackers()
+
     def handle(self):
         """Handles the playing out of the screen"""
 
@@ -110,12 +113,16 @@ class StoryTemplate(PlayScreen):
             #Cause the game to end
             self.reset()
 
+            #update the statistic values
+            self.update_trackers()
+
             #Return the gameover state
             return self.get_gameover_state()
 
         #Otherwise if player wins
         elif self.win_condition():
 
+            self.update_trackers(True)
             #Go to next state
             self.next_scene()
 
