@@ -22,7 +22,7 @@ class Scout(EnemyShip):
         """Overridden update class for the scout boss"""
 
         #If the object has touched the edge
-        if self.touch_edge() and len(self.sprites) == 2 :
+        if self.touch_edge():
             
             #Change x direction
             self.delta_x = -self.delta_x
@@ -33,7 +33,7 @@ class Scout(EnemyShip):
                 #Change the image to face the right
                 self.image = self.sprites[0]
 
-            else:
+            elif len(self.sprites) == 2:
 
                 #Change the image to face the left
                 self.image = self.sprites[1]
