@@ -51,13 +51,21 @@ class Achievement(object):
             self.unlock()
 
     def __str__(self):
+        """String representation of the achievement"""
         return f"{self.name} : {'Unlocked' if self.unlocked else 'Locked'}"
 
 
 class AchievementManager(object):
     def __init__(self, dbpath:str):
+        """Main achievement manager class"""
+
+        #Create Achievements class
         self.adb = Achievements(dbpath)
+
+        #Get a list of achievements
         self.achievements = dict(map(lambda x: (x[1], Achievement(*x[2:])), self.adb.fetch_all()))
+
+        #Get the stats
         self.stats = dict(map(lambda x: (x[0],x[1].get_stat()), self.achievements.items()))
 
     def checkAchieved(self, stat:dict, state:dict) -> None:
