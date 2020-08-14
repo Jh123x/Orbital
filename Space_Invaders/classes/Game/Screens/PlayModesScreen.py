@@ -40,4 +40,5 @@ class PlayModeScreen(MenuTemplate):
         return (self.one_player, self.two_player, self.ai_modes, self.tutorial, self.back)
 
     def get_effects(self):
+        #Get the desired output states
         return (State.ONE_PLAYER_MENU, State.TWO_PLAYER_MENU, State.AI_MENU, State.TUTORIAL, State.MENU)

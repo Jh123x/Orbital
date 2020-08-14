@@ -15,7 +15,7 @@ class Achievement(object):
         '''
         self.unlocked = 1
         #TODO put the popup here for achieving the current achievement
-        print('achieved', self.name)
+
 
     def get_stat(self):
         '''
@@ -47,9 +47,6 @@ class Achievement(object):
         Stat: amount currently in the database
         Addition: amount to check against
         '''
-        print('hi from achievement')
-        print(not self.unlocked)
-        print('achieved status',stat + addition >= self.condition)
         if not self.unlocked and  (stat + addition >= self.condition):
             self.unlock()
 
@@ -62,10 +59,13 @@ class AchievementManager(object):
         self.adb = Achievements(dbpath)
         self.achievements = dict(map(lambda x: (x[1], Achievement(*x[2:])), self.adb.fetch_all()))
         self.stats = dict(map(lambda x: (x[0],x[1].get_stat()), self.achievements.items()))
-        print(self.achievements)
+
     def checkAchieved(self, stat:dict, state:dict) -> None:
         ''' Handles update of Achievement in real time as well as Achievement Popup '''
+
+        #Iterate through all the acheivements
         for k in self.achievements:
+
             # Checks through list of achievements
             metric = self.achievements[k].get_stat()
             self.achievements[k].check_achieved(stat.get(metric, 0), state.get(metric, 0))
