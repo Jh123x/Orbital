@@ -33,8 +33,6 @@ class GameWindow(object):
 
         # Stats Tracker
         self.achievementtracker = AchievmentTracker(db_path)
-        # self.achievementtracker.reset()
-        print(self.achievementtracker.stats)
 
         #Load sounds
         self.sound = asyncio.run(load_sound(sound_path, self.settings_data['music'], float(self.settings_data['volume']), self.debug))
@@ -117,6 +115,7 @@ class GameWindow(object):
             State.STORY_MENU:           StoryModeScreen(game_width, game_height, self.main_screen, debug),
             State.PLAYMODE:             PlayModeScreen(game_width, game_height, self.main_screen,  debug),
             State.AI_MENU:              AIMenuScreen(game_width, game_height, self.main_screen, debug),
+            State.STAT_MENU:                 StatsScreen(game_width, game_height, self.main_screen, self.achievementtracker, debug),
             State.STAGE_GAMEOVER:       None,
             State.STAGE_PAUSE:          None,
             State.VICTORY:              None,
