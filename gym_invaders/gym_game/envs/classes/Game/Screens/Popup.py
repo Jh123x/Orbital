@@ -1,10 +1,12 @@
 import pygame
 from . import Screen
-from .. import State, Direction, WHITE
+from .. import State, WHITE
 
 class Popup(Screen):
     def __init__(self, popup_width:int, popup_height:int, sentence:str, tick_life:int, initial_x:int, initial_y:int, screen, font = False, debug:bool = False):
         """Main Popup class"""
+
+        #Store variables
         self.ttl = tick_life
         self.sentence = sentence
 
@@ -18,7 +20,7 @@ class Popup(Screen):
         if not font:
 
             #Default to screen.font
-            font = Screen.font
+            font = self.font
 
         #Render the words for the popup
         self.write(font, WHITE, sentence, popup_width // 2, popup_height//2)
@@ -38,41 +40,3 @@ class Popup(Screen):
             return self
         else:
             return None
-
-
-if __name__ == '__main__':
-    #Initialise pygame
-    pygame.init()
-    pygame.font.init()
-
-    #Vars
-    screen_width = 600
-    screen_height = 800
-    fps = 60
-
-    #Init screen
-    screen = pygame.display.set_mode((screen_width, screen_height))
-
-    #Set fps
-    clock = pygame.time.Clock()
-
-    #Create popup obj
-    popup = Popup(100,100,"Test", 500, 0, 0, screen)
-
-    while running:
-
-        #Clock the fps
-        clock.tick(fps)
-
-        #Fill background with black
-        screen.fill((0,0,0))
-
-        #Draw the popup
-        popup.update()
-
-        #Update the display with the screen
-        pygame.display.update()
-
-        #If the state is quit or player closes the game
-        if pygame.QUIT in tuple(map(lambda x: x.type, pygame.event.get())):
-            running = False

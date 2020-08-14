@@ -16,5 +16,10 @@ from .Sound import Sound
 #Import the database
 from .database import *
 
+from .achievements import *
+
 #Import async functions
 from .asyncs import *
+
+from .achievmenttracker import *
+

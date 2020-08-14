@@ -1,7 +1,7 @@
 import pygame
 import random
-from . import Screen, LocalPVPScreen
-from .. import Network, Player, State, WHITE, Bullet
+from . import LocalPVPScreen
+from .. import Network, State, WHITE, Bullet
 from pygame.locals import *
 
 class OnlinePVPScreen(LocalPVPScreen):
@@ -89,7 +89,7 @@ class OnlinePVPScreen(LocalPVPScreen):
         return random.random()
 
     def generate_direction(self):
-
+        """Generate the direction the bullet was suppose to go"""
         #If this is the first player
         if self.first:
             
@@ -114,10 +114,7 @@ class OnlinePVPScreen(LocalPVPScreen):
             direction = self.bullet_direction()
 
             #Add bullet to the mob_bullets
-            self.mob_bullet.add(
-                #Create the bullet object
-                Bullet(self.sensitivity, x_coord, self.screen_height//2, direction, self.screen_width, self.screen_height, self.debug)
-                )
+            self.mob_bullet.add(Bullet(self.sensitivity, x_coord, self.screen_height//2, direction, self.screen_width, self.screen_height, self.debug))
 
     def check_keypresses(self) -> bool:
         """Check the keys which are pressed"""
@@ -180,8 +177,8 @@ class OnlinePVPScreen(LocalPVPScreen):
         if self.waiting:
 
             #Draw loading screen
-            self.write_main(Screen.end_font, WHITE, f"Loading", self.screen_width // 2, self.screen_height//2)
-            self.back_rect = self.write_main(Screen.end_font, WHITE, f"Back", self.screen_width // 2, self.screen_height//2 + self.screen_height//15)
+            self.write_main(self.end_font, WHITE, f"Loading", self.screen_width // 2, self.screen_height//2)
+            self.back_rect = self.write_main(self.end_font, WHITE, f"Back", self.screen_width // 2, self.screen_height//2 + self.screen_height//15)
 
             #Check if player clicked the back button
             if self.check_clicked(self.back_rect):

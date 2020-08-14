@@ -9,11 +9,12 @@ class TutorialScreen(PlayScreen):
     #Store the information for the tutorial screen
     information = [("a", "move left"), ("d", "move right"), ("spacebar", "shoot"), ("p", "to pause")]
 
-    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, debug:bool = False):
+    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int
+                 , tracker:AchievmentTracker, debug:bool = False):
         """Main class for the tutorial screen"""
 
         #Call the superclass
-        super().__init__(screen_width, screen_height, screen, sensitivity, max_fps, Difficulty(1), 1, 1, 1, debug)
+        super().__init__(screen_width, screen_height, screen, sensitivity, max_fps, Difficulty(1),tracker, 1, 1, 1, debug)
 
         #Set the state to tutorial
         self.set_state(State.TUTORIAL)
@@ -135,21 +136,31 @@ class TutorialScreen(PlayScreen):
         #Reset the game
         self.reset()
 
+    def update_trackers(self, loss:bool = False):
+        super(TutorialScreen, self).update_trackers()
+        if loss:
+            self.tracker.add_value('tut_n_clr', 1)
+
     def handle(self) -> State:
         """Handle the drawing of the sprites"""
 
         #If player is destroyed or enemies hit the bottom, go to gameover state
         if self.player1.is_destroyed() or self.enemy_touched_bottom():
 
+            # Update trackers
+            self.update_trackers(True)
             #Cause the game to end
             self.end_game()
+
+            self.tracker.update_achievement()
 
             #Return the gameover state
             return State.GAMEOVER
 
         #Otherwise if player wins
         elif self.wave == 3:
-
+            #update internal stats
+            self.update_trackers()
             #Cause the game to end
             self.end_game()
 

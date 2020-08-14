@@ -6,14 +6,16 @@ from . import ClassicScreen
 from .. import *
 
 class LocalPVPScreen(ClassicScreen):
-    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, fps:int, player_lives:int = 3, debug:bool = False):
+    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, fps:int, tracker:AchievmentTracker,
+                 player_lives:int = 3, debug:bool = False):
         """Constructor for local PVP class"""
 
         #Bullet groups
         self.player2_bullet = pygame.sprite.Group()
 
         #Call the super class classic screen object
-        super().__init__(screen_width, screen_height, screen, sensitivity, fps, Difficulty(3), 1, player_lives, debug)
+        super().__init__(screen_width, screen_height, screen, sensitivity, fps, Difficulty(3),tracker, 1,
+                         player_lives,debug)
 
         #Set current state
         self.set_state(State.PVP)
@@ -236,6 +238,12 @@ class LocalPVPScreen(ClassicScreen):
         #Draw score of player 2
         self.write_main(self.font, WHITE, f"Score: {self.p1_score}", 10, self.screen_height - 20, Direction.LEFT)
 
+    def update_trackers(self):
+        self.tracker.add_value('pvp', 1)
+
+    def handle_threshold(self) -> None:
+        pass
+
     def handle(self) -> State:
         """Handle the drawing of the screen"""
         #Check if both players are destroyed
@@ -243,7 +251,7 @@ class LocalPVPScreen(ClassicScreen):
 
             #Mark the game as over
             self.over = True
-
+            self.update_trackers()
             #Return the gameover state
             return self.get_gameover_state()
 

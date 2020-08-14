@@ -1,11 +1,12 @@
 import pygame
 import random
 from pygame.locals import *
-from . import Screen
+from . import Screen, Popup
 from .. import *
 
 class ClassicScreen(Screen):
-    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, difficulty:Difficulty, wave:int = 1, player_lives:int = 3,debug:bool = False):
+    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, difficulty:Difficulty,
+                 tracker:AchievmentTracker, wave:int = 1, player_lives:int = 3, debug:bool = False):
         """Constructor for Classic screen for the game"""
 
         #Call the superclass init
@@ -19,6 +20,13 @@ class ClassicScreen(Screen):
         self.difficulty = difficulty
         self.player_lives = player_lives
         self.over = False
+        self.session_stats= {'sf':0,'en_k':0,'el_k':0,'sl':0,'pu': 0,'mpu':0,'ek_c':0,'ek_e':0,'tut_n_clr':0,'st_1_clr':0,
+                             'st_2_clr':0,'st_3_clr':0, 'st_4_clr':0,'st_5_clr':0,'st_6_clr':0,'coop':0,'pvp':0,'aivs':0,
+                             'aicoop':0}
+        self.tracker = tracker
+        # print('Classic screen ping',tracker)
+        # print('my type', self)
+        # print(wave)
 
         #Create the groups
         #Bullets shot by player
@@ -40,6 +48,10 @@ class ClassicScreen(Screen):
         #Spawn the players
         self.spawn_players()
 
+        # Initialise values for tracker
+        self._killed = None
+        self.max_kill = None
+
         #Set resetted to false
         self.resetted = False
 
@@ -54,6 +66,15 @@ class ClassicScreen(Screen):
     def reset(self) -> None:
         """Reset the play screen and variables"""
 
+        #Update the tracker
+        self.update_trackers()
+
+        #Reset the session tracker
+        for key in self.session_stats.keys():
+
+            #Reset the value
+            self.session_stats[key] = 0
+
         #If already resetted
         if self.resetted:
 
@@ -62,7 +83,7 @@ class ClassicScreen(Screen):
 
         #Store mothership cooldown
         self.ms_cooldown = 0
-
+        self._shots = 0
         #Reset the over
         self.over = False
         
@@ -329,12 +350,39 @@ class ClassicScreen(Screen):
 
                 #Remove ship from all groups
                 ship.kill()
+                self.accumulate('en_k', 1)
+                self.accumulate('el_k', 1)
 
                 #Return the points of the ship
                 return ship.get_points()
 
         #return 0 score
         return 0
+
+    def accumulate(self, k, v):
+        '''Accumulate a stat in the dictionary'''
+        self.session_stats[k] += v
+        # self.tracker.ships_destroyed(1)
+
+    def update_trackers(self):
+        '''Update stat tracker stats that we want to add'''
+        for k,v in self.session_stats.items():
+            if k != 'mpu' or k != 'ek_c' or k != 'ek_e':
+                self.tracker.add_value(k,v)
+            if k == 'mpu' or k == 'ek_c' or k == 'ek_e':
+                self.tracker.set_max_value(k,v)
+
+    def handle_threshold(self) -> None:
+        ''' Handle updating threshold value for given statistics -> throws popup on screen'''
+        if self.session_stats['en_k'] == self.tracker.get_stat('ek_c') + 1:
+            #TODO Make Popup appear Once You have killed more in this session than all time!
+            print('killed most')
+        if self.session_stats['en_k'] >= self.tracker.get_stat('ek_c') + 1:
+            self.session_stats['ek_c'] = self.session_stats['en_k']
+
+
+        # if self._killed > self.max_kill:
+        #     self.tracker.enemies_killed_in_classic(self._killed)
 
     def check_collisions(self):
         """Check the objects which collided"""
@@ -354,7 +402,10 @@ class ClassicScreen(Screen):
 
             #Destroy 1 of the player's life
             self.player1.destroy()
-            
+
+            # Update Statistic Tracker to track 1 Ship destroyed
+            self.accumulate('sl', 1)
+
             #Add explosion to the player's position
             self.spawn_explosion(self.player1.get_x(), self.player1.get_y())
 
@@ -390,6 +441,9 @@ class ClassicScreen(Screen):
 
                 #Remove the ship from all groups
                 ship.kill()
+
+                # Track Statistics for killing ship
+                self.accumulate('en_k', 1)
 
                 #Remove sprites that collide with bullets and return the sum of all the scores
                 score = ship.get_points()
@@ -470,9 +524,13 @@ class ClassicScreen(Screen):
         return State.GAMEOVER
 
     def end_game(self) -> None:
-        """Ends the game"""
+        """Ends the game and updates relevent statistics"""
         self.over = True
-        
+
+
+
+
+
     def handle(self) -> State:
         """Handle the drawing of the classic screen"""
         
@@ -488,6 +546,8 @@ class ClassicScreen(Screen):
             #Set the game to be over
             self.end_game()
 
+            self.update_trackers()
+
             #Return the gameover state
             return self.get_gameover_state()
 
@@ -500,7 +560,8 @@ class ClassicScreen(Screen):
 
             #Set the game to be over
             self.end_game()
-                
+            # Update Trackers for the game variables
+            self.update_trackers()
             #If so it is gameover for the player
             return self.get_gameover_state()
 
@@ -515,9 +576,23 @@ class ClassicScreen(Screen):
 
             #Spawn the aliens
             self.spawn_enemies(int(6 * self.wave))
+        if self._shots < len(self.player1_bullet):
+            self.accumulate('sf', len(self.player1_bullet) - self._shots)
+        self._shots = len(self.player1_bullet)
 
         #Check object collisions
         self.check_collisions()
+
+        # Update the max_killed if threshold is reached
+        self.handle_threshold()
+
+        #Return a list of achievement achieved
+        lst = self.tracker.update_achievement(self.session_stats)
+
+        #Print the achievement
+        for i in lst:
+            #TODO make the popup Update is on space invaders branch
+            print(i)
 
         #Draw the letters on the screen
         self.draw_letters()

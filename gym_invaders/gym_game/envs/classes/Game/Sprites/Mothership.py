@@ -1,7 +1,10 @@
 from . import EnemyShip
 
 class MotherShip(EnemyShip):
+
+    #Store the sprites for the mothership
     sprites = []
+    
     def __init__(self, initial_x:int, initial_y:int, game_width:int, game_height:int, points:int, debug:bool = False):
         """Main constructor for the mothership"""
         #Call the superclass

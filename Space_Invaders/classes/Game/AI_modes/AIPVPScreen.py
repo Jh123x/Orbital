@@ -1,17 +1,20 @@
 import pygame
 from pygame.locals import *
-from .. import AIPlayer, State, Player, Direction, WHITE, LocalPVPScreen
+from .. import AIPlayer, State, Player, Direction, WHITE, LocalPVPScreen, AchievmentTracker
 
 class AIPVPScreen(LocalPVPScreen):
     def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, fps:int,
-                 player_lives:int = 3, debug:bool = False):
+                 tracker:AchievmentTracker, player_lives:int = 3, debug:bool = False):
         """The constructor for the AI PVP screen"""
         
         #Call the superclass
-        super().__init__(screen_width, screen_height, screen, sensitivity, fps, player_lives, debug)
+        super().__init__(screen_width, screen_height, screen, sensitivity, fps,tracker ,player_lives, debug)
 
         #Set the state to the correct state
         self.set_state(State.AI_VS)
+
+    def update_trackers(self):
+        self.tracker.add_value('aivs', 1)
 
     def spawn_players(self) -> None:
         """Spawn the players for the game"""

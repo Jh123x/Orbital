@@ -1,3 +1,5 @@
+import os
+import sys
 import pygame
 import numpy as np
 import matplotlib.pyplot as plt
@@ -5,6 +7,16 @@ try:
     from .classes import *
 except ImportError:
     from classes import *
+
+def get_curr_path():
+    """Get the path to the current file depending on state of application"""
+    #Return correct directory
+    return sys.executable if getattr(sys, 'frozen', False) else __file__
+
+
+def map_dir(*args):
+    """Map the abs path for the files in the folder"""
+    return list_dir(form_abs_path(get_curr_path(), os.path.join(*args)))
 
 class PyGame_2D(object):
     def __init__(self, settings:str, t:str = 'Play'):
@@ -18,7 +30,22 @@ class PyGame_2D(object):
         config['icon_img_path'] = form_abs_path(__file__, config['icon_img_path'])
 
         #Load all
-        d = load_all(("bullet_img_paths",), ("Bullet Sprites",), all_cfg, __file__)
+        d = {}
+        d["bullet_img_paths"] = map_dir("images", "bullets")
+        d["player_img_paths"] = map_dir("images", "player")
+        d["enemy_img_paths"] = map_dir("images", "enemies")
+        d["background_img_paths"] = map_dir("images", "backgrounds")
+        d["explosion_img_paths"] = map_dir("images", "explosions")
+        d["menu_music_paths"] = map_dir("sounds", "menu_music")
+        d["powerup_img_path"] = map_dir("images", "powerups")
+        d["mothership_img_path"] = map_dir("images", "bosses", "mothership")
+        d["trophy_img_path"] = map_dir("images", "trophys")
+        d["scout_img_path"] = map_dir("images", "bosses", "scout")
+        d["brute_img_path"] = map_dir("images", "bosses", "brute")
+        d["crabs_img_path"] = map_dir("images", "bosses", "crabs")
+        d["story_img_path"] = map_dir("images", "story assets")
+        d["place_holder_path"] = map_dir("images", "place_holder")
+
 
         #Load the other sprites 
         d["player_img_paths"] = list_dir(form_abs_path(__file__, "images/player"))
@@ -28,9 +55,11 @@ class PyGame_2D(object):
         d["mothership_img_path"] = list_dir(form_abs_path(__file__,"images/bosses/mothership"))
 
         #Load sprites
-        load_sprites((Player, Bullet, EnemyShip, Explosion, PowerUp, MotherShip), 
-                    (d["player_img_paths"], d["bullet_img_paths"], d["enemy_img_paths"], d["explosion_img_paths"], d["powerup_img_path"], d["mothership_img_path"]))
-
+        load_sprites((Player, Bullet, EnemyShip, Background, Explosion, MotherShip, VictoryScreen, Scout, Brute, Crabs),
+                     (d['player_img_paths'], d['bullet_img_paths'], d['enemy_img_paths'], d['background_img_paths'], d['explosion_img_paths'],
+                      d['mothership_img_path'], d['trophy_img_path'], d['scout_img_path'], d['brute_img_path'], d['crabs_img_path']))
+        load_sprites_dict((StoryTemplate, PowerUp, MobInstructionsScreen),
+                          (d['story_img_path'], d['powerup_img_path'], d['place_holder_path']))
         #Load sounds
         self.sound = Sound({}, False, False, False)
 
@@ -179,7 +208,8 @@ class PyGame_2D(object):
         self.state.draw_hitboxes()
 
     def close(self):
-        self.state.close()
+        # self.state.close()
+        pass
 
 if __name__ == '__main__':
     settings = "settings.cfg"

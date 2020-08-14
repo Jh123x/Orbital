@@ -1,8 +1,5 @@
 import pygame
-try:
-    from .ImageObject import ImageObject
-except ImportError:
-    from ImageObject import ImageObject
+from . import ImageObject
 
 class Explosion(ImageObject):
 
@@ -13,19 +10,7 @@ class Explosion(ImageObject):
     sprites = []
 
     def __init__(self, tick_life:int, initial_x:int, initial_y:int, game_width:int, game_height:int, image_no:int = 0, debug:bool = False):
-        """The main class for the explosion
-            Arguments:
-                tick_life: How long the sprite is lasting in terms of ticks (int)
-                initial_x: Initial x position of the explosion (int)
-                initial_y: Initial y position of the explosion (int)
-                game_width: Width of the game in pixels (int)
-                game_height: Height of the game in pixels (int)
-                image_no: Which explosion image to use (int): default = 0
-                debug: Toggle debug mode (bool): default = False
-
-            Methods:
-                update: Update the position of the sprite
-        """
+        """The main class for the explosion"""
 
         #Get the correct image of the explosion
         if image_no < len(Explosion.sprites):
@@ -42,16 +27,13 @@ class Explosion(ImageObject):
         #Set the time to live for the explosion
         self.tts = tick_life
 
-
     def update(self):
-        """Update the explosion
-            Arguments:
-                No arguments
-            Returns: 
-                No return
-        """
+        """Update the explosion"""
+
         #If the explosion still has time to live
         if self.tts:
+
+            #Decrease time to live
             self.tts -= 1
         
         #Otherwise kill it

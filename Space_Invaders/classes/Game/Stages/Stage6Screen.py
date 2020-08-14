@@ -1,17 +1,17 @@
 import pygame
 from . import StoryTemplate
-from .. import State, ImageObject, Direction, WHITE, Crabs, Brute, Scout, AIPlayer
+from .. import State, ImageObject, Direction, WHITE, Crabs, Brute, Scout, AIPlayer, AchievmentTracker
 
 class Stage6Screen(StoryTemplate):
 
-    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, debug:bool):
+    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, tracker:AchievmentTracker, debug:bool):
         """The constructor for the Stage 3 screen"""
 
         #Initialise s-net
         self.s_net = None
 
         #Call the superclass init method
-        super().__init__(screen_width, screen_height, screen, State(105), sensitivity, max_fps, 0.2, debug)
+        super().__init__(screen_width, screen_height, screen, State(105), sensitivity, max_fps, 0.2, tracker, debug)
 
         #Add cloud net to the game
         self.s_net = AIPlayer(self.sensitivity, self.screen_width, self.screen_height, self.screen_width//2, 50, 5, self.fps, self.mob_bullet, Direction.DOWN, 5, ai_avail=True,boss=True, debug=self.debug)
@@ -39,6 +39,11 @@ class Stage6Screen(StoryTemplate):
 
         #Add s_net to other_enemies
         self.other_enemies.add(self.s_net)
+
+    def update_trackers(self, win=False):
+        super(Stage6Screen, self).update_trackers()
+        if win:
+            self.tracker.add_value('st_6_clr', 1)
 
     def reset(self) -> None:
         """Reset the game"""

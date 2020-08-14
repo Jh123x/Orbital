@@ -3,37 +3,14 @@ from . import MovingObject, Bullet
 from .. import Direction
 
 class Player(MovingObject):
+
     #Static method to store sprites
     sprites = []
 
     def __init__(self, sensitivity:int, game_width:int, game_height:int, initial_x:int, initial_y:int, init_life:int, 
                 fps:int, bullet_grp:pygame.sprite.Group(), bullet_direction:Direction, 
                 debug:bool = False, isAI:bool = False):
-        """Constructor for the player
-            Arguments:
-                sensitivity: Sensitivity of the player controls (int)
-                game_width: Width of the game in pixels (int)
-                game_height: Height of the game in pixels (int)
-                init_life: Initial life of the player (int)
-                fps: FPS of the game (int)
-                bullet_grp: Bullet group of the player (pygame.sprite.Group)
-                debug: Toggles debug mode (bool): Default = False
-                isAI: Boolean to see if the player is an AI instance (bool): Default = False
-
-            Methods:
-                isAI: Returns a boolean indicating if the player is an AI
-                on_cooldown: Checks if player gun is on cooldown
-                shoot: Allows the player to shoot a bullet
-                move_up: Method to disable upward movement on player
-                move_down: Method to disable downward movement on player
-                move_left: Handles the moving left of the player
-                move_right: Handles right movement of the player
-                is_destroyed: Checks if the player is destroyed
-                destroy: Destroy the player 1 time
-                get_lives: Get the number of lives the player has left
-                reset: Reset the position of the player
-                update: Update the position of the player
-        """
+        """Main class for the player object"""
         #Store the items
         self.is_AI = isAI
         self.bullet_direction = bullet_direction
@@ -51,7 +28,7 @@ class Player(MovingObject):
         self.bullet_grp = bullet_grp
 
         #If the life is not valid set it to 3 by default
-        if init_life >= 0:
+        if init_life <= 0:
             init_life = 3
 
         #Initial amount of life
@@ -67,17 +44,13 @@ class Player(MovingObject):
         self.reset()
 
     def reset(self) -> None:
-        """Reset the player stats
-            Arguments:
-                No arguments:
-            Returns: 
-                No return
-        """
+        """Reset the player stats to original stats"""
+        
         #Reset life
         self.life = self.init_life
 
         #Reset shooting cooldown
-        self.maxcooldown = self.fps // (3 * 0.95)
+        self.maxcooldown = self.fps // 2.5
 
         #Keep track of bullet cooldown
         self.cooldown = 0
@@ -85,6 +58,9 @@ class Player(MovingObject):
         #Reset position
         self.x = self.initial_x
         self.y = self.initial_y
+
+        #Reset the bullet power
+        self.bullet_power = 1
 
         #Rerender rect
         self.changed = True
@@ -96,36 +72,29 @@ class Player(MovingObject):
         """Check if the player is invincible"""
         return self.invincible > 0
 
+    def increase_bullet_power(self, inc:int):
+        """Increase the player bullet power by inc"""
+        self.bullet_power += inc
+
+    def get_bullet_power(self) -> int:
+        """Return the bullet power of the player"""
+        return self.bullet_power
+
     def add_lifes(self, no:int) -> None:
         """Adds life to the player"""
         assert no > 0
         self.life += no
 
     def isAI(self) -> bool:
-        """Check if it is an ai instance of the Player
-            Arguments:
-                No arguments
-            Returns: 
-                Returns True if player is an ai otherwise false (bool)
-        """
+        """Check if it is an ai instance of the Player"""
         return self.is_AI
 
     def on_cooldown(self) -> bool:
-        """Check if shooting is on cooldown
-            Arguments:
-                No arguments
-            Returns:
-                Returns True if the guns are on cooldown (bool)
-        """
+        """Check if shooting is on cooldown"""
         return self.cooldown > 0
 
     def shoot(self) -> bool:
-        """Lets the player shoot a bullet
-            Arguments:
-                No arguments:
-            Returns: 
-                No return
-        """
+        """Lets the player shoot a bullet if the player is not on cooldown"""
 
         #If the player is not on cooldown 
         if not self.on_cooldown():
@@ -143,30 +112,15 @@ class Player(MovingObject):
         return False
 
     def move_up(self) -> None:
-        """Do not allow the player to move up
-            Arguments:
-                No arguments:
-            Returns: 
-                No return
-        """
+        """Do not allow the player to move up"""
         pass
 
     def move_down(self) -> None:
-        """Do not allow the player to move down
-            Arguments:
-                No arguments:
-            Returns: 
-                No return
-        """
+        """Do not allow the player to move down"""
         pass
 
     def move_left(self) -> None:
-        """Move the player left
-            Arguments:
-                No arguments:
-            Returns: 
-                No return
-        """
+        """Move the player to the left"""
         #If the player is not at the leftmost part of the screen 
         if self.x > self.image.get_width()//8:
 
@@ -178,12 +132,7 @@ class Player(MovingObject):
             print("Hit left most")
 
     def move_right(self) -> None:
-        """Move the player right
-            Arguments:
-                No arguments:
-            Returns: 
-                No return
-        """
+        """Move the player right"""
         #If the player is not at the right most 
         if self.x <= self.game_width:
 
@@ -195,52 +144,38 @@ class Player(MovingObject):
             print("Hit right most")
 
     def is_destroyed(self) -> bool:
-        """Returns whether the ship is destroyed
-            Arguments:
-                No arguments:
-            Returns: 
-                Returns true if the player has no lives left otherwise false (bool)
-        """
+        """Returns whether the player is destroyed"""
         return self.get_lives() == 0
 
-    def destroy(self) -> None:
-        """Destroys the ship 1 time
-            Arguments:
-                No arguments:
-            Returns: 
-                No return
-        """
+    def destroy(self, lives:int = 1) -> None:
+        """Destroys the ship 1 time"""
 
         #If the player is no invincible
         if not self.invincible:
 
             #Reduce the life of the player
-            self.life -= 1
+            if self.life < lives:
+                self.life = 0
+            else:
+                self.life -= lives
 
             #Make the player invincible for 1 second
             self.invincible = self.fps
 
     def get_lives(self) -> int:
-        """Get the number of lives left
-            Arguments:
-                No arguments:
-            Returns: 
-                returns the number of lives the player has left (int)
-        """
+        """Get the number of lives left"""
         return self.life
 
     def rotate(self, angle:int):
         """Store the rotation to be updated when sprite changes"""
+        #Store the angle rotation
         self.rotation = angle
+
+        #Call the super rotate class method
         return super().rotate(self.rotation)
 
     def update(self) -> None:
-        """Update the position of the player
-            Arguments:
-                No arguments:
-            Returns: 
-                No return
-        """
+        """Update the position of the player"""
         
         #If the player is invincible
         if self.invincible > 0:
@@ -256,6 +191,8 @@ class Player(MovingObject):
 
         #Load the Image of the player based on his life
         self.image = Player.sprites[self.get_lives()-1 if self.get_lives() < len(Player.sprites) else len(Player.sprites) - 1]
+        
+        #Rotate the corresponding image
         self.rotate(self.rotation)
 
         #Call the super update

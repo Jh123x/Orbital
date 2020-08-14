@@ -8,6 +8,7 @@ class Screen(BaseObject):
 
     #Store the fonts in the Screen Object
     font = pygame.font.Font(pygame.font.get_default_font(),15)
+    h2_font = pygame.font.Font(pygame.font.get_default_font(),20)
     end_font = pygame.font.Font(pygame.font.get_default_font(),30)
     subtitle_font = pygame.font.Font(pygame.font.get_default_font(), 40)
     title_font = pygame.font.Font(pygame.font.get_default_font(), 60)
