@@ -13,7 +13,6 @@ class LocalPVPScreen(ClassicScreen):
         #Bullet groups
         self.player2_bullet = pygame.sprite.Group()
 
-
         #Call the super class classic screen object
         super().__init__(screen_width, screen_height, screen, sensitivity, fps, Difficulty(3),tracker, 1,
                          player_lives,debug)

@@ -136,21 +136,31 @@ class TutorialScreen(PlayScreen):
         #Reset the game
         self.reset()
 
+    def update_trackers(self, loss:bool = False):
+        super(TutorialScreen, self).update_trackers()
+        if loss:
+            self.tracker.add_value('tut_n_clr', 1)
+
     def handle(self) -> State:
         """Handle the drawing of the sprites"""
 
         #If player is destroyed or enemies hit the bottom, go to gameover state
         if self.player1.is_destroyed() or self.enemy_touched_bottom():
 
+            # Update trackers
+            self.update_trackers(True)
             #Cause the game to end
             self.end_game()
+
+            self.tracker.update_achievement()
 
             #Return the gameover state
             return State.GAMEOVER
 
         #Otherwise if player wins
         elif self.wave == 3:
-
+            #update internal stats
+            self.update_trackers()
             #Cause the game to end
             self.end_game()
 

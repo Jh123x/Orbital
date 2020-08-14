@@ -14,9 +14,9 @@ class AchievmentTracker(object):
         '''Get Key Value Pair of Longform statistic'''
         return self.get_longform(key),self.get_stat(key)
 
-    def update_achievement(self,stat:dict, state:dict={}) -> None:
+    def update_achievement(self,state:dict={}) -> None:
         '''Message Passing down to achievment manager'''
-        self.manager.checkAchieved(stat,state)
+        self.manager.checkAchieved(self.stats,state)
 
     def get_stat(self,key):
         '''Getter to retrieve tracked statistic'''
@@ -70,6 +70,9 @@ class AchievmentTracker(object):
         '''function to reset statistics accumulated'''
         for k in self.stats:
             self.stats[k] = 0
+
+    def reset_achieved(self):
+        self.manager.reset()
 
     def __del__(self) -> None:
         # Writes cached values into the database

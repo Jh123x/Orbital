@@ -15,6 +15,7 @@ class Achievement(object):
         '''
         self.unlocked = 1
         #TODO put the popup here for achieving the current achievement
+        print('achieved', self.name)
 
     def get_stat(self):
         '''
@@ -46,8 +47,14 @@ class Achievement(object):
         Stat: amount currently in the database
         Addition: amount to check against
         '''
-        if not self.unlocked and self.condition <= stat + addition:
+        print('hi from achievement')
+        print(not self.unlocked)
+        print('achieved status',stat + addition >= self.condition)
+        if not self.unlocked and  (stat + addition >= self.condition):
             self.unlock()
+
+    def __str__(self):
+        return f"{self.name} : {'Unlocked' if self.unlocked else 'Locked'}"
 
 
 class AchievementManager(object):
@@ -55,11 +62,13 @@ class AchievementManager(object):
         self.adb = Achievements(dbpath)
         self.achievements = dict(map(lambda x: (x[1], Achievement(*x[2:])), self.adb.fetch_all()))
         self.stats = dict(map(lambda x: (x[0],x[1].get_stat()), self.achievements.items()))
+        print(self.achievements)
     def checkAchieved(self, stat:dict, state:dict) -> None:
         ''' Handles update of Achievement in real time as well as Achievement Popup '''
         for k in self.achievements:
             # Checks through list of achievements
-            self.achievements[k].check_achieved(stat.get(k, 0), state.get(k, 0))
+            metric = self.achievements[k].get_stat()
+            self.achievements[k].check_achieved(stat.get(metric, 0), state.get(metric, 0))
 
     def parseAchievement(self):
         '''
@@ -68,6 +77,13 @@ class AchievementManager(object):
 
         '''
         return list(map(lambda x: (x.get_name(),x.get_achieved(), x.get_path()), self.achievements.values()))
+
+    def reset(self):
+        '''
+        Reset Achievement State
+        '''
+        for i in self.achievements.values():
+            i.reset()
 
     def __del__(self):
         for i,j in self.achievements.items():

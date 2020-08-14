@@ -20,7 +20,9 @@ class ClassicScreen(Screen):
         self.difficulty = difficulty
         self.player_lives = player_lives
         self.over = False
-        self.session_stats= {'sf': 0, 'en_k': 0, 'el_k': 0, 'sl': 0, 'pu': 0, 'mpu': 0, 'ek_c': 0, 'ek_e': 0}
+        self.session_stats= {'sf':0,'en_k':0,'el_k':0,'sl':0,'pu': 0,'mpu':0,'ek_c':0,'ek_e':0,'tut_n_clr':0,'st_1_clr':0,
+                             'st_2_clr':0,'st_3_clr':0, 'st_4_clr':0,'st_5_clr':0,'st_6_clr':0,'coop':0,'pvp':0,'aivs':0,
+                             'aicoop':0}
         self.tracker = tracker
         # print('Classic screen ping',tracker)
         # print('my type', self)
@@ -577,11 +579,13 @@ class ClassicScreen(Screen):
 
         #Check object collisions
         self.check_collisions()
-        # TODO update the max_killed if threshold is reached
-        self.handle_threshold()
-        # TODO Give achievement here
 
-        print('internal stats', self.session_stats)
+        # Update the max_killed if threshold is reached
+        self.handle_threshold()
+
+        # TODO Give achievement here
+        self.tracker.update_achievement(self.session_stats)
+
         #Draw the letters on the screen
         self.draw_letters()
 
