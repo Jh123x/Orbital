@@ -14,7 +14,7 @@ class AIPVPScreen(LocalPVPScreen):
         self.set_state(State.AI_VS)
 
     def update_trackers(self):
-        self.tracker.add_value('aivs')
+        self.tracker.add_value('aivs', 1)
 
     def spawn_players(self) -> None:
         """Spawn the players for the game"""
