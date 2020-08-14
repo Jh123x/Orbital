@@ -28,7 +28,6 @@ class ClassicScreen(Screen):
         # print('my type', self)
         # print(wave)
 
-
         #Create the groups
         #Bullets shot by player
         self.player1_bullet = pygame.sprite.Group()
@@ -56,8 +55,6 @@ class ClassicScreen(Screen):
         #Set resetted to false
         self.resetted = False
 
-
-
         #Reset the variables
         self.reset()
 
@@ -66,11 +63,17 @@ class ClassicScreen(Screen):
         #Create the player
         self.player1 = Player(self.sensitivity, self.screen_width, self.screen_height, self.screen_width//2, self.screen_height - 50, 3, self.fps, self.player1_bullet, Direction.UP, self.debug)
 
-
-
-
     def reset(self) -> None:
         """Reset the play screen and variables"""
+
+        #Update the tracker
+        self.update_trackers()
+
+        #Reset the session tracker
+        for key in self.session_stats.keys():
+
+            #Reset the value
+            self.session_stats[key] = 0
 
         #If already resetted
         if self.resetted:
