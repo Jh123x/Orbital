@@ -1,7 +1,7 @@
 import pygame
 import random
 from pygame.locals import *
-from . import Screen
+from . import Screen, Popup
 from .. import *
 
 class ClassicScreen(Screen):
@@ -586,8 +586,13 @@ class ClassicScreen(Screen):
         # Update the max_killed if threshold is reached
         self.handle_threshold()
 
-        # TODO Give achievement here
-        self.tracker.update_achievement(self.session_stats)
+        #Return a list of achievement achieved
+        lst = self.tracker.update_achievement(self.session_stats)
+
+        #Print the achievement
+        for i in lst:
+            #TODO make the popup Update is on space invaders branch
+            print(i)
 
         #Draw the letters on the screen
         self.draw_letters()

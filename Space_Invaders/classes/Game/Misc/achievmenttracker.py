@@ -26,9 +26,9 @@ class AchievmentTracker(object):
         '''Get Key Value Pair of Longform statistic'''
         return self.get_longform(key),self.get_stat(key)
 
-    def update_achievement(self, state:dict={}) -> None:
+    def update_achievement(self, state:dict = {}) -> list:
         '''Message Passing down to achievment manager'''
-        self.manager.checkAchieved(self.stats,state)
+        return self.manager.checkAchieved(self.stats,state)
 
     def get_stat(self, key:str):
         '''Getter to retrieve tracked statistic'''
