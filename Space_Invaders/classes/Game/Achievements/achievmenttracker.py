@@ -1,8 +1,9 @@
-from . import Statistics, AchievementManager
+from . import AchievementManager
+from .. import Popup, Screen, Statistics
 
 class AchievmentTracker(object):
 
-    def __init__(self, db_path:str):
+    def __init__(self, db_path:str, popup_q):
         """Acheivement tracker class"""
         self.statdb = Statistics(db_path)
         self.stats = dict(map(lambda x: x[1:], self.statdb.fetch_all()))
@@ -17,6 +18,7 @@ class AchievmentTracker(object):
             'mpu' : "Max Powerups used",
                         }
         self.manager = AchievementManager(db_path)
+        self.popup_q = popup_q
 
     def get_all(self):
         """Gets all the key value pairs"""
@@ -28,7 +30,9 @@ class AchievmentTracker(object):
 
     def update_achievement(self, state:dict = {}) -> list:
         '''Message Passing down to achievment manager'''
-        return self.manager.checkAchieved(self.stats,state)
+        lst = self.manager.checkAchieved(self.stats,state)
+        for achievement in lst:
+            self.popup_q.add(achievement, 2)
 
     def get_stat(self, key:str):
         '''Getter to retrieve tracked statistic'''

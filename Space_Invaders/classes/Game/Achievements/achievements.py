@@ -1,4 +1,4 @@
-from . import Achievements
+from .. import Achievements
 
 class Achievement(object):
     def __init__(self, stat:str, condition:int, name:str, unlocked:int, path:str):
@@ -16,6 +16,7 @@ class Achievement(object):
         '''
         self.unlocked = 1
         #TODO put the popup here for achieving the current achievement
+        # print(f"Unlocked {self}")
 
     def get_stat(self):
         '''
@@ -76,7 +77,7 @@ class AchievementManager(object):
         self.adb = Achievements(dbpath)
 
         #Get a list of achievements
-        self.achievements = dict(map(lambda x: (x[1], Achievement(*x[2:])), self.adb.fetch_all()))
+        self.achievements = dict(map(lambda x: (x[1], Achievement(x[2], x[3], x[4], x[5], x[6])), self.adb.fetch_all()))
 
         #Get the stats
         self.stats = dict(map(lambda x: (x[0],x[1].get_stat()), self.achievements.items()))
@@ -84,6 +85,7 @@ class AchievementManager(object):
     def checkAchieved(self, stat:dict, state:dict) -> list:
         ''' Handles update of Achievement in real time as well as Achievement Popup '''
         unlocked = []
+
         #Iterate through all the acheivements
         for k in self.achievements:
 
