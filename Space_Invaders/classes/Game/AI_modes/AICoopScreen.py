@@ -14,7 +14,7 @@ class AICoopScreen(CoopScreen):
         self.set_state(State.AI_COOP)
 
     def update_trackers(self):
-        self.tracker.add_value('aicoop')
+        self.tracker.add_value('aicoop',1)
 
     def spawn_players(self) -> None:
         """Spawn the players
