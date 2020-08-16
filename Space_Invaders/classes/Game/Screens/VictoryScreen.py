@@ -22,7 +22,7 @@ class VictoryScreen(MenuTemplate):
         super().__init__(screen_width, screen_height, State.VICTORY, screen, debug)
 
         #Show the trophy in the middle of the screen
-        self.trophy = ImageObject(screen_width//2, screen_height//2 - 50, 50, 50, self.sprites[0])
+        self.trophy = ImageObject(screen_width//2, screen_height//2 - 50, 50, 50, self.sprites[1])
         self.trophy.scale(100,100)
 
     def write_lines(self) -> None:
