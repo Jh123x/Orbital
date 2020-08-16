@@ -1,12 +1,12 @@
 import pygame
 import random
 from pygame.locals import *
-from . import Screen, Popup
+from . import Screen
 from .. import *
 
 class ClassicScreen(Screen):
     def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, difficulty:Difficulty,
-                 tracker:AchievmentTracker, wave:int = 1, player_lives:int = 3, debug:bool = False):
+                 tracker, wave:int = 1, player_lives:int = 3,  debug:bool = False):
         """Constructor for Classic screen for the game"""
 
         #Call the superclass init
@@ -527,10 +527,6 @@ class ClassicScreen(Screen):
         """Ends the game and updates relevent statistics"""
         self.over = True
 
-
-
-
-
     def handle(self) -> State:
         """Handle the drawing of the classic screen"""
         
@@ -587,12 +583,7 @@ class ClassicScreen(Screen):
         self.handle_threshold()
 
         #Return a list of achievement achieved
-        lst = self.tracker.update_achievement(self.session_stats)
-
-        #Print the achievement
-        for i in lst:
-            #TODO make the popup Update is on space invaders branch
-            print(i)
+        self.update_achievement()
 
         #Draw the letters on the screen
         self.draw_letters()

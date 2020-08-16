@@ -15,7 +15,7 @@ class StatsScreen(MenuTemplate):
         """Override the method in the subclass"""
 
         #Write the header
-        self.write(self.title_font, WHITE, "Statistics", self.screen_width//2, self.screen_height//5)
+        self.write(self.title_font, WHITE, "Statistics", self.screen_width // 2, self.screen_height//5)
         
         #Write the main words
         self.write_main_words()
@@ -31,7 +31,7 @@ class StatsScreen(MenuTemplate):
         for index,(header,stat) in enumerate(lines):
 
             #Write the stat
-            self.write(self.h2_font, WHITE, f"{header}: {stat}", self.screen_width //2 , self.screen_height // 2 - 100 + 25 * index)
+            self.write_main(self.h2_font, WHITE, f"{header}: {stat}", self.screen_width //2 , self.screen_height // 2 - 100 + 25 * index)
 
     def get_rects(self) -> None:
         """Rects on the screen"""

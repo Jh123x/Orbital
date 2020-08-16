@@ -31,9 +31,6 @@ class GameWindow(object):
         self.settingsdb = SettingsDB(db_path)
         self.settings_data = dict(map(lambda x: x[1:], self.settingsdb.fetch_all()))
 
-        # Stats Tracker
-        self.achievementtracker = AchievmentTracker(db_path)
-
         #Load sounds
         self.sound = asyncio.run(load_sound(sound_path, self.settings_data['music'], float(self.settings_data['volume']), self.debug))
 
@@ -77,11 +74,15 @@ class GameWindow(object):
         self.cooldown = self.fps // 5
         self.prev = State.NONE
         self.popup = None
+        self.popup_q = PopupQueue(game_width, game_height, self.fps, self.main_screen, self.debug)
+
+        # Stats Tracker
+        self.achievementtracker = AchievmentTracker(db_path, self.popup_q)
 
         #Store the different screens in state
         self.screens = {
-            State.PLAY:                 PlayScreen(game_width, game_height, self.main_screen, sensitivity, maxfps,
-                                                   self.difficulty, self.achievementtracker , 3,debug = self.debug),
+            State.PLAY:                 PlayScreen(game_width, game_height, self.main_screen, sensitivity, maxfps, 
+                                        self.difficulty, self.achievementtracker , 3,debug = self.debug),
             State.CLASSIC:              ClassicScreen(game_width, game_height, self.main_screen, sensitivity, maxfps,
                                                       self.difficulty,self.achievementtracker, debug = self.debug),
             State.SETTINGS:             SettingsScreen(game_width, game_height, self.main_screen, self.fps, self.sound,
@@ -380,7 +381,7 @@ class GameWindow(object):
             asyncio.run(self.screenshot())
 
             #Create a 1 second popup saying screenshot is taken 
-            self.popup = Popup(20*8, 30, "Screenshot taken", self.fps, self.game_width//2, 15, self.main_screen, font = Screen.font, debug = self.debug)
+            self.popup_q.append(Popup(20*8, 30, "Screenshot taken", self.fps, self.game_width//2, 15, self.main_screen, font = Screen.font, debug = self.debug))
 
     def fill_background(self) -> None:
         """Set the background"""
@@ -468,11 +469,17 @@ class GameWindow(object):
             #Reset Popups
             self.popup = None
 
-        #Check popups
+        #If the popup exists
         if self.popup:
 
-            #Update popups
-            self.popup.update()
+            #Update the popup
+            self.popup = self.popup.update()
+
+        #If there is no popup
+        elif len(self.popup_q) > 0:
+
+            #Get the next popup in line
+            self.popup = self.popup_q.popleft()
 
     def post_process(self):
         """Do the post processing"""

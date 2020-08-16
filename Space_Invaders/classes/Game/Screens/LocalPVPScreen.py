@@ -6,7 +6,7 @@ from . import ClassicScreen
 from .. import *
 
 class LocalPVPScreen(ClassicScreen):
-    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, fps:int, tracker:AchievmentTracker,
+    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, fps:int, tracker,
                  player_lives:int = 3, debug:bool = False):
         """Constructor for local PVP class"""
 

@@ -26,7 +26,6 @@ class Screen(BaseObject):
         self.state = state
         self.cooldown = 20
         self.debug = debug
-        self.popup = None
         self.bg = None
 
         #Create a surface with a transparent background
@@ -61,12 +60,6 @@ class Screen(BaseObject):
 
     def update(self) -> None:
         """Blits the screen onto the surface"""
-
-        #If the popup exists
-        if self.popup:
-
-            #Update the popup
-            self.popup = self.popup.update()
         
         #If the screen has a background
         if self.bg:
