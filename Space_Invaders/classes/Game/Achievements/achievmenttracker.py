@@ -28,6 +28,15 @@ class AchievmentTracker(object):
         '''Get Key Value Pair of Longform statistic'''
         return self.get_longform(key),self.get_stat(key)
 
+    def set_value(self, key:str, value:int) -> None:
+        """Set the value"""
+        self.stats[key] = value
+
+    def add_popup(self, name:str):
+        """Add the popup with the name"""
+        #Add the popup with the name for 2 seconds
+        self.popup_q.add(name, 2)
+
     def update_achievement(self, state:dict = {}) -> list:
         '''Message Passing down to achievment manager'''
         print('my_stats',self.stats)
@@ -92,6 +101,18 @@ class AchievmentTracker(object):
     def reset_achieved(self):
         """Reset the achievement"""
         self.manager.reset()
+
+    def check_unlocked(self, key:str, stat1:int) -> str:
+        """Check if the achievement is unlocked based on key and stat"""
+
+        #Get the achievement if it is achieved
+        achievement = self.manager.checkUnlocked(key, stat1)
+
+        #If there is an achievement
+        if achievement:
+
+            #Add the achievement to the popup queue to be shown
+            self.popup_q.add(achievement, 2)
 
     def __del__(self) -> None:
         """Destructor for the Achievement tracker"""

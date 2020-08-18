@@ -301,25 +301,35 @@ def main() -> None:
     #Create a while loop for the user to test commands as they are typed into the terminal
     while(True):
 
-        #Print entries
+        #Print entries for all of the databases
         print(f"Highscore: {db.fetch_all()}")
         print(f"Achievements: {ac.fetch_all()}")
         print(f"Settings: {s.fetch_all()}")
         print(f"Stats: {stat.fetch_all()}" )
 
-        
-        #Get commands from user
         try:
+
+            #Get commands from the user
             command = input("Type in the command: ").strip()
+
+            #IF the player wants to quit
             if command == 'q':
+
+                #Break out of the loop
                 break
+
+            #Otherwise evaluate the command
             print(eval(command))
         
-        #If there is an error print the error message
+        #If there is an error
         except Exception as exp:
+
+            #Print the exception to the stdio
             print(exp)
 
 
-#If the function is run as the main file call the main function
+#If the function is run as the main file
 if __name__ == "__main__":
+
+    #Call the main function
     main()

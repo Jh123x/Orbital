@@ -23,6 +23,7 @@ class ClassicScreen(Screen):
         self.session_stats= {'sf':0,'en_k':0,'el_k':0,'sl':0,'pu': 0,'mpu':0,'ek_c':0,'ek_e':0,'tut_n_clr':0,'st_1_clr':0,
                              'st_2_clr':0,'st_3_clr':0, 'st_4_clr':0,'st_5_clr':0,'st_6_clr':0,'coop':0,'pvp':0,'aivs':0,
                              'aicoop':0}
+        self.main_stats = {}
         self.tracker = tracker
         # print('Classic screen ping',tracker)
         # print('my type', self)
@@ -106,6 +107,23 @@ class ClassicScreen(Screen):
 
         #Reset the player
         self.player1.reset()
+
+        #Fetch achievement stats
+        self.fetch_stats()
+
+    def fetch_stats(self, keys:tuple = None) -> dict:
+        """Fetch the stats"""
+        #If there are no keys
+        if not keys:
+
+            #Call the classic trackers
+            keys = ("sf", "en_k", "el_k")
+
+        #For each item
+        for key in keys:
+
+            #Store the stat in the screen
+            self.main_stats[key] = self.tracker.get_stat(key)
 
     def get_hitboxes(self) -> list:
         """Get a list of hitboxes of mobs"""
@@ -362,27 +380,28 @@ class ClassicScreen(Screen):
     def accumulate(self, k, v):
         '''Accumulate a stat in the dictionary'''
         self.session_stats[k] += v
-        # self.tracker.ships_destroyed(1)
+
+        if k in self.main_stats:
+            print(self.main_stats)
+            self.main_stats[k] += v
 
     def update_trackers(self):
         '''Update stat tracker stats that we want to add'''
-        for k,v in self.session_stats.items():
-            if k != 'mpu' or k != 'ek_c' or k != 'ek_e':
-                self.tracker.add_value(k,v)
-            if k == 'mpu' or k == 'ek_c' or k == 'ek_e':
-                self.tracker.set_max_value(k,v)
+
+        #Update relavant stats
+        for k,v in self.main_stats.items():
+            self.tracker.set_value(k,v)
+
+        #Add max kills to the tracker
+        self.tracker.set_max_value('ek_c', self.session_stats['en_k'])
+        
 
     def handle_threshold(self) -> None:
         ''' Handle updating threshold value for given statistics -> throws popup on screen'''
         if self.session_stats['en_k'] == self.tracker.get_stat('ek_c') + 1:
-            #TODO Make Popup appear Once You have killed more in this session than all time!
-            print('killed most')
+            self.tracker.add_popup("This is the highest kills you got!")
         if self.session_stats['en_k'] >= self.tracker.get_stat('ek_c') + 1:
             self.session_stats['ek_c'] = self.session_stats['en_k']
-
-
-        # if self._killed > self.max_kill:
-        #     self.tracker.enemies_killed_in_classic(self._killed)
 
     def check_collisions(self):
         """Check the objects which collided"""
@@ -453,7 +472,11 @@ class ClassicScreen(Screen):
 
         #Returns destroyed ship
         return ship
-        
+
+    def update_achievement(self):
+        """Updates achievements for the game"""
+        for key,value in self.main_stats.items():
+            self.tracker.check_unlocked(key, value)
 
     def spawn_explosion(self, x:int, y:int) -> None:
         """Spawn an explosion at specified x and y coordinate"""
@@ -572,8 +595,11 @@ class ClassicScreen(Screen):
 
             #Spawn the aliens
             self.spawn_enemies(int(6 * self.wave))
+
         if self._shots < len(self.player1_bullet):
             self.accumulate('sf', len(self.player1_bullet) - self._shots)
+
+        #Get the number of player 1 bullets
         self._shots = len(self.player1_bullet)
 
         #Check object collisions

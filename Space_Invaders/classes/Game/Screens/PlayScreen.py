@@ -2,7 +2,7 @@ import pygame
 import random
 from pygame.locals import *
 from . import ClassicScreen
-from .. import *
+from .. import Difficulty, MotherShip, EnemyShip, Crabs, Scout, Brute, State, PowerUp
 
 class PlayScreen(ClassicScreen):
     def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, difficulty: Difficulty,
@@ -20,6 +20,24 @@ class PlayScreen(ClassicScreen):
 
         #Set state to play state
         self.set_state(State.PLAY)
+
+    def fetch_stats(self, keys:tuple = None):
+        """Fetch the stats needed for this mode"""
+
+        #If there is no key provided
+        if not keys:
+
+            #TODO Fetch the stats needed for play mode
+            keys = ('e_ke', 'en_k', 'el_k', 'pu', 'sf', 'mpu')
+
+            #Call the superclass fetch stats method
+            return super().fetch_stats(keys)
+            
+        else:
+            
+            #Otherwise call the superclass fetch stats method
+            return super().fetch_stats(keys)
+            
 
     def set_powerup_chance(self, chance:float) -> None:
         """Set the powerup chance"""
