@@ -80,18 +80,30 @@ class AchievementManager(object):
         self.achievements = dict(map(lambda x: (x[1], Achievement(x[2], x[3], x[4], x[5], x[6])), self.adb.fetch_all()))
 
         #Get the stats
-        self.stats = dict(map(lambda x: (x[0],x[1].get_stat()), self.achievements.items()))
+        self.stats = dict(map(lambda x: (x[1].get_stat(), x[0]), self.achievements.items()))
+
+        
+
+    def checkUnlocked(self, key:str, stat:int, stat2:int = 0):
+        """Check if the stat is unlocked based on stat"""
+        ac = self.getAchievement(key)
+        if ac:
+            return self.getAchievement(key).check_achieved(stat, stat2)
+
+    def getAchievement(self, key:str) -> Achievement:
+        """Get the achievement"""
+        return self.achievements.get(self.stats.get(key,None), None)
 
     def checkAchieved(self, stat:dict, state:dict) -> list:
         ''' Handles update of Achievement in real time as well as Achievement Popup '''
         unlocked = []
 
         #Iterate through all the acheivements
-        for k in self.achievements:
+        for k in self.achievements.values():
 
             # Checks through list of achievements
-            metric = self.achievements[k].get_stat()
-            ac = self.achievements[k].check_achieved(stat.get(metric, 0), state.get(metric, 0))
+            metric = k.get_stat()
+            ac = self.checkUnlocked(k, stat.get(metric, 0), state.get(metric, 0))
 
             if ac:
                 unlocked.append(ac)

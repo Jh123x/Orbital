@@ -28,10 +28,14 @@ class CoopScreen(PlayScreen):
 
     def handle_threshold(self) -> None:
         pass
+    
+    def fetch_stats(self) -> dict:
+        """Fetch teh stats"""
+        pass
 
     def update_trackers(self):
+        """Update tracker"""
         self.tracker.add_value('coop', 1)
-
 
     def reset(self) -> None:
         """Reset the environment"""

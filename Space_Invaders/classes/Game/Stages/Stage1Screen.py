@@ -29,6 +29,7 @@ class Stage1Screen(StoryTemplate):
         super(Stage1Screen, self).update_trackers()
         if win:
             self.tracker.add_value('st_1_clr', 1)
+
     def draw_bg(self):
         """Draw the background"""
         #Draw the commander brief
@@ -94,8 +95,6 @@ class Stage1Screen(StoryTemplate):
 
         #Return the current state
         return self.state
-
-
 
     def post_cutscene(self):
         """The post cutscene for stage 1"""
