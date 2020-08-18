@@ -1,24 +1,42 @@
-from . import Statistics, AchievementManager
+from . import AchievementManager
+from .. import Popup, Screen, Statistics
 
 class AchievmentTracker(object):
 
-    def __init__(self, db_path:str):
+    def __init__(self, db_path:str, popup_q):
+        """Acheivement tracker class"""
         self.statdb = Statistics(db_path)
         self.stats = dict(map(lambda x: x[1:], self.statdb.fetch_all()))
-        self.long_form = {'sf': "Number of Shots Fired", 'en_k': "Number of Enemies killed",
-                          'el_k': "Number of Elite Enemies killed",'sl': "Number of Ships wrecked",
-                          'pu': "Number of Powerups used", 'mpu': "Max Powerups used",
-                          'ek_c': "Number of Enemies Killed in Classic", 'ek_e': "Number of Enemies Killed in Endless"}
+        self.long_form = {
+            'ek_c': "Number of Enemies Killed in Classic",
+            'ek_e': "Number of Enemies Killed in Endless",
+            'el_k': "Number of Elite Enemies killed",
+            'en_k': "Number of Enemies killed",
+            'sl'  : "Number of Ships wrecked",
+            'pu'  : "Number of Powerups used", 
+            'sf'  : "Number of Shots Fired", 
+            'mpu' : "Max Powerups used",
+                        }
         self.manager = AchievementManager(db_path)
+        self.popup_q = popup_q
+
+    def get_all(self):
+        """Gets all the key value pairs"""
+        return [self.get_statistic(item) for item in self.long_form]
+
     def get_statistic(self, key) -> tuple:
         '''Get Key Value Pair of Longform statistic'''
         return self.get_longform(key),self.get_stat(key)
 
-    def update_achievement(self,state:dict={}) -> None:
+    def update_achievement(self, state:dict = {}) -> list:
         '''Message Passing down to achievment manager'''
-        self.manager.checkAchieved(self.stats,state)
+        print('my_stats',self.stats)
+        print('incoming',state)
+        lst = self.manager.checkAchieved(self.stats,state)
+        for achievement in lst:
+            self.popup_q.add(achievement, 2)
 
-    def get_stat(self,key):
+    def get_stat(self, key:str):
         '''Getter to retrieve tracked statistic'''
         return self.stats.get(key, None)
 
@@ -72,9 +90,11 @@ class AchievmentTracker(object):
             self.stats[k] = 0
 
     def reset_achieved(self):
+        """Reset the achievement"""
         self.manager.reset()
 
     def __del__(self) -> None:
+        """Destructor for the Achievement tracker"""
         # Writes cached values into the database
         for k,v in self.stats.items():
             self.statdb.update(k,v)

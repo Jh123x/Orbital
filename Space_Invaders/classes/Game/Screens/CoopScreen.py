@@ -3,11 +3,11 @@ import pygame
 import random
 from pygame.locals import *
 from . import PlayScreen
-from .. import State, Player, Direction, WHITE, Explosion, Difficulty, AchievmentTracker
+from .. import State, Player, Direction, WHITE, Explosion, Difficulty
 
 class CoopScreen(PlayScreen):
     def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, fps:int,
-                 difficulty: Difficulty, tracker:AchievmentTracker, player_lives:int = 3, debug:bool = False):
+                 difficulty: Difficulty, tracker, player_lives:int = 3, debug:bool = False):
         """Main Coop screen for local cooperative mode"""
 
         #Bullet groups for player 2

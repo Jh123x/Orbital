@@ -1,7 +1,6 @@
 #Import all the screens
 from .Screens import Screen
 from .MenuTemplate import MenuTemplate
-from .Popup import Popup
 from .ClassicScreen import ClassicScreen
 from .PlayScreen import PlayScreen
 from .GameoverScreen import GameoverScreen
@@ -21,6 +20,7 @@ from .StoryModeScreen import StoryModeScreen
 from .OnePlayerModesScreen import OnePlayerModeScreen
 from .TutorialScreen import TutorialScreen
 from .VictoryScreen import VictoryScreen
+from .StatsScreen import StatsScreen
 
 {'sf': 0, 'en_k': 0, 'el_k': 0, 'sl': 0, 'pu': 0, 'mpu': 0, 'ek_c': 0, 'ek_e': 0}
 

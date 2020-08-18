@@ -10,7 +10,7 @@ class TutorialScreen(PlayScreen):
     information = [("a", "move left"), ("d", "move right"), ("spacebar", "shoot"), ("p", "to pause")]
 
     def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int
-                 , tracker:AchievmentTracker, debug:bool = False):
+                 , tracker, debug:bool = False):
         """Main class for the tutorial screen"""
 
         #Call the superclass
@@ -149,11 +149,11 @@ class TutorialScreen(PlayScreen):
 
             # Update trackers
             self.update_trackers(True)
-            #Cause the game to end
-            self.end_game()
-
             self.tracker.update_achievement()
 
+            #Cause the game to end
+            self.end_game()
+            
             #Return the gameover state
             return State.GAMEOVER
 

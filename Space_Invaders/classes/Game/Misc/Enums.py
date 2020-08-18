@@ -27,6 +27,7 @@ class State(enum.Enum):
     VICTORY = 5
     ONE_PLAYER_MENU = 6
     AI_MENU = 7
+    STAT_MENU = 1000
 
     #Highscore states
     HIGHSCORE = 8

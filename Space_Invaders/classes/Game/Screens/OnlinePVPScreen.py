@@ -1,11 +1,11 @@
 import pygame
 import random
 from . import LocalPVPScreen
-from .. import Network, State, WHITE, Bullet, AchievmentTracker
+from .. import Network, State, WHITE, Bullet
 from pygame.locals import *
 
 class OnlinePVPScreen(LocalPVPScreen):
-    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, fps:int, tracker:AchievmentTracker, player_lives:int = 3, debug:bool = False):
+    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, fps:int, tracker, player_lives:int = 3, debug:bool = False):
         """The main class for the online PVP screen"""
 
         #Call the superclass

@@ -6,7 +6,7 @@ from .. import *
 
 class PlayScreen(ClassicScreen):
     def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, difficulty: Difficulty,
-                 tracker:AchievmentTracker, wave:int = 1, player_lives:int = 3, powerup_chance:float = 0.1, debug:bool = False):
+                 tracker, popup_q, wave:int = 1, player_lives:int = 3, powerup_chance:float = 0.1, debug:bool = False):
         """The Endless mode screen"""
 
         #Power ups group
@@ -17,8 +17,6 @@ class PlayScreen(ClassicScreen):
 
         #Call the superclass init
         super().__init__(screen_width, screen_height, screen, sensitivity, max_fps, difficulty, tracker, wave, player_lives, debug)
-
-
 
         #Set state to play state
         self.set_state(State.PLAY)

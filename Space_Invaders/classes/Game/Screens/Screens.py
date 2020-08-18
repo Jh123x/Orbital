@@ -8,6 +8,7 @@ class Screen(BaseObject):
 
     #Store the fonts in the Screen Object
     font = pygame.font.Font(pygame.font.get_default_font(),15)
+    h2_font = pygame.font.Font(pygame.font.get_default_font(),20)
     end_font = pygame.font.Font(pygame.font.get_default_font(),30)
     subtitle_font = pygame.font.Font(pygame.font.get_default_font(), 40)
     title_font = pygame.font.Font(pygame.font.get_default_font(), 60)
@@ -19,13 +20,13 @@ class Screen(BaseObject):
         super().__init__(initial_x, initial_y, debug)
 
         #Store the variables
+        self.screen_height = screen_height
+        self.screen_width = screen_width
         self.screen = screen
         self.state = state
-        self.screen_width = screen_width
-        self.screen_height = screen_height
+        self.cooldown = 20
         self.debug = debug
         self.bg = None
-        self.cooldown = 20
 
         #Create a surface with a transparent background
         self.reset_surface()

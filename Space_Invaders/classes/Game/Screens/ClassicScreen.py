@@ -6,7 +6,7 @@ from .. import *
 
 class ClassicScreen(Screen):
     def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, difficulty:Difficulty,
-                 tracker:AchievmentTracker, wave:int = 1, player_lives:int = 3, debug:bool = False):
+                 tracker, wave:int = 1, player_lives:int = 3,  debug:bool = False):
         """Constructor for Classic screen for the game"""
 
         #Call the superclass init
@@ -27,7 +27,6 @@ class ClassicScreen(Screen):
         # print('Classic screen ping',tracker)
         # print('my type', self)
         # print(wave)
-
 
         #Create the groups
         #Bullets shot by player
@@ -56,8 +55,6 @@ class ClassicScreen(Screen):
         #Set resetted to false
         self.resetted = False
 
-
-
         #Reset the variables
         self.reset()
 
@@ -66,11 +63,17 @@ class ClassicScreen(Screen):
         #Create the player
         self.player1 = Player(self.sensitivity, self.screen_width, self.screen_height, self.screen_width//2, self.screen_height - 50, 3, self.fps, self.player1_bullet, Direction.UP, self.debug)
 
-
-
-
     def reset(self) -> None:
         """Reset the play screen and variables"""
+
+        #Update the tracker
+        self.update_trackers()
+
+        #Reset the session tracker
+        for key in self.session_stats.keys():
+
+            #Reset the value
+            self.session_stats[key] = 0
 
         #If already resetted
         if self.resetted:
@@ -524,10 +527,6 @@ class ClassicScreen(Screen):
         """Ends the game and updates relevent statistics"""
         self.over = True
 
-
-
-
-
     def handle(self) -> State:
         """Handle the drawing of the classic screen"""
         
@@ -583,8 +582,8 @@ class ClassicScreen(Screen):
         # Update the max_killed if threshold is reached
         self.handle_threshold()
 
-        # TODO Give achievement here
-        self.tracker.update_achievement(self.session_stats)
+        #Return a list of achievement achieved
+        self.tracker.update_achievement()
 
         #Draw the letters on the screen
         self.draw_letters()

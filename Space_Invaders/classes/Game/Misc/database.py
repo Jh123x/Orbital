@@ -109,27 +109,27 @@ class Statistics(Database):
 
         self.execute(''' SELECT count(name) FROM sqlite_master WHERE type='table' AND name='statistics' ''')
         bo = self.cursor.fetchone()[0]
-        # if bo == 0:
-        """Add the relevant settings"""
-        self.add("sf", 0)
-        self.add("en_k", 0)
-        self.add("el_k", 0)
-        self.add("sl", 0)
-        self.add("pu", 0)
-        self.add("mpu", 0)
-        self.add("ek_c", 0)
-        self.add("ek_e", 0)
-        self.add('tut_n_clr', 0)
-        self.add('st_1_clr',0)
-        self.add('st_2_clr',0)
-        self.add('st_3_clr', 0)
-        self.add('st_4_clr', 0)
-        self.add('st_5_clr', 0)
-        self.add('st_6_clr', 0)
-        self.add('coop', 0)
-        self.add('pvp', 0)
-        self.add('aivs', 0)
-        self.add('aicoop', 0)
+        if bo == 0:
+            """Add the relevant settings"""
+            self.add("sf", 0)
+            self.add("en_k", 0)
+            self.add("el_k", 0)
+            self.add("sl", 0)
+            self.add("pu", 0)
+            self.add("mpu", 0)
+            self.add("ek_c", 0)
+            self.add("ek_e", 0)
+            self.add('tut_n_clr', 0)
+            self.add('st_1_clr',0)
+            self.add('st_2_clr',0)
+            self.add('st_3_clr', 0)
+            self.add('st_4_clr', 0)
+            self.add('st_5_clr', 0)
+            self.add('st_6_clr', 0)
+            self.add('coop', 0)
+            self.add('pvp', 0)
+            self.add('aivs', 0)
+            self.add('aicoop', 0)
 
     def add(self, name:str, stat:int) -> None:
         '''
