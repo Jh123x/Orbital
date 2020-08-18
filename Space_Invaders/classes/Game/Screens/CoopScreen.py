@@ -30,7 +30,7 @@ class CoopScreen(PlayScreen):
         pass
     
     def fetch_stats(self) -> dict:
-        """Fetch teh stats"""
+        """Fetch the stats"""
         pass
 
     def update_trackers(self):
