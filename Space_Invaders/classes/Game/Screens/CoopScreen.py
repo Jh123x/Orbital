@@ -27,10 +27,11 @@ class CoopScreen(PlayScreen):
         return self.get_score()
 
     def handle_threshold(self) -> None:
+        """Not tracking stats for the Coop screen"""
         pass
     
     def fetch_stats(self) -> dict:
-        """Fetch the stats"""
+        """Not tracking the stats for fetch_stats method"""
         pass
 
     def update_trackers(self):
