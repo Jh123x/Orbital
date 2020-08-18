@@ -453,6 +453,10 @@ class ClassicScreen(Screen):
 
         #Returns destroyed ship
         return ship
+
+    def update_achievement(self):
+        """Updates achievements for the game"""
+        self.tracker.update_achievement()
         
 
     def spawn_explosion(self, x:int, y:int) -> None:
