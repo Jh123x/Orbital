@@ -9,7 +9,7 @@ class Scout(EnemyShip):
         """Main class for the scout ship"""
 
         #Call the superclass init with 1.2 times the sensitivity to make it move faster
-        super().__init__(sensitivity, initial_x, initial_y, lives,  game_width, game_height, None, bullet_grp, debug)
+        super().__init__(sensitivity, initial_x, initial_y, lives, game_width, game_height, None, bullet_grp, debug)
 
         #Store the x_velocity and y_velocity (To be fine tuned later)
         self.delta_x = self.sensitivity

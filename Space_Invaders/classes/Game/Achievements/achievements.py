@@ -86,9 +86,15 @@ class AchievementManager(object):
 
     def checkUnlocked(self, key:str, stat:int, stat2:int = 0):
         """Check if the stat is unlocked based on stat"""
+
+        #Check if the achievement is valid
         ac = self.getAchievement(key)
+
+        #If it is valid
         if ac:
-            return self.getAchievement(key).check_achieved(stat, stat2)
+
+            #Check if it is achieved
+            return ac.check_achieved(stat, stat2)
 
     def getAchievement(self, key:str) -> Achievement:
         """Get the achievement"""

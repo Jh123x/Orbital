@@ -392,7 +392,6 @@ class ClassicScreen(Screen):
             else:
                 self.tracker.set_value(k,v)
 
-
     def handle_threshold(self) -> None:
         ''' Handle updating threshold value for given statistics -> throws popup on screen'''
         if self.session_stats['en_k'] == self.main_stats['ek_c'] + 1 and self.session_stats['ek_c'] == 0:

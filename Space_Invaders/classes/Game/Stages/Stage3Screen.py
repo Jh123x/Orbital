@@ -7,7 +7,7 @@ class Stage3Screen(StoryTemplate):
         """The constructor for the Stage 3 screen"""
 
         #Call the superclass init method
-        super().__init__(screen_width, screen_height, screen, State(102), sensitivity, max_fps, 0.1,tracker,debug)
+        super().__init__(screen_width, screen_height, screen, State(102), sensitivity, max_fps, 0.1, tracker,debug)
 
         #Commander brief image
         self.bg = ImageObject(self.screen_width//2, int(self.screen_height * 285 / 800), 600, 570, StoryTemplate.sprites_dict["commander_brief"], debug)

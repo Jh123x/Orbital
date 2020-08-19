@@ -6,7 +6,7 @@ from .. import Difficulty, MotherShip, EnemyShip, Crabs, Scout, Brute, State, Po
 
 class PlayScreen(ClassicScreen):
     def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, difficulty: Difficulty,
-                 tracker, popup_q, wave:int = 1, player_lives:int = 3, powerup_chance:float = 0.1, debug:bool = False):
+                 tracker, wave:int = 1, player_lives:int = 3, powerup_chance:float = 0.1, debug:bool = False):
         """The Endless mode screen"""
 
         #Power ups group
