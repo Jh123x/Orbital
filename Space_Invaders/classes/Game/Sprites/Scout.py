@@ -9,7 +9,7 @@ class Scout(EnemyShip):
         """Main class for the scout ship"""
 
         #Call the superclass init with 1.2 times the sensitivity to make it move faster
-        super().__init__(sensitivity, initial_x, initial_y, lives,  game_width, game_height, None, bullet_grp, debug)
+        super().__init__(sensitivity, initial_x, initial_y, lives, game_width, game_height, None, bullet_grp, debug)
 
         #Store the x_velocity and y_velocity (To be fine tuned later)
         self.delta_x = self.sensitivity
@@ -37,7 +37,7 @@ class Scout(EnemyShip):
                     self.image = self.sprites[0]
 
                     #Scale the image base on the resolution
-                    self.scale(50 * self.screen_width // 600, 50 * self.screen_height // 800)
+                    self.scale(50 * self.game_width // 600, 50 * self.game_height // 800)
 
                 else:
 
@@ -45,7 +45,7 @@ class Scout(EnemyShip):
                     self.image = self.sprites[1]
 
                     #Scale the image base on the resolution
-                    self.scale(50 * self.screen_width // 600, 50 * self.screen_height // 800)
+                    self.scale(50 * self.game_width // 600, 50 * self.game_height // 800)
 
         #Update the position of the ship
         self.move(self.delta_x, self.delta_y)
