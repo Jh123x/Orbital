@@ -91,6 +91,10 @@ class AchievmentTracker(object):
         '''Compare current value of enemies killed in Endless vs incoming value'''
         self.set_max_value('ek_e', value)
 
+    def get_all(self):
+        """Get all achievements"""
+        return self.manager.get_all()
+
     def reset(self) -> None:
         '''function to reset statistics accumulated'''
         for k in self.stats:

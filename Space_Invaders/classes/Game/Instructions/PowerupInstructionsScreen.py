@@ -4,12 +4,12 @@ class PowerupInstructionsScreen(MenuTemplate):
 
     description = {
         'bullet_up' : ("Increase bullet speed","Increases the speed of the bullets"), 
-            'bullet_attack_up' : ("Increase bullet Damage", "Increases the damage of the bullets"), 
-            "debuff_bullet" : ("Decrease bullet Damage", "Decreases the damage of the bullet"), 
-            "deflector" : ("Deflector", "Shift all enemies up"), 
-            "emp" : ("EMP Bomb", "Destroy x lives of enemies (x is based on current wave)"), 
-            "hp_up" : ("1 up", "Increases life of player"), 
-            "shield_up" : ("Shields up", "Create blocks to shield player")
+        'bullet_attack_up' : ("Increase bullet Damage", "Increases the damage of the bullets"), 
+        "debuff_bullet" : ("Decrease bullet Damage", "Decreases the damage of the bullet"), 
+        "deflector" : ("Deflector", "Shift all enemies up"), 
+        "emp" : ("EMP Bomb", "Destroy x lives of enemies (x is based on current wave)"), 
+        "hp_up" : ("1 up", "Increases life of player"), 
+        "shield_up" : ("Shields up", "Create blocks to shield player")
     }
 
     def __init__(self, screen_width:int, screen_height:int, screen, fps, debug:bool = False):
@@ -131,6 +131,11 @@ class PowerupInstructionsScreen(MenuTemplate):
         #Draw the icon
         img.draw(self.screen)
 
+        #Draw page related items
+        self.draw_pages()
+
+    def draw_pages(self):
+        """Draw page related items"""
         #Draw the next button
         if self.page < self.total_pages:
             self.next = self.write_main(self.end_font, WHITE, "Next", self.screen_width//(4/3), self.screen_height//1.2)
