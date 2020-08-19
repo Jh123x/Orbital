@@ -26,18 +26,10 @@ class PlayScreen(ClassicScreen):
 
         #If there is no key provided
         if not keys:
+            keys = ('ek_e', 'en_k',"sl", 'el_k', 'pu', 'sf', 'mpu')
 
-            #TODO Fetch the stats needed for play mode
-            keys = ('ek_e', 'en_k', 'el_k', 'pu', 'sf', 'mpu')
-
-            #Call the superclass fetch stats method
-            return super().fetch_stats(keys)
-            
-        else:
-            
-            #Otherwise call the superclass fetch stats method
-            return super().fetch_stats(keys)
-            
+        #Call the superclass fetch stats method
+        return super().fetch_stats(keys)
 
     def set_powerup_chance(self, chance:float) -> None:
         """Set the powerup chance"""
@@ -195,7 +187,7 @@ class PlayScreen(ClassicScreen):
         if self.session_stats['en_k'] >= self.tracker.get_stat('ek_e') + 1:
             self.session_stats['ek_e'] = self.session_stats['en_k']
 
-        if self.session_stats['pu'] == self.tracker.get_stat('mpu') + 1 and self.session_stats['mpu']:
+        if self.session_stats['pu'] == self.tracker.get_stat('mpu') + 1 and self.session_stats['mpu'] == 0:
             self.tracker.add_popup("This is the most powerups you've gotten!")
 
         if self.session_stats['pu'] >= self.tracker.get_stat('mpu') + 1:

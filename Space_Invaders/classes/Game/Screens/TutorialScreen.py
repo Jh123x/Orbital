@@ -25,6 +25,9 @@ class TutorialScreen(PlayScreen):
         #Reset the game
         self.reset()
 
+    def handle_threshold(self) -> None:
+        pass
+
     def spawn_powerups(self, x:int, y:int) -> None:
         """Spawn a powerup at specified x and y coordinate"""
 

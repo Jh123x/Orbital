@@ -18,6 +18,15 @@ class StoryTemplate(PlayScreen):
         #Reset the game
         self.reset()
 
+    def fetch_stats(self, keys:tuple = None):
+        if not keys:
+            keys = ('ek_e', 'en_k', 'el_k', 'pu', 'sf')
+        else:
+            keys = keys + ('ek_e', 'en_k', 'el_k', 'pu', 'sf')
+        return super().fetch_stats(keys)
+
+    def handle_threshold(self) -> None:
+        pass
     def draw_letters(self) -> None:
         """Draw the letters on the screen"""
         #Draw the score

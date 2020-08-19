@@ -110,7 +110,7 @@ class AchievmentTracker(object):
 
         #If there is an achievement
         if achievement:
-
+            print("Achieved Something")
             #Add the achievement to the popup queue to be shown
             self.popup_q.add(achievement, 2)
 

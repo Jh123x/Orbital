@@ -47,23 +47,6 @@ class LocalPVPScreen(ClassicScreen):
         """Get the comparator for the screen"""
         return self.get_scores()
 
-    def fetch_stats(self, keys:tuple = None):
-        """Fetch the stats from the database"""
-        #If the keys are not found
-        if not keys:
-
-            #Use the key values for this current screen TODO (To be updated)
-            keys = ()
-
-            #Call the superclass fetch_stats method
-            return super().fetch_stats(keys)
-
-        #Otherwise
-        else:
-
-            #Call the superclass fetch_stats method with the key
-            return super().fetch_stats(keys)
-
     def spawn_players(self) -> None:
         """Create the players variables"""
         #Initialise the players
