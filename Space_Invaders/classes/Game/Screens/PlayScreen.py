@@ -27,17 +27,11 @@ class PlayScreen(ClassicScreen):
         #If there is no key provided
         if not keys:
 
-            #TODO Fetch the stats needed for play mode
+            #Fetch the stats needed for play mode
             keys = ('e_ke', 'en_k', 'el_k', 'pu', 'sf', 'mpu')
 
-            #Call the superclass fetch stats method
-            return super().fetch_stats(keys)
-            
-        else:
-            
-            #Otherwise call the superclass fetch stats method
-            return super().fetch_stats(keys)
-            
+        #Call the superclass fetch stats method
+        return super().fetch_stats(keys)            
 
     def set_powerup_chance(self, chance:float) -> None:
         """Set the powerup chance"""

@@ -30,13 +30,15 @@ class CoopScreen(PlayScreen):
         """Not tracking stats for the Coop screen"""
         pass
     
-    def fetch_stats(self) -> dict:
-        """Not tracking the stats for fetch_stats method"""
-        pass
+    def fetch_stats(self, key:tuple = None) -> dict:
+        """Fetch stats for Coop screen"""
 
-    def update_trackers(self):
-        """Update tracker"""
-        self.tracker.add_value('coop', 1)
+        #If no key is found
+        if not key:
+            key = ("coop",)
+
+        #Call the superclass fetch stats
+        return super().fetch_stats(key)
 
     def reset(self) -> None:
         """Reset the environment"""

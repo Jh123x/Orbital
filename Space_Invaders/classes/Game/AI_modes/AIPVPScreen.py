@@ -13,8 +13,12 @@ class AIPVPScreen(LocalPVPScreen):
         #Set the state to the correct state
         self.set_state(State.AI_VS)
 
-    def update_trackers(self):
-        self.tracker.add_value('aivs', 1)
+    def fetch_stats(self, key:tuple = None):
+        """Fetch stats for AI PVP screen"""
+        if not keys:
+            keys = ("aivs",)
+
+        return super().fetch_stats(key)
 
     def spawn_players(self) -> None:
         """Spawn the players for the game"""

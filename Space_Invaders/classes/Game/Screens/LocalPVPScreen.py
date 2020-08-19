@@ -29,6 +29,16 @@ class LocalPVPScreen(ClassicScreen):
         #Spawn Players
         self.spawn_players()
 
+    def fetch_stats(self, keys:tuple = None):
+        """Fetch the stats required for the Local PVP screen"""
+        if not keys:
+
+            #Fetch the stats needed for play mode
+            keys = ('pvp',)
+
+        #Call the superclass fetch stats method
+        return super().fetch_stats(keys)
+
     def randomly_spawn_mothership(self) -> None:
         """Do not spawn any motherships for 2 players"""
         return
@@ -255,9 +265,6 @@ class LocalPVPScreen(ClassicScreen):
 
         #Draw score of player 2
         self.write_main(self.font, WHITE, f"Score: {self.p1_score}", 10, self.screen_height - 20, Direction.LEFT)
-
-    def update_trackers(self):
-        self.tracker.add_value('pvp', 1)
 
     def handle_threshold(self) -> None:
         pass
