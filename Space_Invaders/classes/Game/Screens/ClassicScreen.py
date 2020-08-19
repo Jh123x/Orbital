@@ -25,9 +25,8 @@ class ClassicScreen(Screen):
                              'aicoop':0}
         self.main_stats = {}
         self.tracker = tracker
-        # print('Classic screen ping',tracker)
-        # print('my type', self)
-        # print(wave)
+        print(type(self),self.tracker.stats)
+
 
         #Create the groups
         #Bullets shot by player
@@ -398,7 +397,7 @@ class ClassicScreen(Screen):
 
     def handle_threshold(self) -> None:
         ''' Handle updating threshold value for given statistics -> throws popup on screen'''
-        if self.session_stats['en_k'] == self.tracker.get_stat('ek_c') + 1:
+        if self.session_stats['en_k'] == self.tracker.get_stat('ek_c') + 1 and self.session_stats['ek_c'] == 0:
             self.tracker.add_popup("This is the highest kills you got!")
         if self.session_stats['en_k'] >= self.tracker.get_stat('ek_c') + 1:
             self.session_stats['ek_c'] = self.session_stats['en_k']

@@ -269,6 +269,7 @@ class LocalPVPScreen(ClassicScreen):
 
             #Mark the game as over
             self.over = True
+            #adds 1 to the number of games played
             self.update_trackers()
             #Return the gameover state
             return self.get_gameover_state()

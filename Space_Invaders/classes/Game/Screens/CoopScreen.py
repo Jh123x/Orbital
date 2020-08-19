@@ -275,6 +275,9 @@ class CoopScreen(PlayScreen):
             #Mark the game as over
             self.over = True
 
+            #add a game played to the tracker
+            self.update_trackers()
+
             #Return the gameover state
             return self.get_gameover_state()
 
