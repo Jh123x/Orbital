@@ -4,21 +4,21 @@ from .. import VictoryScreen, State, WHITE, ImageObject
 class AchievementScreen(PowerupInstructionsScreen):
     
     description = {
-        'A new low....': "Lose in a gamemode where it is almost impossible to lose",
-        'Back from the Grave': "",
-        'One small step for Man...': "Take back the Moon from the enemies",
-        'Mars Colony': "Retake Mars for humanity",
-        'Beat them Back': "",
-        'Sk-...Cloud Net !!??': "Complete the Storyline to discover the truth",
-        'The First taste of Victory': "Win a game",
-        'Hero of Humanity': "Save humanity by killing aliens",
-        'Are you a Monster??': "How did you even get this?",
-        'Space Defender': "Defend space from the aliens",
-        'Master of Space Invaders': "Did you just master the game?",
-        'Coop King' : "King of Coop",
+        'A new low....'              : "Lose in a gamemode where it is almost impossible to lose",
+        'Back from the Grave'        : "The hero is back in the making",
+        'One small step for Man...'  : "Take back the Moon from the enemies",
+        'Mars Colony'                : "Retake Mars for humanity",
+        'Beat them Back'             : "Beat them past the belt",
+        'Sk-...Cloud Net !!??'       : "Complete the Storyline to discover the truth",
+        'The First taste of Victory' : "Kill some aliens. Cant be too hard",
+        'Hero of Humanity'           : "Holy smokes thats alot of aliens you killed",
+        'Are you a Monster??'        : "How did you even get this?",
+        'Space Defender'             : "Aren't you a master of the game",
+        'Master of Space Invaders'   : "Are you one of them OG players?",
+        'Coop King'                  : "What can I say at least try to make friends through the game.",
         "No, I'm the Space Defender!": "There can only be 1 true space defender",
-        "I’ll Be Back": "",
-        'Am I getting Replaced?': "Getting replaced 101",
+        "I’ll Be Back"               : "Guess who will be coming back for revenge",
+        'Am I getting Replaced?'     : "Are you getting replaced??",
     }
 
     def __init__(self, screen_width:int, screen_height:int, screen, fps, achievement_tracker, debug:bool = False):
