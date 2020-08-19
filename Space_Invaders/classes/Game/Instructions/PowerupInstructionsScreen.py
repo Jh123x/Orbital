@@ -28,7 +28,7 @@ class PowerupInstructionsScreen(MenuTemplate):
 
         #Load the current page
         self.page = 1
-        self.total_pages = len(self.items) - 1
+        self.total_pages = len(self.items)
 
     def write_lines(self):
         """Write the header"""
@@ -120,7 +120,7 @@ class PowerupInstructionsScreen(MenuTemplate):
         first_px = self.screen_height//5 + self.screen_height // 15 + 50
 
         #Unpack powerup sprites
-        name,img = self.items[self.page]
+        name,img = self.items[self.page-1]
 
         #Draw the powerups name
         self.write_main(self.end_font, WHITE, f"{self.description[name][0]}", self.screen_width // 2, first_px)
