@@ -37,7 +37,7 @@ class Scout(EnemyShip):
                     self.image = self.sprites[0]
 
                     #Scale the image base on the resolution
-                    self.scale(50 * self.screen_width // 600, 50 * self.screen_height // 800)
+                    self.scale(50 * self.game_width // 600, 50 * self.game_height // 800)
 
                 else:
 
@@ -45,7 +45,7 @@ class Scout(EnemyShip):
                     self.image = self.sprites[1]
 
                     #Scale the image base on the resolution
-                    self.scale(50 * self.screen_width // 600, 50 * self.screen_height // 800)
+                    self.scale(50 * self.game_width // 600, 50 * self.game_height // 800)
 
         #Update the position of the ship
         self.move(self.delta_x, self.delta_y)

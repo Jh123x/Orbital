@@ -392,11 +392,12 @@ class ClassicScreen(Screen):
             else:
                 self.tracker.set_value(k,v)
 
+
     def handle_threshold(self) -> None:
         ''' Handle updating threshold value for given statistics -> throws popup on screen'''
-        if self.session_stats['en_k'] == self.tracker.get_stat('ek_c') + 1 and self.session_stats['ek_c'] == 0:
+        if self.session_stats['en_k'] == self.main_stats['ek_c'] + 1 and self.session_stats['ek_c'] == 0:
             self.tracker.add_popup("This is the highest kills you got!")
-        if self.session_stats['en_k'] >= self.tracker.get_stat('ek_c') + 1:
+        if self.session_stats['en_k'] >= self.main_stats['ek_c'] + 1:
             self.session_stats['ek_c'] = self.session_stats['en_k']
 
     def check_collisions(self):
@@ -605,7 +606,7 @@ class ClassicScreen(Screen):
         self.handle_threshold()
 
         #Return a list of achievement achieved
-        self.tracker.update_achievement()
+        self.update_achievement()
 
         #Draw the letters on the screen
         self.draw_letters()

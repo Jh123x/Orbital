@@ -25,10 +25,6 @@ class Stage1Screen(StoryTemplate):
         self.tb = ImageObject(self.screen_width//2, int(self.screen_height * 685 / 800), 600, 230, StoryTemplate.sprites_dict['textbox'], debug)
         self.tb.scale(self.screen_width, int(self.screen_height * 23/80))
 
-    def update_trackers(self, win = False):
-        super(Stage1Screen, self).update_trackers()
-        if win:
-            self.tracker.add_value('st_1_clr', 1)
 
     def draw_bg(self):
         """Draw the background"""
@@ -183,5 +179,5 @@ class Stage1Screen(StoryTemplate):
 
     def win_condition(self):
         """The win condition of the player"""
-        return self.wave == 4
+        return self.wave == 1
         

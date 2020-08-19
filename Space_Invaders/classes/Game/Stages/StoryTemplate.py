@@ -8,6 +8,7 @@ class StoryTemplate(PlayScreen):
     def __init__(self, screen_width:int, screen_height:int, screen, state:State, sensitivity:int, max_fps:int,
                  powerup_chance:float, tracker:AchievmentTracker, debug:bool):
         """The template for the stage to be built on"""
+        self.something = state
 
         #Call the superclass
         super().__init__(screen_width, screen_height, screen, sensitivity, max_fps, Difficulty(3), tracker, 1, 1, powerup_chance, debug)
@@ -20,13 +21,13 @@ class StoryTemplate(PlayScreen):
 
     def fetch_stats(self, keys:tuple = None):
         if not keys:
-            keys = ('ek_e', 'en_k', 'el_k', 'pu', 'sf')
-        else:
-            keys = keys + ('ek_e', 'en_k', 'el_k', 'pu', 'sf')
+            keys = ('ek_e', 'en_k', 'el_k', 'pu', 'sf', f'st_{self.get_stage()}_clr')
+
         return super().fetch_stats(keys)
 
     def handle_threshold(self) -> None:
         pass
+
     def draw_letters(self) -> None:
         """Draw the letters on the screen"""
         #Draw the score
@@ -40,6 +41,8 @@ class StoryTemplate(PlayScreen):
 
     def reset(self) -> None:
         """Reset the state of the game"""
+        #Set the state
+        self.set_state(self.something)
 
         #Set the number of clicks to 0
         self.clicks = 0
@@ -110,8 +113,17 @@ class StoryTemplate(PlayScreen):
         """Variable used for comparison"""
         return self.get_stage()
 
-    def update_trackers(self, win:bool = False):
-        super(StoryTemplate, self).update_trackers()
+    def update_trackers(self, win=False):
+        '''
+        If there is a win, add one to the clear state and continue normally with tracked stats
+        '''
+        if win:
+            print("called once again")
+            self.accumulate(f'st_{self.get_stage()}_clr', 1)
+            super().update_trackers()
+        else:
+            super().update_trackers()
+
 
     def handle(self):
         """Handles the playing out of the screen"""
@@ -130,10 +142,11 @@ class StoryTemplate(PlayScreen):
 
         #Otherwise if player wins
         elif self.win_condition():
-
             self.update_trackers(True)
             #Go to next state
             self.next_scene()
+
+            self.wave = 0
 
         #If it is the pre_cutscene stage
         if self.curr == 0:
