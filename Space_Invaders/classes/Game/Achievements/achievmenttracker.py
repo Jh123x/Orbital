@@ -91,7 +91,7 @@ class AchievmentTracker(object):
         '''Compare current value of enemies killed in Endless vs incoming value'''
         self.set_max_value('ek_e', value)
 
-    def get_all(self):
+    def get_all_achievements(self):
         """Get all achievements"""
         return self.manager.get_all()
 
