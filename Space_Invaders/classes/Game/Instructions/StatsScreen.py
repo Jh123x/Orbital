@@ -38,7 +38,7 @@ class StatsScreen(MenuTemplate):
 
     def get_effects(self) -> None:
         """Effects of the rects"""
-        return [State.MENU]
+        return [State.STAT_MENU_SCREEN]
 
     def handle(self) -> State:
         """Handle the drawing of the settings screen"""
