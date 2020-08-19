@@ -16,7 +16,6 @@ class Achievement(object):
         '''
         self.unlocked = 1
         #TODO put the popup here for achieving the current achievement
-        # print(f"Unlocked {self}")
 
     def get_stat(self):
         '''
@@ -88,9 +87,15 @@ class AchievementManager(object):
 
     def checkUnlocked(self, key:str, stat:int, stat2:int = 0):
         """Check if the stat is unlocked based on stat"""
+
+        #Check if the achievement is valid
         ac = self.getAchievement(key)
+
+        #If it is valid
         if ac:
-            return self.getAchievement(key).check_achieved(stat, stat2)
+
+            #Check if it is achieved
+            return ac.check_achieved(stat, stat2)
 
     def getAchievement(self, key:str) -> Achievement:
         """Get the achievement"""
