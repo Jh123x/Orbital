@@ -1,5 +1,4 @@
-from . import MenuTemplate
-from .. import State, WHITE
+from .. import State, WHITE, MenuTemplate
 
 class StatsScreen(MenuTemplate):
     def __init__(self, screen_width:int, screen_height:int, screen, stat_tracker, debug:bool = False):
