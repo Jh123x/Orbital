@@ -29,7 +29,7 @@ class MenuScreen(MenuTemplate):
         self.rect_settings = self.write(self.end_font, WHITE, "Settings", self.screen_width//2, self.screen_height//5 + self.screen_height//2)
 
         #Draw the stats button
-        self.stats = self.write(self.end_font, WHITE, "Statistics", self.screen_width//2, self.screen_height//5 + self.screen_height//2 + self.screen_height//15)
+        self.stats = self.write(self.end_font, WHITE, "Stats", self.screen_width//2, self.screen_height//5 + self.screen_height//2 + self.screen_height//15)
 
         #Draw the quit button
         self.rect_end = self.write(self.end_font, WHITE, "Quit", self.screen_width//2, self.screen_height//1.2)
@@ -40,5 +40,5 @@ class MenuScreen(MenuTemplate):
 
     def get_effects(self):
         """Get the effects for Menu Screen"""
-        return (State.PLAYMODE, State.HIGHSCORE, State.INSTRUCTIONS_MENU, State.SETTINGS, State.STAT_MENU, State.QUIT)
+        return (State.PLAYMODE, State.HIGHSCORE, State.INSTRUCTIONS_MENU, State.SETTINGS, State.STAT_MENU_SCREEN, State.QUIT)
 
