@@ -39,7 +39,7 @@ class MobInstructionsScreen(PowerupInstructionsScreen):
 
         #Load the current page
         self.page = 1
-        self.total_pages = len(self.items) - 1
+        self.total_pages = len(self.items)
     
     def write_header(self):
         """Write the header"""

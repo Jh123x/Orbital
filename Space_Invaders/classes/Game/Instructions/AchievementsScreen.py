@@ -18,7 +18,7 @@ class AchievementScreen(PowerupInstructionsScreen):
         'Coop King'                  : "What can I say at least try to make friends through the game.",
         "No, I'm the Space Defender!": "There can only be 1 true space defender",
         "I’ll Be Back"               : "Guess who will be coming back for revenge",
-        'Am I getting Replaced?'     : "Are you getting replaced??",
+        'Am I getting Replaced?'     : "Are you getting replaced??"
     }
 
     def __init__(self, screen_width:int, screen_height:int, screen, fps, achievement_tracker, debug:bool = False):
@@ -48,7 +48,7 @@ class AchievementScreen(PowerupInstructionsScreen):
 
         #Load the current page
         self.page = 1
-        self.total_pages = len(self.items) - 1
+        self.total_pages = len(self.items)
 
     def refresh(self):
         """Refresh the stats"""
@@ -78,7 +78,7 @@ class AchievementScreen(PowerupInstructionsScreen):
         first_px = self.screen_height//5 + self.screen_height // 15 + 50
 
         #Unpack powerup sprites
-        name,img = self.items[self.page]
+        name,img = self.items[self.page-1]
 
         #Draw the powerups name
         self.write_main(self.end_font, WHITE, f"{name}", self.screen_width // 2, first_px)
