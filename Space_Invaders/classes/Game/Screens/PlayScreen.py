@@ -26,12 +26,10 @@ class PlayScreen(ClassicScreen):
 
         #If there is no key provided
         if not keys:
-
-            #Fetch the stats needed for play mode
-            keys = ('e_ke', 'en_k', 'el_k', 'pu', 'sf', 'mpu')
+            keys = ('ek_e', 'en_k',"sl", 'el_k', 'pu', 'sf', 'mpu')
 
         #Call the superclass fetch stats method
-        return super().fetch_stats(keys)            
+        return super().fetch_stats(keys)
 
     def set_powerup_chance(self, chance:float) -> None:
         """Set the powerup chance"""
@@ -183,16 +181,18 @@ class PlayScreen(ClassicScreen):
 
 
     def handle_threshold(self) -> None:
-        if self.session_stats['en_k'] == self.tracker.get_stat('ek_e') + 1:
+        if self.session_stats['en_k'] == self.main_stats['ek_e'] + 1 and self.session_stats['ek_e'] == 0:
             # Activate popup
-            print('killed most')
-        if self.session_stats['en_k'] >= self.tracker.get_stat('ek_e') + 1:
+            self.tracker.add_popup("This is the highest kills you got!")
+        if self.session_stats['en_k'] >= self.main_stats['ek_e'] + 1:
             self.session_stats['ek_e'] = self.session_stats['en_k']
 
-        if self.session_stats['pu'] == self.tracker.get_stat('mpu') + 1:
-            #TODO Make Popup appear Once You have killed more in this session than all time!
-            print('most powerups')
+        if self.session_stats['pu'] == self.main_stats['mpu'] + 1 and self.session_stats['mpu'] == 0:
+            self.tracker.add_popup("This is the most powerups you've gotten!")
+
+        if self.session_stats['pu'] >= self.main_stats['mpu'] + 1:
             self.session_stats['mpu'] = self.session_stats['pu']
+
 
     def check_powerup_collision(self) -> None:
         """Check the collisions of the powerups"""

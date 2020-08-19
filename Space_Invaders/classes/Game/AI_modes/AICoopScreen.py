@@ -13,12 +13,12 @@ class AICoopScreen(CoopScreen):
         #Set the state
         self.set_state(State.AI_COOP)
 
-    def fetch_stats(self, key:tuple = None):
+    def fetch_stats(self, keys:tuple = None):
         """Fetch stats for AI Coop screen"""
-        if not key:
+        if not keys:
             key = ('aicoop',)
 
-        return super().fetch_stats(key)
+        return super().fetch_stats(keys)
 
     def spawn_players(self) -> None:
         """Spawn the players

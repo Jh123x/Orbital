@@ -15,7 +15,6 @@ class Achievement(object):
         Addition is an optional kwarg if achievement is checking for
         '''
         self.unlocked = 1
-        #TODO put the popup here for achieving the current achievement
 
     def get_stat(self):
         '''

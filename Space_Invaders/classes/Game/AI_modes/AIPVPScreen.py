@@ -13,12 +13,12 @@ class AIPVPScreen(LocalPVPScreen):
         #Set the state to the correct state
         self.set_state(State.AI_VS)
 
-    def fetch_stats(self, key:tuple = None):
+    def fetch_stats(self, keys:tuple = None):
         """Fetch stats for AI PVP screen"""
-        if not key:
+        if not keys:
             key = ("aivs",)
 
-        return super().fetch_stats(key)
+        return super().fetch_stats(keys)
 
     def spawn_players(self) -> None:
         """Spawn the players for the game"""

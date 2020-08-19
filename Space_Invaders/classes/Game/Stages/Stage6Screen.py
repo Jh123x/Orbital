@@ -40,11 +40,6 @@ class Stage6Screen(StoryTemplate):
         #Add s_net to other_enemies
         self.other_enemies.add(self.s_net)
 
-    def update_trackers(self, win=False):
-        super(Stage6Screen, self).update_trackers()
-        if win:
-            self.tracker.add_value('st_6_clr', 1)
-
     def reset(self) -> None:
         """Reset the game"""
 

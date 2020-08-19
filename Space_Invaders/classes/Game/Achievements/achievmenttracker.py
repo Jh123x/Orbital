@@ -39,6 +39,8 @@ class AchievmentTracker(object):
 
     def update_achievement(self, state:dict = {}) -> list:
         '''Message Passing down to achievment manager'''
+        # print('my_stored_stats',self.stats)
+        # print('incoming',state)
         lst = self.manager.checkAchieved(self.stats,state)
         for achievement in lst:
             self.popup_q.add(achievement, 2)
@@ -112,7 +114,7 @@ class AchievmentTracker(object):
 
         #If there is an achievement
         if achievement:
-
+            print("Achieved Something")
             #Add the achievement to the popup queue to be shown
             self.popup_q.add(achievement, 2)
 

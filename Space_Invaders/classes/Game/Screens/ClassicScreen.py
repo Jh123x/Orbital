@@ -20,14 +20,13 @@ class ClassicScreen(Screen):
         self.difficulty = difficulty
         self.player_lives = player_lives
         self.over = False
+        #Define a set of constants in the set
         self.session_stats= {'sf':0,'en_k':0,'el_k':0,'sl':0,'pu': 0,'mpu':0,'ek_c':0,'ek_e':0,'tut_n_clr':0,'st_1_clr':0,
                              'st_2_clr':0,'st_3_clr':0, 'st_4_clr':0,'st_5_clr':0,'st_6_clr':0,'coop':0,'pvp':0,'aivs':0,
                              'aicoop':0}
+        self.max_stat = {'ek_c', 'mpu','ek_c','ek_e'}
         self.main_stats = {}
         self.tracker = tracker
-        # print('Classic screen ping',tracker)
-        # print('my type', self)
-        # print(wave)
 
         #Create the groups
         #Bullets shot by player
@@ -117,7 +116,7 @@ class ClassicScreen(Screen):
         if not keys:
 
             #Call the classic trackers
-            keys = ("sf", "en_k", "el_k")
+            keys = ("sf", "en_k","sl" ,"el_k", "ek_c")
 
         #For each item
         for key in keys:
@@ -382,24 +381,22 @@ class ClassicScreen(Screen):
         self.session_stats[k] += v
 
         if k in self.main_stats:
-            print(self.main_stats)
             self.main_stats[k] += v
 
     def update_trackers(self):
         '''Update stat tracker stats that we want to add'''
-
         #Update relavant stats
         for k,v in self.main_stats.items():
-            self.tracker.set_value(k,v)
-
-        #Add max kills to the tracker
-        self.tracker.set_max_value('ek_c', self.session_stats['en_k'])
+            if k in self.max_stat:
+                self.tracker.set_max_value(k,self.session_stats[k])
+            else:
+                self.tracker.set_value(k,v)
 
     def handle_threshold(self) -> None:
         ''' Handle updating threshold value for given statistics -> throws popup on screen'''
-        if self.session_stats['en_k'] == self.tracker.get_stat('ek_c') + 1:
+        if self.session_stats['en_k'] == self.main_stats['ek_c'] + 1 and self.session_stats['ek_c'] == 0:
             self.tracker.add_popup("This is the highest kills you got!")
-        if self.session_stats['en_k'] >= self.tracker.get_stat('ek_c') + 1:
+        if self.session_stats['en_k'] >= self.main_stats['ek_c'] + 1:
             self.session_stats['ek_c'] = self.session_stats['en_k']
 
     def check_collisions(self):
@@ -622,6 +619,9 @@ class ClassicScreen(Screen):
 
         #Check if player wants to quit
         if self.check_quit():
+
+            self.update_trackers()
+
             return State.QUIT
 
         #Return play state

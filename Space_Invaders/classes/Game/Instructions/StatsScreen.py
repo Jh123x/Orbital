@@ -6,7 +6,7 @@ class StatsScreen(MenuTemplate):
 
         #Store the stat tracker
         self.stat_tracker = stat_tracker
-        
+
         #Call the superclass
         super().__init__(screen_width, screen_height, State.STAT_MENU, screen, 0, debug)
 
@@ -45,6 +45,7 @@ class StatsScreen(MenuTemplate):
 
         #Write the main words
         self.write_main_words()
+        print(self.stat_tracker.stats)
 
         #Call the superclass handle
         return super().handle()
