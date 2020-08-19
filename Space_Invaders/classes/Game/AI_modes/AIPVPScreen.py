@@ -15,7 +15,7 @@ class AIPVPScreen(LocalPVPScreen):
 
     def fetch_stats(self, keys:tuple = None):
         """Fetch stats for AI PVP screen"""
-        if not key:
+        if not keys:
             key = ("aivs",)
 
         return super().fetch_stats(keys)
