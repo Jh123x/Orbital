@@ -394,7 +394,6 @@ class ClassicScreen(Screen):
 
         #Add max kills to the tracker
         self.tracker.set_max_value('ek_c', self.session_stats['en_k'])
-        
 
     def handle_threshold(self) -> None:
         ''' Handle updating threshold value for given statistics -> throws popup on screen'''
