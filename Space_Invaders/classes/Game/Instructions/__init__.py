@@ -3,3 +3,6 @@ from .InstructionsScreen import InstructionScreen
 from .PVPInstructionsScreen import PVPInstructionsScreen
 from .PowerupInstructionsScreen import PowerupInstructionsScreen
 from .MobInstructionScreen import MobInstructionsScreen
+from .StatsScreen import StatsScreen
+from .StatsMenuScreen import StatsMenuScreen
+from .AchievementsScreen import AchievementScreen

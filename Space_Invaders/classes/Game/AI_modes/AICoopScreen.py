@@ -15,8 +15,8 @@ class AICoopScreen(CoopScreen):
 
     def fetch_stats(self, keys:tuple = None):
         """Fetch stats for AI Coop screen"""
-        if not keys:
-            keys = ('aicoop',)
+        if not key:
+            key = ('aicoop',)
 
         return super().fetch_stats(keys)
 

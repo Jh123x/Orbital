@@ -80,7 +80,9 @@ class AchievementManager(object):
         #Get the stats
         self.stats = dict(map(lambda x: (x[1].get_stat(), x[0]), self.achievements.items()))
 
-        
+    def get_all(self):
+        """Get the status of the achievements"""
+        return dict(map(lambda x: (x.get_name(),x.get_achieved()), self.achievements.values()))
 
     def checkUnlocked(self, key:str, stat:int, stat2:int = 0):
         """Check if the stat is unlocked based on stat"""

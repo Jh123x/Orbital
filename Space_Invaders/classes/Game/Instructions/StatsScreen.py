@@ -1,5 +1,4 @@
-from . import MenuTemplate
-from .. import State, WHITE
+from .. import State, WHITE, MenuTemplate
 
 class StatsScreen(MenuTemplate):
     def __init__(self, screen_width:int, screen_height:int, screen, stat_tracker, debug:bool = False):
@@ -39,7 +38,7 @@ class StatsScreen(MenuTemplate):
 
     def get_effects(self) -> None:
         """Effects of the rects"""
-        return [State.MENU]
+        return [State.STAT_MENU_SCREEN]
 
     def handle(self) -> State:
         """Handle the drawing of the settings screen"""
