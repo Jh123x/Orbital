@@ -2,7 +2,7 @@ import pygame
 from pygame.locals import *
 
 from . import MenuTemplate
-from .. import State, WHITE, ImageObject
+from .. import State, WHITE, ImageObject, Direction
 
 
 class MenuScreen(MenuTemplate):
@@ -33,6 +33,13 @@ class MenuScreen(MenuTemplate):
 
         #Draw the quit button
         self.rect_end = self.write(self.end_font, WHITE, "Quit", self.screen_width//2, self.screen_height//1.2)
+
+        #Get the dimensions of the credits
+        text = "Created by Stephen and Junhua"
+        _, text_height = self.font.size(text)
+
+        #Draw the credits
+        self.write(self.font, WHITE, text, 0, self.screen_height - text_height, direction = Direction.LEFT)
 
     def get_rects(self):
         """Get the rects for the Menu Screen"""
