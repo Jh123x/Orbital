@@ -78,4 +78,4 @@ class HighscoreScreen(MenuTemplate):
 
     def get_effects(self):
         """Get the effects of the rect in the highscore screen"""
-        return (State.MENU,)
+        return (State.STAT_MENU_SCREEN,)
