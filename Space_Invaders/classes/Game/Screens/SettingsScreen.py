@@ -1,52 +1,62 @@
 from . import MenuTemplate
 from .. import State, WHITE, Direction, Sound, Background, Difficulty, GREY
 
+
 class SettingsScreen(MenuTemplate):
-    def __init__(self, screen_width:int, screen_height:int, screen, fps:int, sound:Sound, background:Background, difficulty: Difficulty, volume:float, debug:bool = False):
+    def __init__(self, screen_width: int, screen_height: int, screen, fps: int, sound: Sound, background: Background,
+                 difficulty: Difficulty, volume: float, debug: bool = False):
         """Constructor for the settings screen"""
-        #Store the variables
+        # Store the variables
         self.fps = fps
         self.sound = sound
         self.bgr = background
         self.difficulty = difficulty
 
-        #Call the superclass
+        # Call the superclass
         super().__init__(screen_width, screen_height, State.SETTINGS, screen, debug)
 
     def write_lines(self) -> None:
         """Write the lines for the settings screen"""
 
-        #Draw the Header
-        self.write(self.title_font, WHITE, "Settings", self.screen_width//2, self.screen_height//5)
+        # Draw the Header
+        self.write(self.title_font, WHITE, "Settings", self.screen_width // 2, self.screen_height // 5)
 
-        #Draw the back button
-        self.back = self.write(self.end_font, WHITE, "Back", self.screen_width//2, self.screen_height//1.2)
+        # Draw the back button
+        self.back = self.write(self.end_font, WHITE, "Back", self.screen_width // 2, self.screen_height // 1.2)
 
-        #Write the updated stats
+        # Write the updated stats
         self.write_main_words()
 
     def write_main_words(self) -> None:
         """Write the main lines"""
 
-        #First pixel used for alignment
-        first_pixel = self.screen_height//2
+        # First pixel used for alignment
+        first_pixel = self.screen_height // 2
 
-        #Draw the different settings options
-        self.background = self.write_main(self.end_font, WHITE, f"Background: {self.get_bg_no()}", self.screen_width//4, first_pixel, Direction.LEFT)
-        self.music = self.write_main(self.end_font, WHITE, f"Music: {'On' if self.get_music_enabled() else 'Off'}", self.screen_width//4, first_pixel + self.screen_height//15, Direction.LEFT)
-        self.difficulty_rect = self.write_main(self.end_font, WHITE, f"Difficulty: {self.get_difficulty().title()}", self.screen_width//4, first_pixel + self.screen_height//7.5, Direction.LEFT)
+        # Draw the different settings options
+        self.background = self.write_main(self.end_font, WHITE, f"Background: {self.get_bg_no()}",
+                                          self.screen_width // 4, first_pixel, Direction.LEFT)
+        self.music = self.write_main(self.end_font, WHITE, f"Music: {'On' if self.get_music_enabled() else 'Off'}",
+                                     self.screen_width // 4, first_pixel + self.screen_height // 15, Direction.LEFT)
+        self.difficulty_rect = self.write_main(self.end_font, WHITE, f"Difficulty: {self.get_difficulty().title()}",
+                                               self.screen_width // 4, first_pixel + self.screen_height // 7.5,
+                                               Direction.LEFT)
 
-        #If sound is enabled
+        # If sound is enabled
         if self.get_music_enabled():
 
-            #Write to the screen that the music is enabled
-            self.sound_btn = self.write_main(self.end_font, WHITE, f"Sound: {int(self.get_volume()*100)}", self.screen_width//4, first_pixel + self.screen_height//5, Direction.LEFT)
+            # Write to the screen that the music is enabled
+            self.sound_btn = self.write_main(self.end_font, WHITE, f"Sound: {int(self.get_volume() * 100)}",
+                                             self.screen_width // 4, first_pixel + self.screen_height // 5,
+                                             Direction.LEFT)
 
-        #Otherwise
+        # Otherwise
         else:
 
-            #Write that the music is disabled
-            self.sound_btn = self.write_main(self.end_font, GREY, f"Sound: {int(self.get_volume()*100)}", self.screen_width//4, first_pixel + self.screen_height//5, Direction.LEFT)
+            # Write that the music is disabled
+            self.sound_btn = self.write_main(self.end_font, GREY, f"Sound: {int(self.get_volume() * 100)}",
+                                             self.screen_width // 4, first_pixel + self.screen_height // 5,
+                                             Direction.LEFT)
 
     def get_rects(self):
         """Return the rects of the rect"""
@@ -85,7 +95,7 @@ class SettingsScreen(MenuTemplate):
         """Toggle the sound"""
         self.sound.toggle()
         return self.state
-    
+
     def toggle_difficulty(self) -> State:
         self.difficulty.toggle()
         return self.state
@@ -97,8 +107,8 @@ class SettingsScreen(MenuTemplate):
     def handle(self) -> State:
         """Handle the drawing of the settings screen"""
 
-        #Write the main words
+        # Write the main words
         self.write_main_words()
 
-        #Call the superclass handle
+        # Call the superclass handle
         return super().handle()

@@ -1,5 +1,6 @@
 import enum
 
+
 class Direction(enum.Enum):
     """Direction enum to store where objects are moving"""
     UP = (0, -1)
@@ -12,14 +13,15 @@ class Direction(enum.Enum):
     BOTTOM_LEFT = (-1, 1)
     BOTTOM_RIGHT = (1, 1)
 
+
 class State(enum.Enum):
     """State enum to keep track of the state of the game"""
 
-    #Quitting states
+    # Quitting states
     QUIT = -1
     NONE = None
 
-    #Menu States
+    # Menu States
     MENU = 1
     PLAYMODE = 2
     SETTINGS = 3
@@ -31,11 +33,11 @@ class State(enum.Enum):
     STAT_MENU = 1001
     ACHIEVEMENTS = 1002
 
-    #Highscore states
+    # Highscore states
     HIGHSCORE = 8
     NEWHIGHSCORE = 9
-    
-    #Instruction states
+
+    # Instruction states
     INSTRUCTIONS_MENU = 40
     INSTRUCTIONS = 41
     PVP_INSTRUCTIONS = 42
@@ -43,12 +45,12 @@ class State(enum.Enum):
     AI_COOP_INSTRUCTIONS = 44
     POWERUP_INSTRUCTIONS = 45
     MOBS_INSTRUCTIONS = 46
-    
-    #Two player states
+
+    # Two player states
     TWO_PLAYER_MENU = 10
 
     AI_COOP = 11
-    AI_COOP_GAMEOVER  = 12
+    AI_COOP_GAMEOVER = 12
 
     AI_VS = 14
     AI_VS_GAMEOVER = 15
@@ -59,7 +61,7 @@ class State(enum.Enum):
     TWO_PLAYER_GAMEOVER = 18
     TWO_PLAYER_PAUSE = 19
 
-    #Single player states
+    # Single player states
     PLAY = 30
     GAMEOVER = 31
     PAUSE = 32
@@ -69,14 +71,14 @@ class State(enum.Enum):
     STAGE_GAMEOVER = 36
     STAGE_PAUSE = 37
 
-    #Story mode 
+    # Story mode
     STAGE1 = 100
     STAGE2 = 101
     STAGE3 = 102
     STAGE4 = 103
     STAGE5 = 104
     STAGE6 = 105
-    
+
 
 class Difficulty_enum(enum.Enum):
     """Difficulty enum to hold the difficultly of the game"""

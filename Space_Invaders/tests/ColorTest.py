@@ -1,9 +1,9 @@
-#Unit tests
-import unittest
+# Unit tests
 import os
 import sys
+import unittest
 
-#Change directory to that of the main path
+# Change directory to that of the main path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from classes import *
 
@@ -21,7 +21,7 @@ class ColorTest(unittest.TestCase):
         """
         Test case 1: White color
         """
-        assert WHITE == (255,255,255), "White color is off"
+        assert WHITE == (255, 255, 255), "White color is off"
 
     def testCase2(self):
         """
@@ -68,4 +68,3 @@ class ColorTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

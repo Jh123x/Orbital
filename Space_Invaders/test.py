@@ -1,6 +1,7 @@
 import os
-import pygame
 import tkinter as tk
+
+import pygame
 
 
 class Application(tk.Frame):

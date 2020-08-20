@@ -1,9 +1,9 @@
-#Unit tests
-import unittest
+# Unit tests
 import os
 import sys
+import unittest
 
-#Change directory to that of the main path
+# Change directory to that of the main path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from classes import *
 
@@ -23,14 +23,15 @@ class ScreenTest(unittest.TestCase):
         Test case 1: Check if set state is working
         """
 
-        #Check if the current state is correct
+        # Check if the current state is correct
         assert self.screen.state == State.NONE
 
-        #Change the state
+        # Change the state
         self.screen.set_state(State.QUIT)
 
-        #Check if the State is changed
+        # Check if the State is changed
         assert self.screen.state == State.QUIT
+
 
 if __name__ == "__main__":
     unittest.main()

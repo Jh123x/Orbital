@@ -1,16 +1,17 @@
-#Unit tests
-import unittest
+# Unit tests
 import os
 import sys
+import unittest
 
-#Change directory to that of the main path
+# Change directory to that of the main path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from classes import *
+
 
 class DifficultyTest(unittest.TestCase):
 
     def setUp(self):
-        
+
         return super().setUp()
 
     def tearDown(self):
@@ -28,7 +29,7 @@ class DifficultyTest(unittest.TestCase):
         Test case 2: Check if the value is correct
         """
 
-        #Check the value for range between [1, 6]
+        # Check the value for range between [1, 6]
         for i in range(1, 7):
             assert Difficulty(i).value == i
 
@@ -40,8 +41,7 @@ class DifficultyTest(unittest.TestCase):
         names = ["CASUAL", "EASY", "MEDIUM", "HARD", "IMPOSSIBLE", "OUTRAGEOUS"]
         for i in range(1, 7):
             d = Difficulty(i)
-            assert d.name == names[i-1], f"Name {d.name} is not {names[i]}"
-
+            assert d.name == names[i - 1], f"Name {d.name} is not {names[i]}"
 
 
 if __name__ == "__main__":
