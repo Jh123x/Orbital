@@ -128,3 +128,4 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+Space_Invaders/.vscode/settings.json
