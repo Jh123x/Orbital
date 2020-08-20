@@ -46,7 +46,6 @@ class StatsScreen(MenuTemplate):
 
         # Write the main words
         self.write_main_words()
-        print(self.stat_tracker.stats)
 
         # Call the superclass handle
         return super().handle()

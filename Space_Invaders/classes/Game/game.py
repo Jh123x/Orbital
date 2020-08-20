@@ -553,7 +553,6 @@ class GameWindow(object):
 
     def __del__(self) -> None:
         """Destructor for the game window. Closes all the relavent processes"""
-        print("prewrite", self.achievementtracker.stats)
         self.achievementtracker.__del__()
 
         # Add the new highscores into DB

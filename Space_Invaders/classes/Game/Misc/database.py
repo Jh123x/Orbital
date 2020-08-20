@@ -145,12 +145,7 @@ class Statistics(Database):
     def update(self, name: str, stat: int) -> None:
         """Update the value of the settings"""
         # Call the update function
-        # print(self.name)
-        # print('name',name)
-        # print('setting',stat)
         self.execute("UPDATE statistics SET value = ? WHERE name = ?", (stat, name))
-        # (setting, name)
-        # self.execute("UPDATE settings SET settings = ? WHERE name = ?", (setting,name))
         # Mark db as changed
         self.changed = True
 
@@ -231,7 +226,7 @@ class ScoreBoard(Database):
         self.execute("CREATE TABLE IF NOT EXISTS highscore (id INTEGER, name TEXT, score INTEGER)")
 
     def remove(self, name: str) -> None:
-        """Remove the last entry from the highscore board"""
+        """Remove the last entry from the high score board"""
         # Remove from the database where the name matches the name to be removed
         self.execute(f"DELETE FROM {self.name} WHERE name = ?", (name,))
 
@@ -289,16 +284,11 @@ def main() -> None:
 
     # Load the path of the database
     dbpath = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', '..', '..', 'data', 'test.db')
-    # print(dbpath)
     # Create the scoreboard database
     db = ScoreBoard(dbpath)
     ac = Achievements(dbpath)
     s = SettingsDB(dbpath)
     stat = Statistics(dbpath)
-
-    # For debugging
-    print(f"Running the main function from database file")
-    print(f"Scoreboard db created")
 
     # Create a while loop for the user to test commands as they are typed into the terminal
     while (True):
