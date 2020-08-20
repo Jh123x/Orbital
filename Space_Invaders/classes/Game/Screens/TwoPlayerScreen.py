@@ -1,36 +1,39 @@
 import pygame
 from pygame.locals import *
+
 from . import MenuTemplate
 from .. import WHITE, State
 
+
 class TwoPlayerScreen(MenuTemplate):
-    def __init__(self, screen_width:int, screen_height:int, screen, debug:bool = False):
+    def __init__(self, screen_width: int, screen_height: int, screen, debug: bool = False):
         """Constructor for the main class for the 2 player screen"""
 
-        #Create a list to store the buttons
+        # Create a list to store the buttons
         self.rects = []
 
-        #Popup
+        # Popup
         self.popup = None
 
-        #Call the superclass screen
+        # Call the superclass screen
         super().__init__(screen_width, screen_height, State.TWO_PLAYER_MENU, screen, debug)
 
     def write_lines(self) -> None:
         """Write the lines for the Two player screen"""
-        #Draw the first pixel used for alignment
+        # Draw the first pixel used for alignment
         first_pixel = self.screen_height // 2
 
-        #Draw the header
-        self.write(self.title_font, WHITE, "2 player modes", self.screen_width // 2 ,self.screen_height // 5) 
+        # Draw the header
+        self.write(self.title_font, WHITE, "2 player modes", self.screen_width // 2, self.screen_height // 5)
 
-        #Draw the Player vs player mode
+        # Draw the Player vs player mode
         self.rects.append(self.write(self.end_font, WHITE, "Player VS Player", self.screen_width // 2, first_pixel))
 
-        #Draw the Player and Player Coop
-        self.rects.append(self.write(self.end_font, WHITE, "2 Player Coop", self.screen_width // 2, first_pixel + self.screen_height // 15))
+        # Draw the Player and Player Coop
+        self.rects.append(self.write(self.end_font, WHITE, "2 Player Coop", self.screen_width // 2,
+                                     first_pixel + self.screen_height // 15))
 
-        #Draw the back button
+        # Draw the back button
         self.rects.append(self.write(self.end_font, WHITE, "Back", self.screen_width // 2, self.screen_height // 1.2))
 
     def get_rects(self) -> tuple:
@@ -44,11 +47,10 @@ class TwoPlayerScreen(MenuTemplate):
     def handle(self) -> State:
         """Handle the drawing of the 2 players screen"""
 
-        #If there is a popup
+        # If there is a popup
         if self.popup:
-            
-            #Update the popup
+            # Update the popup
             self.popup.update()
 
-        #Call the superclass handle
+        # Call the superclass handle
         return super().handle()

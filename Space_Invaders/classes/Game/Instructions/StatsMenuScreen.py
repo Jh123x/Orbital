@@ -1,16 +1,15 @@
 from .. import MenuTemplate, WHITE, State
 
+
 class StatsMenuScreen(MenuTemplate):
-    def __init__(self, screen_width:int, screen_height:int,  screen, debug:bool = False):
-
-        #Call the superclass
+    def __init__(self, screen_width: int, screen_height: int, screen, debug: bool = False):
+        # Call the superclass
         super().__init__(screen_width, screen_height, State.STAT_MENU_SCREEN, screen, 0, debug)
-
 
     def write_lines(self):
         """Write the lines of the Stats menu screen"""
-        #Draw the title
-        self.write(self.title_font, WHITE, "Different Stats", self.screen_width//2, self.screen_height//5)
+        # Draw the title
+        self.write(self.title_font, WHITE, "Different Stats", self.screen_width // 2, self.screen_height // 5)
 
         #Draw the stats button
         self.stats = self.write(self.end_font,WHITE, "Statistics", self.screen_width//2, self.screen_height//2)

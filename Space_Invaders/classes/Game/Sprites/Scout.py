@@ -1,54 +1,55 @@
 from . import EnemyShip
 
-class Scout(EnemyShip):
 
-    #Store the sprites for the Scout
+class Scout(EnemyShip):
+    # Store the sprites for the Scout
     sprites = []
-    
-    def __init__(self, sensitivity:int, initial_x:int, initial_y:int, lives:int,  game_width:int, game_height:int, bullet_grp, debug:bool):
+
+    def __init__(self, sensitivity: int, initial_x: int, initial_y: int, lives: int, game_width: int, game_height: int,
+                 bullet_grp, debug: bool):
         """Main class for the scout ship"""
 
-        #Call the superclass init with 1.2 times the sensitivity to make it move faster
+        # Call the superclass init with 1.2 times the sensitivity to make it move faster
         super().__init__(sensitivity, initial_x, initial_y, lives, game_width, game_height, None, bullet_grp, debug)
 
-        #Store the x_velocity and y_velocity (To be fine tuned later)
+        # Store the x_velocity and y_velocity (To be fine tuned later)
         self.delta_x = self.sensitivity
-        self.delta_y = self.sensitivity//2
+        self.delta_y = self.sensitivity // 2
 
-        #Set the score for the scout
+        # Set the score for the scout
         self.set_points(100 * lives)
 
     def update(self) -> None:
         """Overridden update class for the scout boss"""
 
-        #If the object has touched the edge
+        # If the object has touched the edge
         if self.touch_edge():
-            
-            #Change x direction
+
+            # Change x direction
             self.delta_x = -self.delta_x
 
-            #If there are more than 1 sprite
+            # If there are more than 1 sprite
             if len(self.sprites) == 2:
 
-                #Check if it is time to switch direction
+                # Check if it is time to switch direction
                 if self.delta_x > 0:
 
-                    #Change the image to face the right
+                    # Change the image to face the right
                     self.image = self.sprites[0]
 
-                    #Scale the image base on the resolution
+                    # Scale the image base on the resolution
                     self.scale(50 * self.game_width // 600, 50 * self.game_height // 800)
 
                 else:
 
-                    #Change the image to face the left
+                    # Change the image to face the left
                     self.image = self.sprites[1]
 
-                    #Scale the image base on the resolution
+                    # Scale the image base on the resolution
                     self.scale(50 * self.game_width // 600, 50 * self.game_height // 800)
 
-        #Update the position of the ship
+        # Update the position of the ship
         self.move(self.delta_x, self.delta_y)
 
-        #Call the superclass update
+        # Call the superclass update
         return super().update(1)

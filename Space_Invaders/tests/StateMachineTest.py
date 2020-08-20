@@ -1,12 +1,14 @@
-#Unit tests
+# Unit tests
 import os
-import unittest
 import sys
+import unittest
+
 import pygame
 
-#Change directory to that of the main path
+# Change directory to that of the main path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from classes import *
+
 
 class StateMachineTester(unittest.TestCase):
 
@@ -30,7 +32,7 @@ class StateMachineTester(unittest.TestCase):
         sm = StateMachine(1)
         e = {'mobs': [], 'bosses': [], 'bullets': [], 'enemy_player': 'None',
              'player': (400, 200, 1)}
-        #simulates initialisation condition of screen
+        # simulates initialisation condition of screen
 
         sm.state_check(e)
         assert sm.get_state() == 1
@@ -40,7 +42,8 @@ class StateMachineTester(unittest.TestCase):
         Test case 3: assert that state changes after a set n ticks with a given entity list
         '''
         sm = StateMachine(2)
-        e = {'mobs': [(400,300)], 'bosses': [(400,300)], 'bullets': [(350,200)], 'enemy_player': 'None', 'player': (400, 200 , 1)}
+        e = {'mobs': [(400, 300)], 'bosses': [(400, 300)], 'bullets': [(350, 200)], 'enemy_player': 'None',
+             'player': (400, 200, 1)}
 
         # Check that no state was changed from 1 time step
         sm.state_check(e)
@@ -70,7 +73,3 @@ class StateMachineTester(unittest.TestCase):
               'player': (350, 200, 1)}
 
         assert sm.get_state() == 2
-
-
-
-

@@ -1,10 +1,11 @@
 import pygame
 
+
 class BaseObject(pygame.sprite.Sprite):
-    def __init__(self, initial_x:int, initial_y:int, debug:bool = False):
+    def __init__(self, initial_x: int, initial_y: int, debug: bool = False):
         """Constructor for the object class in the game"""
 
-        #Store the coordinates
+        # Store the coordinates
         self.x = initial_x
         self.y = initial_y
         self.initial_x = initial_x
@@ -12,7 +13,7 @@ class BaseObject(pygame.sprite.Sprite):
         self.changed = True
         self.debug = debug
 
-        #Call the superclass
+        # Call the superclass
         super().__init__()
 
     def get_coord(self) -> tuple:
@@ -27,7 +28,7 @@ class BaseObject(pygame.sprite.Sprite):
         """Get the y coord of the obj"""
         return self.y
 
-    def set_coord(self,position):
+    def set_coord(self, position):
         """Set the coordinates of the base object"""
         self.x = position[0]
         self.y = position[1]

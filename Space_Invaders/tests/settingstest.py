@@ -1,33 +1,34 @@
-#Unit tests
-import unittest
+# Unit tests
 import os
 import sys
+import unittest
 
-#Change directory to that of the main path
+# Change directory to that of the main path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from classes import *
 
-#Relavant functions to be tested
+
+# Relavant functions to be tested
 class SettingsTester(unittest.TestCase):
-    
-    def setUp(self) ->None:
+
+    def setUp(self) -> None:
         """Set up for main class"""
 
-        #Call the superclass setup
+        # Call the superclass setup
         super().setUp()
 
-        #Read the config file from the settings
-        self.config = read_settings(form_abs_path(__file__,"../settings.cfg"), "Space Invaders")
+        # Read the config file from the settings
+        self.config = read_settings(form_abs_path(__file__, "../settings.cfg"), "Space Invaders")
 
     def tearDown(self):
         """Tear down for the main class"""
 
-        #Remove the config
+        # Remove the config
         del self.config
 
-        #Nothing to Teardown
+        # Nothing to Teardown
         return super().tearDown()
-    
+
     def testConfigA(self):
         """
         Test if config file is converted to a dictionary
@@ -39,12 +40,13 @@ class SettingsTester(unittest.TestCase):
         Test For integer parsing and converting to correct type
         """
         assert type(self.config['sensitivity']) == int, "Not parsing and converting digit correctly"
-    
+
     def testConfigC(self):
         """
         Test for boolean parsing and converting to correct type
         """
         assert type(self.config['debug']) == bool, "Not parsing string to boolean correctly"
+
     def testConfigD(self):
         """
         Test for string parsing properly
@@ -78,8 +80,8 @@ class AbsPathTest(unittest.TestCase):
         """
         path1 = os.path.join("C:", "hello1", "hello2")
         path2 = os.path.join("hello3", "hello4")
-        test1 = os.path.join(os.path.dirname(path1),path2)
-        test2 = form_abs_path(path1,path2)
+        test1 = os.path.join(os.path.dirname(path1), path2)
+        test2 = form_abs_path(path1, path2)
         assert test1 == test2, f"{test1} and {test2} is different"
 
 
@@ -88,14 +90,16 @@ class numFilesTest(unittest.TestCase):
         """
         Test case 1: Number of files in current folder
         """
-        assert len(os.listdir(os.path.dirname(__file__))) == len(list_dir(os.path.dirname(__file__))), "Results are not the same for the 2 functions"
+        assert len(os.listdir(os.path.dirname(__file__))) == len(
+            list_dir(os.path.dirname(__file__))), "Results are not the same for the 2 functions"
+
 
 class ConvertTypeTest(unittest.TestCase):
     def testConfig1(self) -> None:
         """
         Test case 1: Converting ("hello","3")
         """
-        result = convertType(("hello","3"))
+        result = convertType(("hello", "3"))
         assert type(result[0]) == str and type(result[1]) == int, '''("hello","3") is not converterd correctly'''
 
     def testConfig2(self) -> None:
@@ -145,12 +149,11 @@ class ConvertTypeTest(unittest.TestCase):
         """
         Test case 8: Converting (1,2,3,4)
         """
-        result = convertType((1,2,3,4))
-        assert result == (1,2,3,4), '''(1,2,3,4) is not converterd correctly'''
+        result = convertType((1, 2, 3, 4))
+        assert result == (1, 2, 3, 4), '''(1,2,3,4) is not converterd correctly'''
 
 
-#Main function
+# Main function
 if __name__ == "__main__":
-    
-    #Runs all of the tests defined above
+    # Runs all of the tests defined above
     unittest.main()

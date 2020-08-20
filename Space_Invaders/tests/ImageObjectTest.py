@@ -1,12 +1,14 @@
-#Unit tests
+# Unit tests
 import os
-import unittest
 import sys
+import unittest
+
 import pygame
 
-#Change directory to that of the main path
+# Change directory to that of the main path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from classes import *
+
 
 class ImageObjectTest(unittest.TestCase):
 
