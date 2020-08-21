@@ -8,14 +8,13 @@ class StoryTemplate(PlayScreen):
     def __init__(self, screen_width: int, screen_height: int, screen, state: State, sensitivity: int, max_fps: int,
                  powerup_chance: float, tracker: AchievmentTracker, debug: bool):
         """The template for the stage to be built on"""
+
+        #Set the state
         self.something = state
 
         # Call the superclass
-        super().__init__(screen_width, screen_height, screen, sensitivity, max_fps, Difficulty(3), tracker, 1, 1,
-                         powerup_chance, debug)
-
-        # Set the state
-        self.set_state(state)
+        super().__init__(screen_width, screen_height, screen, sensitivity, max_fps, Difficulty(3), 
+                        tracker, 1, 3, powerup_chance, debug)
 
         # Reset the game
         self.reset()
@@ -120,7 +119,8 @@ class StoryTemplate(PlayScreen):
         If there is a win, add one to the clear state and continue normally with tracked stats
         '''
         if win:
-            self.accumulate(f'st_{self.get_stage()}_clr', 1)
+            text = f'st_{self.get_stage()}_clr'
+            self.accumulate(text, 1)
 
         return super().update_trackers()
 

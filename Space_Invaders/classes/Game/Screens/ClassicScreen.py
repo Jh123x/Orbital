@@ -389,8 +389,8 @@ class ClassicScreen(Screen):
             else:
                 self.tracker.set_value(k, v)
 
-            # Check if any achievements was achieved
-            self.tracker.check_unlocked(k, v)
+        # Check if any achievements was achieved
+        self.update_achievement()
 
     def handle_threshold(self) -> None:
         ''' Handle updating threshold value for given statistics -> throws popup on screen'''
@@ -564,7 +564,6 @@ class ClassicScreen(Screen):
         if self.player1.is_destroyed():
             # Set the game to be over
             self.end_game()
-
             self.update_trackers()
 
             # Return the gameover state
@@ -579,8 +578,10 @@ class ClassicScreen(Screen):
 
             # Set the game to be over
             self.end_game()
+
             # Update Trackers for the game variables
             self.update_trackers()
+
             # If so it is gameover for the player
             return self.get_gameover_state()
 

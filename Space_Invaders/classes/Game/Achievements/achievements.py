@@ -92,6 +92,7 @@ class AchievementManager(object):
 
         # If it is valid
         if ac:
+            
             # Check if it is achieved
             return ac.check_achieved(stat, stat2)
 

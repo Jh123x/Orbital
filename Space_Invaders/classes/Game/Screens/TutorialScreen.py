@@ -143,9 +143,11 @@ class TutorialScreen(PlayScreen):
         self.reset()
 
     def update_trackers(self, loss: bool = False):
-        super(TutorialScreen, self).update_trackers()
+        """Update tracker for tutorial class"""
         if loss:
             self.tracker.add_value('tut_n_clr', 1)
+            self.tracker.check_unlocked('tut_n_clr', 1)
+        return super().update_trackers()
 
     def handle(self) -> State:
         """Handle the drawing of the sprites"""
@@ -155,7 +157,6 @@ class TutorialScreen(PlayScreen):
 
             # Update trackers
             self.update_trackers(True)
-            self.tracker.update_achievement()
 
             # Cause the game to end
             self.end_game()
@@ -165,8 +166,10 @@ class TutorialScreen(PlayScreen):
 
         # Otherwise if player wins
         elif self.wave == 3:
+
             # update internal stats
             self.update_trackers()
+
             # Cause the game to end
             self.end_game()
 
