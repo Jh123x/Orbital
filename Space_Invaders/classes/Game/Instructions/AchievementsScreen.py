@@ -62,6 +62,8 @@ class AchievementScreen(PowerupInstructionsScreen):
             self.achieved = self.tracker.get_all_achievements()
             self.preprocess()
             self.refreshed = True
+            self.items = tuple(
+            map(lambda x: (x, self.trophy if self.achieved[x] else self.question_mark), self.description.keys()))
 
     def write_lines(self):
         """Write the header"""
