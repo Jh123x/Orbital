@@ -120,11 +120,9 @@ class StoryTemplate(PlayScreen):
         If there is a win, add one to the clear state and continue normally with tracked stats
         '''
         if win:
-            print("called once again")
             self.accumulate(f'st_{self.get_stage()}_clr', 1)
-            super().update_trackers()
-        else:
-            super().update_trackers()
+
+        return super().update_trackers()
 
     def handle(self):
         """Handles the playing out of the screen"""
