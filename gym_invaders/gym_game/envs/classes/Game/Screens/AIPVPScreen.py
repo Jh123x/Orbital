@@ -1,13 +1,12 @@
 import pygame
 from pygame.locals import *
-import matplotlib.pyplot as plt
 from . import LocalPVPScreen
-from .. import AIPlayer, State, Player, Direction
+from .. import AIPlayer, State, Player, Direction, WHITE
 
 class AIPVPScreen(LocalPVPScreen):
     def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, fps:int,
                  player_lives:int = 3, debug:bool = False):
-        """The AI PVP screen"""
+        """The constructor for the AI PVP screen"""
         
         #Call the superclass
         super().__init__(screen_width, screen_height, screen, sensitivity, fps, player_lives, debug)
@@ -29,11 +28,29 @@ class AIPVPScreen(LocalPVPScreen):
 
     def update(self) -> None:
         """Update the AI before calling superclass update"""
+
         #Let the AI do a move
-        self.player2.action(self.get_hitboxes_copy())
+        self.player2.action(self.get_entities())
 
         #Call the superclass update
         return super().update()
+
+    def draw_letters(self) -> None:
+        """Draw the words on the screen"""
+        #Draw the wave number
+        self.write_main(self.font, WHITE, f"Wave: {self.wave}", self.screen_width // 2, 20)
+
+        #Draw the lives of player 1
+        self.write_main(self.font, WHITE, f"AI Lives: {self.player2.get_lives()}", self.screen_width - 10, 10, Direction.RIGHT)
+
+        #Draw score of player 1
+        self.write_main(self.font, WHITE, f"AI Score: {self.p2_score}", 10, 10, Direction.LEFT)
+
+        #Draw the lives of player 2
+        self.write_main(self.font, WHITE, f"Lives: {self.player1.get_lives()}", self.screen_width - 10, self.screen_height - 20, Direction.RIGHT)
+
+        #Draw score of player 2
+        self.write_main(self.font, WHITE, f"Score: {self.p1_score}", 10, self.screen_height - 20, Direction.LEFT)
 
     def check_keypresses(self) -> bool:
         """Check the keys which are pressed
@@ -46,7 +63,9 @@ class AIPVPScreen(LocalPVPScreen):
         if keys[K_p]:
             return True
 
+        #If player 1 is not destroyed
         if not self.player1.is_destroyed():
+
             #Check player 1 keys
             if keys[K_a]:
 

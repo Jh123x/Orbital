@@ -1,0 +1,5 @@
+from .InstructionsMenuScreen import InstructionsMenuScreen
+from .InstructionsScreen import InstructionScreen
+from .PVPInstructionsScreen import PVPInstructionsScreen
+from .PowerupInstructionsScreen import PowerupInstructionsScreen
+from .MobInstructionScreen import MobInstructionsScreen

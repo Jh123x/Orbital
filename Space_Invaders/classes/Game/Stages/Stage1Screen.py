@@ -1,180 +1,188 @@
 from . import StoryTemplate
-from .. import State, ImageObject, Direction, WHITE
+from .. import State, ImageObject, Direction, WHITE, AchievmentTracker
+
 
 class Stage1Screen(StoryTemplate):
 
-    def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, max_fps:int, debug:bool):
+    def __init__(self, screen_width: int, screen_height: int, screen, sensitivity: int, max_fps: int,
+                 tracker: AchievmentTracker, debug: bool):
         """The constructor for the Stage 1 screen"""
 
-        #Call the superclass init method
-        super().__init__(screen_width, screen_height, screen, State(100), sensitivity, max_fps, 0, debug)
+        # Call the superclass init method
+        super().__init__(screen_width, screen_height, screen, State(100), sensitivity, max_fps, 0, tracker, debug)
 
-        #Commander brief image
-        self.bg = ImageObject(300, 285, 600, 570, StoryTemplate.sprites["commander_brief"], debug)
+        # Commander brief image
+        self.bg = ImageObject(self.screen_width // 2, int(self.screen_height * 285 / 800), 600, 570,
+                              StoryTemplate.sprites_dict["commander_brief"], debug)
+        self.bg.scale(self.screen_width, int(self.screen_height * 57 / 80))
 
-        #Image of figure head
-        self.dill_bates = ImageObject(300, 210, 217, 217, StoryTemplate.sprites['bates'], debug)
-        self.dill_bates.scale(217,217)
+        # Image of figure head
+        self.dill_bates = ImageObject(self.screen_width // 2, int(self.screen_height * 210 / 800), 217, 217,
+                                      StoryTemplate.sprites_dict['bates'], debug)
+        self.dill_bates.scale(int(217 * screen_width // 600), int(217 * screen_height // 800))
 
-        #Image of the commander
-        self.commander = ImageObject(300, 210, 217, 217, StoryTemplate.sprites['silloette_commander'], debug)
-        self.commander.scale(217,217)
+        # Image of the commander
+        self.commander = ImageObject(self.screen_width // 2, int(self.screen_height * 210 / 800), 217, 217,
+                                     StoryTemplate.sprites_dict['silloette_commander'], debug)
+        self.commander.scale(int(217 * screen_width // 600), int(217 * screen_height // 800))
 
-        #Textbox
-        self.tb = ImageObject(300, 685, 600, 230, StoryTemplate.sprites['textbox'], debug)
+        # Textbox
+        self.tb = ImageObject(self.screen_width // 2, int(self.screen_height * 685 / 800), 600, 230,
+                              StoryTemplate.sprites_dict['textbox'], debug)
+        self.tb.scale(self.screen_width, int(self.screen_height * 23 / 80))
 
     def draw_bg(self):
         """Draw the background"""
-        #Draw the commander brief
+        # Draw the commander brief
         self.bg.draw(self.screen)
 
-        #Draw the textbox
+        # Draw the textbox
         self.tb.draw(self.screen)
 
     def pre_cutscene(self):
         """The pre_cutscene for the class"""
 
-        #Insert the Icon for the char speaking
+        # Insert the Icon for the char speaking
         self.dill_bates.draw(self.screen)
 
-        #Draw the background
+        # Draw the background
         self.draw_bg()
 
-        #Draw the next button
-        self.next_btn = self.write_main(self.end_font, WHITE, "Next", 580, self.tb.rect.top - 30, Direction.RIGHT)
+        # Draw the next button
+        self.next_btn = self.write_main(self.end_font, WHITE, "Next", (580 / 600 * self.screen_width),
+                                        self.tb.rect.top - 30, Direction.RIGHT)
 
-        #Lower cd of click if it is still on cooldown
+        # Lower cd of click if it is still on cooldown
         if self.click_cd:
             self.click_cd -= 1
 
-        #Check if the next button is clicked
+        # Check if the next button is clicked
         if self.check_clicked(self.next_btn) and not self.click_cd:
-
-            #Increment the clicks
+            # Increment the clicks
             self.clicks += 1
 
-            #Reset the cooldown
-            self.click_cd = self.fps//5
+            # Reset the cooldown
+            self.click_cd = self.fps // 5
 
-        #Write the character name text
+        # Write the character name text
         self.write_main(self.end_font, WHITE, "Dill Bates", 33, self.tb.rect.top + 15, Direction.LEFT)
 
-        #Pixel vars for alignment
+        # Pixel vars for alignment
         first_px = self.tb.rect.top + 75
         left_px = 40
 
         if self.clicks == 0:
 
-            #Write the character speech text
-            self.render_speech(first_px, left_px, ("Commander, the enemy is at our doorstep, and we are in dire straits,", 
+            # Write the character speech text
+            self.render_speech(first_px, left_px,
+                               ("Commander, the enemy is at our doorstep, and we are in dire straits,",
                                 "the enemy has surrounded Earth and is threatening our very survival",
-                                "The enemies here are the cannon fodder of their invasion.", 
+                                "The enemies here are the cannon fodder of their invasion.",
                                 "However we cannot underestimate their strength."))
 
         elif self.clicks == 1:
 
-            #Write part 2 of the speech 
+            # Write part 2 of the speech
             self.render_speech(first_px, left_px, ("The enemies here are the cannon fodder of their invasion. ",
-                                "However we cannot underestimate their strength.",
-                                "As we are unable to access our main weapon caches ", 
-                                "on our Moon Base either..."))
+                                                   "However we cannot underestimate their strength.",
+                                                   "As we are unable to access our main weapon caches ",
+                                                   "on our Moon Base either..."))
 
         else:
-            #Reset the clicks
+            # Reset the clicks
             self.clicks = 0
 
-            #Move to the next scene
+            # Move to the next scene
             self.next_scene()
 
-        #Return the current state
+        # Return the current state
         return self.state
 
     def post_cutscene(self):
         """The post cutscene for stage 1"""
-        #Lower cd of click if it is still on cooldown
+        # Lower cd of click if it is still on cooldown
         if self.click_cd:
             self.click_cd -= 1
 
-        #Check if the next button is clicked
+        # Check if the next button is clicked
         if self.check_clicked(self.next_btn) and not self.click_cd:
-
-            #Increment the clicks
+            # Increment the clicks
             self.clicks += 1
 
-            #Reset the cooldown
-            self.click_cd = self.fps//5
+            # Reset the cooldown
+            self.click_cd = self.fps // 5
 
-        #If it is the dill_bates scene
+        # If it is the dill_bates scene
         if self.clicks <= 2:
 
-            #Insert the Icon for the char speaking
+            # Insert the Icon for the char speaking
             self.dill_bates.draw(self.screen)
         else:
 
-            #Insert the icon for the commander
+            # Insert the icon for the commander
             self.commander.draw(self.screen)
 
-        #Draw the background
+        # Draw the background
         self.draw_bg()
 
-        #Draw the next button
-        self.next_btn = self.write_main(self.end_font, WHITE, "Next", 580, self.tb.rect.top - 30, Direction.RIGHT)
+        # Draw the next button
+        self.next_btn = self.write_main(self.end_font, WHITE, "Next", (580 / 600 * self.screen_width),
+                                        self.tb.rect.top - 30, Direction.RIGHT)
 
-        #Pixels for alignment
+        # Pixels for alignment
         first_px = self.tb.rect.top + 75
         left_px = 40
 
         if self.clicks == 0:
-            #Write the character name text
+            # Write the character name text
             self.write_main(self.end_font, WHITE, "Dill Bates", 33, self.tb.rect.top + 15, Direction.LEFT)
 
-            #Write the character speech text
-            self.render_speech(first_px, left_px, ("Good job clearing the way. Now we can prepare to", 
-                                                "take our Moon Base. "))
+            # Write the character speech text
+            self.render_speech(first_px, left_px, ("Good job clearing the way. Now we can prepare to",
+                                                   "take our Moon Base. "))
 
         elif self.clicks == 1:
 
-            #Write the character name text
+            # Write the character name text
             self.write_main(self.end_font, WHITE, "Dill Bates", 33, self.tb.rect.top + 15, Direction.LEFT)
 
-            #Write the character speech text
-            self.render_speech(first_px, left_px, ("However, there is something weird about the remains", 
-                                                    "of these invaders.",))
+            # Write the character speech text
+            self.render_speech(first_px, left_px, ("However, there is something weird about the remains",
+                                                   "of these invaders.",))
 
         elif self.clicks == 2:
 
-            #Write the character name text
+            # Write the character name text
             self.write_main(self.end_font, WHITE, "Dill Bates", 33, self.tb.rect.top + 15, Direction.LEFT)
 
-            #Write the character speech text
+            # Write the character speech text
             self.render_speech(first_px, left_px, ("They seem to be made of some kind of biochemical alloy",
-                                                "we had been researching on Pluto..."))
+                                                   "we had been researching on Pluto..."))
 
         elif self.clicks == 3:
 
-            #Write the character name text
+            # Write the character name text
             self.write_main(self.end_font, WHITE, "Commander", 33, self.tb.rect.top + 15, Direction.LEFT)
 
-            #Write the character speech text
+            # Write the character speech text
             self.render_speech(first_px, left_px, ("After all these years, war… war never changes",))
 
         else:
-            #Reset the clicks
+            # Reset the clicks
             self.clicks = 0
 
-            #Move to the next scene
+            # Move to the next scene
             return self.get_victory_state()
 
-        #Return the current state
+        # Return the current state
         return self.state
 
     def play(self):
         """The playing stage for the game"""
 
-        #Call the superclass play
+        # Call the superclass play
         return super().play()
 
     def win_condition(self):
         """The win condition of the player"""
-        return self.wave == 4
-        
+        return self.wave == 1

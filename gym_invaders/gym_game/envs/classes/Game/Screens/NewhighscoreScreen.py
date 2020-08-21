@@ -9,21 +9,8 @@ class NewhighscoreScreen(Screen):
     inputbox = InputBox(300, 400, 30, Screen.end_font)
 
     def __init__(self, screen_width:int, screen_height:int, screen, score:int, debug:bool = False):
-        """Main screen for the new highscore screen
-            Arguments:
-                screen_width: Width of the game in pixels (int)
-                screen_height: Height of the game in pixels (int)
-                screen: Surface to blit our screen onto (pygame.Surface)
-                score: Score that the player obtained (int)
-                debug: Toggles debugging on the screen (bool): default = False
-            
-            Static Methods: 
-                get_name: Get the name that the player input into the inputbox
-            
-            Methods:
-                draw: Draw the screen onto the surface
-                handle: Handles the drawing of the screen onto the surface
-        """
+        """Main screen for the new highscore screen"""
+
         #Call the superclass
         super().__init__(screen_width, screen_height, State.NEWHIGHSCORE, screen, 0, 0, debug)
 
@@ -51,32 +38,18 @@ class NewhighscoreScreen(Screen):
 
     @staticmethod
     def get_name() -> str:
-        """Get the name of that was keyed into the inputbox
-            Arguments:
-                No arguments
-            Returns:
-                Returns the string that was inputted (string)
-        """
+        """Get the name of that was keyed into the inputbox"""
         return NewhighscoreScreen.inputbox.get_text()
 
     def draw(self) -> None:
-        """Draw the Screen onto the Surface
-            Arguments: 
-                No arguments
-            Return: 
-                No return
-        """
+        """Draw the Screen onto the Surface"""
 
         #Draw the inputbox
         NewhighscoreScreen.inputbox.blit(self.screen)
     
     def handle(self) -> State:
-        """Handles the new highscore and get user's name from input
-            Arguments: 
-                No arguments
-            Returns: 
-                No return
-        """
+        """Handles the new highscore and get user's name from input"""
+
         #Check each keydown event in pygame event queue
         for event in tuple(filter(lambda x: x.type==pygame.KEYDOWN, pygame.event.get())):
 
@@ -108,9 +81,8 @@ class NewhighscoreScreen(Screen):
         self.update()
 
         #Check if the player wants to pause or quit
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                return State.QUIT
+        if self.check_quit():
+            return State.QUIT
 
         #Return the Current game state
         return State.NEWHIGHSCORE

@@ -2,9 +2,12 @@ from . import Screen
 from .. import Sound, WHITE, State, ImageObject
 
 class VictoryScreen(Screen):
+
+    #Store the sprites used for the victory screen
     sprites = []
+
     def __init__(self,screen_width:int, screen_height:int, screen, prev_stage:str, sound:Sound = None, debug:bool = False):
-        """The Victory Screen"""
+        """The constructor for Victory Screen"""
 
         #Initialise the superclass
         super().__init__(screen_width, screen_height, State.VICTORY, screen, 0, 0, debug)
@@ -22,13 +25,13 @@ class VictoryScreen(Screen):
         first_px = self.screen_height//2 + 50
 
         #Write the main part of the screen
-        self.write(Screen.title_font, WHITE, "VICTORY", self.screen_width//2, self.screen_height // 5)
+        self.write(self.title_font, WHITE, "VICTORY", self.screen_width//2, self.screen_height // 5)
 
         #Write the stage that was cleared
-        self.write(Screen.end_font, WHITE, f"{prev_stage} cleared", self.screen_width//2, first_px)
+        self.write(self.end_font, WHITE, f"{prev_stage} cleared", self.screen_width//2, first_px)
 
         #Write the back button
-        self.back = self.write(Screen.end_font, WHITE, "back", self.screen_width//2, self.screen_height // 1.2)
+        self.back = self.write(self.end_font, WHITE, "back", self.screen_width//2, self.screen_height // 1.2)
 
         #Show the trophy in the middle of the screen
         self.trophy = ImageObject(self.screen_width//2, first_px - 100, 50, 50, VictoryScreen.sprites[0])

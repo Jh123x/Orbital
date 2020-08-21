@@ -1,11 +1,12 @@
-#Unit tests
-import unittest
+# Unit tests
 import os
 import sys
+import unittest
 
-#Change directory to that of the main path
+# Change directory to that of the main path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from classes import *
+
 
 class testMusic(object):
     def __init__(self, name):
@@ -26,10 +27,11 @@ class testMusic(object):
         else:
             return self.name == other.name
 
+
 class SoundTest(unittest.TestCase):
 
     def setUp(self):
-        d = {'sound':testMusic("music")}
+        d = {'sound': testMusic("music")}
         self.sound = Sound(d, False, 0.5, False)
         return super().setUp()
 
@@ -59,23 +61,22 @@ class SoundTest(unittest.TestCase):
             assert self.sound.get_volume() == result[i]
             self.sound.volume_toggle()
 
-
     def testCase4(self):
         """
         Test case 4: Test if get_dict() method
         """
-        assert self.sound.get_dict() == {'sound':testMusic("music")}
+        assert self.sound.get_dict() == {'sound': testMusic("music")}
 
-    def testCase5(self): 
+    def testCase5(self):
         """
         Test case 5: Check if enable method is working
         """
 
-        #Enable the sound
+        # Enable the sound
         self.sound.toggle()
         assert self.sound.get_state(), "Toggle on is not working"
 
-        #Disable the sound
+        # Disable the sound
         self.sound.toggle()
         assert not self.sound.get_state(), "Toggle off is not working"
 
@@ -83,17 +84,16 @@ class SoundTest(unittest.TestCase):
         """
         Test case 5: Test if the play method is correct
         """
-        #Before toggling
+        # Before toggling
         assert not self.sound.play('sound'), "Sound is not playing correctly"
         assert not self.sound.play('does not exist'), "Playing music that is not found"
 
-        #Enable sound
+        # Enable sound
         self.sound.toggle()
 
-        #After toggling
+        # After toggling
         assert self.sound.play('sound'), "Sound is not playing correctly"
         assert not self.sound.play('does not exist'), "Playing music that is not found"
-
 
 
 if __name__ == "__main__":

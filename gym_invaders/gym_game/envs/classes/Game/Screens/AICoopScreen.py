@@ -1,6 +1,6 @@
 import pygame
 from pygame.locals import *
-from . import CoopScreen, Screen
+from . import CoopScreen
 from .. import *
 
 class AICoopScreen(CoopScreen):
@@ -26,19 +26,19 @@ class AICoopScreen(CoopScreen):
     def draw_letters(self) -> None:
         """Draw the words on the screen"""
         #Draw the wave number
-        self.write_main(Screen.font, WHITE, f"Wave: {self.wave}", self.screen_width // 2, 20)
+        self.write_main(self.font, WHITE, f"Wave: {self.wave}", self.screen_width // 2, 20)
 
         #Draw the lives of player 1
-        self.write_main(Screen.font, WHITE, f"P1 Lives: {self.player1.get_lives()}", self.screen_width - 10, 10, Direction.RIGHT)
+        self.write_main(self.font, WHITE, f"P1 Lives: {self.player1.get_lives()}", self.screen_width - 10, 10, Direction.RIGHT)
 
         #Draw score of player 1
-        self.write_main(Screen.font, WHITE, f"P1 Score: {self.p1_score}", 10, 10, Direction.LEFT)
+        self.write_main(self.font, WHITE, f"P1 Score: {self.p1_score}", 10, 10, Direction.LEFT)
 
         #Draw the lives of player 2
-        self.write_main(Screen.font, WHITE, f"AI Lives: {self.player2.get_lives()}", self.screen_width - 10, 30, Direction.RIGHT)
+        self.write_main(self.font, WHITE, f"AI Lives: {self.player2.get_lives()}", self.screen_width - 10, 30, Direction.RIGHT)
 
         #Draw score of player 2
-        self.write_main(Screen.font, WHITE, f"AI Score: {self.p2_score}", 10, 30, Direction.LEFT)
+        self.write_main(self.font, WHITE, f"AI Score: {self.p2_score}", 10, 30, Direction.LEFT)
 
     def update_keypresses(self) -> bool:
         """Check the keys which are pressed"""
@@ -70,7 +70,7 @@ class AICoopScreen(CoopScreen):
         """Update method for the AICoopScreen"""
 
         #Update the action of the AI
-        self.player2.action(self.get_hitboxes_copy())
+        self.player2.action(self.get_entities())
 
         #Call the superclass update
         return super().update()

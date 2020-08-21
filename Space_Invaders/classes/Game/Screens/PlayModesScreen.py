@@ -1,94 +1,49 @@
-#Play mode screen
+# Play mode screen
 import pygame
 from pygame.locals import *
-from . import Screen
+
+from . import MenuTemplate
 from .. import State, WHITE
 
-class PlayModeScreen(Screen):
-    def __init__(self, screen_width:int, screen_height:int, screen, debug:bool = False):
+
+class PlayModeScreen(MenuTemplate):
+    def __init__(self, screen_width: int, screen_height: int, screen, debug: bool = False):
         """Main screen for the different play modes"""
 
-        #Call the super class
-        super().__init__(screen_width, screen_height, State.PLAYMODE, screen, 0, 0, debug)
+        # Call the super class
+        super().__init__(screen_width, screen_height, State.PLAYMODE, screen, debug)
 
-        #First pixel for alignment
+    def write_lines(self) -> None:
+        """Write the lines for the Play Mode screen"""
+        # First pixel for alignment
         first_pixel = self.screen_height // 2
 
-        #Draw the Header
-        self.header = self.write(Screen.title_font, WHITE, "Modes", self.screen_width//2, self.screen_height//5)
+        # Draw the Header
+        self.header = self.write(self.title_font, WHITE, "Modes", self.screen_width // 2, self.screen_height // 5)
 
-        #Draw the rectangles for the different game modes
-        #Rect for tutorial
-        tutorial = self.write(Screen.end_font, WHITE, "Tutorial", self.screen_width//2, first_pixel + self.screen_height//5)
+        # Draw the rectangles for the different game modes
+        # Rect for tutorial
+        self.tutorial = self.write(self.end_font, WHITE, "Tutorial", self.screen_width // 2,
+                                   first_pixel + self.screen_height // 5)
 
-        #Rect for AI modes
-        ai_modes = self.write(Screen.end_font, WHITE, "AI Modes", self.screen_width //2, first_pixel + self.screen_height//7.5)
+        # Rect for AI modes
+        self.ai_modes = self.write(self.end_font, WHITE, "AI Modes", self.screen_width // 2,
+                                   first_pixel + self.screen_height // 7.5)
 
-        #Rect for the single player mode
-        one_player = self.write(Screen.end_font, WHITE, "1 Player Modes", self.screen_width //2, first_pixel)
+        # Rect for the single player mode
+        self.one_player = self.write(self.end_font, WHITE, "1 Player Modes", self.screen_width // 2, first_pixel)
 
-        #2 Player mode (2 player mode menu)
-        two_player = self.write(Screen.end_font, WHITE, "2 Player Modes", self.screen_width//2, first_pixel + self.screen_height//15)
+        # 2 Player mode (2 player mode menu)
+        self.two_player = self.write(self.end_font, WHITE, "2 Player Modes", self.screen_width // 2,
+                                     first_pixel + self.screen_height // 15)
 
-        #Back button
-        back = self.write(Screen.end_font, WHITE, "Back", self.screen_width // 2, self.screen_height//1.2)
+        # Back button
+        self.back = self.write(self.end_font, WHITE, "Back", self.screen_width // 2, self.screen_height // 1.2)
 
-        #Store all the buttons
-        self.buttons = [tutorial, ai_modes, one_player, two_player, back]
-        self.modes = [State.TUTORIAL, State.AI_MENU, State.ONE_PLAYER_MENU, State.TWO_PLAYER_MENU, State.MENU]
+    def get_rects(self):
+        # Store all the buttons
+        return (self.one_player, self.two_player, self.ai_modes, self.tutorial, self.back)
 
-    def check_mouse_clicks(self) -> State:
-        """Check the button that the player pressed"""
-
-        #Check if any buttons were clicked
-        result = tuple(map(lambda x: self.check_clicked(x), self.buttons))
-
-        #Iterate through the clicks
-        for index, click in enumerate(result):
-
-            #If anything was clicked
-            if click:
-
-                #Return the corresponding mode
-                return self.modes[index]
-
-        #Otherwise the player has not decided
-        return False
-
-    def check_keypresses(self) -> State:
-        """Check the keyboard inputsof the user"""
-        #Check if any buttons were clicked
-        result = tuple(map(lambda x: self.check_clicked(x), self.buttons))
-
-        #Iterate through the clicks
-        for index, click in enumerate(result):
-
-            #If anything was clicked
-            if click:
-
-                #Return the corresponding mode
-                return self.modes[index]
-
-        #Get the keypresses that the user pressed
-        keys = pygame.key.get_pressed()
-
-        #Check if the esc key is pressed
-        if keys[K_ESCAPE]:
-            return State.MENU
-
-        #Otherwise
-        else:
-
-            #Return the current mode
-            return self.state
-
-    def handle(self):
-        """Method to handle the drawing of the screen"""
-        #Update the sprites
-        self.update()
-
-        #Check the clicks
-        state = self.check_mouse_clicks()
-
-        #If the player has not clicked, check the keypresses
-        return state if state else self.check_keypresses()
+    def get_effects(self):
+        # Get the desired output states
+        return (State.ONE_PLAYER_MENU, State.TWO_PLAYER_MENU, State.AI_MENU, State.TUTORIAL, State.MENU)

@@ -2,8 +2,8 @@
 import pygame
 import random
 from pygame.locals import *
-from . import LocalPVPScreen, Screen, PlayScreen
-from .. import State, Player, Direction, EnemyShip, WHITE, Explosion, Difficulty
+from . import PlayScreen
+from .. import State, Player, Direction, WHITE, Explosion, Difficulty
 
 class CoopScreen(PlayScreen):
     def __init__(self, screen_width:int, screen_height:int, screen, sensitivity:int, fps:int, difficulty: Difficulty, player_lives:int = 3, debug:bool = False):
@@ -95,7 +95,8 @@ class CoopScreen(PlayScreen):
         """Return the combined score of the players"""
         return super().get_score() + self.p2_score
 
-    def get_gameover_state(self):
+    def get_gameover_state(self) -> State:
+        """Returns the gameover mode for this state"""
         return State.GAMEOVER
 
     def bullet_direction(self) -> Direction:
@@ -124,6 +125,7 @@ class CoopScreen(PlayScreen):
         return super().update_keypresses()
 
     def check_powerups(self, ship) -> None:
+        """Check if the powerups should be spawned"""
         #If powerups are not disabled
         if self.powerup_chance > 0:
 
@@ -140,8 +142,12 @@ class CoopScreen(PlayScreen):
                 super().spawn_powerups(ship.get_x(), ship.get_y())
 
     def check_player_mob_collision(self, player_bullet):
+        """Check the collision between the enemies and the players"""
+
         #Check collision of mobs with player 1 bullet
         ships = list(pygame.sprite.groupcollide(player_bullet, self.enemies, True, False).values()) + list(pygame.sprite.groupcollide(player_bullet, self.other_enemies, True, False).values())
+
+        #Initialise the points the player got so far
         pts = 0
 
         #If the list is non-empty
@@ -170,6 +176,13 @@ class CoopScreen(PlayScreen):
 
         #Return with the points the player got
         return pts
+    
+    def check_block_collision(self) -> None:
+        """Check collisions with blocks"""
+        #Check if the players or the enemies shot the blocks
+        pygame.sprite.groupcollide(self.player1_bullet, self.blocks, True, True)
+        pygame.sprite.groupcollide(self.blocks, self.mob_bullet, True, True)
+        pygame.sprite.groupcollide(self.player2_bullet, self.blocks, True, True)
 
     def check_collisions(self) -> None:
         """Check collisions method for Coop"""
@@ -190,6 +203,9 @@ class CoopScreen(PlayScreen):
 
         #Check collision of mobs with player 2 bullet
         self.p2_score += self.check_player_mob_collision(self.player2_bullet)
+
+        #Check block collisions
+        self.check_block_collision()
 
     def check_powerup_collision(self):
         """Check the collisions of the powerups"""
@@ -218,23 +234,24 @@ class CoopScreen(PlayScreen):
     def draw_letters(self) -> None:
         """Draw the words on the screen"""
         #Draw the wave number
-        self.write_main(Screen.font, WHITE, f"Wave: {self.wave}", self.screen_width // 2, 20)
+        self.write_main(self.font, WHITE, f"Wave: {self.wave}", self.screen_width // 2, 20)
 
         #Draw the lives of player 1
-        self.write_main(Screen.font, WHITE, f"P1 Lives: {self.player1.get_lives()}", self.screen_width - 10, 10, Direction.RIGHT)
+        self.write_main(self.font, WHITE, f"P1 Lives: {self.player1.get_lives()}", self.screen_width - 10, 10, Direction.RIGHT)
 
         #Draw score of player 1
-        self.write_main(Screen.font, WHITE, f"P1 Score: {self.p1_score}", 10, 10, Direction.LEFT)
+        self.write_main(self.font, WHITE, f"P1 Score: {self.p1_score}", 10, 10, Direction.LEFT)
 
         #Draw the lives of player 2
-        self.write_main(Screen.font, WHITE, f"P2 Lives: {self.player2.get_lives()}", self.screen_width - 10, 30, Direction.RIGHT)
+        self.write_main(self.font, WHITE, f"P2 Lives: {self.player2.get_lives()}", self.screen_width - 10, 30, Direction.RIGHT)
 
         #Draw score of player 2
-        self.write_main(Screen.font, WHITE, f"P2 Score: {self.p2_score}", 10, 30, Direction.LEFT)
+        self.write_main(self.font, WHITE, f"P2 Score: {self.p2_score}", 10, 30, Direction.LEFT)
 
 
     def handle(self) -> State:
         """Handle the drawing of the screen"""
+        
         #Check if both players are destroyed
         if self.player2.is_destroyed():
 

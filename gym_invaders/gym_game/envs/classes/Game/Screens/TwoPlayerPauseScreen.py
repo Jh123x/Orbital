@@ -4,8 +4,11 @@ from . import Screen
 from .. import WHITE, State, Direction
 
 class TwoPlayerPauseScreen(Screen):
+
+    #Check if the paused sound is played
     sound = None
     played = False
+
     def __init__(self, screen_width:int, screen_height:int, screen, p1_score:int, p2_score:int, prev_state:State, debug:bool = False):
         """Main class for PVP pause screen"""
         
@@ -24,27 +27,26 @@ class TwoPlayerPauseScreen(Screen):
         self.prev = prev_state
 
         #Draw the header
-        self.write(Screen.title_font, WHITE, "Paused", screen_width//2, screen_height//5)
+        self.write(self.title_font, WHITE, "Paused", screen_width//2, screen_height//5)
 
         #First pixel used for alignment
         first_pixel = screen_height // 2
 
         #Draw the player 1 score
-        self.write(Screen.end_font, WHITE, f"Player 1: {p1_score}", screen_width//4, first_pixel, Direction.LEFT)
+        self.write(self.end_font, WHITE, f"Player 1: {p1_score}", screen_width//4, first_pixel, Direction.LEFT)
 
         #Draw the player 2 score
-        self.write(Screen.end_font, WHITE, f"Player 2: {p2_score}", screen_width//4, first_pixel + self.screen_height//15, Direction.LEFT)
+        self.write(self.end_font, WHITE, f"Player 2: {p2_score}", screen_width//4, first_pixel + self.screen_height//15, Direction.LEFT)
 
         #Draw the instructions to unpause
-        self.write(Screen.end_font, WHITE, "Press P to unpause", self.screen_width//4, first_pixel + self.screen_height//7.5, Direction.LEFT)
+        self.write(self.end_font, WHITE, "Press P to unpause", self.screen_width//4, first_pixel + self.screen_height//7.5, Direction.LEFT)
 
         #Draw the instructions to quit
-        self.write(Screen.end_font, WHITE, "Escape to quit", self.screen_width//4, first_pixel + self.screen_height//5, Direction.LEFT)
+        self.write(self.end_font, WHITE, "Escape to quit", self.screen_width//4, first_pixel + self.screen_height//5, Direction.LEFT)
 
     def get_scores(self) -> tuple:
         """Return the score of the 2 players"""
         return self.p1,self.p2
-        
 
     def update_keypresses(self) -> State:
         """Check for the keypresses within the pause screen
@@ -66,7 +68,9 @@ class TwoPlayerPauseScreen(Screen):
             TwoPlayerPauseScreen.played = False
             return State.MENU
         
+        #Otherwise
         else:
+            
             #Return the current state if the player has not unpaused
             return State.TWO_PLAYER_PAUSE
 

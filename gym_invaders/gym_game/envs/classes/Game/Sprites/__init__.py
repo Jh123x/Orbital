@@ -10,8 +10,11 @@ from .EnemyGroup import EnemyShips
 from .Explosion import Explosion
 from .Player import Player
 from .InputBox import InputBox
+from .statemachine import StateMachine
 from .AIPlayer import AIPlayer
-from .PowerUp import PowerUp
 from .Mothership import MotherShip
+from .PowerUp import PowerUp
 from .Scout import Scout
 from .Brute import Brute
+from .Crabs import Crabs
+

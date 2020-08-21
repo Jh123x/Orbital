@@ -1,17 +1,17 @@
 class Sound(object):
-    def __init__(self, sound_dict:dict, start_state:bool, volume:float, debug:bool):
+    def __init__(self, sound_dict: dict, start_state: bool, volume: float, debug: bool):
         """Main class for playing sounds"""
 
-        #Store the values for the sound
+        # Store the values for the sound
         self.sounds = sound_dict
 
-        #Store if it is enabled or not
+        # Store if it is enabled or not
         self.enabled = start_state
 
-        #Store the volume of the sound
+        # Store the volume of the sound
         self.volume = volume
 
-        #Set the debug
+        # Set the debug
         self.debug = debug
 
     def get_state(self) -> bool:
@@ -25,45 +25,44 @@ class Sound(object):
     def volume_toggle(self) -> None:
         """Toggles the volume of the sound"""
 
-        #If the volume is lower than 1
+        # If the volume is lower than 1
         if self.volume < 1:
 
-            #Increment it by 0.25
+            # Increment it by 0.25
             self.volume += 0.25
 
-        #Otherwise
+        # Otherwise
         else:
-            
-            #Go back to 0.25
+
+            # Go back to 0.25
             self.volume = 0.25
 
     def get_dict(self) -> bool:
         """Get the dictionary of the sounds"""
         return self.sounds
 
-    def play(self, key:str) -> bool:
+    def play(self, key: str) -> bool:
         """Play the sound based on the key that is given"""
-        #Get the sound from the dictionary
+        # Get the sound from the dictionary
         sound = self.sounds.get(key, False)
 
-        #If the sound is found
+        # If the sound is found
         if sound:
 
-            #If music is not diabled
+            # If music is not diabled
             if self.enabled:
-
-                #Set the volume
+                # Set the volume
                 sound.set_volume(self.volume)
 
-                #Play it
+                # Play it
                 sound.play()
 
                 return True
 
-        #Otherwise
+        # Otherwise
         else:
 
-            #It is an invalid key
+            # It is an invalid key
             if self.debug:
                 print("Invalid key")
 
@@ -72,4 +71,3 @@ class Sound(object):
     def toggle(self) -> None:
         """Toggle the enabled status of sound"""
         self.enabled = not self.enabled
-        

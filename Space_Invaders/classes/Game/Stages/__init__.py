@@ -1,3 +1,5 @@
+from .StageGameover import StageGameoverScreen
+from .StagePauseScreen import StagePauseScreen
 from .StoryTemplate import StoryTemplate
 from .Stage1Screen import Stage1Screen
 from .Stage2Screen import Stage2Screen

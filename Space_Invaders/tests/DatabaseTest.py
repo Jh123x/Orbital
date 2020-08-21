@@ -1,7 +1,9 @@
-import sqlite3
 import os
+import sqlite3
 import unittest
-from ..classes import Database,ScoreBoard,Achievements,SettingsDB
+
+from ..classes import Database, ScoreBoard, Achievements, SettingsDB
+
 
 class DatabaseTest(unittest.TestCase):
 
@@ -14,7 +16,6 @@ class DatabaseTest(unittest.TestCase):
 
     def testCase1(self):
         pass
-
 
 
 if __name__ == '__main__':
