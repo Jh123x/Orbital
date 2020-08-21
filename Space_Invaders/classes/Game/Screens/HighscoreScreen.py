@@ -3,17 +3,32 @@ from .. import State, WHITE, Direction
 
 
 class HighscoreScreen(MenuTemplate):
-    def __init__(self, screen_width: int, screen_height: int, screen, scores: tuple, debug: bool = False):
+    def __init__(self, screen_width: int, screen_height: int, screen, scoreboard, debug: bool = False):
         """Constructor for the Highscore screen"""
 
-        # Keep track of the scores added
-        self.scores = sorted(scores, key=lambda x: x[-1], reverse=True)
+        #Score the scoreboard
+        self.scoreboard = scoreboard
+
+        #Check if it is refreshed
+        self.refreshed = False
+
+        #Refresh the board
+        self.refresh()
 
         # Keep track of the scores removed
         self.removed = []
 
         # Call the superclass
         super().__init__(screen_width, screen_height, State.HIGHSCORE, screen, debug)
+
+    def refresh(self):
+        """Refresh the board"""
+        if self.refreshed:
+            return
+        
+        # Keep track of the scores added
+        self.scores = sorted(self.scoreboard.fetch_all(), key=lambda x: x[-1], reverse=True)
+        self.refreshed = True
 
     def update_score(self, name: str, score: int) -> None:
         """Update the new player's name and score into the score board"""
@@ -74,10 +89,15 @@ class HighscoreScreen(MenuTemplate):
             self.write(self.end_font, WHITE, f"{item[2]:<5}", self.screen_width // 1.6,
                        start_px + self.screen_height // (15 / (index + 1)), Direction.LEFT)
 
+    def _back(self):
+        """Define a back function"""
+        self.refreshed = False
+        return State.STAT_MENU_SCREEN
+
     def get_rects(self):
         """Get the rects in the highscore screen"""
         return (self.end_rect,)
 
     def get_effects(self):
         """Get the effects of the rect in the highscore screen"""
-        return (State.STAT_MENU_SCREEN,)
+        return (self._back,)
