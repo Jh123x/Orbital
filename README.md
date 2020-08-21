@@ -12,7 +12,7 @@ Level of achievement: Artemis
   - Milestone 3: [Milestone 3 Video](https://youtu.be/_8in7JavAHs)
   - Splashdown: [Splashdown Video](https://www.youtube.com/watch?v=1TK-UwPBbEk&feature=youtu.be)
 
-* Download Link: [Windows v1.2](https://drive.google.com/file/d/1aF9dS2RQ1lsz3RQL5mKCDGSbvRiROToF/view?usp=sharing)
+* Download Link: [Windows v1.2](https://drive.google.com/file/d/1Te1OSkhHa27rHIbSe9qBpcb7SoB0zUZA/view?usp=sharing)
 
 * Download Link: [Mac v1.0](https://drive.google.com/file/d/1HfSrewqjheuAdSa83yHG1T8vIK-0Iw7c/view?usp=sharing)
 
