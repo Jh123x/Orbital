@@ -3,13 +3,14 @@ Team name: Space Defenders
 
 Level of achievement: Artemis
 
-![](images/Poster.png)
+![](images/Poster_v2.png)
 
 * Video Links 
   - LiftOff: [Liftoff Video](https://youtu.be/UNIIZMoY21Y)
   - Milestone 1: [Milestone 1 Video](https://youtu.be/B_vnh2F5NsM)
   - Milestone 2: [Milestone 2 Video](https://www.youtube.com/watch?v=oTaomwA8UFw)
   - Milestone 3: [Milestone 3 Video](https://youtu.be/_8in7JavAHs)
+  - Splashdown: [Splashdown Video](https://www.youtube.com/watch?v=1TK-UwPBbEk&feature=youtu.be)
 
 * Download Link: [Windows v1.0](https://drive.google.com/file/d/1sg8KXjIIUoKLrhnO1ZvNEcx9PiAcC4ad/view?usp=sharing)
 
@@ -25,21 +26,22 @@ Click here to provide any feedback you want to share
 
 ### Tech Stack
 1. Gameplay and Graphics
-  - Pygame: Used for making the game and the animations
+    - Pygame: Used for making the game and the animations
 2. AI and Data Science Technologies
-  - Gym: For making the AI agent for the game
-  - Pytorch: Provides the Neural Network Infrastructure
-  - Numpy: Fast Array Computation
-  - Matplotlib: Visualising Data and Debugging
-  - OpenCV 2: Image Preprocessing and video playback
+    - Actually used in the game
+      - Numpy: Fast Array Computation
+    - Used for gym invaders extension
+      - Gym: For making the AI agent for the game
+      - Pytorch: Provides the Neural Network Infrastructure
+      - Matplotlib: Visualising Data and Debugging
+      - OpenCV 2: Image Preprocessing and video playback
 3. Optimisation Technologies
-  - Multiprocessing and Asyncio: Running stuff in parallel to make them faster
-  - Sockets and pickle: For sending data across the network
-  - Sqlite3: For storing items in the databases
+    - Sockets and pickle: For sending data across the network
+    - Multiprocessing and Asyncio: Running stuff in parallel to make them faster
+    - Sqlite3: For storing items in the databases
 4. Software Engineering
-  - PyUnit: For unit tests
-  - Logging: For logging for data
-  - cx_Freeze: Compilation of python to executable
+    - PyUnit: For unit tests
+    - cx_Freeze: Compilation of python to executable
 
 
 ### Development RoadMap
