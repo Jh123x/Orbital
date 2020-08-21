@@ -199,7 +199,7 @@ class Achievements(Database):
         self.changed = True
 
     def remove(self, name: str) -> None:
-        """Remove the last entry from the highscore board"""
+        """Remove the last entry from the achievements board"""
         # Remove from the database where the name matches the name to be removed
         self.execute(f"DELETE FROM {self.name} WHERE name = ?", (name,))
 
@@ -277,6 +277,11 @@ class ScoreBoard(Database):
             # If the item is in the cache remove it
             if item in self.cache:
                 self.remove_exact(item[1], item[2])
+
+    def clear(self):
+        """Clear the highscore"""
+        self.cache = []
+
 
 
 def main() -> None:
