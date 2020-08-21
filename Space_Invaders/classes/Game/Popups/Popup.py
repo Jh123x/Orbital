@@ -1,5 +1,4 @@
 import pygame
-
 from .. import State, WHITE, Screen, ImageObject
 
 
@@ -15,7 +14,7 @@ class Popup(Screen):
         width, height = font.size(sentence)
 
         # Call the Screen superclass init
-        super().__init__(popup_width, popup_height, State.NONE, screen, initial_x - width // 2, initial_y - height // 2,
+        super().__init__(popup_width, popup_height, State.NONE, screen, initial_x - popup_width // 2, initial_y,
                          debug)
 
         # Fill itself black

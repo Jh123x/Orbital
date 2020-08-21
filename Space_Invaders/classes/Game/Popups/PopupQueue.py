@@ -20,7 +20,7 @@ class PopupQueue():
 
     def add(self, name: str, time: int):
         """Add a popup to the queue"""
-        item = Popup(400, 50, name, self.fps * time, self.screen_width // 2, 15, self.screen, font=Popup.h2_font,
+        item = Popup(400, 50, name, self.fps * time, self.screen_width // 2 , 10, self.screen, font=Popup.h2_font,
                      debug=self.debug)
         self.append(item)
 
