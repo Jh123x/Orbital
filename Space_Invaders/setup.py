@@ -12,7 +12,7 @@ build_exe_options = {
 }
 
 setup(name="Space Defenders",
-      version="1.0",
+      version="1.2",
       description="Space Defenders Game",
       author="Group Space Defenders",
       options={"build_exe": build_exe_options},
