@@ -185,4 +185,4 @@ class Stage1Screen(StoryTemplate):
 
     def win_condition(self):
         """The win condition of the player"""
-        return self.wave == 1
+        return self.wave == 4
