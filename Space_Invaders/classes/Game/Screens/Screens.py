@@ -1,8 +1,9 @@
 import pygame
 from pygame.locals import *
-
 from .. import BaseObject, State, Direction
 
+#Initialise the python font
+pygame.font.init()
 
 class Screen(BaseObject):
     # Store the pointer sprite
