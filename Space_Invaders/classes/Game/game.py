@@ -87,8 +87,6 @@ class GameWindow(object):
 
         # Stats Tracker
         self.achievementtracker = AchievmentTracker(db_path, self.popup_q)
-        # self.achievementtracker.reset_achieved()
-        # self.achievementtracker.reset()
 
         # Store the different screens in state
         self.screens = {
@@ -97,9 +95,9 @@ class GameWindow(object):
             State.CLASSIC: ClassicScreen(game_width, game_height, self.main_screen, sensitivity, maxfps,
                                          self.difficulty, self.achievementtracker, debug=self.debug),
             State.SETTINGS: SettingsScreen(game_width, game_height, self.main_screen, self.fps, self.sound,
-                                           self.bg, self.difficulty, debug),
+                                           self.bg, self.difficulty, self.achievementtracker, debug),
             State.HIGHSCORE: HighscoreScreen(game_width, game_height, self.main_screen,
-                                             self.score_board.fetch_all(), debug=self.debug),
+                                             self.score_board, debug=self.debug),
             State.AI_COOP: AICoopScreen(game_width, game_height, self.main_screen, sensitivity, maxfps,
                                         self.difficulty, self.achievementtracker, 3, debug),
             State.COOP: CoopScreen(game_width, game_height, self.main_screen, sensitivity, maxfps,
@@ -140,6 +138,7 @@ class GameWindow(object):
             State.STAT_MENU_SCREEN: StatsMenuScreen(game_width, game_height, self.main_screen, debug),
             State.ACHIEVEMENTS: AchievementScreen(game_width, game_height, self.main_screen, 60,
                                                   self.achievementtracker, debug),
+            State.RESET_SCREEN: ResetScreen(game_width, game_height, self.main_screen, self.achievementtracker, self.score_board, debug),
             State.STAGE_GAMEOVER: None,
             State.STAGE_PAUSE: None,
             State.VICTORY: None,

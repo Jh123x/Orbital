@@ -4,13 +4,14 @@ from .. import State, WHITE, Direction, Sound, Background, Difficulty, GREY
 
 class SettingsScreen(MenuTemplate):
     def __init__(self, screen_width: int, screen_height: int, screen, fps: int, sound: Sound, background: Background,
-                 difficulty: Difficulty, volume: float, debug: bool = False):
+                 difficulty: Difficulty, volume: float, tracker, debug: bool = False):
         """Constructor for the settings screen"""
         # Store the variables
         self.fps = fps
         self.sound = sound
         self.bgr = background
         self.difficulty = difficulty
+        self.tracker = tracker
 
         # Call the superclass
         super().__init__(screen_width, screen_height, State.SETTINGS, screen, debug)
@@ -20,6 +21,9 @@ class SettingsScreen(MenuTemplate):
 
         # Draw the Header
         self.write(self.title_font, WHITE, "Settings", self.screen_width // 2, self.screen_height // 5)
+
+        #Draw the reset button
+        self.reset_btn = self.write(self.end_font, WHITE, "Reset all", self.screen_width // 2, self.screen_height //1.2 - self.screen_height//15)
 
         # Draw the back button
         self.back = self.write(self.end_font, WHITE, "Back", self.screen_width // 2, self.screen_height // 1.2)
@@ -60,11 +64,11 @@ class SettingsScreen(MenuTemplate):
 
     def get_rects(self):
         """Return the rects of the rect"""
-        return (self.background, self.music, self.difficulty_rect, self.sound_btn, self.back)
+        return (self.background, self.music, self.difficulty_rect, self.sound_btn, self.reset_btn, self.back)
 
     def get_effects(self):
         """Return the effects for the rects"""
-        return (self.cycle_background, self.toggle_sound, self.toggle_difficulty, self.toggle_volume, State.MENU)
+        return (self.cycle_background, self.toggle_sound, self.toggle_difficulty, self.toggle_volume, State.RESET_SCREEN, State.MENU)
 
     def get_bg_no(self) -> int:
         """Get the current background that the user chose"""

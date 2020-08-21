@@ -32,6 +32,7 @@ class State(enum.Enum):
     STAT_MENU_SCREEN = 1000
     STAT_MENU = 1001
     ACHIEVEMENTS = 1002
+    RESET_SCREEN = 1003
 
     # Highscore states
     HIGHSCORE = 8

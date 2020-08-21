@@ -20,6 +20,7 @@ from .StoryModeScreen import StoryModeScreen
 from .OnePlayerModesScreen import OnePlayerModeScreen
 from .TutorialScreen import TutorialScreen
 from .VictoryScreen import VictoryScreen
+from .ResetScreen import ResetScreen
 
 {'sf': 0, 'en_k': 0, 'el_k': 0, 'sl': 0, 'pu': 0, 'mpu': 0, 'ek_c': 0, 'ek_e': 0}
 
