@@ -14,7 +14,7 @@ Level of achievement: Artemis
 
 * Download Link: [Windows v1.2](https://drive.google.com/file/d/1Te1OSkhHa27rHIbSe9qBpcb7SoB0zUZA/view?usp=sharing)
 
-* Download Link: [Mac v1.0](https://drive.google.com/file/d/1HfSrewqjheuAdSa83yHG1T8vIK-0Iw7c/view?usp=sharing)
+* Download Link: [Mac v1.2](https://drive.google.com/file/d/1ZhxoCKBq8PToUaTojxAQtxX87Pq6fgPI/view?usp=sharing)
 
 * Feedback Link: [here](https://forms.gle/kibPWXRtb1x3JJvT9)
 Click here to provide any feedback you want to share
