@@ -24,17 +24,20 @@ class AchievementScreen(PowerupInstructionsScreen):
     def __init__(self, screen_width: int, screen_height: int, screen, fps, achievement_tracker, debug: bool = False):
         """Constructor for the powerup instructions screen"""
 
-        # Store the achievement tracker
-        self.tracker = achievement_tracker
-
-        # Dict to see if the achievement is achieved
-        self.refresh()
-
         # Render the image
         self.trophy = ImageObject(screen_width // 2, screen_height // 5 + screen_height // 15, 50, 50,
                                   VictoryScreen.sprites[1], debug)
         self.question_mark = ImageObject(screen_width // 2, screen_height // 5 + screen_height // 15, 50, 50,
                                          VictoryScreen.sprites[0], debug)
+
+        # Store the achievement tracker
+        self.tracker = achievement_tracker
+
+        #Check if it is refreshed
+        self.refreshed = False
+
+        # Dict to see if the achievement is achieved
+        self.refresh()
 
         # Call the superclass
         super().__init__(screen_width, screen_height, screen, fps, debug)
@@ -55,7 +58,10 @@ class AchievementScreen(PowerupInstructionsScreen):
 
     def refresh(self):
         """Refresh the stats"""
-        self.achieved = self.tracker.get_all_achievements()
+        if not self.refreshed:
+            self.achieved = self.tracker.get_all_achievements()
+            self.preprocess()
+            self.refreshed = True
 
     def write_lines(self):
         """Write the header"""
@@ -73,10 +79,14 @@ class AchievementScreen(PowerupInstructionsScreen):
     def _back(self):
         """Override the superclass method"""
         super()._back()
+        self.refreshed = False
         return State.MENU
 
     def main_write(self):
         """Writing the main information onto the screen"""
+
+        #Refresh stats
+        self.refresh()
 
         # First pixel used for alignment
         first_px = self.screen_height // 5 + self.screen_height // 15 + 50
