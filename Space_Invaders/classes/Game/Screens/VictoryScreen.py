@@ -37,7 +37,7 @@ class VictoryScreen(MenuTemplate):
         self.write(self.end_font, WHITE, f"{self.stage_name} cleared", self.screen_width // 2, first_px)
 
         # Write the next stage button
-        if self.get_stage_name().lower() != "stage 6" and self.get_stage_name().lower() != 'tutorial':
+        if self.get_stage_name().lower() not in["stage 6", 'tutorial', 'prologue']:
             self.next_stage = self.write(self.end_font, WHITE, "Next Stage", self.screen_width // 2,
                                          self.screen_height // 1.2 - self.screen_height // 15)
         else:

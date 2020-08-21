@@ -22,6 +22,9 @@ class StoryModeScreen(MenuTemplate):
         # Draw the title
         self.write(self.title_font, WHITE, "Story modes", self.screen_width / 2, self.screen_height / 5)
 
+        #Draw the prologue button
+        self.prologue = self.write(self.end_font, WHITE, "Prologue", self.screen_width // 2, self.screen_height // 2 - self.screen_height//15)
+
         # Put a video for the StoryMode:
         self.create_videos()
 
@@ -49,11 +52,11 @@ class StoryModeScreen(MenuTemplate):
 
     def get_rects(self):
         """Return the rects"""
-        return tuple(self.video_buttons + [self.back])
+        return tuple(self.video_buttons + [self.back, self.prologue])
 
     def get_effects(self):
         """Return the effects"""
-        return tuple([State(100 + i) for i in range(self.stages)] + [State.ONE_PLAYER_MENU])
+        return tuple([State(100 + i) for i in range(self.stages)] + [State.ONE_PLAYER_MENU, State.PROLOGUE])
 
     def check_mousepress(self) -> State:
         """Check the mouse press of the user"""

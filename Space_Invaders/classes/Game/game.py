@@ -139,6 +139,7 @@ class GameWindow(object):
             State.ACHIEVEMENTS: AchievementScreen(game_width, game_height, self.main_screen, 60,
                                                   self.achievementtracker, debug),
             State.RESET_SCREEN: ResetScreen(game_width, game_height, self.main_screen, self.achievementtracker, self.score_board, debug),
+            State.PROLOGUE: PrologueScreen(game_width, game_height, self.main_screen, sensitivity, self.fps, self.achievementtracker, debug),
             State.STAGE_GAMEOVER: None,
             State.STAGE_PAUSE: None,
             State.VICTORY: None,
